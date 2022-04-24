@@ -1,0 +1,4 @@
+crystal Silicon: dw = iso
+cell 5.4307 5.4307 5.4307 90 90 90
+atom si 0.125 0.125 0.125 0.4668 1.00
+spg 227 2
