@@ -6,15 +6,21 @@ from ssl import Options
 
 
 def configuration(parent_package='',top_path=None):
+    from codecs import open
+    from os import path
     # from scipy._build_utils.system_info import get_info, NotFoundError
     # lapack_opt = get_info("lapack_opt")
+    here = path.abspath(path.dirname(__file__))
+    # Get the long description from the README file
+    with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+        long_description = f.read()
 
     from numpy.distutils.misc_util import Configuration
     keys = ['kinematic', 'simulation','diffraction', 'crystallography','python']
     config = Configuration(
         'pyemaps',parent_package,top_path,
         description = 'Python Module for Electron Diffraction Simulations',
-        long_description = 'TODO Longer Python module for Electron Diffraction Simulations',
+        long_description = long_description,
         keywords = keys,
         classifiers = [
             'Development Status :: 2 - Pre-Alpha',
