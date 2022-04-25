@@ -16,11 +16,12 @@ def configuration(parent_package='',top_path=None):
         long_description = f.read()
 
     from numpy.distutils.misc_util import Configuration
-    keys = ['kinematic', 'simulation','diffraction', 'crystallography','python']
+    keys = ['kinematic', 'diffraction', 'simulation', 'crystallography','python']
     config = Configuration(
         'pyemaps',parent_package,top_path,
         description = 'Python Module for Electron Diffraction Simulations',
         long_description = long_description,
+        long_description_content_type="text/markdown",
         keywords = keys,
         classifiers = [
             'Development Status :: 2 - Pre-Alpha',

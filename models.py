@@ -363,7 +363,12 @@ class diffPattern:
             # ax.annotate(idx,centre,)
             trans_offset = mtransforms.offset_copy(ax.transData, fig=fig,
                                        x=0.0, y=d.r/2, units='points')
-            plt.text(centre[0],centre[1], str(d.idx), transform=trans_offset)
+            plt.text(centre[0],centre[1], 
+                    str(d.idx),
+                    {'color': 'red', 'fontsize': 8},
+                    horizontalalignment='center',
+                    verticalalignment='bottom',
+                    transform=trans_offset)
 
         fig.canvas.draw()
 
