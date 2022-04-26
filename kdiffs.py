@@ -43,6 +43,10 @@ class Point:
     def __repr__(self):
         return str("({}, {})".format(self.x, self.y))
 
+    def __iter__(self):
+        return iter((self.x, self.y))
+
+
 
 class Line:
     def __init__(self, pt1, pt2, type=1):
@@ -116,6 +120,11 @@ class Line:
 
     def __repr__(self):
         return str("[{}, {}]".format(self.pt1.__repr__(), self.pt2.__repr__()))
+
+    def __iter__(self):
+        x1, y1 = self.pt1
+        x2, y2 = self.pt2
+        return iter((x1,y1,x2,y2))
 
     # def plot(self, plt):
     #     """
