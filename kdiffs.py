@@ -2,6 +2,12 @@
 NDIGITS = 1
 DIFF_PRECISION = 0.95
 XMAX, YMAX = 75, 75
+DEF_CONTROLS = dict(zone = (0,0,1),
+                    tilt = (0.0,0.0),
+                    defl = (0.0,0.0),
+                    cl = 1000,
+                    vt = 200
+                    )
 
 def double_eq(a,b):
     return abs(a-b) <= DIFF_PRECISION
@@ -333,7 +339,7 @@ class diffPattern:
         
         return (kdiff, hdiff, ddiff)
 
-    def plot(self):
+    def plot(self, mode = 1, ctrl = DEF_CONTROLS):
         import matplotlib.pyplot as plt
         import matplotlib.patches as patches
         import matplotlib.transforms as mtransforms
@@ -342,6 +348,8 @@ class diffPattern:
         
         fig, ax = plt.subplots()
         fig.canvas.set_window_title('Kinematical Diffraction')
+        # figManager = plt.get_current_fig_manager()
+        # figManager.full_screen_toggle()
 
         ax.set_title(f"{self.name}")
         ax.set_aspect('equal')
@@ -358,17 +366,32 @@ class diffPattern:
         for d in self.disks:
             centre = (d.c.x, d.c.y)
             # idx = '' + str(d.idx)
-            dis = patches.Circle(centre, d.r, alpha=1.0, fc='blue')
+            bFill = True if mode == 1 else False
+            dis = patches.Circle(centre, d.r, fill=bFill, linewidth = 0.5, alpha=1.0, fc='blue')
             ax.add_patch(dis)
             # ax.annotate(idx,centre,)
+            yoffset = 0.0 if mode == 2 else d.r/2
             trans_offset = mtransforms.offset_copy(ax.transData, fig=fig,
-                                       x=0.0, y=d.r/2, units='points')
+                                       x=0.0, y=yoffset, units='points')
+
             plt.text(centre[0],centre[1], 
                     str(d.idx),
                     {'color': 'red', 'fontsize': 8},
                     horizontalalignment='center',
-                    verticalalignment='bottom',
+                    verticalalignment='bottom' if mode == 1 else 'center',
                     transform=trans_offset)
+
+            controls_text = []
+            controls_text.append('Diffraction Mode: Normal' if mode == 1 else 'Diffraction Mode: Normal')
+            controls_text.append('Zone: ' + str(ctrl['zone']))
+            controls_text.append('Tilt: ' + str(ctrl['tilt']))
+            controls_text.append('Camera Length: ' + str(ctrl['cl']))
+            controls_text.append('Voltage: ' + str(ctrl['vt']))
+            
+            plt.text(-XMAX + 5, -YMAX + 5,  
+                    '\n'.join(controls_text),
+                    {'color': 'grey', 'fontsize': 6}
+            )
 
         fig.canvas.draw()
 
@@ -416,6 +439,80 @@ class Diffraction:
                 break
         
         return found
+
+    def plot(self):
+        import matplotlib.pyplot as plt
+        import matplotlib.patches as patches
+        import matplotlib.transforms as mtransforms
+        
+        fig, ax = plt.subplots()
+        fig.canvas.set_window_title('Kinematical Diffraction')
+        figManager = plt.get_current_fig_manager()
+        figManager.full_screen_toggle()
+        # figManager.resize(*figManager.window.maxsize())
+
+        for c, dp in self.diffList:
+            
+            ax.set_axis_off()
+            ax.set_title(f"{self.name}")
+            ax.set_aspect('equal')
+
+            # dp.plot(mode = self.mode, ctrl = c)
+            for kl in dp.klines:
+                xx = [kl.pt1.x, kl.pt2.x]
+                yy = [kl.pt1.y, kl.pt2.y]
+                ax.plot(xx, yy, 'k', alpha=0.2)
+
+            for hl in dp.hlines:
+                xx = [hl.pt1.x, hl.pt2.x]
+                yy = [hl.pt1.y, hl.pt2.y]
+                ax.plot(xx, yy, 'b', alpha=0.2)
+
+            for d in dp.disks:
+                centre = (d.c.x, d.c.y)
+                # idx = '' + str(d.idx)
+                bFill = True if self.mode == 1 else False
+                dis = patches.Circle(centre, d.r, fill=bFill, linewidth = 0.5, alpha=1.0, fc='blue')
+                ax.add_patch(dis)
+                # ax.annotate(idx,centre,)
+                yoffset = 0.0 if self.mode == 2 else d.r/2
+                trans_offset = mtransforms.offset_copy(ax.transData, fig=fig,
+                                        x=0.0, y=yoffset, units='points')
+
+                plt.text(centre[0],centre[1], 
+                        str(d.idx),
+                        {'color': 'red', 'fontsize': 8},
+                        horizontalalignment='center',
+                        verticalalignment='bottom' if self.mode == 1 else 'center',
+                        transform=trans_offset)
+                # ax.annotate(idx,centre,)
+                # trans_offset = mtransforms.offset_copy(ax.transData, fig=fig,
+                #                         x=0.0, y=d.r/2, units='points')
+
+                # plt.text(centre[0],centre[1], 
+                #         str(d.idx),
+                #         {'color': 'red', 'fontsize': 8},
+                #         horizontalalignment='center',
+                #         verticalalignment='bottom',
+                #         transform=trans_offset)
+
+                controls_text = []
+                controls_text.append('Diffraction Mode: Normal' if self.mode == 1 else 'Diffraction Mode: CBED')
+                controls_text.append('Zone: ' + str(c['zone']))
+                controls_text.append('Tilt: ' + str(c['tilt']))
+                controls_text.append('Camera Length: ' + str(c['cl']))
+                controls_text.append('Voltage: ' + str(c['vt']))
+                
+                plt.text(-XMAX + 5, -YMAX + 5,  
+                        '\n'.join(controls_text),
+                        {'color': 'grey', 'fontsize': 6}
+                )
+
+            # fig.canvas.draw()
+            # fig.canvas.flush_events()
+            plt.draw()
+            plt.pause(1)
+            ax.cla()
             
     def report_difference(self, other):
 

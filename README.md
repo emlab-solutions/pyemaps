@@ -4,11 +4,11 @@ diffraction with selected crystal. It contains the following features:
 
 >**pyemaps** : top level python module, containing many submodules designed for electron microscope simulations
 
->**crystal** : crystal data module, classes and methods loading crystal data from various sources
+>**Crystal** : crystal data module, classes and methods loading crystal data from various sources. 
 
->**dif** : kinematic Diffraction module and libraries, generating diffraction patterns based on the crystal data and microscope and sample control parameters.  
+>**DP** : kinematic diffraction python class, its methods includes ones generating diffraction patterns based on the crystal data and microscope and sample control parameters.  
 
-The above python modules and libraries are based on propietory Fortran applications released as backend of [cloudEMAPS2.0](https://emaps.emlabsolutions.com).
+The above python modules and libraries are based on the propietory Fortran applications released as backend of [cloudEMAPS2.0](https://emaps.emlabsolutions.com).
 
 Future releases planned include:
 
@@ -19,21 +19,48 @@ Check [EMlab Solution, Inc.](https://www.emlabsolutions.com) for updates and new
 ## Basic Usage
 
 ```
-from pyemaps import Crystal as cryst
-from pyemaps import dif
+from pyemaps import Crystal
+from pyemaps import DP
 ```
 
 ## Installation
+
 ```
 python -m pip pyemaps
 ```
+or
+ ```
+ pip install pyemaps
+ ```
 
-## Example Run
+## Example
 
-Run the following on command line, after installation step above
+Run the following on command line, after above successful installation step:
 
 ```
-python -m pyemaps -s [--sample] 
+python sample.py
+```
+
+where sample.py is as follows:
+
+```python
+#import Crystal class from pyemaps as cryst
+from pyemaps import Crystal as cryst
+
+# create a crystal class instance and load it with builtin silican data
+si = cryst.from_builtin('silicon')
+
+# run diffraction on the crystal instance with all default controls
+# parameters
+si_dp = si.gen_diffPattern()
+
+#plot and show the pattern just generated using pyemaps built-in plot function
+si_dp.plot()
+```
+
+The alternative to run the above without creating sample.py:
+```
+python -m pyemaps --sample (-s)
 ```
 
 The diffraction plot is generated with silicon crystal data built in the package:
@@ -57,4 +84,7 @@ sample offset: (0.0,0.0)
 spot size: 0.05 nm
 ```
 
+
+
 ![](https://github.com/emlab-solutions/imagepypy/raw/main/kdiff_si.png?raw=True "Kinematic diffraction for silicon")
+
