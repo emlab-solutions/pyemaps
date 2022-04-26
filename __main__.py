@@ -16,7 +16,7 @@ if __name__ == '__main__':
     parser.add_argument("-s", "--sample", type=bool, nargs="?", const=True, default=False, help="for running sample code", required=False)
     
     #parsing for the arguements
-    print(f"Congratulations! you have successfully install pyemaps!")
+    print(f"Congratulations! you have successfully installed pyemaps!")
 
     args = parser.parse_args()
     

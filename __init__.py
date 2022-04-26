@@ -21,4 +21,6 @@ from pyemaps import __config__
 
 from .diffract import dif
 from .crystals import Crystal
-from .models import diffPattern as DP
+from .kdiffs import diffPattern as DP
+from .kdiffs import Diffraction as DPList
+from .kdiffs import DEF_CONTROLS

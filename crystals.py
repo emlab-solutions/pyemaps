@@ -7,7 +7,6 @@ import os
 # import requests
 import json
 
-# from models import myCompare
 
 cell_keys=['a','b','c','alpha','beta','gamma']
 at_iso_keys=['symb','x','y','z','d-w','occ']
@@ -510,7 +509,7 @@ class Crystal:
         """
         Wrapper for get_diffraction routine
         """
-        from .models import diffPattern as DP
+        from .kdiffs import diffPattern as DP
 
         ret, diffp = self.get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize)
         if ret != 200:
@@ -642,7 +641,7 @@ class Crystal:
         return 200, data
 
     def generate_test_diff(self,v, mode=1):        
-        import models
+        import kdiffs
         from test.baseline import MAX_PROCWORKERS
         import concurrent.futures
         import sys
@@ -655,7 +654,7 @@ class Crystal:
         # cell, atoms, atn, spg, dw = self._get_params()
         
         fs=[]
-        diff = models.Diffraction(self.name, mode = mode)
+        diff = kdiffs.Diffraction(self.name, mode = mode)
 
         with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
             for tx,ty, z1, z2, z3 in v:
@@ -673,7 +672,7 @@ class Crystal:
             cntrl["tilt"]= (tx,ty)
             cntrl["zone"]= (z1, z2, z3)
 
-            diffP = models.diffPattern(diff_dict)
+            diffP = kdiffs.diffPattern(diff_dict)
             diff.add(cntrl,diffP)
         return diff
 
@@ -686,7 +685,7 @@ class Crystal:
 
     def load_baseline_diff(self, mode=1):
         from test.baseline import DIFF_BASELINE_DIR
-        import models
+        import kdiffs
   
         fn = self.name + str("_CBED" if mode == 2 else "_normal") + ".bin"
 
@@ -695,7 +694,7 @@ class Crystal:
         if not os.path.exists(basefn):
             return None
 
-        diff = models.Diffraction(self.name, mode = mode)
+        diff = kdiffs.Diffraction(self.name, mode = mode)
         diff.readbin(basefn,False)
 
         return diff
