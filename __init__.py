@@ -24,3 +24,4 @@ from .crystals import Crystal
 from .kdiffs import diffPattern as DP
 from .kdiffs import Diffraction as DPList
 from .kdiffs import DEF_CONTROLS
+from .kdiffs import XMAX, YMAX
