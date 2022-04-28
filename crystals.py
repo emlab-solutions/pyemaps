@@ -183,7 +183,7 @@ class Crystal:
               "\n".join(atoms) + "\n" + str(spg)
 
     @classmethod
-    def from_builtin(cls, cn):
+    def from_builtin(cls, cn='Diamond'):
         """
         import crystal data from .XLT or .DAT file
         The example format:
