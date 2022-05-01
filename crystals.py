@@ -1,10 +1,26 @@
-# from pymongo import MongoClient
+# Copyright ©  2021, 2022 EMLab Solutions, Inc.
+# ___________________________
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+# Contact supprort@emlabsoftware.com for any questions and comments.
+# ___________________________
+
+
 import numpy as np
 from numpy import asfortranarray as farray
-# from numpy import array
 import os
-# from urllib.parse import urljoin
-# import requests
 import json
 
 
@@ -15,18 +31,6 @@ spg_keys=['number','setting']
 crystal_data_basedir = 'cdata'
 
 required_keys = ['cell', 'dw', 'atoms', 'spg']
-# difModes = {"normal": 1,
-#             "CBED":   2}
-# API_BASEURL = "https://data.mongodb-api.com/app/data-svvat/endpoint/data/beta/action/"
-# API_BASEPAYLOAD = {
-#                 "collection": "crystals",
-#                 "database": "clusterEMAPS",
-#                 "dataSource": "ClusterEMAPS"
-#                 }
-
-# MONGO_URI = "mongodb+srv://xiurongz-emaps:jmrong01@clusteremaps.zfesp.mongodb.net/clusterEMAPS?retryWrites=true&w=majority"
-# client = MongoClient(MONGO_URI)
-# db = client['clusterEMAPS']
 
 def float_eq(a,b):
     return abs(a-b) < 0.000001
