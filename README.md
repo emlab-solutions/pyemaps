@@ -1,13 +1,13 @@
 
 # Table of Contents
-1. [Overview](#overview)
-2. [Installation](#installation)
-3. [Basic Usage](#basic-usage)
-4. [Example](#example)
-5. [Integration with Others Tools](#integration-with-others-tools)
-6. [License](#license)
+1. <a id="contents"></a>[Overview](#overview)
+2. <a id="contents"></a>[Installation](#installation)
+3. <a id="contents"></a>[Basic Usage](#basic-usage)
+4. <a id="contents"></a>[Getting Started](#getting-started)
+5. <a id="contents"></a>[Integration with Others Tools](#integration-with-others-tools)
+6. <a id="contents"></a>[License](#license)
 
-## Overview
+## Overview [`↩`](#contents) <a id="overview"></a>
 __pyemaps__ package is a collection of python modules and libraries designed for transmission electron diffraction simulations and related crystallographic calculations. Main features include:
 
 >**Crystal** : crystal data module, classes and methods loading crystal data from various sources, including diffraction patterns generation based on the crystal data and microscope and sample control parameters
@@ -24,7 +24,7 @@ Check [EMlab Solution, Inc.](https://www.emlabsolutions.com) for updates and rel
 
 We ask for your support and donation to continue to provide free software packages like this to make impact in research and education in microscopy and crystallography.  
 
-## Installation
+## Installation [`↩`](#contents) <a id="installation"></a>
 
 ```
 python -m pip pyemaps
@@ -34,14 +34,14 @@ or
  pip install pyemaps
  ```
 
-## Basic Usage
+## Basic Usage [`↩`](#contents) <a id="basic-usage"></a>
 
 ```
 from pyemaps import Crystal
 from pyemaps import DP
 ```
 
-## Example
+## Getting Started [`↩`](#contents) <a id="getting-started"></a>
 
 Run the following on command line, after above successful installation step:
 
@@ -94,7 +94,7 @@ spot size: 0.05 angstron
 
 ![](https://github.com/emlab-solutions/imagepypy/raw/main/kdiff_si.png?raw=True "Kinematic diffraction for silicon")
 
-## Integration with Others Tools
+## Integration with Others Tools [`↩`](#contents) <a id="integration-with-others-tools"></a>
 If you have DigitalMicrography (referred as DM) from Gatan with python support installed on your desktop, you can copy _dm_diff.py_ from __pyemaps__ sample installation directory after pemaps installation in the right environment set for your DM. The python script in the script utilizes DM python annotations to plot the diffraction patterns generated on silicon crystal.
 
 ```python
@@ -260,7 +260,7 @@ run_si_dm_sample()
 ```
 ![](https://github.com/emlab-solutions/imagepypy/blob/main/kdiff_si_dm.png?raw=True "Kinematic diffraction for silicon python script dm_diff.py")
 
-Other sample scripts designed for you to explore pyemaps and available in samples directory:
+Other sample scripts designed for you to explore pyemaps are available in samples directory:
 * __si_tilt_normal.py__: spot diffraction patterns generated with silicon crystal data, plotted with _matplotlib pyplot_ module. The code also shows how a list of diffraction patterns are generated and displayed as one of electron microscope and sample control - tilt in x direction changes.
 
 * __si_tilt_cbed.py__: The same as above with the diffraction mode set to CBED.
@@ -269,7 +269,8 @@ Other sample scripts designed for you to explore pyemaps and available in sample
 
 * __pyplot_dm_si_diff_color.py__: Similar to the above, the plot is done in color.
 
-## License
+## License [`↩`](#contents) <a id="license"></a>
+
  __pyemaps__ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 

@@ -1,10 +1,11 @@
-# Copyright ©  2021, 2022 EMLab Solutions, Inc.
+'''
+# This file is part of pyemaps
 # ___________________________
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# This program is free software for non-comercial use: you can 
+# redistribute it and/or modify it under the terms of the GNU General 
+# Public License as published by the Free Software Foundation, either 
+# version 3 of the License, or (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,6 +17,7 @@
 #
 # Contact supprort@emlabsoftware.com for any questions and comments.
 # ___________________________
+'''
 
 from .samples.si_diff import run_si_sample
 
