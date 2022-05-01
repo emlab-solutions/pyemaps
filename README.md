@@ -43,7 +43,7 @@ from pyemaps import DP
 
 ## Getting Started [`↩`](#contents) <a id="getting-started"></a>
 
-Run the following on command line, after above successful installation step:
+Run the following on command line, after above successful installation:
 
 ```
 python sample.py
@@ -90,6 +90,12 @@ spot size: 0.05 angstron
 ```
 
 ![](https://github.com/emlab-solutions/imagepypy/raw/main/kdiff_si.png?raw=True "Kinematic diffraction for silicon")
+
+Checking __pyemaps__ version and displaying copyright information:
+```
+python -m pyemaps -c (--copyright)
+python -m pyemaps -v (--version)
+```
 
 ## Integration with Others Tools [`↩`](#contents) <a id="integration-with-others-tools"></a>
 If you have DigitalMicrography (referred as DM) from Gatan with python support installed on your desktop, you can copy _dm_diff.py_ from __pyemaps__ sample installation directory after pemaps installation in the right environment set for your DM. The python script in the script utilizes DM python annotations to plot the diffraction patterns generated on silicon crystal.
