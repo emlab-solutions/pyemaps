@@ -86,7 +86,7 @@ microscope camera length : 1000 mm
 microscope voltage: 200 kv
 sample tilt: (0.0,0.0)
 sample offset: (0.0,0.0)
-spot size: 0.05 angstron
+spot size: 0.05 Å
 ```
 
 ![](https://github.com/emlab-solutions/imagepypy/raw/main/kdiff_si.png?raw=True "Kinematic diffraction for silicon")
