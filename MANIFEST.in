@@ -1,2 +1,2 @@
-include setup.py README.md license.txt kdiff_si.png emaps/setup.py 
+include README.md license.txt
 exclude emaps/*.f95
