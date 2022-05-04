@@ -38,6 +38,10 @@ def run_si_sample():
 
     # create a crystal class instance and load it with builtin silican data
     si = cryst.from_builtin('silicon')
+    
+    # use cryst.list_all_builtin_crystals() to list names of all of the builtin
+    # crystals
+    
     # print(si)
 
     # run diffraction on the crystal instance with all default controls
