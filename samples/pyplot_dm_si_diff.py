@@ -23,14 +23,11 @@ An example of using pyemaps crystal and diffraction modules to
 2) generate kinematical diffraction patterns
 3) display the diffraction pattern using pyemaps's built-in plot function 
 
-Usage:
-a) install pyemaps diffraction and crystal modules:
-    pip install pyemaps
-b) run  
-    python si_diff.py
-
+See https://emlab-solutions.github.io/pyemaps/ for pemaps usage
 """
 from pyemaps import DEF_CONTROLS
+import sys
+
 MAX_PROCWORKERS = 4
 XMAX, YMAX = 75, 75
 def run_si_sample():
@@ -136,6 +133,15 @@ def plot_si_dp(dp, mode = 1, name = 'silicon', ctrl = DEF_CONTROLS):
     DM.CreateImage( Mono ).ShowImage()
         #plt.show()
     
-    
+sys.argv.extend(['-a', ' '])        # Required for Matplotlib to work
+
+# Safety-check: Ensure this is called on the main-thread of GMS
+
+if ( False == DM.IsScriptOnMainThread() ):
+
+ print( ' MatplotLib scripts require to be run on the main thread.' )
+
+ exit()
+     
 si_dp = run_si_sample()
 plot_si_dp(si_dp)

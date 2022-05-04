@@ -26,7 +26,7 @@ We ask for your donations to continue to provide free software packages like thi
 ## Installation [`↩`](#contents) <a id="installation"></a>
 
 ```
-(.venv) $ pip install
+(.venv) $ pip install pyemaps
  ```
 where .venv is the python virtual environment
 
