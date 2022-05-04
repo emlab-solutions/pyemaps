@@ -22,17 +22,14 @@ Future releases planned include:
 
 Check [EMlab Solution, Inc.](https://www.emlabsolutions.com) for updates and releases. We welcome comments and suggestions from our user community. For reporting any issues and requesting pyemaps improvements, or sharing scripts using __pyemaps__, please go to [our support page](https://www.emlabsolutions.com/contact/). 
 
-We ask for your support and donation to continue to provide free software packages like this to make impact in research and education in microscopy and crystallography.  
+We ask for your donations to continue to provide free software packages like this to communities in microscopy and crystallography research and education.  
 
 ## Installation [`↩`](#contents) <a id="installation"></a>
 
 ```
-python -m pip pyemaps
-```
-or
+(.venv) $ pip install
  ```
- pip install pyemaps
- ```
+where .venv is the python virtual environment
 
 ## Basic Usage [`↩`](#contents) <a id="basic-usage"></a>
 
@@ -222,7 +219,7 @@ Other sample scripts designed for you to explore pyemaps are available in sample
 
 ## License [`↩`](#contents) <a id="license"></a>
 
- __pyemaps__ is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ __pyemaps__ is distributed for electron diffraction and microscopy research, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 * __pyemaps__ is for non-commercial use.
 * __pyemaps__ is free software under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. You should have received a copy of the GNU General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.

@@ -22,8 +22,8 @@ def configuration(parent_package='',top_path=None):
         parent_package,
         top_path,
         description = 'Python Modules for Transmission Electron Diffraction Simulations',
-        long_description = long_description,
-        long_description_content_type="text/markdown"
+        long_description_content_type='text/markdown',
+        long_description = long_description
     )
     config.add_subpackage('diffract','emaps')
     config.add_data_files('license.txt', 'README.md')
