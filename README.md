@@ -21,7 +21,7 @@ Future releases planned include:
 
 Check [EMlab Solution, Inc.](https://www.emlabsolutions.com) for updates and releases. We welcome comments and suggestions from our user community. For reporting any issues and requesting pyemaps improvements, or sharing scripts using __pyemaps__, please go to [our support page](https://www.emlabsolutions.com/contact/). 
 
-If you find __pyemaps__ help you in your microscopy and crystallography research and education, go to [PayPal.me](PayPal.Me/pyemaps22) to donate. Your generous donations keeps us in the business of providing free software to the communities. 
+If you find __pyemaps__ help you in your microscopy and crystallography research and education, go to [PayPal](https://www.paypal.com/paypalme/pyemaps22) to donate. Your generous donations keeps us in the business of providing free software to the communities. 
 
 ## Installation [`↩`](#contents) <a id="installation"></a>
 
