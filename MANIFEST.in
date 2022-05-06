@@ -1,2 +1,2 @@
-include setup.py README.md license.txt kdiff_si.png emaps/setup.py 
-exclude emaps/*.f95
+include README.md license.txt
+exclude emaps/*.f95 crystals.save kdiffs.save
