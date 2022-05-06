@@ -268,7 +268,7 @@ class Crystal:
         cfn = fn
         if not os.path.exists(fn):
             
-            pyemaps_home = os.getenv('PYEMAPSHOME')
+            pyemaps_home = os.getenv('PYEMAPS_CRYSTALS')
             cfn = os.path.join(pyemaps_home, fn)
 
             if not os.path.exists(cfn):
