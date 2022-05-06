@@ -30,6 +30,13 @@ If you benefit from __pyemaps__ in your microscopy and crystallography research 
  ```
 where .venv is the python virtual environment
 
+PYEMAPS_CRYSTALS environment variable is optional but setting it to a directory where all custom 
+crystal data files are located provides central location for organizing crystal data.
+
+```
+    PYEMAPS_CRYSTALS=<local directory>
+```
+
 ## Basic Usage [`↩`](#contents) <a id="basic-usage"></a>
 
 ```
@@ -102,7 +109,7 @@ with:
 ```python
 si = cryst.from_xtl(fn)
 ```
-where _fn_ is a crystal data file with full path.
+where _fn_ is a crystal data file name. __pyemaps__ searches for _fn_ if the full path is provided, otherwise, it will look it up in current working directory or in the directory set by PYEMAPS_CRYSTALS environment variable.
 
 Checking __pyemaps__ version and displaying copyright information:
 ```
