@@ -252,14 +252,31 @@ class Crystal:
                 in (x,y,z,b11,b22,b33,b12,b13,b23,occ)
 
         5) Spg: space group data. Two positive digits: [number, setting]
+
+        input:
+        fn - crystal data file name in above XTL format
+            1) If fn is gigen in full path and exists, it will congest it and import the data in fn 
+            into the crystal instance
+            2) if fn exists in current dictory where python is run
+            3) otherwise, it is expect to exist in PYEMAPSHOME directory
+            where:
+                PYEMAPSHOME is an environment variable defined by user 
+                after successful installation
         """
         import os
 
+        cfn = fn
         if not os.path.exists(fn):
-            print(f"Error finding the data file: {fn}")
-            return None
+            
+            pyemaps_home = os.getenv('PYEMAPSHOME')
+            cfn = os.path.join(pyemaps_home, fn)
 
-        name, data = Crystal.loadCrystalData(fn)
+            if not os.path.exists(cfn):
+                # error
+                print(f"Error finding the data file: {fn}")
+                return None
+        
+        name, data = Crystal.loadCrystalData(cfn)
         
         for key in required_keys:
             if key not in data:
