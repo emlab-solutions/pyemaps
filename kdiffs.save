@@ -583,6 +583,40 @@ class Diffraction:
                         # details.append("   " + str(od))
         rep.extend(details)
         return rep
+
+    def savebin(self, fn=""):
+        import pickle
+        import os
+        
+        with open(fn, "wb") as f:
+            pickle.dump(self.name,f, pickle.HIGHEST_PROTOCOL)
+            pickle.dump(self.mode,f, pickle.HIGHEST_PROTOCOL)
+            for d in self.diffList:
+                pickle.dump(d, f, pickle.HIGHEST_PROTOCOL)
+
+        return fn
+
+    def readbin(self, dfn="", bPrint = False):
+        import pickle
+
+        self.diffList=[]
+        with open(dfn, "rb") as f:
+            self.name = pickle.load(f)
+            self.mode = pickle.load(f)
+            while True:
+                try:
+                    self.diffList.append(pickle.load(f))
+                except EOFError:
+                    break
+        
+        if bPrint:
+            print(f"-----------------Diffraction Patterns for {self.name}-----------------------\n\n")
+            smode = "_normal" if self.mode == 1 else "_CBED"
+            print(f"Diffraction Mode: {smode}")
+            for c, d in self.diffList:
+                # print(f"****Success****: generated diffraction patterns for tilt: {d[0]}\n")
+                print(f"\nDiffraction Patterns generated with controls:\n{c}\n")
+                print(repr(d))
                 
     def __str__(self):
         for c, d in self.diffList:

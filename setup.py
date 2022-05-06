@@ -16,19 +16,14 @@ def configuration(parent_package='',top_path=None):
         long_description = f.read()
 
     from numpy.distutils.misc_util import Configuration
-    keys = ['kinematic', 'diffraction', 'simulation', 'crystallography','python']
+    
     config = Configuration(
-        'pyemaps',parent_package,top_path,
-        description = 'Python Module for Electron Diffraction Simulations',
-        long_description = long_description,
-        long_description_content_type="text/markdown",
-        keywords = keys,
-        classifiers = [
-            'Development Status :: 2 - Pre-Alpha',
-            'Programming Language :: Python :: 3.6',
-            'Operating System :: Microsoft :: Windows',
-            'Topic :: Software Development :: Libraries :: Python Modules'
-        ]
+        'pyemaps',
+        parent_package,
+        top_path,
+        description = 'Python Modules for Transmission Electron Diffraction Simulations',
+        long_description_content_type='text/markdown',
+        long_description = long_description
     )
     config.add_subpackage('diffract','emaps')
     config.add_data_files('license.txt', 'README.md')
