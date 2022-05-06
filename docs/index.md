@@ -28,10 +28,11 @@ If you benefit from __pyemaps__ in your microscopy and crystallography research 
 ```
 (.venv) $ pip install pyemaps
  ```
+ 
 where .venv is the python virtual environment
 
-*PYEMAPS_CRYSTALS* environment variable is optional but setting it to a directory where all custom 
-crystal data files are located provides central location for organizing crystal data other than built-in ones.
+*PYEMAPS_CRYSTALS* environment variable is optional. But setting it to a directory where all custom 
+crystal data files are located provides central location for organizing your own crystal data. __pyemaps__ also searches this directory for your crystal data.
 
 ```
     PYEMAPS_CRYSTALS=<local directory>
