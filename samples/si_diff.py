@@ -32,7 +32,7 @@ def run_si_sample():
     #import Crystal class from pyemaps as cryst
     from pyemaps import Crystal as cryst
 
-    # create a crystal class instance and load it with builtin silican data
+    # create a crystal class instance and load it with builtin silicon data
     si = cryst.from_builtin('silicon')
     
     # use cryst.list_all_builtin_crystals() to list names of all of the builtin
@@ -40,12 +40,12 @@ def run_si_sample():
 
     # print(si)
 
-    # run diffraction on the crystal instance with all default controls
+    # generate diffraction on the crystal instance with all default controls
     # parameters
     si_dp = si.gen_diffPattern()
     # print(si_dp)
 
-    #plot and show the pattern just generated using pyemaps built-in plot function
+    #plot and show the diffraction pattern using pyemaps built-in plot function
     si_dp.plot()
 
     
