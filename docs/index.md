@@ -1,10 +1,11 @@
 # Introducing __pyemaps__
 1. <a id="contents"></a>[Overview](#overview)
-2. <a id="contents"></a>[Installation](#installation)
-3. <a id="contents"></a>[Basic Usage](#basic-usage)
-4. <a id="contents"></a>[Getting Started](#getting-started)
-5. <a id="contents"></a>[Visualization](#visualization)
-6. <a id="contents"></a>[License](#license)
+2. <a id="contents"></a>[Requirements](#requirements)
+3. <a id="contents"></a>[Installation](#installation)
+4. <a id="contents"></a>[Basic Usage](#basic-usage)
+5. <a id="contents"></a>[Getting Started](#getting-started)
+6. <a id="contents"></a>[Visualization](#visualization)
+7. <a id="contents"></a>[License](#license)
 
 ## Overview [`↩`](#contents) <a id="overview"></a>
 __pyemaps__ package is a collection of python modules and libraries designed for transmission electron diffraction simulations and related crystallographic calculations. Main features include:
@@ -21,14 +22,29 @@ Future releases planned include:
 
 Check [EMlab Solution, Inc.](https://www.emlabsolutions.com) for updates and releases. We welcome comments and suggestions from our user community. For reporting any issues and requesting pyemaps improvements, or sharing scripts using __pyemaps__, please go to [our support page](https://www.emlabsolutions.com/contact/). 
 
-If you benefit from __pyemaps__ in your microscopy and crystallography research and education, go to [PayPal](https://www.paypal.com/paypalme/pyemaps22) to donate. Your generous donations keep us in the business of providing free software to the communities.  
+If you benefit from __pyemaps__ in your microscopy and crystallography research and education, go to [PayPal](https://www.paypal.com/paypalme/pyemaps22) to donate. Your generous donations keep us in the business of providing free software to the communities.   
+
+## Requirements [`↩`](#contents) <a id="requirements"></a>
+
+* __Python__: Version >= 3.6
+* __Operating Systems__: Windows
+
+Linux support planned in future releases, stay tuned.
 
 ## Installation [`↩`](#contents) <a id="installation"></a>
 
 ```
 (.venv) $ pip install pyemaps
  ```
+ 
 where .venv is the python virtual environment
+
+*PYEMAPS_CRYSTALS* environment variable is optional. But setting it to a directory where all custom 
+crystal data files are located provides central location for organizing your own crystal data. __pyemaps__ also searches this directory for your crystal data.
+
+```
+    PYEMAPS_CRYSTALS=<local directory>
+```
 
 ## Basic Usage [`↩`](#contents) <a id="basic-usage"></a>
 
@@ -50,13 +66,13 @@ where sample.py is as follows:
 ```python
 #import Crystal class from pyemaps as cryst
 from pyemaps import Crystal as cryst
-# create a crystal class instance and load it with builtin silican data
+# create a crystal class instance and load it with builtin silicon data
 si = cryst.from_builtin('silicon')
 
-# run diffraction on the crystal instance with all default controls
+# generate diffraction on the crystal instance with all default controls
 # parameters
 si_dp = si.gen_diffPattern()
-#plot and show the pattern just generated using pyemaps built-in plot function
+#plot and show the diffraction pattern using pyemaps built-in plot function
 si_dp.plot()
 ```
 
@@ -102,7 +118,9 @@ with:
 ```python
 si = cryst.from_xtl(fn)
 ```
-where _fn_ is a crystal data file with full path.
+where _fn_ is a crystal data file name.
+
+Note: __pyemaps__ searches for _fn_ if the full path is provided. Otherwise, it will look up the file in current working directory or in the directory set by *PYEMAPS_CRYSTALS* environment variable. In latter cases, _fn_ is just the file name without path.
 
 Checking __pyemaps__ version and displaying copyright information:
 ```
