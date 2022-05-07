@@ -29,7 +29,7 @@ If you benefit from __pyemaps__ in your microscopy and crystallography research 
 * __Python__: Version >= 3.6
 * __Operating Systems__: Windows
 
-Linux package planned in future releases, stay tuned.
+Linux support planned in future releases, stay tuned.
 
 ## Installation [`↩`](#contents) <a id="installation"></a>
 
