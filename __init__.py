@@ -1,23 +1,23 @@
 
 """
-# This file is part of pyemaps
-# ___________________________
-#
-# pyemaps is free software for non-comercial use: you can 
-# redistribute it and/or modify it under the terms of the GNU General 
-# Public License as published by the Free Software Foundation, either 
-# version 3 of the License, or (at your option) any later version.
-#
-# pyemaps is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
-#
-# Contact supprort@emlabsoftware.com for any questions and comments.
-# ___________________________
+This file is part of pyemaps
+___________________________
+
+pyemaps is free software for non-comercial use: you can 
+redistribute it and/or modify it under the terms of the GNU General 
+Public License as published by the Free Software Foundation, either 
+version 3 of the License, or (at your option) any later version.
+
+pyemaps is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
+
+Contact supprort@emlabsoftware.com for any questions and comments.
+___________________________
 
 __pyemaps__ package is a collection of python modules and libraries that simulate
  transmission electron diffraction with selected crystals, designed for crystal 
@@ -58,14 +58,27 @@ from pyemaps import Crystal
 from pyemaps import DP
 ```
 
+Author:     EMLab Solutions, Inc.
+Date:       May 07, 2022    
 """
 
 
 from pyemaps import __config__
 
+#from diffraction extension
 from .diffract import dif
+
+#Wrappers class around diffraction extensions
+
 from .crystals import Crystal
+
+#Microscope control data classes handling data properties
+from .emcontrols import EMControl as EMC
+
+#diffraction classes handling diffraction patter data
 from .kdiffs import diffPattern as DP
 from .kdiffs import Diffraction as DPList
-from .kdiffs import DEF_CONTROLS
-from .kdiffs import XMAX, YMAX
+
+#Extension constants
+from .emcontrols import DEF_CONTROLS, DEF_CBED_DSIZE
+from .kdiffs import XMAX, YMAX, DEF_MODE

@@ -45,7 +45,7 @@ def run_si_sample():
 
     # generate diffraction on the crystal instance with all default controls
     # parameters
-    si_dp = si.gen_diffPattern()
+    si_dp = si.generateDP()
     # print(si_dp)
 
     #plot and show the diffraction pattern using pyemaps built-in plot function
