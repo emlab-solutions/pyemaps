@@ -21,10 +21,15 @@ ___________________________
 Author:     EMLab Solutions, Inc.
 Date:       May 07, 2022    
 
+
+This sample code is to render kinematic diffraction patterns generated
+by pyemaps by changing deflection in x direction
 '''
 
-from sample_base import generate_difs    
+from sample_base import generate_difs_defl    
 
 if __name__ == '__main__':
     # generate_difs()
-    generate_difs(mode = 2).plot()
+    # generate_difs()
+    generate_difs_defl().plot()
+    generate_difs_defl(mode = 2).plot()

@@ -17,12 +17,21 @@
 #
 # Contact supprort@emlabsoftware.com for any questions and comments.
 # ___________________________
+
+
+Author:     EMLab Solutions, Inc.
+Date:       May 07, 2022    
+
 '''
 
 import numpy as np
 from numpy import asfortranarray as farray
 import os
 import json
+
+# from .kdiffs import DEF_MODE
+from .emcontrols import DEF_CBED_DSIZE
+from .emcontrols import EMControl as EMC
 
 
 cell_keys=['a','b','c','alpha','beta','gamma']
@@ -497,28 +506,66 @@ class Crystal:
 
         return cell, atoms, atn, spg, dw
         
-    def gen_diffPattern(self, zone = None, 
-                              mode = None, 
-                              tx0 = None, 
-                              ty0 = None, 
-                              dx0 = None,
-                              dy0 = None,
-                              cl = None,
-                              vt = None, 
-                              dsize = None):
+    # def gen_diffPattern(self, zone = None, 
+    #                           mode = None, 
+    #                           tx0 = None, 
+    #                           ty0 = None, 
+    #                           dx0 = None,
+    #                           dy0 = None,
+    #                           cl = None,
+    #                           vt = None, 
+    #                           dsize = None):
+    #     """
+    #     Wrapper for get_diffraction routine
+    #     returns pyemaps DP object
+    #     param* zone - zone axis in tuple (z1,z2,z3) of short integers (defaults to (0,0,1))
+    #     param* mode - diffraction mode - normal(1) or CBED(2) (defaults to 1)
+    #     param* tx0,ty0,dx0,dy0 - tilt and deflection controls, 
+    #                              must be all None or otherwise flotaing point numbers
+    #                              (defaults to 0.0, 0.0, 0.0, 0.0)
+    #     param* cl - microscope camera length in milimeter (deafults to 1000 mm)
+    #     param* vt - microscope voltage in kilo volts (defaults to 200 kv)
+    #     param* dsize - diffraction spots or cricles size 
+    #                    (set only when mode is CBED, defaults to 0.16)
+    #     """
+    #     from .kdiffs import diffPattern as DP
+
+    #     ret, diffp = self.get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize)
+    #     if ret != 200:
+    #         print(f'Error generating diffraction pattern')
+    #         return None
+    #     return DP(diffp)
+        
+    def generateDP(self, mode = None, dsize = None, em_controls = None):
         """
-        Wrapper for get_diffraction routine
+        This routine returns a DP object.
+
+        New DP generation based on the crystal data and Microscope control 
+        parameters. We will add more controls as we see fit.  
+
+        :param mode: Optional mode of diffraction mode - normal(1) or CBED(2)
+        :param dsize: Optional of CBED circle size - defaults to dif.DEF_DSIZE = 0.16
+        :param: Optional em_controls of electron microscope controls dictionary - defaults to DEF_CONTROLS
+        :return: a DP object
+        :rtype: diffPattern
         """
         from .kdiffs import diffPattern as DP
 
-        ret, diffp = self.get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize)
+        if not em_controls:
+            em_controls =EMC()
+
+        tx0, ty0 = em_controls.tilt
+        dx0, dy0 = em_controls.defl
+        cl, vt = em_controls.cl, em_controls.vt
+        zone = em_controls.zone
+
+        ret, diffp = self._get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize)
         if ret != 200:
             print(f'Error generating diffraction pattern')
             return None
-        return DP(diffp)
+        return em_controls, DP(diffp)
 
-
-    def get_diffraction(self, zone = None, 
+    def _get_diffraction(self, zone = None, 
                               mode = None, 
                               tx0 = None, 
                               ty0 = None, 
@@ -528,16 +575,18 @@ class Crystal:
                               vt = None, 
                               dsize = None):
         """
-        
+        This routine returns raw diffraction data from pyemaps dif extension
+
         If none of the parameters are supplied, the routine will
         generate the diffraction patterns in default set in the fortran
-        backend:
+        backend indicated below:
             zone = (0,0,1) zone axis
             mode = normal  kinematic diffraction mode (CBED is the other)
             (tx0,ty0) = (0.0,0.0) tilt angles
             (dx0,dy0) = (0.0,0.0) deflection move
             cl = 1000 EM length
             vt = 200  voltage
+            cl and vt must be set togather
             dsize = 0.05 spot disk size in nm
         If any of the values are set, the following tuples must be set togather
             (tx0,ty0,dx0,dy0) 
@@ -551,12 +600,17 @@ class Crystal:
         cell, atoms, atn, spg, dw = self._get_params()
 
         dif.initcontrols()
+        # mode defaults to DEF_MODE, in which dsize is not used
+        # Electron Microscope controls defaults - DEF_CONTROLS
+
         if mode == 2:
             dif.setmode(mode)
             if dsize == None:
-                return 500, ({})
-            dif.setdisksize(float(dsize))
-        
+                ds = DEF_CBED_DSIZE          
+            else:
+                ds = dsize
+            dif.setdisksize(float(ds))
+
         if tx0 != None and ty0 != None and dx0 != None and dy0 != None:
             dif.setsamplecontrols(tx0, ty0, dx0, dy0)
 
@@ -577,7 +631,7 @@ class Crystal:
         shiftx, shifty = dif.get_shifts()
         bounds = (shiftx, shifty)
 
-        #remove module internal memory
+        #remove module internal global memory
         dif.diff_internaldelete(0)
 
         klines=[]

@@ -1,29 +1,37 @@
 '''
-# This file is part of pyemaps
-# ___________________________
-#
-# pyemaps is free software for non-comercial use: you can 
-# redistribute it and/or modify it under the terms of the GNU General 
-# Public License as published by the Free Software Foundation, either 
-# version 3 of the License, or (at your option) any later version.
-#
-# pyemaps is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
-#
-# Contact supprort@emlabsoftware.com for any questions and comments.
-# ___________________________
-# 
+This file is part of pyemaps
+___________________________
+
+pyemaps is free software for non-comercial use: you can 
+redistribute it and/or modify it under the terms of the GNU General 
+Public License as published by the Free Software Foundation, either 
+version 3 of the License, or (at your option) any later version.
+
+pyemaps is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
+
+Contact supprort@emlabsoftware.com for any questions and comments.
+___________________________
+
+
+
+Author:     EMLab Solutions, Inc.
+Date:       May 07, 2022    
 '''
+
+from .emcontrols import EMControl as EMC
 
 # precision digits for comparison purposes
 NDIGITS = 1
 DIFF_PRECISION = 0.95
 XMAX, YMAX = 75, 75
+DEF_CBED_DSIZE = 0.16
+DEF_MODE = 1 #normal mode by default
 DEF_CONTROLS = dict(zone = (0,0,1),
                     tilt = (0.0,0.0),
                     defl = (0.0,0.0),
@@ -340,7 +348,7 @@ class diffPattern:
         
         return (kdiff, hdiff, ddiff)
 
-    def plot(self, mode = 1, ctrl = DEF_CONTROLS):
+    def plot(self, mode = 1, ctrl = None):
         import matplotlib.pyplot as plt
         import matplotlib.patches as patches
         import matplotlib.transforms as mtransforms
@@ -359,6 +367,9 @@ class diffPattern:
             xx = [hl.pt1.x, hl.pt2.x]
             yy = [hl.pt1.y, hl.pt2.y]
             ax.plot(xx, yy, 'k', alpha=0.2)
+
+        if not ctrl:
+            ctrl = EMC()
 
         for d in self.disks:
             centre = (d.c.x, d.c.y)
@@ -380,11 +391,8 @@ class diffPattern:
 
             controls_text = []
             controls_text.append('Diffraction Mode: Normal' if mode == 1 else 'Diffraction Mode: Normal')
-            controls_text.append('Zone: ' + str(ctrl['zone']))
-            controls_text.append('Tilt: ' + str(ctrl['tilt']))
-            controls_text.append('Camera Length: ' + str(ctrl['cl']))
-            controls_text.append('Voltage: ' + str(ctrl['vt']))
-            
+            controls_text.append(str(ctrl))
+
             plt.text(-XMAX + 5, -YMAX + 5,  
                     '\n'.join(controls_text),
                     {'color': 'grey', 'fontsize': 6}
@@ -397,16 +405,16 @@ class diffPattern:
 
 class Diffraction:
 
-    def __init__(self, name, mode=1):
+    def __init__(self, name, mode=DEF_MODE):
         self.name = name
         self.mode = mode
         self.diffList = [] 
     # Adding new diffraction patterns
-    def add(self, params_dict, diffP):
+    def add(self, emc, diffP):
         if not isinstance(diffP, diffPattern):
             return
 
-        self.diffList.append((params_dict, diffP))
+        self.diffList.append((emc, diffP))
             
     def __eq__(self, other):
 
@@ -422,11 +430,11 @@ class Diffraction:
         found = False
         for c, d in self.diffList:
             found = False
-            cl = list(c.values())
+            # cl = list(c.values())
             for oc, od in other.diffList:
-                ocl = list(oc.values())
+                # ocl = list(oc.values())
                 # print(f"controls compare: {cl} and {ocl}")
-                if cl == ocl:
+                if c == oc:
                     found = (d==od)
                     if not found:
                         break
@@ -482,31 +490,17 @@ class Diffraction:
                         horizontalalignment='center',
                         verticalalignment='bottom' if self.mode == 1 else 'center',
                         transform=trans_offset)
-                # ax.annotate(idx,centre,)
-                # trans_offset = mtransforms.offset_copy(ax.transData, fig=fig,
-                #                         x=0.0, y=d.r/2, units='points')
-
-                # plt.text(centre[0],centre[1], 
-                #         str(d.idx),
-                #         {'color': 'red', 'fontsize': 8},
-                #         horizontalalignment='center',
-                #         verticalalignment='bottom',
-                #         transform=trans_offset)
+                
 
                 controls_text = []
                 controls_text.append('Diffraction Mode: Normal' if self.mode == 1 else 'Diffraction Mode: CBED')
-                controls_text.append('Zone: ' + str(c['zone']))
-                controls_text.append('Tilt: ' + str(c['tilt']))
-                controls_text.append('Camera Length: ' + str(c['cl']))
-                controls_text.append('Voltage: ' + str(c['vt']))
-                
+                controls_text.append(str(c))
+
                 plt.text(-XMAX + 5, -YMAX + 5,  
                         '\n'.join(controls_text),
                         {'color': 'grey', 'fontsize': 6}
                 )
 
-            # fig.canvas.draw()
-            # fig.canvas.flush_events()
             plt.draw()
             plt.pause(1)
             ax.cla()

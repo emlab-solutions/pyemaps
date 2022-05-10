@@ -187,7 +187,7 @@ def run_si_dm_sample():
     print(si)
 
     #-----------generate diffraction pattern in CBED mode---------------------
-    si_dp_cbed = si.gen_diffPattern(mode = 2, dsize = 0.2)
+    si_dp_cbed = si.generateDP(mode = 2, dsize = 0.2)
     #print(si_dp_cbed)
 
     #-----------Plot the pattern in DM----------------------------------------
@@ -196,7 +196,7 @@ def run_si_dm_sample():
 
 
     #-----------generate diffraction pattern in normal mode-------------------
-    si_dp = si.gen_diffPattern()
+    si_dp = si.generateDP()
     #print(si_dp)
 
     #-----------content of the crystal data-----------------------------------

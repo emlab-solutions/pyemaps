@@ -6,6 +6,7 @@
 5. <a id="contents"></a>[Getting Started](#getting-started)
 6. <a id="contents"></a>[Visualization](#visualization)
 7. <a id="contents"></a>[License](#license)
+8. <a id="contents"></a>[Release Notes](#release-notes)
 
 ## Overview [`↩`](#contents) <a id="overview"></a>
 __pyemaps__ package is a collection of python modules and libraries designed for transmission electron diffraction simulations and related crystallographic calculations. Main features include:
@@ -71,7 +72,7 @@ si = cryst.from_builtin('silicon')
 
 # generate diffraction on the crystal instance with all default controls
 # parameters
-si_dp = si.gen_diffPattern()
+si_dp = si.generateDP()
 #plot and show the diffraction pattern using pyemaps built-in plot function
 si_dp.plot()
 ```
@@ -228,12 +229,12 @@ def run_si_dm_sample():
     #-----------content of the crystal data-----------------------------------
     print(si)
     #-----------generate diffraction pattern in CBED mode---------------------
-    si_dp_cbed = si.gen_diffPattern(mode = 2, dsize = 0.2)
+    si_dp_cbed = si.generateDP(mode = 2, dsize = 0.2)
     #-----------Plot the pattern in DM----------------------------------------
     show_diffract(si_dp_cbed, md = 2, name = name)
 
     #-----------generate diffraction pattern in normal mode-------------------
-    si_dp = si.gen_diffPattern()
+    si_dp = si.generateDP()
     #-----------content of the crystal data-----------------------------------
     show_diffract(si_dp, name = name)
 
@@ -258,3 +259,52 @@ Other sample scripts designed for you to explore pyemaps are available in sample
 * __pyemaps__ is free software under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. You should have received a copy of the GNU General Public License along with __pyemaps__.  If not, see <https://www.gnu.org/licenses/>.
 
 Contact supprort@emlabsoftware.com for any questions regarding the license terms.
+
+## Release Notes [`↩`](#contents) <a id="release-notes"></a>
+
+### __0.3.3 Alpha__ May 4th, 2022 
+* NEW
+
+    * Kinematical diffraction simulations.
+    * Diffraction patterns handling and visualizations helper classes
+    * Sample code demontsrating __pyeamps__ integration in other tools
+
+### __0.3.4 Alpha__ May 7th, 2022  
+* NEW
+
+    * An environment variable _PYEMAPS_CRSYTALS_ added enabling custom crystal data file location and lookup
+
+* IMPROVED
+
+    * Requirements section added for __payemaps__ python and OS requirements
+
+### __0.3.5 Alpha__ May 11th, 2022  
+* NEW
+
+    * An electron microscope controls module- __EMControls__ added to __pyemaps__ for better handling of controls parameters in __pyemaps__. Its class usage:
+
+    ```
+        from pyemaps import EMC
+    ```
+    &nbsp;&nbsp;&nbsp;&nbsp;this class mirror the following dictionary of controls parameters:
+    ```
+        DEF_CONTROLS = dict(zone = (0,0,1),
+                        tilt = (0.0,0.0),
+                        defl = (0.0,0.0),
+                        cl = 1000,
+                        vt = 200
+                        )
+    ```
+* IMPROVED
+
+    * Diffraction pattern generation function parameter is simplified using EMC classed:
+    ```
+    gen_diffPattern(...)
+    ```
+    &nbsp;&nbsp;&nbsp;&nbsp;to:
+    ```
+    generateDP(mode = None, dsize = None, em_controls = None)
+    ```
+    &nbsp;&nbsp;&nbsp;&nbsp;where em_controls is an EMC instance. 
+    
+    * More sample code for details how to use the function. 
