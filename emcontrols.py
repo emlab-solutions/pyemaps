@@ -128,6 +128,7 @@ class EMControl:
         cstr = []
         cstr.append('Zone: ' + str(self._zone))
         cstr.append('Tilt: ' + str(self._tilt))
+        cstr.append('Deflection: ' + str(self._defl))
         cstr.append('Camera Length: ' + str(self._cl))
         cstr.append('Voltage: ' + str(self._vt))
         return '\n'.join(cstr)

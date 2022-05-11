@@ -79,6 +79,17 @@ from .emcontrols import EMControl as EMC
 from .kdiffs import diffPattern as DP
 from .kdiffs import Diffraction as DPList
 
-#Extension constants
+#Extension control defaults
+#       DEF_CONTROLS --- default controls in dictionary object
+#       DEF_CONTROLS = dict(zone = (0,0,1),
+#                     tilt = (0.0,0.0),
+#                     defl = (0.0,0.0),
+#                     cl = 1000,
+#                     vt = 200
+#                     )
+#       DEF_CBED_DSIZE --- default DP spot cricle size in CBED mode
+#       XMAX YMAX --- DP generation bound (-XMAX, XMAX, -YMAX, YMAX)
+#
+#       THESE CONSTANTS ARE SET IN PYEMAPS DIF MODULE
 from .emcontrols import DEF_CONTROLS, DEF_CBED_DSIZE
 from .kdiffs import XMAX, YMAX, DEF_MODE

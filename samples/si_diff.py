@@ -38,7 +38,8 @@ def run_si_sample():
     si = cryst.from_builtin('silicon')
 
     # generate diffraction on the crystal instance with all default controls
-    # parameters
+    # parameters, default controls returned as the first output ignored
+    
     _, si_dp = si.generateDP()
     #plot and show the diffraction pattern using pyemaps built-in plot function
     si_dp.plot()
