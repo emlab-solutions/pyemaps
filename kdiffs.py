@@ -30,14 +30,8 @@ from .emcontrols import EMControl as EMC
 NDIGITS = 1
 DIFF_PRECISION = 0.95
 XMAX, YMAX = 75, 75
-# DEF_CBED_DSIZE = 0.16
+
 DEF_MODE = 1 #normal mode by default
-# DEF_CONTROLS = dict(zone = (0,0,1),
-#                     tilt = (0.0,0.0),
-#                     defl = (0.0,0.0),
-#                     cl = 1000,
-#                     vt = 200
-#                     )
 
 def double_eq(a,b):
     return abs(a-b) <= DIFF_PRECISION
@@ -54,6 +48,14 @@ class Point:
             if self.y != other.y:
                 return self.y < other.y
             return False
+
+        return NotImplemented
+
+    def __iadd__(self, other):
+        if isinstance(other, Point):
+            self.x += other.x
+            self.y += other.y
+            return self
 
         return NotImplemented
     
@@ -103,6 +105,18 @@ class Line:
     
     def __hash__(self):
         return hash(self.__key__())
+    
+    def __iadd__(self, other):
+        '''
+        This operator override is for shifting the line when
+        other line object has the same pt1 and ot2
+        '''
+        if isinstance(other, Point):
+            self.pt1 += other
+            self.pt2 += other
+            return self
+        
+        return NotImplemented
     
     def __eq__(self, other):
         if isinstance(other, Line):
@@ -202,6 +216,17 @@ class Disk:
 
         return True
     
+    def __iadd__(self, other):
+        '''
+        This operator override is for shifting the line when
+        other line object has the same pt1 and ot2
+        '''
+        if isinstance(other, Point):
+            self.c += other
+            return self
+        
+        return NotImplemented
+    
     def __key__(self):
         center = self.c
         r = self.r
@@ -243,11 +268,15 @@ class diffPattern:
         self.nklines = diff_dict["nums"]["nklines"]
         self.ndisks = diff_dict["nums"]["ndisks"]
         self.nhlines = diff_dict["nums"]["nhlines"]
-
+        self.shift = Point(diff_dict['bounds'][0], diff_dict['bounds'][1])
+        
         self.klines = []
         for kline in diff_dict["klines"]:
             pt1 = Point(kline[0][0], kline[0][1])
             pt2 = Point(kline[1][0], kline[1][1])
+            pt1 += self.shift
+            pt2 += self.shift
+            
             self.klines.append(Line(pt1,pt2))
         self.klines = sorted(self.klines)
 
@@ -256,6 +285,9 @@ class diffPattern:
         for disk in diff_dict["disks"]:
             ctr = Point(disk["c"][0], disk["c"][1])
             indx = Index(disk["idx"][0], disk["idx"][1], disk["idx"][2])
+
+            ctr += self.shift
+
             self.disks.append(Disk(ctr, disk["r"], indx))
         self.disks = sorted(self.disks)
         
@@ -263,9 +295,10 @@ class diffPattern:
         for hline in diff_dict["hlines"]:
             pt1 = Point(hline[0][0], hline[0][1])
             pt2 = Point(hline[1][0], hline[1][1])
+            pt1 += self.shift
+            pt2 += self.shift
             self.hlines.append(Line(pt1,pt2, 2))
         self.hlines = sorted(self.hlines)
-            
 
     def __eq__(self, other):
         if not isinstance(other, diffPattern):
@@ -388,15 +421,19 @@ class diffPattern:
                     horizontalalignment='center',
                     verticalalignment='bottom' if mode == 1 else 'center',
                     transform=trans_offset)
+    
+        controls_text = []
+        # controls_text.append('Mode: Normal' if self.mode == 1 else 'Mode: CBED')
+        controls_text.append(str(ctrl))
 
-            controls_text = []
-            controls_text.append('Diffraction Mode: Normal' if mode == 1 else 'Diffraction Mode: Normal')
-            controls_text.append(str(ctrl))
+        # finding control text plgit ot coordinates:
+        x0, _ = plt.xlim()
+        y0, _ = plt.ylim()
 
-            plt.text(-XMAX + 5, -YMAX + 5,  
-                    '\n'.join(controls_text),
-                    {'color': 'grey', 'fontsize': 6}
-            )
+        plt.text(x0 + 10, y0 + 10,  
+                '\n'.join(controls_text),
+                {'color': 'grey', 'fontsize': 6}
+        )
 
         fig.canvas.draw()
 
@@ -412,14 +449,14 @@ class Diffraction:
     # Adding new diffraction patterns
     def add(self, emc, diffP):
         if not isinstance(diffP, diffPattern):
-            return
+            return NotImplemented
 
         self.diffList.append((emc, diffP))
             
     def __eq__(self, other):
 
         if not isinstance(other, Diffraction):
-            return NotImplemented
+            return False
         
         if self.name != other.name or self.mode != other.mode:
             return False
@@ -428,7 +465,7 @@ class Diffraction:
             return False
 
         found = False
-        for c, d in self.diffList:
+        for c, d in self:
             found = False
             # cl = list(c.values())
             for oc, od in other.diffList:
@@ -444,6 +481,12 @@ class Diffraction:
                 break
         
         return found
+            
+    def __getitem__(self, key):
+        '''
+        Array like method for retrieving DP
+        '''
+        return self.diffList[key]
 
     def plot(self):
         import matplotlib.pyplot as plt
@@ -456,7 +499,7 @@ class Diffraction:
         figManager.full_screen_toggle()
         # figManager.resize(*figManager.window.maxsize())
 
-        for c, dp in self.diffList:
+        for c, dp in self:
             
             ax.set_axis_off()
             ax.set_title(f"{self.name}")
@@ -495,7 +538,11 @@ class Diffraction:
             controls_text.append('Mode: Normal' if self.mode == 1 else 'Mode: CBED')
             controls_text.append(str(c))
 
-            plt.text(-XMAX + 5, -YMAX + 5,  
+            # finding control text plot coordinates:
+            x0, _ = plt.xlim()
+            y0, _ = plt.ylim()
+
+            plt.text(x0 + 10, y0 + 10,  
                     '\n'.join(controls_text),
                     {'color': 'grey', 'fontsize': 6}
             )
@@ -520,9 +567,9 @@ class Diffraction:
         # if len(self.diffList) != len(other.diffList):
         #     return False
 
-        for c, d in self.diffList:
+        for c, d in self:
             cl = list(c.values())
-            for oc, od in other.diffList:
+            for oc, od in other:
                 ocl = list(oc.values())
                 # print(f"controls compare: {cl} and {ocl}")
                 if cl == ocl:
@@ -578,7 +625,7 @@ class Diffraction:
         return rep
                 
     def __str__(self):
-        for c, d in self.diffList:
+        for c, d in self:
             print(f"*****EM Contols: {c}")
             print(f"{d}")
         return " "

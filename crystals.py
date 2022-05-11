@@ -564,6 +564,27 @@ class Crystal:
             print(f'Error generating diffraction pattern')
             return None
         return em_controls, DP(diffp)
+        
+    def gen_diffPattern(self, zone = None,
+                              mode = None,
+                              tx0 = None,
+                              ty0 = None,
+                              dx0 = None,
+                              dy0 = None,
+                              cl = None,
+                              vt = None,
+                              dsize = None):
+        """
+        Wrapper for get_diffraction routine for pyemaps version <= 0.3.4
+        use generateDP call for pyemaps version > 0.3.4
+        """
+        from .kdiffs import diffPattern as DP
+
+        ret, diffp = self._get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize)
+        if ret != 200:
+            print(f'Error generating diffraction pattern')
+            return None
+        return DP(diffp)
 
     def _get_diffraction(self, zone = None, 
                               mode = None, 
