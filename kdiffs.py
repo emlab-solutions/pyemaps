@@ -30,14 +30,14 @@ from .emcontrols import EMControl as EMC
 NDIGITS = 1
 DIFF_PRECISION = 0.95
 XMAX, YMAX = 75, 75
-DEF_CBED_DSIZE = 0.16
+# DEF_CBED_DSIZE = 0.16
 DEF_MODE = 1 #normal mode by default
-DEF_CONTROLS = dict(zone = (0,0,1),
-                    tilt = (0.0,0.0),
-                    defl = (0.0,0.0),
-                    cl = 1000,
-                    vt = 200
-                    )
+# DEF_CONTROLS = dict(zone = (0,0,1),
+#                     tilt = (0.0,0.0),
+#                     defl = (0.0,0.0),
+#                     cl = 1000,
+#                     vt = 200
+#                     )
 
 def double_eq(a,b):
     return abs(a-b) <= DIFF_PRECISION
@@ -489,17 +489,16 @@ class Diffraction:
                         {'color': 'red', 'fontsize': 8},
                         horizontalalignment='center',
                         verticalalignment='bottom' if self.mode == 1 else 'center',
-                        transform=trans_offset)
-                
+                        transform=trans_offset)        
 
-                controls_text = []
-                controls_text.append('Diffraction Mode: Normal' if self.mode == 1 else 'Diffraction Mode: CBED')
-                controls_text.append(str(c))
+            controls_text = []
+            controls_text.append('Mode: Normal' if self.mode == 1 else 'Mode: CBED')
+            controls_text.append(str(c))
 
-                plt.text(-XMAX + 5, -YMAX + 5,  
-                        '\n'.join(controls_text),
-                        {'color': 'grey', 'fontsize': 6}
-                )
+            plt.text(-XMAX + 5, -YMAX + 5,  
+                    '\n'.join(controls_text),
+                    {'color': 'grey', 'fontsize': 6}
+            )
 
             plt.draw()
             plt.pause(1)

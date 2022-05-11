@@ -19,7 +19,7 @@ Contact supprort@emlabsoftware.com for any questions and comments.
 ___________________________
 
 Author:     EMLab Solutions, Inc.
-Date:       May 07, 2022    
+Date:       May 11, 2022    
 
 
 This sample code is to render kinematic diffraction patterns generated

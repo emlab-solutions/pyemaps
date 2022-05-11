@@ -33,7 +33,7 @@ def run_si_sample_cbed():
 
     # run diffraction on the crystal instance with all default controls
     # parameters
-    si_dp2 = si.generateDP(mode=2, dsize=0.16)
+    _, si_dp2 = si.generateDP(mode=2, dsize=0.16)
     # print(si_dp2)
 
     #plot and show the pattern just generated using pyemaps built-in plot function

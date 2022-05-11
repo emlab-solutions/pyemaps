@@ -130,3 +130,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# pyemaps samples code dir
+*pyemaps_samples*/
