@@ -39,7 +39,7 @@ def run_si_sample():
 
     # run diffraction on the crystal instance with all default controls
     # parameters
-    si_dp = si.generateDP()
+    _, si_dp = si.generateDP()
     # print(si_dp)
     return si_dp
     
