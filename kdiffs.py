@@ -1,35 +1,37 @@
 '''
-# This file is part of pyemaps
-# ___________________________
-#
-# pyemaps is free software for non-comercial use: you can 
-# redistribute it and/or modify it under the terms of the GNU General 
-# Public License as published by the Free Software Foundation, either 
-# version 3 of the License, or (at your option) any later version.
-#
-# pyemaps is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
-#
-# Contact supprort@emlabsoftware.com for any questions and comments.
-# ___________________________
-# 
+This file is part of pyemaps
+___________________________
+
+pyemaps is free software for non-comercial use: you can 
+redistribute it and/or modify it under the terms of the GNU General 
+Public License as published by the Free Software Foundation, either 
+version 3 of the License, or (at your option) any later version.
+
+pyemaps is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
+
+Contact supprort@emlabsoftware.com for any questions and comments.
+___________________________
+
+
+
+Author:     EMLab Solutions, Inc.
+Date:       May 07, 2022    
 '''
+
+from .emcontrols import EMControl as EMC
 
 # precision digits for comparison purposes
 NDIGITS = 1
 DIFF_PRECISION = 0.95
 XMAX, YMAX = 75, 75
-DEF_CONTROLS = dict(zone = (0,0,1),
-                    tilt = (0.0,0.0),
-                    defl = (0.0,0.0),
-                    cl = 1000,
-                    vt = 200
-                    )
+
+DEF_MODE = 1 #normal mode by default
 
 def double_eq(a,b):
     return abs(a-b) <= DIFF_PRECISION
@@ -46,6 +48,14 @@ class Point:
             if self.y != other.y:
                 return self.y < other.y
             return False
+
+        return NotImplemented
+
+    def __iadd__(self, other):
+        if isinstance(other, Point):
+            self.x += other.x
+            self.y += other.y
+            return self
 
         return NotImplemented
     
@@ -95,6 +105,18 @@ class Line:
     
     def __hash__(self):
         return hash(self.__key__())
+    
+    def __iadd__(self, other):
+        '''
+        This operator override is for shifting the line when
+        other line object has the same pt1 and ot2
+        '''
+        if isinstance(other, Point):
+            self.pt1 += other
+            self.pt2 += other
+            return self
+        
+        return NotImplemented
     
     def __eq__(self, other):
         if isinstance(other, Line):
@@ -194,6 +216,17 @@ class Disk:
 
         return True
     
+    def __iadd__(self, other):
+        '''
+        This operator override is for shifting the line when
+        other line object has the same pt1 and ot2
+        '''
+        if isinstance(other, Point):
+            self.c += other
+            return self
+        
+        return NotImplemented
+    
     def __key__(self):
         center = self.c
         r = self.r
@@ -235,11 +268,15 @@ class diffPattern:
         self.nklines = diff_dict["nums"]["nklines"]
         self.ndisks = diff_dict["nums"]["ndisks"]
         self.nhlines = diff_dict["nums"]["nhlines"]
-
+        self.shift = Point(diff_dict['bounds'][0], diff_dict['bounds'][1])
+        
         self.klines = []
         for kline in diff_dict["klines"]:
             pt1 = Point(kline[0][0], kline[0][1])
             pt2 = Point(kline[1][0], kline[1][1])
+            pt1 += self.shift
+            pt2 += self.shift
+            
             self.klines.append(Line(pt1,pt2))
         self.klines = sorted(self.klines)
 
@@ -248,6 +285,9 @@ class diffPattern:
         for disk in diff_dict["disks"]:
             ctr = Point(disk["c"][0], disk["c"][1])
             indx = Index(disk["idx"][0], disk["idx"][1], disk["idx"][2])
+
+            ctr += self.shift
+
             self.disks.append(Disk(ctr, disk["r"], indx))
         self.disks = sorted(self.disks)
         
@@ -255,9 +295,10 @@ class diffPattern:
         for hline in diff_dict["hlines"]:
             pt1 = Point(hline[0][0], hline[0][1])
             pt2 = Point(hline[1][0], hline[1][1])
+            pt1 += self.shift
+            pt2 += self.shift
             self.hlines.append(Line(pt1,pt2, 2))
         self.hlines = sorted(self.hlines)
-            
 
     def __eq__(self, other):
         if not isinstance(other, diffPattern):
@@ -340,7 +381,7 @@ class diffPattern:
         
         return (kdiff, hdiff, ddiff)
 
-    def plot(self, mode = 1, ctrl = DEF_CONTROLS):
+    def plot(self, mode = 1, ctrl = None):
         import matplotlib.pyplot as plt
         import matplotlib.patches as patches
         import matplotlib.transforms as mtransforms
@@ -360,6 +401,9 @@ class diffPattern:
             yy = [hl.pt1.y, hl.pt2.y]
             ax.plot(xx, yy, 'k', alpha=0.2)
 
+        if not ctrl:
+            ctrl = EMC()
+
         for d in self.disks:
             centre = (d.c.x, d.c.y)
             # idx = '' + str(d.idx)
@@ -377,18 +421,19 @@ class diffPattern:
                     horizontalalignment='center',
                     verticalalignment='bottom' if mode == 1 else 'center',
                     transform=trans_offset)
+    
+        controls_text = []
+        # controls_text.append('Mode: Normal' if self.mode == 1 else 'Mode: CBED')
+        controls_text.append(str(ctrl))
 
-            controls_text = []
-            controls_text.append('Diffraction Mode: Normal' if mode == 1 else 'Diffraction Mode: Normal')
-            controls_text.append('Zone: ' + str(ctrl['zone']))
-            controls_text.append('Tilt: ' + str(ctrl['tilt']))
-            controls_text.append('Camera Length: ' + str(ctrl['cl']))
-            controls_text.append('Voltage: ' + str(ctrl['vt']))
-            
-            plt.text(-XMAX + 5, -YMAX + 5,  
-                    '\n'.join(controls_text),
-                    {'color': 'grey', 'fontsize': 6}
-            )
+        # finding control text plgit ot coordinates:
+        x0, _ = plt.xlim()
+        y0, _ = plt.ylim()
+
+        plt.text(x0 + 10, y0 + 10,  
+                '\n'.join(controls_text),
+                {'color': 'grey', 'fontsize': 6}
+        )
 
         fig.canvas.draw()
 
@@ -397,21 +442,21 @@ class diffPattern:
 
 class Diffraction:
 
-    def __init__(self, name, mode=1):
+    def __init__(self, name, mode=DEF_MODE):
         self.name = name
         self.mode = mode
         self.diffList = [] 
     # Adding new diffraction patterns
-    def add(self, params_dict, diffP):
+    def add(self, emc, diffP):
         if not isinstance(diffP, diffPattern):
-            return
+            return NotImplemented
 
-        self.diffList.append((params_dict, diffP))
+        self.diffList.append((emc, diffP))
             
     def __eq__(self, other):
 
         if not isinstance(other, Diffraction):
-            return NotImplemented
+            return False
         
         if self.name != other.name or self.mode != other.mode:
             return False
@@ -420,13 +465,13 @@ class Diffraction:
             return False
 
         found = False
-        for c, d in self.diffList:
+        for c, d in self:
             found = False
-            cl = list(c.values())
+            # cl = list(c.values())
             for oc, od in other.diffList:
-                ocl = list(oc.values())
+                # ocl = list(oc.values())
                 # print(f"controls compare: {cl} and {ocl}")
-                if cl == ocl:
+                if c == oc:
                     found = (d==od)
                     if not found:
                         break
@@ -436,6 +481,12 @@ class Diffraction:
                 break
         
         return found
+            
+    def __getitem__(self, key):
+        '''
+        Array like method for retrieving DP
+        '''
+        return self.diffList[key]
 
     def plot(self):
         import matplotlib.pyplot as plt
@@ -448,7 +499,7 @@ class Diffraction:
         figManager.full_screen_toggle()
         # figManager.resize(*figManager.window.maxsize())
 
-        for c, dp in self.diffList:
+        for c, dp in self:
             
             ax.set_axis_off()
             ax.set_title(f"{self.name}")
@@ -481,32 +532,21 @@ class Diffraction:
                         {'color': 'red', 'fontsize': 8},
                         horizontalalignment='center',
                         verticalalignment='bottom' if self.mode == 1 else 'center',
-                        transform=trans_offset)
-                # ax.annotate(idx,centre,)
-                # trans_offset = mtransforms.offset_copy(ax.transData, fig=fig,
-                #                         x=0.0, y=d.r/2, units='points')
+                        transform=trans_offset)        
 
-                # plt.text(centre[0],centre[1], 
-                #         str(d.idx),
-                #         {'color': 'red', 'fontsize': 8},
-                #         horizontalalignment='center',
-                #         verticalalignment='bottom',
-                #         transform=trans_offset)
+            controls_text = []
+            controls_text.append('Mode: Normal' if self.mode == 1 else 'Mode: CBED')
+            controls_text.append(str(c))
 
-                controls_text = []
-                controls_text.append('Diffraction Mode: Normal' if self.mode == 1 else 'Diffraction Mode: CBED')
-                controls_text.append('Zone: ' + str(c['zone']))
-                controls_text.append('Tilt: ' + str(c['tilt']))
-                controls_text.append('Camera Length: ' + str(c['cl']))
-                controls_text.append('Voltage: ' + str(c['vt']))
-                
-                plt.text(-XMAX + 5, -YMAX + 5,  
-                        '\n'.join(controls_text),
-                        {'color': 'grey', 'fontsize': 6}
-                )
+            # finding control text plot coordinates:
+            x0, _ = plt.xlim()
+            y0, _ = plt.ylim()
 
-            # fig.canvas.draw()
-            # fig.canvas.flush_events()
+            plt.text(x0 + 10, y0 + 10,  
+                    '\n'.join(controls_text),
+                    {'color': 'grey', 'fontsize': 6}
+            )
+
             plt.draw()
             plt.pause(1)
             ax.cla()
@@ -527,9 +567,9 @@ class Diffraction:
         # if len(self.diffList) != len(other.diffList):
         #     return False
 
-        for c, d in self.diffList:
+        for c, d in self:
             cl = list(c.values())
-            for oc, od in other.diffList:
+            for oc, od in other:
                 ocl = list(oc.values())
                 # print(f"controls compare: {cl} and {ocl}")
                 if cl == ocl:
@@ -585,7 +625,7 @@ class Diffraction:
         return rep
                 
     def __str__(self):
-        for c, d in self.diffList:
+        for c, d in self:
             print(f"*****EM Contols: {c}")
             print(f"{d}")
         return " "

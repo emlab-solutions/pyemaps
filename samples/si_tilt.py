@@ -19,25 +19,16 @@ Contact supprort@emlabsoftware.com for any questions and comments.
 ___________________________
 
 Author:     EMLab Solutions, Inc.
-Date:       May 07, 2022    
+Date:       May 07, 2022        
 
+
+This sample code is to render kinematic diffraction patterns generated
+by pyemaps by changing sample tilt in x direction
 '''
 
-def run_si_sample_cbed():
-    #import Crystal class from pyemaps as cryst
-    from pyemaps import Crystal as cryst
-
-    # create a crystal class instance and load it with builtin silican data
-    si = cryst.from_builtin('silicon')
-    # print(si)
-
-    # run diffraction on the crystal instance with all default controls
-    # parameters
-    _, si_dp2 = si.generateDP(mode=2, dsize=0.16)
-    # print(si_dp2)
-
-    #plot and show the pattern just generated using pyemaps built-in plot function
-    si_dp2.plot(mode = 2)
+from sample_base import generate_difs    
 
 if __name__ == '__main__':
-    run_si_sample_cbed()
+    # generate_difs()
+    generate_difs().plot()
+    generate_difs(mode = 2).plot()

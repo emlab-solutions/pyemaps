@@ -23,6 +23,47 @@ from copy import copy
 from .samples.si_diff import run_si_sample
 
 rel_stage = 'Alpha'
+pyemaps_samples_dir = 'pyemaps_samples'
+
+def copy_samples():
+    '''
+    Copies sample code from package directory to current diretory 
+    for easy access
+    '''
+    import os, sys
+    import shutil
+
+    curr_dir = os.getcwd()
+    
+    q = str(f"Copy pyemaps samples into {pyemaps_samples_dir} in current directory? ")
+    # ans = str(raw_input(q +' [y/n]: ')).lower().strip()
+    if not input(q +"[y/n] ").lower().strip()[:1] == "y": 
+        print("No sample code is copied!")
+        sys.exit(1)
+
+    curr_samples_dir = os.path.join(curr_dir, pyemaps_samples_dir)
+
+    if not os.path.exists(curr_samples_dir):
+        os.makedirs(curr_samples_dir)
+    
+    pyemaps_pkgdir = os.path.dirname(os.path.abspath(__file__))
+    pkg_samples_dir = os.path.join(pyemaps_pkgdir, "samples")
+
+    # now copy most of the files in pkg_samples_dir into curr_samples_dir
+    # fetch all files
+    for file_name in os.listdir(pkg_samples_dir):
+        # construct full file path
+        if file_name == 'si_diff.py':
+            continue
+        source = os.path.join(pkg_samples_dir, file_name)
+        destination = os.path.join(curr_samples_dir, file_name)
+        
+        # copy only files
+        if os.path.isfile(source):
+            shutil.copy(source, destination)
+            print(f'Copied sample code: {file_name} in pyemaps package to {destination}')
+
+    print(f'Run sample code by typing: \"python pyemaps_samples\<sample>\"')
 
 if __name__ == '__main__':
     """
@@ -44,6 +85,7 @@ if __name__ == '__main__':
     parser.add_argument("-s", "--sample", type=bool, nargs="?", const=True, default=False, help="for running sample code", required=False)
     parser.add_argument("-c", "--copyright", type=bool, nargs="?", const=True, default=False, help="for checking copyright", required=False)
     parser.add_argument("-v", "--version", type=bool, nargs="?", const=True, default=False, help="for checking pyemaps version", required=False)
+    parser.add_argument("-cp", "--copysamples", type=bool, nargs="?", const=True, default=False, help="for copying sample code into working directory", required=False)
     
     #parsing for the arguements
     # print(f"Congratulations! you have successfully installed pyemaps!")
@@ -71,6 +113,11 @@ if __name__ == '__main__':
     
     if args.version:
         print(f'pyemaps {ver}')
+        exit(0)
+    
+    if args.copysamples:
+        print(f'pyemaps {ver}')
+        copy_samples()
         exit(0)
 
     copyrit.append('Version  ' + ver)
