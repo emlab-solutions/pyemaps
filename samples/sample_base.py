@@ -1,69 +1,221 @@
 """
-# This file is part of pyemaps
-# ___________________________
-#
-# pyemaps is free software for non-comercial use: you can 
-# redistribute it and/or modify it under the terms of the GNU General 
-# Public License as published by the Free Software Foundation, either 
-# version 3 of the License, or (at your option) any later version.
-#
-# pyemaps is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
-#
-# Contact supprort@emlabsoftware.com for any questions and comments.
-# ___________________________
+This file is part of pyemaps
+___________________________
 
-Sample code to demostrate using pyemaps to generate kinematic diffraction patterns chaning with
-sample tilt in x direction between range of
-    (-1,1)
-with step of 0.5
+pyemaps is free software for non-comercial use: you can 
+redistribute it and/or modify it under the terms of the GNU General 
+Public License as published by the Free Software Foundation, either 
+version 3 of the License, or (at your option) any later version.
+
+pyemaps is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
+
+Contact supprort@emlabsoftware.com for any questions and comments.
+___________________________
+
+This sample code is to demostrate using pyemaps to generate and render
+kinematic diffraction patterns while changing with sample tilt in 
+x direction 
+
+Author:     EMLab Solutions, Inc.
+Date:       May 07, 2022    
+
 """
+from pickle import EMPTY_DICT
+from pyemaps import DEF_CBED_DSIZE, DEF_MODE
+from pyemaps import EMC
+
+# import copy
+
 MAX_PROCWORKERS = 4
+def genDP(cr=None, dsize = None, mode = DEF_MODE, em_dict=EMPTY_DICT):
 
-def gen_control_vectors():
-    cvars=[(x*0.5,0.0, 0, 0, 1) for x in range(-2, 3)]
+    if not isinstance(em_dict, dict) and len(em_dict) != 1: 
+        raise ValueError("Control arguement incorrect")
+        # return None, None
+
+    emc = EMC()
     
-    return cvars
+    for k, v in em_dict.items():
+        if k == 'tilt':
+            emc.tilt = v
+
+        if k == 'zone':
+            emc.zone = v
+
+        if k == 'defl':
+            emc.defl = v
+        
+        if k == 'cl':
+            emc.cl = v
+            
+        if k == 'vt':
+            emc.vt = v
+
+    return cr.generateDP(mode=mode, dsize=dsize, em_controls = emc)
 
 
-def generate_difs(name = 'silicon', mode = 1):
+def generate_difs(name = 'silicon', mode = DEF_MODE):
     from pyemaps import DPList
-    from pyemaps import Crystal as cryst
-    from pyemaps import DEF_CONTROLS
-    
     import concurrent.futures
-    import sys
+    from pyemaps import Crystal as cryst
 
     cr = cryst.from_builtin(name)
 
     if mode == 2:
-        dsize = 0.16
+        dsize = DEF_CBED_DSIZE
+    else:
+        dsize = None
+
+    
+    fs=[]
+    # create an empty diffraction pattern list
+    difs = DPList(name, mode = mode)
+
+    with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
+        for i in range(-3,3):
+            third = dict(tilt = (i*0.5, 0.0))
+            fs.append(e.submit(genDP, cr=cr, dsize=dsize, mode=mode, em_dict=third))
+
+        for f in concurrent.futures.as_completed(fs):
+            try:
+                emc, diffP = f.result()
+            except Exception as e:
+                print('%r generated an exception: %s' % (f, e))
+            else:
+                difs.add(emc, diffP) 
+
+    return difs
+
+def generate_difs_defl(name = 'silicon', mode = DEF_MODE):
+    from pyemaps import DPList
+    from pyemaps import Crystal as cryst
+    # from pyemaps import dif 
+    
+    import concurrent.futures
+
+    cr = cryst.from_builtin(name)
+
+    if mode == 2:
+        dsize = DEF_CBED_DSIZE
     else:
         dsize = None
 
     
     fs=[]
     difs = DPList(cr.name, mode = mode)
-    v = gen_control_vectors()
+
     with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
-        for tx,ty, z1, z2, z3 in v:
-            fs.append((tx, ty, z1,z2,z3, \
-            e.submit(cr.gen_diffPattern, (z1,z2,z3), mode,tx,ty,0.0,0.0,None,None,dsize)))
+        for i in range(-10,10):
+            third = dict(defl = (i*0.5, 0.0))
+            fs.append(e.submit(genDP, cr=cr, dsize=dsize, mode=mode, em_dict=third))
 
-    for tx, ty, z1, z2, z3, f in fs:
-        diffP = f.result()
-        cntrl = dict(tilt = (tx,ty),
-                     zone = (z1,z2,z3),
-                     cl = DEF_CONTROLS['cl'],
-                     vt = DEF_CONTROLS['vt'],
-                     defl = DEF_CONTROLS['defl'] 
-                     )
+        for f in concurrent.futures.as_completed(fs):
+            try:
+                emc, diffP = f.result()
+            except Exception as e:
+                print('%r generated an exception: %s' % (f, e))
+            else:
+                difs.add(emc, diffP) 
+    return difs
 
-        # diffP = DP(diff_dict)
-        difs.add(cntrl, diffP)
+def generate_difs_zone(name = 'silicon', mode = DEF_MODE):
+    from pyemaps import DPList
+    from pyemaps import Crystal as cryst
+    # from pyemaps import dif 
+    
+    import concurrent.futures
+
+    cr = cryst.from_builtin(name)
+
+    if mode == 2:
+        dsize = DEF_CBED_DSIZE
+    else:
+        dsize = None
+
+    
+    fs=[]
+    difs = DPList(cr.name, mode = mode)
+
+    with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
+        for i in range(-3,3):
+            third = dict(zone = (0, i, 1))
+            fs.append(e.submit(genDP, cr=cr, dsize=dsize, mode=mode, em_dict=third))
+
+        for f in concurrent.futures.as_completed(fs):
+            try:
+                emc, diffP = f.result()
+            except Exception as e:
+                print('%r generated an exception: %s' % (f, e))
+            else:
+                difs.add(emc, diffP) 
+
+    return difs
+
+def generate_difs_cl(name = 'silicon', mode = DEF_MODE):
+    from pyemaps import DPList
+    from pyemaps import Crystal as cryst
+    # from pyemaps import dif 
+    
+    import concurrent.futures
+
+    cr = cryst.from_builtin(name)
+
+    if mode == 2:
+        dsize = DEF_CBED_DSIZE
+    else:
+        dsize = None
+
+    
+    fs=[]
+    difs = DPList(cr.name, mode = mode)
+
+    with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
+        for i in range(-3,3):
+            third = dict(cl = 1000 + i*50)
+            fs.append(e.submit(genDP, cr=cr, dsize=dsize, mode=mode, em_dict=third))
+
+        for f in concurrent.futures.as_completed(fs):
+            try:
+                emc, diffP = f.result()
+            except Exception as e:
+                print('%r generated an exception: %s' % (f, e))
+            else:
+                difs.add(emc, diffP) 
+    return difs
+
+def generate_difs_vt(name = 'silicon', mode = DEF_MODE):
+    from pyemaps import DPList
+    from pyemaps import Crystal as cryst
+    # from pyemaps import dif 
+    
+    import concurrent.futures
+
+    cr = cryst.from_builtin(name)
+
+    if mode == 2:
+        dsize = DEF_CBED_DSIZE
+    else:
+        dsize = None
+
+    
+    fs=[]
+    difs = DPList(cr.name, mode = mode)
+    with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
+        for i in range(-3,3):
+            third = dict(vt = 200 + i*10)
+            fs.append(e.submit(genDP, cr=cr, dsize=dsize, mode=mode, em_dict=third))
+
+        for f in concurrent.futures.as_completed(fs):
+            try:
+                emc, diffP = f.result()
+            except Exception as e:
+                print('%r generated an exception: %s' % (f, e))
+            else:
+                difs.add(emc, diffP) 
     return difs
