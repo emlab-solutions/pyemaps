@@ -8,9 +8,9 @@ from ssl import Options
 def configuration(parent_package='',top_path=None):
     from codecs import open
     from os import path
-    # from scipy._build_utils.system_info import get_info, NotFoundError
-    # lapack_opt = get_info("lapack_opt")
+    
     here = path.abspath(path.dirname(__file__))
+    
     # Get the long description from the README file
     with open(path.join(here, 'README.md'), encoding='utf-8') as f:
         long_description = f.read()
@@ -34,6 +34,6 @@ def configuration(parent_package='',top_path=None):
     return config
 
 if __name__ == '__main__':
-    # import setuptools 
+    import setuptools 
     from numpy.distutils.core import setup
     setup(**configuration(top_path='').todict())
