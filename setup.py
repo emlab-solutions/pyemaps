@@ -4,6 +4,25 @@ from multiprocessing import AuthenticationError
 from nturl2path import url2pathname
 from ssl import Options
 
+emaps_fsource = 'emaps'
+dpgen_cobj = 'write_dpbin.o'
+
+# def copy_cobj(cfg):
+#     '''
+#     moving the object file <dpgen_cobj> to build directory
+#     '''
+#     import os, sys
+#     import shutil
+
+#     pyemaps_rootdir = os.path.dirname(os.path.abspath(__file__))
+#     cobj = os.path.join(pyemaps_rootdir, dpgen_cobj)
+
+#     destdir = cfg.get_build_temp_dir()
+#     try:
+#         shutil.copy(cobj, os.path.join(destdir, dpgen_cobj))
+#     except IOError as e:
+#         raise ValueError("Error finding c object file") 
+
 
 def configuration(parent_package='',top_path=None):
     from codecs import open
@@ -25,7 +44,8 @@ def configuration(parent_package='',top_path=None):
         long_description_content_type='text/markdown',
         long_description = long_description
     )
-    config.add_subpackage('diffract','emaps')
+
+    config.add_subpackage('diffract',emaps_fsource)
     config.add_data_files('license.txt', 'README.md')
     config.add_data_dir('test')
     config.add_data_dir('cdata')
@@ -36,4 +56,7 @@ def configuration(parent_package='',top_path=None):
 if __name__ == '__main__':
     import setuptools 
     from numpy.distutils.core import setup
-    setup(**configuration(top_path='').todict())
+
+    config = configuration(top_path='')
+
+    setup(**config.todict())
