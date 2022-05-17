@@ -26,6 +26,7 @@ Date:       May 07, 2022
 
 import numpy as np
 from numpy import asfortranarray as farray
+from functools import wraps
 import os
 import json
 
@@ -128,17 +129,74 @@ class Atom:
             atoms.append(str(f"{val}"))
 
         return " ".join(atoms)
+
+def add_dpgen(target):
+    def dp_gen(self, res =1):
+        try:
+            from pyemaps import dif
+
+        except ImportError as e:               
+            print(f"Error: required module pyemaps.dif not found")
+            return -1
+
+        try:
+            from pyemaps import dpgen
+
+        except ImportError as e:               
+            print(f"Error: required module pyemaps.dpgen not found")
+            return -1
+
+        ediom_dp_res_lookup = [('small', 0.01),
+                 ('medium', 0.005),
+                 ('large', 0.0025)]
+
+        cell, atoms, atn, spg, dw = self._get_params()
+
+        dif.initcontrols()
+        
+        dif.loadcrystal(cell, atoms, atn, spg, ndw=dw)
+
+        dif.set_xaxis(1, 2, 0, 0)
+        ret = dif.diffract(2)
+        
+        if ret == 0:
+            print('Error running dif module')
+            return -1
+
+        vertices0 = np.array([[0,0,1],[1,1,1],[0,1,1]])
+        vertices = farray(vertices0.transpose(), dtype=int)
+
+        sres, fres = ediom_dp_res_lookup[res-1]
+        output_fn = self.name +'_' + sres
+
+        print(f"input for do_gen: {vertices},{output_fn}")
+        ret = dpgen.do_dpgen(fres, vertices, output_fn)
+        if ret != 0:
+            print(f'Error running generating diffraction patterns for {self.name}')
+            return -1
+
+        ret = dpgen.readbin_new(output_fn+' ', "bin"+' ')
+        if ret != 0: 
+            print(f'Error running generating diffraction patterns for {self.name}')
+            return -1
+
+        #release the memory
+        dif.diff_internaldelete(0)
+        dif.diff_delete()
+
+        return 0
     
+    target.dp_gen = dp_gen
+
+    return target
+    
+@add_dpgen      
 class Crystal:
     def __init__(self, name="Diamond", data={}):
         
         self.name = name #save the original name
         self.data = data
         self._name = name.lower()
-
-    # def fillDiffPatterns(self):
-    #     for mode in difModes:
-    #         self.diff[mode] = Diffraction(self.name, mode)
 
     def __eq__(self, other):
 
@@ -505,36 +563,7 @@ class Crystal:
             k = k + 1
 
         return cell, atoms, atn, spg, dw
-        
-    # def gen_diffPattern(self, zone = None, 
-    #                           mode = None, 
-    #                           tx0 = None, 
-    #                           ty0 = None, 
-    #                           dx0 = None,
-    #                           dy0 = None,
-    #                           cl = None,
-    #                           vt = None, 
-    #                           dsize = None):
-    #     """
-    #     Wrapper for get_diffraction routine
-    #     returns pyemaps DP object
-    #     param* zone - zone axis in tuple (z1,z2,z3) of short integers (defaults to (0,0,1))
-    #     param* mode - diffraction mode - normal(1) or CBED(2) (defaults to 1)
-    #     param* tx0,ty0,dx0,dy0 - tilt and deflection controls, 
-    #                              must be all None or otherwise flotaing point numbers
-    #                              (defaults to 0.0, 0.0, 0.0, 0.0)
-    #     param* cl - microscope camera length in milimeter (deafults to 1000 mm)
-    #     param* vt - microscope voltage in kilo volts (defaults to 200 kv)
-    #     param* dsize - diffraction spots or cricles size 
-    #                    (set only when mode is CBED, defaults to 0.16)
-    #     """
-    #     from .kdiffs import diffPattern as DP
 
-    #     ret, diffp = self.get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize)
-    #     if ret != 200:
-    #         print(f'Error generating diffraction pattern')
-    #         return None
-    #     return DP(diffp)
         
     def generateDP(self, mode = None, dsize = None, em_controls = None):
         """
