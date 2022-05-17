@@ -12,6 +12,24 @@ test_pypi_url = "https://test.pypi.org"
 rel_pypi_url = "https://pypi.org"
 twine_cfg = 'pypi_twine.cfg'
 
+def remove():
+    '''
+    remove build and dist directory in the pyemaps root directory
+    '''
+    import os, shutil
+    from pathlib import Path
+    
+    builddir = Path("build")
+    print(f"Build dir: {builddir}")
+    if os.path.exists(builddir) and os.path.isdir(builddir):
+        shutil.rmtree(builddir)
+
+
+    distdir = Path('dist')
+    print(f"Distribution dir: {distdir}")
+    if os.path.exists(distdir) and os.path.isdir(distdir):
+        shutil.rmtree(distdir)
+
 def set_cfg(comp):
     import json, os
 
@@ -21,7 +39,7 @@ def set_cfg(comp):
         json_cfg = "comp.json" # default
 
     # write a file recording the comp name for setup consumption
-    # lines = dict(component = comp)
+    
     json_obj = json.dumps(dict(component = comp))
     try:
         with open(json_cfg, 'w', encoding="utf-8") as f:
@@ -82,8 +100,6 @@ def get_bversion(btest = True):
 
     response = requests.get(url)
     
-    # print(f'response from pypi api: {response.text}')
-    
     try:
         jresp = response.json()
 
@@ -104,26 +120,13 @@ def get_bversion(btest = True):
             max_ver = k
     # increment version number by 1
     print(f"releases max: {max_ver}")
-    # ver = [s for s in (re.split('.', max_ver))]
-    # print(f"releases list: {ver}")
 
     ver = re.split(r"\.", max_ver)
-    print(f"releases list: {ver}")
+    
     if len(ver) != 3:
         raise ValueError("Error: version number validation error")
     
     major, minor, sub = ver
-    
-    # if sub >=0 and sub < MAX_VER_DIGIT - 1:
-    #     sub += 1
-    # elif sub == 9:
-    #     minor += 1
-    #     sub = 0
-    #     if minor >= MAX_VER_DIGIT:
-    #         minor = 0
-    #         major += 1
-    #         if major >= MAX_VER_DIGIT:
-    #             raise ValueError(f"Error: version numbers are full")
     
     ver_num = int(major)*MAX_VER_DIGIT**2 + int(minor)*MAX_VER_DIGIT + int(sub)
     # increment the version number
@@ -135,7 +138,7 @@ def get_bversion(btest = True):
 
     sub = ver_num % MAX_VER_DIGIT
     minor = ver_num // MAX_VER_DIGIT
-    major = ver_num // MAX_VER_DIGIT**3
+    major = ver_num // MAX_VER_DIGIT**2
 
     new_version = '.'.join([str(major), str(minor), str(sub)])
     print(f"new releases: {new_version}")
@@ -178,9 +181,6 @@ def upload_package(bRelease = False, ver = None):
             return 0
 
         if ans == 'y' or ans == '':
-            # ul_cmd = 'python -m twine upload --repository ' + \
-            #         repo_name + '--config-file ' + twine_cfg + \
-            #         'dist/'+ ver + '--verbose'
             os.system(ul_cmd)
             return 1
         else:
@@ -207,6 +207,7 @@ if __name__ == "__main__":
     parser.add_argument("-u", "--upload", action="store_true", help="upload the build or not", required=False)
     parser.add_argument("-t", "--test-repo", action="store_true", help="upload to the build to test repo test.pypi.org", required=False)
     parser.add_argument("-i", "--install", action="store_true", help="install the package from above repo", required=False)
+    # parser.add_argument("-n", "--no-build", action="store_true", help="No build", required=False)
     
     args = parser.parse_args()
     comp = args.component
@@ -219,6 +220,7 @@ if __name__ == "__main__":
 
     ver = get_bversion(btest = args.test_repo)
 
+    remove()
     build_package(comp)
 
     if not args.upload:

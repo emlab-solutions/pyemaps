@@ -4,25 +4,49 @@ from multiprocessing import AuthenticationError
 from nturl2path import url2pathname
 from ssl import Options
 
+from numpy.distutils.command.build_ext import build_ext as numpy_build_ext
+import os
+
 emaps_fsource = 'emaps'
 dpgen_cobj = 'write_dpbin.o'
 
-# def copy_cobj(cfg):
-#     '''
-#     moving the object file <dpgen_cobj> to build directory
-#     '''
-#     import os, sys
-#     import shutil
+def get_comp():
+    '''
+    Get pyemaps component to be built from comp.json file
+    '''
+    
+    import json, os
+    from pathlib import Path
 
-#     pyemaps_rootdir = os.path.dirname(os.path.abspath(__file__))
-#     cobj = os.path.join(pyemaps_rootdir, dpgen_cobj)
+    json_cfg = os.getenv('PYEMAPS_JSON')
 
-#     destdir = cfg.get_build_temp_dir()
-#     try:
-#         shutil.copy(cobj, os.path.join(destdir, dpgen_cobj))
-#     except IOError as e:
-#         raise ValueError("Error finding c object file") 
+    if not json_cfg:
+        json_cfg = "comp.json" # default
 
+    currdir = Path(os.path.dirname(os.path.realpath(__file__)))/emaps_fsource
+    comp = 'dif'
+
+    comp_cfg = os.path.join(currdir,json_cfg)
+    try:
+        with open(comp_cfg, 'r') as jf:
+            comp = json.load(jf)['component']
+
+    except IOError as e:
+        raise ValueError(f"Error reading component configure file: {e}")
+   
+    # delete temp config file comp.json
+    # if os.path.exists(comp_cfg):
+    #     os.remove(comp_cfg)
+    # else:
+    #     print(f"The comfiguration file {comp_cfg)} does not exits")
+
+    return comp
+
+class build_dp_ext(numpy_build_ext):
+    def finalize_options(self):
+        numpy_build_ext.finalize_options(self)
+        cobj = os.path.join(emaps_fsource, dpgen_cobj)
+        self.link_objects = [cobj]
 
 def configuration(parent_package='',top_path=None):
     from codecs import open
@@ -63,5 +87,12 @@ if __name__ == '__main__':
     from numpy.distutils.core import setup
 
     config = configuration(top_path='')
+    
+    comp = get_comp()
+    if comp == 'dpgen':
+        cmd ={}
+        cmd['build_ext'] = build_dp_ext
 
-    setup(**config.todict())
+        setup(**config.todict(), cmdclass = cmd)
+    else:
+        setup(**config.todict())
