@@ -36,10 +36,15 @@ def configuration(parent_package='',top_path=None):
 
     from numpy.distutils.misc_util import Configuration
     
+    version = {}
+    with open("__version__.py") as fp:
+        exec(fp.read(), version)
+
     config = Configuration(
         'pyemaps',
         parent_package,
         top_path,
+        version = version['__version__'],
         description = 'Python Modules for Transmission Electron Diffraction Simulations',
         long_description_content_type='text/markdown',
         long_description = long_description
