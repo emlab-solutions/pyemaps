@@ -167,8 +167,8 @@ def upload_package(bRelease = False, ver = None):
     repo_name = 'pypi' if bRelease else 'testpypi'
 
     ul_cmd = 'python -m twine upload --repository ' + \
-            repo_name + '--config-file ' + twine_cfg + \
-            'dist/'+ ver + '--verbose'
+            repo_name + ' --config-file ' + twine_cfg + \
+            ' dist/*'+ ver + '* --verbose'
 
     if bRelease:
         q = str(f"About to publish pyemaps v{ver} ") + \
@@ -181,12 +181,14 @@ def upload_package(bRelease = False, ver = None):
             return 0
 
         if ans == 'y' or ans == '':
+            print(f"Uploading package to pypi.org: {ul_cmd}")
             os.system(ul_cmd)
             return 1
         else:
             raise ValueError(str(f"Invalid answer: {ans}"))
 
     else:
+        print(f"Uploading package to test.pypi.org: {ul_cmd}")
         os.system(ul_cmd)
     return 1 #successful
 
@@ -194,14 +196,16 @@ def install_package(btest = True, ver= '0.0.0'):
 
     repo_url = ''
     if btest:
-        repo_url ='-i ' + test_pypi_url
+        repo_url ='-i ' + test_pypi_url + '/simple/'
     
     install_cmd = 'python -m pip install ' + repo_url + ' pyemaps=='+ver
+    print(f'installation: {install_cmd}')
     os.system(install_cmd)
 
 
 if __name__ == "__main__":
     import argparse
+    import time
     parser = argparse.ArgumentParser(description="Build and publish script for pyeamps")
     parser.add_argument("-c", "--component", type=str, nargs="?", const="dif", default="dif", help="build pyemaps component, defaults to dif module", required=False)
     parser.add_argument("-u", "--upload", action="store_true", help="upload the build or not", required=False)
@@ -236,6 +240,8 @@ if __name__ == "__main__":
     if not args.install:
         exit(0)
     
+    # wait for the upload is done 
+    time.sleep(10)
     install_package(btest = args.test_repo, ver=ver)
     
 
