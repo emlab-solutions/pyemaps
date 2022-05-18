@@ -131,5 +131,11 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# output from dpgen
+*.bin
+
+#build files intermediate
+__version__.py
+
 # pyemaps samples code dir
 *pyemaps_samples*/

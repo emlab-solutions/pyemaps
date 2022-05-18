@@ -68,6 +68,13 @@ from pyemaps import __config__
 #from diffraction extension
 from .diffract import dif
 
+#fall through if dpgen is not found
+try:
+    from .diffract import dpgen
+
+except ImportError as e:
+    pass
+
 #Wrappers class around diffraction extensions
 
 from .crystals import Crystal
@@ -75,7 +82,7 @@ from .crystals import Crystal
 #Microscope control data classes handling data properties
 from .emcontrols import EMControl as EMC
 
-#diffraction classes handling diffraction patter data
+#diffraction classes handling diffraction pattern data
 from .kdiffs import diffPattern as DP
 from .kdiffs import Diffraction as DPList
 

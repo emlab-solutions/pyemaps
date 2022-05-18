@@ -1,2 +1,2 @@
-include README.md license.txt
-exclude emaps/*.f95 crystals.save kdiffs.save
+include README.md license.txt COPYING
+exclude emaps/*.f95 crystals.save kdiffs.save build_pyemaps.py emaps/setup*.*
