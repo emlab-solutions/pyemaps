@@ -239,12 +239,14 @@ def add_csf(target):
 
         subj = sf_type_lookup[sftype-1]
         print(f"-----{subj}----- ")
+        
+        print(f"     crystal\t\t: {self.name}")
 
         # print(f"     by EMLab Solutions, Inc.     \n")
 
         mi = "     h k l \t\t: Miller Index"
         print(mi)
-        ssw = str(f"     s-w   \t\t: (Sin(\u03F4)/Wavelength) <= {smax}")
+        ssw = str(f"     s-w   \t\t: Sin(\u03F4)/Wavelength <= {smax}")
         print(ssw )
         dss = "     d-s   \t\t: D-Spacing"
         print(dss)
@@ -252,19 +254,16 @@ def add_csf(target):
         if sftype > 1:
             print(f"     high voltage\t: {kv} kV\n")
         else:
-            print(f"\n")
-
+            print(f" ")
 
         # sds = "D-Spacing"
         sap1 = sf_ap_flag[aptype][0]
         sap2 = sf_ap_flag[aptype][1]
-        
+        print(f"     SF output format\t: ({sap1}, {sap2})\n")
+       
         # print(f"{mi:<15}{ssw:<30}{'(D-Spacing)':<16}")
         print(f"{'h':^4}{'k':^4}{'l':^5}{'s-w':^16}{'d-s':^16}{sap1:^16}{sap2:^16}\n")
-        
-        # empty_mi = ' '*15
-        # ssmax = str(f'< {smax}')
-        # print(f"{empty_mi:<15}{ssmax:<25}\n")
+
 
         nb = len(sfs)
         for i in range(0, nb, 1):
@@ -899,7 +898,7 @@ class Crystal:
         # delete diff pattern memory
         dif.diff_delete()
         return 200, data
-        
+
 
 
 
