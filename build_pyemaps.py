@@ -5,6 +5,7 @@ MAKE_LOOKUP = dict(
     dif = 'DIFPYF',
     bloch = 'BLOCHPYF',
     dpgen = 'CDPOBJ DPGENPYF',
+    csf = 'CSFPYF',
     all = 'CDPOBJ ALLPYF'
 )
 
