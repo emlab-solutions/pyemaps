@@ -412,6 +412,7 @@ Contact supprort@emlabsoftware.com for any questions regarding the license terms
     &nbsp;&nbsp;&nbsp;&nbsp; The basic usage of __CSF__ to generate and output CSF data is embedded in __Crystal__ class method:
     ```
         generateCSF(...)
+        printCSF(...)           <= Display SF data from preview call to standard output 
     ```
 
-    See sample code _si_csf.py_ for details
+    See sample code _si_csf.py_ for details.
