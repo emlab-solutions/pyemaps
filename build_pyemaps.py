@@ -12,6 +12,7 @@ MAKE_LOOKUP = dict(
 test_pypi_url = "https://test.pypi.org"
 rel_pypi_url = "https://pypi.org"
 twine_cfg = 'pypi_twine.cfg'
+twinetest_cfg = 'testpypi_twine.cfg'
 
 def remove():
     '''
@@ -166,9 +167,10 @@ def build_package(comp = 'dif', repo_test = True):
 def upload_package(bRelease = False, ver = None):
 
     repo_name = 'pypi' if bRelease else 'testpypi'
-
+    cfg_fn = twine_cfg if bRelease else twinetest_cfg
+    
     ul_cmd = 'python -m twine upload --repository ' + \
-            repo_name + ' --config-file ' + twine_cfg + \
+            repo_name + ' --config-file ' + cfg_fn + \
             ' dist/*'+ ver + '* --verbose'
 
     if bRelease:
