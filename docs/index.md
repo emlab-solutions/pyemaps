@@ -399,7 +399,7 @@ Contact supprort@emlabsoftware.com for any questions regarding the license terms
 
 * NEW
 
-    * __Crystal Structure Factors (CSF)__ module added to __pyemaps__ package for four types crystal structure factors calculations listed above.
+    * __Crystal Structure Factors (CSF)__ module added to __pyemaps__ package for four types crystal structure factors calculations listed in [Overview](#overview).
     
     &nbsp;&nbsp;&nbsp;&nbsp; The basic usage of __CSF__ to generate and output CSF data is embedded in __Crystal__ class method:
     
@@ -407,7 +407,7 @@ Contact supprort@emlabsoftware.com for any questions regarding the license terms
         generateCSF(...)
         printCSF(...)            
     ```
-    An excerpt from the sample code run for electron absorption structure factors from _si_csf.py_ sample script run:
+    An excerpt of output from the sample code _si_csf.py_ run for electron absorption structure factors:
     
     ```
     -----Electron Absorption Structure Factor in 1/Å^2-----
