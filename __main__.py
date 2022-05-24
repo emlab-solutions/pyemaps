@@ -37,7 +37,9 @@ def copy_samples():
     
     q = str(f"Copy pyemaps samples into {pyemaps_samples_dir} in current directory? ")
     # ans = str(raw_input(q +' [y/n]: ')).lower().strip()
-    if not input(q +"[Y/n] ").lower().strip()[:1] == "y": 
+    inp = input(q +"[Y/n] ")
+
+    if inp and not inp.lower().strip()[:1] == "y":
         print("No sample code is copied!")
         sys.exit(1)
 
