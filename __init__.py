@@ -69,8 +69,16 @@ from pyemaps import __config__
 from .diffract import dif
 
 #fall through if dpgen is not found
+
 try:
     from .diffract import dpgen
+
+except ImportError as e:
+    pass
+
+#fall through if structure factor module is not found
+try:
+    from .diffract import csf
 
 except ImportError as e:
     pass
