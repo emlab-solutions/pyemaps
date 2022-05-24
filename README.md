@@ -10,7 +10,7 @@
 ## Overview [`↩`](#contents) <a id="overview"></a>
 __pyemaps__ package is a collection of python modules and libraries designed for transmission electron diffraction simulations and related crystallographic calculations. Main features include:
 
->**Crystal** : crystal data module, classes and methods loading crystal data from various sources, including diffraction patterns generation based on the crystal data and microscope and sample control parameters
+>**Crystal** : crystal data module, classes and methods loading crystal data from various sources, including diffraction patterns generation based on the crystal data and microscope and sample control parameters.
 
 >**EMC** : electrom microscope control module. Its class __EMC__ makes it easy to handle simulation control parameters.  
 
