@@ -75,7 +75,10 @@ def configuration(parent_package='',top_path=None):
     )
 
     config.add_subpackage('diffract',emaps_fsource)
-    config.add_data_files('license.txt', 'README.md', 'COPYING')
+    config.add_data_files('license.txt', 
+                          'README.md', 
+                          'COPYING'
+                          )
     config.add_data_dir('test')
     config.add_data_dir('cdata')
     config.add_data_dir('samples')
