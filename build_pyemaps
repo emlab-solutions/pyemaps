@@ -1,5 +1,7 @@
 from multiprocessing.sharedctypes import Value
 import os
+from shutil import move
+from pathlib import Path
 
 MAKE_LOOKUP = dict(
     dif = 'DIFPYF',
@@ -14,7 +16,7 @@ rel_pypi_url = "https://pypi.org"
 twine_cfg = 'pypi_twine.cfg'
 twinetest_cfg = 'testpypi_twine.cfg'
 
-def remove():
+def clean():
     '''
     remove build and dist directory in the pyemaps root directory
     '''
@@ -31,6 +33,12 @@ def remove():
     print(f"Distribution dir: {distdir}")
     if os.path.exists(distdir) and os.path.isdir(distdir):
         shutil.rmtree(distdir)
+
+
+    eggdir = Path('pyemaps.egg-info')
+    print(f"Egg info dir: {eggdir}")
+    if os.path.exists(eggdir) and os.path.isdir(eggdir):
+        shutil.rmtree(eggdir)
 
 def set_cfg(comp):
     import json, os
@@ -150,18 +158,66 @@ def get_bversion(btest = True):
 
     return new_version
 
+
+def hideEMAPSPYFiles():
+    '''
+    hack to evade setup.py to pick up some .py files from
+    emaps directory. manifest.in exclude for these files 
+    does not seem to work
+    '''
+    currdir = os.path.dirname(os.path.realpath(__file__))
+    emapsdir = os.path.join(currdir, 'emaps')
+    
+    for f in os.listdir(emapsdir):
+        fp = os.path.join(emapsdir, f)
+        if os.path.isfile(fp) and f.endswith(".py"):
+            if not f.endswith("__init__.py") and \
+                not f.endswith("setup_diffract.py"):
+                fn = Path(fp)
+                fn.with_suffix('')
+                fn_tmpext = fn.with_suffix('.emapspy')
+                move(fn, fn_tmpext)
+                print(f'hid: ', fn_tmpext)
+
+def restoreEMAPSPYFiles():
+    '''
+    hack to evade setup.py to pick up some .py files from
+    emaps directory. manifest.in exclude for these files 
+    does not seem to work
+    '''
+    
+    currdir = os.path.dirname(os.path.realpath(__file__))
+    emapsdir = os.path.join(currdir, 'emaps')
+      
+    for f in os.listdir(emapsdir):
+
+        fp = os.path.join(emapsdir, f)
+
+        if os.path.isfile(fp) and f.endswith(".emapspy"):
+            fn = Path(fp)
+            fn.with_suffix('')
+            fn_tmpext = fn.with_suffix('.py')
+            move(fn, fn_tmpext)
+            print(f'restored: ', fn_tmpext)
+
 def build_package(comp = 'dif', repo_test = True):
     '''
     Build the package
     Conponent configuration via PYEMAPS_JSON env variable
     '''
+    
+    clean()
+    make_pyf(comp)
+
     print(f"####Begin building pyemaps package for {comp}...")
 
+    hideEMAPSPYFiles()
     #  build the source distribution
     os.system('python -m build -s')
 
     #  build the wheel distribution (linrary build)
     os.system('python -m build -w')
+    restoreEMAPSPYFiles()
 
 
 def upload_package(bRelease = False, ver = None):
@@ -214,6 +270,7 @@ if __name__ == "__main__":
     parser.add_argument("-u", "--upload", action="store_true", help="upload the build or not", required=False)
     parser.add_argument("-t", "--test-repo", action="store_true", help="upload to the build to test repo test.pypi.org", required=False)
     parser.add_argument("-i", "--install", action="store_true", help="install the package from above repo", required=False)
+    parser.add_argument("-nb", "--no-build", action="store_true", help="no build", required=False)
     # parser.add_argument("-n", "--no-build", action="store_true", help="No build", required=False)
     
     args = parser.parse_args()
@@ -222,13 +279,11 @@ if __name__ == "__main__":
     if not comp:
         # defaults to dif pyeamps module
         comp = 'dif'
-    
-    make_pyf(comp)
 
     ver = get_bversion(btest = args.test_repo)
 
-    remove()
-    build_package(comp)
+    if not args.no_build:
+        build_package(comp)
 
     if not args.upload:
         exit(0)
