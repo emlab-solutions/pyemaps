@@ -1,4 +1,3 @@
 exclude emaps/*.f95
-
-global‐exclude *.py[cod] __pycache__ setup.py setup_diffract.py
-
+prune __pycache__ 
+prune emaps/__pycache__
