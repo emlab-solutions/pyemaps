@@ -14,7 +14,9 @@ __pyemaps__ package is a collection of python modules and libraries designed for
 >    * X-Ray Structure Factors
 >    * Electron Structure Factor in kV (kilo volts)
 >    * Electron Structure Factor in 1/&#8491;^2
->    * Electron Absorption Structure Factor in 1/&#8491;^2
+>    * Electron Absorption Structure Factor in 1/&#8491;^
+
+>    Electron powder diffraction is now added in __pyemaps__. This new module also includes powder diffraction with absorption. See sample code and latest [release notes](https://emlab-solutions.github.io/pyemaps/#release-notes) for details.  
 
 >**EMC** : electrom microscope control module. Its class __EMC__ makes it easy to handle simulation control parameters.  
 
@@ -326,7 +328,9 @@ Other sample scripts designed for you to explore pyemaps are available in sample
 
 * __pyplot_dm_si_diff.py__: DM python script which generate and plot diffraction pattern for silicon crystal using _matplotlib pyplot_ module. The rendering of diffracttion patterns are in black for normal mode and CBED in color.
 
-* __si_csf.py__: structure factors generation and output by __CSF__ pyemaps module. 
+* __si_csf.py__: _structure factors_ generation and output by __CSF__ pyemaps module. 
+
+* __powder.py__: _electron powder diffraction_ generation and intensity plot by __POWDER__ pyemaps module. 
 
 More samples code will be added as more features and releases are available. 
 

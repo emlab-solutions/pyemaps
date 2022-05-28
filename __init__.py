@@ -83,6 +83,13 @@ try:
 except ImportError as e:
     pass
 
+#fall through if powder module is not found
+try:
+    from .diffract import powder
+
+except ImportError as e:
+    pass
+
 #Wrappers class around diffraction extensions
 
 from .crystals import Crystal
