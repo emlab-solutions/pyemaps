@@ -378,6 +378,29 @@ def add_powder(target):
      The first 1000 is the scattering angle 2theta and the second 
      the intensity    
 '''
+    
+    def plotPowder(self, pw):
+        """
+        plot one powder diffraction
+        """
+        import matplotlib.pyplot as plt
+
+        xdim, _ = np.shape(pw)
+        if xdim !=2:
+            raise ValueError("Failed to plot: data error")
+        
+        fig, ax = plt.subplots()
+        fig.canvas.set_window_title('PYEMAPS')    
+        fig.suptitle("Electron Powder Diffraction", fontsize=14, fontweight='bold')
+
+        ax.set_title(self.name)
+        
+        ax.set_ylabel('Intensity')
+        ax.set_xlabel('Scattering Angle 2\u03F4 (Rad)')
+        ax.plot(pw[0], pw[1], 'b')
+
+        plt.show()
+
     def generatePowder(self, 
             kv = 100, 
             t2max = 0.05, 
@@ -428,6 +451,7 @@ def add_powder(target):
         return rawP
     
     target.generatePowder = generatePowder
+    target.plotPowder = plotPowder
 
     return target
 
