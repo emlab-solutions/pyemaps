@@ -46,18 +46,21 @@ def plot2Powder(pw1, pw2):
     ax2.set_xlabel('Scattering Angle 2\u03F4 (Rad)')
 
     fig.suptitle("Electron Powder Diffraction", fontsize=14, fontweight='bold')
+    plt.subplots_adjust(hspace = 0.4)
 
     plt.show()
 
 def runPowderTests():
-    from crystals import Crystal as cr
+    from pyemaps import Crystal as cryst
     import time
 
-    si = cr.from_builtin('Silicon')
+    si = cryst.from_builtin('Silicon')
     print(si)
     psi = si.generatePowder() 
 
-    di = cr.from_builtin('Diamond')
+    # si.plotPowder(psi)
+    di = cryst.from_builtin('Diamond')
+    print(di)
     pdi = di.generatePowder(absp = 1)
 
     plot2Powder(psi, pdi)
