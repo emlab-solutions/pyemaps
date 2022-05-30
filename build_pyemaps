@@ -123,8 +123,6 @@ def get_bversion(btest = True):
 
     rels = jresp['releases']
 
-    rels.update({"0.6.3": []}) #adding deleted releases back
-    # print(f"PYpi release api data: {rels}")
     # get the current release
     max_ver = '0.0.1'
     for k in rels.keys():
