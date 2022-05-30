@@ -258,17 +258,11 @@ def add_csf(target):
             print(f" ")
 
 
-        # sds = "D-Spacing"
         sap1 = sf_ap_flag[aptype][0]
         sap2 = sf_ap_flag[aptype][1]
         
-        # print(f"{mi:<15}{ssw:<30}{'(D-Spacing)':<16}")
         print(f"{'h':^4}{'k':^4}{'l':^5}{'s-w':^16}{'d-s':^16}{sap1:^16}{sap2:^16}\n")
         
-        # empty_mi = ' '*15
-        # ssmax = str(f'< {smax}')
-        # print(f"{empty_mi:<15}{ssmax:<25}\n")
-
         nb = len(sfs)
         for i in range(0, nb, 1):
             h,k,l = sfs[i]['hkl']
