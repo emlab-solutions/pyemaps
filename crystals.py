@@ -241,6 +241,7 @@ def add_csf(target):
 
         subj = sf_type_lookup[sftype-1]
         print(f"-----{subj}----- ")
+        print(f"     crystal\t\t: {self.name}")
 
         # print(f"     by EMLab Solutions, Inc.     \n")
 
@@ -254,7 +255,7 @@ def add_csf(target):
         if sftype > 1:
             print(f"     high voltage\t: {kv} kV\n")
         else:
-            print(f"\n")
+            print(f" ")
 
 
         # sds = "D-Spacing"
