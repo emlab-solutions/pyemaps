@@ -8,6 +8,7 @@ MAKE_LOOKUP = dict(
     bloch = 'BLOCHPYF',
     dpgen = 'CDPOBJ DPGENPYF',
     csf = 'CSFPYF',
+    powder = 'POWDERPYF',
     all = 'CDPOBJ ALLPYF'
 )
 
@@ -121,6 +122,7 @@ def get_bversion(btest = True):
         raise SystemExit(e)
 
     rels = jresp['releases']
+
     # get the current release
     max_ver = '0.0.1'
     for k in rels.keys():
@@ -281,7 +283,7 @@ if __name__ == "__main__":
         comp = 'dif'
 
     ver = get_bversion(btest = args.test_repo)
-
+    
     if not args.no_build:
         build_package(comp)
 

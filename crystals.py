@@ -190,37 +190,39 @@ def add_dpgen(target):
 
     return target
 
+
 def add_csf(target):
-    ######INPUT#######
-    # -------------kv-----------------------
-    #   Accelaration Voltage in Kilo-Volts
-    # --------------------------------------
-    # -------------smax---------------------
-    #   Limit of Sin(theta)/Wave length
-    # --------------------------------------
-    # -------------sftype-------------------
-    #   Structure Factors Type:
-    #   1 - x-ray structure factor (default)
-    #   2 - electron structure factor in volts (KV)
-    #   3 - electron structure factor in 1/angstrom^2 in (KV)
-    #   4 - electron absorption structure factor in 1/angstrom^2 (KV)
-    # --------------------------------------
-    # -------------aptype-------------------
-    #   Structure Factor in (Amplitude, Phase) or (Real, Imaginary):
-    #   0 - in (Real, Imaginary) 
-    #   1 - in (Amplitude, Phase) (default)
-    # --------------------------------------
+    '''
+    #####INPUT#######
+    -------------kv-----------------------
+      Accelaration Voltage in Kilo-Volts
+    --------------------------------------
+    -------------smax---------------------
+      Limit of Sin(theta)/Wave length
+    --------------------------------------
+    -------------sftype-------------------
+      Structure Factors Type:
+      1 - x-ray structure factor (default)
+      2 - electron structure factor in volts (KV)
+      3 - electron structure factor in 1/angstrom^2 in (KV)
+      4 - electron absorption structure factor in 1/angstrom^2 (KV)
+    --------------------------------------
+    -------------aptype-------------------
+      Structure Factor in (Amplitude, Phase) or (Real, Imaginary):
+      0 - in (Real, Imaginary) 
+      1 - in (Amplitude, Phase) (default)
+    --------------------------------------
 
-    #####OUTPUT########
-    # The function returns an array of structure factors
-    # Each item in the output array [sfs] is of a dictionary type
-    # for each element:
-    #   hkl: (h,k,l)    - Miller Indices 
-    #   sw: s           - Sin(theta)/Wave length
-    #   ds: d           - d-spacing
-    #   amp_re          - Structure factor amplitude or rela part
-    #   phase_im        - Structure factor phase or imaginary part
-
+    ####OUTPUT########
+    The function returns an array of structure factors
+    Each item in the output array [sfs] is of a dictionary type
+    for each element:
+      hkl: (h,k,l)    - Miller Indices 
+      sw: s           - Sin(theta)/Wave length
+      ds: d           - d-spacing
+      amp_re          - Structure factor amplitude or rela part
+      phase_im        - Structure factor phase or imaginary part
+'''
     sf_type_lookup = ['X-ray Structure Factors',
                   'Electron Strcture Factors in kV',
                   'Electron Structure Factor in 1/\u212B',
@@ -239,7 +241,6 @@ def add_csf(target):
 
         subj = sf_type_lookup[sftype-1]
         print(f"-----{subj}----- ")
-        
         print(f"     crystal\t\t: {self.name}")
 
         # print(f"     by EMLab Solutions, Inc.     \n")
@@ -256,15 +257,12 @@ def add_csf(target):
         else:
             print(f" ")
 
-        # sds = "D-Spacing"
+
         sap1 = sf_ap_flag[aptype][0]
         sap2 = sf_ap_flag[aptype][1]
-        print(f"     SF output format\t: ({sap1}, {sap2})\n")
-       
-        # print(f"{mi:<15}{ssw:<30}{'(D-Spacing)':<16}")
+        
         print(f"{'h':^4}{'k':^4}{'l':^5}{'s-w':^16}{'d-s':^16}{sap1:^16}{sap2:^16}\n")
-
-
+        
         nb = len(sfs)
         for i in range(0, nb, 1):
             h,k,l = sfs[i]['hkl']
@@ -344,6 +342,115 @@ def add_csf(target):
 
     return target
 
+def add_powder(target):
+    '''
+    #####INPUT#######
+    -------------kv-----------------------
+      Accelaration Voltage in Kilo-Volts
+    --------------------------------------
+    -------------t2max---------------------
+      Limit of Sin(theta)/lamda
+    --------------------------------------
+    -------------smax---------------------
+      Limit of Sin(theta)/Wavelength
+    --------------------------------------
+    -------------eta, gamma---------------
+     Eta - the mixing coefficient between gaussian and lorentzian
+     Gamma - is the fwhm
+    --------------------------------------
+    -------------absp---------------------
+      Absoption structure factor or not 
+     values - 0, or 1 (default 0)
+    --------------------------------------
+    -------------isbgdon---------------------
+     Background on or not (default no background)
+    --------------------------------------
+
+    ####OUTPUT########
+     The function returns an array of 2 x 1000 containing 
+     the powder diffraction for the loaded crystal
+     
+     The first 1000 is the scattering angle 2theta and the second 
+     the intensity    
+'''
+    
+    def plotPowder(self, pw):
+        """
+        plot one powder diffraction
+        """
+        import matplotlib.pyplot as plt
+
+        xdim, _ = np.shape(pw)
+        if xdim !=2:
+            raise ValueError("Failed to plot: data error")
+        
+        fig, ax = plt.subplots()
+        fig.canvas.set_window_title('PYEMAPS')    
+        fig.suptitle("Electron Powder Diffraction", fontsize=14, fontweight='bold')
+
+        ax.set_title(self.name)
+        
+        ax.set_ylabel('Intensity')
+        ax.set_xlabel('Scattering Angle 2\u03F4 (Rad)')
+        ax.plot(pw[0], pw[1], 'b')
+
+        plt.show()
+
+    def generatePowder(self, 
+            kv = 100, 
+            t2max = 0.05, 
+            smax = 1.0, 
+            eta = 1.0, 
+            gamma = 0.001, 
+            absp = 0, 
+            bg = False,
+            bamp = 0.35, 
+            bgamma = 0.001, 
+            bmfact = 0.02):
+        try:
+            from pyemaps import dif
+
+        except ImportError as e:               
+            print(f"Error: required module pyemaps.dif not found")
+            return []
+
+        try:
+            from pyemaps import powder
+
+        except ImportError as e:               
+            print(f"Error: required module pyemaps.powder not found")
+            return []
+        
+        cell, atoms, atn, spg, dw = self._get_params()
+
+        dif.initcontrols()
+        
+        dif.loadcrystal(cell, atoms, atn, spg, ndw=dw)
+
+        # dif.crystal_printall()
+
+        rawP = farray(np.zeros((2,1000), dtype=np.double))
+       
+        ret = powder.generate_powder(rawP, kv=kv, t2max=t2max, 
+                smax = smax, eta=eta, gamma=gamma, isab = absp, 
+                isbgdon = bg, bamp = bamp, bgamma = bgamma, 
+                bmfact = bmfact)
+
+        if ret != 0:
+            print(f'Error generating powder data for {self.name}')
+
+        #release the memory
+        dif.diff_internaldelete(0)
+        dif.diff_delete()
+
+        return rawP
+    
+    target.generatePowder = generatePowder
+    target.plotPowder = plotPowder
+
+    return target
+
+@add_powder
 @add_csf        
 @add_dpgen      
 class Crystal:
