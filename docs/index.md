@@ -453,7 +453,7 @@ See sample code _si_csf.py_ for detailed guide on using these methods.
                   smax = 1.0,               <= Scattering Angle θ/ Wavelength Limit
                   eta = 1.0,                <= Mixing Coefficient Between Gaussian And Lorentzian
                   gamma = 0.001...)         <= Gamma Is the Fwhm
-    plotPowder(PW)                          <= PWD: Output powder Data from generatePowder()         
+    plotPowder(PW)                          <= PW: Output powder Data from generatePowder()         
 ```
 The first methods takes user input of high votage and scattering angle 2ϴ, along with many others to generate the electron powder diffraction in intensity array. __plotPowder__ plots single powder diffraction, while _powder.py_ sample code included in the package also demonstates the electron pwoder diffarction of two crystals: Silicon and Diamond. The latter is with absorption. See sample code _powder.py__ for details on using these mothods.
 
