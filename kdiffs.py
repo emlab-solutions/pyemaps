@@ -24,7 +24,10 @@ Author:     EMLab Solutions, Inc.
 Date:       May 07, 2022    
 '''
 
-from .emcontrols import EMControl as EMC
+# from .emcontrols import EMControl as EMC
+from . import EMC
+from . import DPError, PointError, LineError, PIndexError, \
+              DiskError, DPListError
 
 # precision digits for comparison purposes
 NDIGITS = 1
@@ -37,181 +40,316 @@ def double_eq(a,b):
     return abs(a-b) <= DIFF_PRECISION
 
 class Point:
-    def __init__(self, x0=0.0, y0=0.0):
-        self.x=float(x0)
-        self.y=float(y0)
+    def __init__(self, p=(0.0, 0.0)):
 
+        setattr(self, 'x', p[0])
+        setattr(self, 'y', p[1])
+
+    @property
+    def x(self):
+        return self._x
+    
+    @property
+    def y(self):
+        return self._y
+
+    @x.setter
+    def x(self, v):
+        
+        try:
+            self._x=float(v)
+        except ValueError as e:
+            raise PointError("Point component must be floating point nuberic type")
+
+    @y.setter
+    def y(self, v):
+        
+        try:
+            self._y=float(v)
+        except ValueError as e:
+            raise PointError("Point component must be floating point nuberic type")
+    
     def __lt__(self, other):
         if isinstance(other, Point):
-            if self.x != other.x:
-                return self.x < other.x
-            if self.y != other.y:
-                return self.y < other.y
+            x1 = self._x
+            x2 = other.x
+
+            if x1 != x2:
+                return x1 < x2
+
+            y1 = self._y
+            y2 = other.y
+
+            if y1 != y2:
+                return y1 < y2
+
             return False
 
-        return NotImplemented
+        raise PointError("comparison must be of Point objects")
 
     def __iadd__(self, other):
         if isinstance(other, Point):
-            self.x += other.x
-            self.y += other.y
+            self._x += other.x
+            self._y += other.y
             return self
 
-        return NotImplemented
+        raise PointError("addition of different type other than Point type not supported")
     
     def __key__(self):
-        return (self.x, self.y)
+        return (self._x, self._y)
     
     def __hash__(self):
         return hash(self.__key__())
     
     def __eq__(self, other):
         if isinstance(other, Point):
-            return double_eq(self.x, other.x) and \
-                   double_eq(self.y, other.y)
-             
-        return NotImplemented
+            return double_eq(self._x, other.x) and \
+                   double_eq(self._y, other.y)
+
+        raise PointError("comparison must be of Point objects")
 
     def __repr__(self):
-        return str("({}, {})".format(self.x, self.y))
+        return str("({}, {})".format(self._x, self._y))
 
     def __iter__(self):
-        return iter((self.x, self.y))
+        return iter((self._x, self._y))
 
 class Line:
-    def __init__(self, pt1, pt2, type=1):
-        #type 1 - kline; 2 - hline
-        if isinstance(pt1, Point) and isinstance(pt2, Point):
-            self.pt1 = pt1
-            self.pt2 = pt2
-            self.type = type          
+    def __init__(self, pt1 = Point(), pt2=Point(), type=1):
+        
+        setattr(self, 'pt1', pt1)  
+        setattr(self, 'pt2', pt2)    
+        setattr(self, 'type', type)
+
+    @property
+    def pt1(self):
+        return self._pt1
+
+    @property
+    def pt2(self):
+        return self._pt2
+    
+    @property
+    def type(self):
+        return self._type
+
+    @pt1.setter
+    def pt1(self, pv):
+        if not isinstance(pv, Point):
+            raise LineError("end points must be of Point type")
+
+        self._pt1 = pv
+
+    @pt2.setter
+    def pt2(self, pv):
+        if not isinstance(pv, Point):
+            raise LineError("end points must be of Point type")
+
+        self._pt2 = pv  
+
+    @type.setter
+    def type(self, ty):
+        if not isinstance(ty, int):
+            raise LineError("type must be integer")
+
+        self._type = ty
 
     def __lt__(self, other):
+
         if isinstance(other, Line):
-            if self.type == other.type:
-                if not (self.pt1 == other.pt1):
-                    return self.pt1 < other.pt1
-
-                if not (self.pt2 == other.pt2):
-                    return self.pt2 < other.pt2
-
+            if self._type == other.type:
                 return False
+
+            pt1 = self._pt1
+            pt2 = other.pt1
+            if not (pt1 == pt2):
+                return pt1 < pt2
+
+            pt1 = self._pt2
+            pt2 = other.pt2
+            if not (pt1 == pt2):
+                return pt1 < pt2
+
             return False
         
-        return NotImplemented
+        raise LineError("comparison must be between Line objects")
     
     def __key__(self):
-        return (self.pt1, self.pt2)
+        return (self._pt1, self._pt2)
     
     def __hash__(self):
         return hash(self.__key__())
     
     def __iadd__(self, other):
         '''
-        This operator override is for shifting the line when
+        This operator override is for shifting the line by fixed amount when
         other line object has the same pt1 and ot2
         '''
         if isinstance(other, Point):
-            self.pt1 += other
-            self.pt2 += other
+            self._pt1 += other
+            self._pt2 += other
             return self
         
-        return NotImplemented
+        raise LineError("addition of different type not supported")
     
     def __eq__(self, other):
         if isinstance(other, Line):
-            if self.type != other.type:
+            if self._type != other.type:
                 return False
 
-            if (self.pt1 == other.pt1) and \
-                (self.pt2 == other.pt2):
+            if (self._pt1 == other.pt1) and \
+                (self._pt2 == other.pt2):
                 return True
 
-            if (self.pt1 == other.pt2) and \
-                (self.pt2 == other.pt1):
+            if (self._pt1 == other.pt2) and \
+                (self._pt2 == other.pt1):
                 return True
             
-            return False                        
-
-        return NotImplemented
+            return False  
+        
+        raise LineError(":ine object can't be equal to object of different type")
 
     def __repr__(self):
-        return str("[{}, {}]".format(self.pt1.__repr__(), self.pt2.__repr__()))
+        return str("[{}, {}]".format(self._pt1.__repr__(), self._pt2.__repr__()))
 
     def __iter__(self):
-        x1, y1 = self.pt1
-        x2, y2 = self.pt2
+        x1, y1 = self._pt1
+        x2, y2 = self._pt2
         return iter((x1,y1,x2,y2))
 
 class Index:
-    def __init__(self, I1=0, I2=0, I3=0):
-        self.I1=I1
-        self.I2=I2
-        self.I3=I3
+    def __init__(self, I0=(0,0,0)):
+
+        setattr(self, 'I1', I0[0])
+        setattr(self, 'I2', I0[1])
+        setattr(self, 'I3', I0[2])
+
+    @property
+    def I1(self):
+        return self._I1
+
+    @property
+    def I2(self):
+        return self._I2
+
+    @property
+    def I3(self):
+        return self._I3
         
+    @I1.setter
+    def I1(self, iv):
+        if not isinstance(iv, int):
+            raise PIndexError('index must be integer')
+
+        self._I1 = iv
+        
+    @I2.setter
+    def I2(self, iv):
+        if not isinstance(iv, int):
+            raise PIndexError('index must be integer')
+
+        self._I2 = iv
+        
+    @I3.setter
+    def I3(self, iv):
+        if not isinstance(iv, int):
+            raise PIndexError('index must be integer')
+
+        self._I3 = iv
+
     def __lt__(self, other):
         if isinstance(other, Index):
-            if self.I1 != other.I1:
-                return self.I1 < other.I1
+            ii1 = self._I1
+            ii2 = other.I1
+            if ii1 != ii2:
+                return ii1 < ii2
             
-            if self.I2 != other.I2:
-                return self.I2 < other.I2
+            ii1 = self._I2
+            ii2 = other.I2
+            if ii1 != ii2:
+                return ii1 < ii2
 
-            if self.I3 != other.I3:
-                return self.I3 < other.I3
-
+            ii1 = self._I3
+            ii2 = other.I3
+            if ii1 != ii2:
+                return ii1 < ii2
             return False
 
-        return NotImplemented
+        raise PIndexError('cannot compare with non-Index type')
     
     def __key__(self):
-        return (self.I1, self.I2, self.I3)
+        return (self._I1, self._I2, self._I3)
     
     def __hash__(self):
         return hash(self.__key__())
     
     def __str__(self):
-        return str("{} {} {}".format(self.I1, self.I2, self.I3))
+        return str("{} {} {}".format(self._I1, self._I2, self._I3))
 
     def __repr__(self):
-        return str("({}, {}, {})".format(self.I1, self.I2, self.I3))
+        return str("({}, {}, {})".format(self._I1, self._I2, self._I3))
     
     def __eq__(self, other):
         if isinstance(other, Index):
             return self.__key__() == other.__key__()
 
-        return NotImplemented
+        raise PIndexError('cannot compare with non-Index type')
     
     def __iter__(self):
-        return iter((self.I1, self.I2, self.I3))
+        return iter((self._I1, self._I2, self._I3))
 
 class Disk:
-    def __init__(self, c, r, i):
-        if isinstance(c, Point):
-            self.c = Point(c.x, c.y)
-        else:
-            return NotImplemented
+    def __init__(self, c=Point(), r=0.0, i=Index()):
 
-        if isinstance(r, float):
-            self.r = r
-        else:
-            return NotImplemented
+        setattr(self, 'c', c)
+        setattr(self, 'r', r)
+        setattr(self, 'idx', i)
 
-        if isinstance(i, Index):
-            self.idx = Index(i.I1, i.I2, i.I3)
-        else:
-            return NotImplemented
+    @property 
+    def c(self):
+        return self._c
+    
+    @property
+    def r(self):
+        return self._r
+    
+    @property
+    def idx(self):
+        return self._idx
 
+    @c.setter
+    def c(self, cv):
+        
+        if not isinstance(cv, Point):
+            raise DiskError('disk center must be of Point type')
+        
+        self._c = cv
+
+    @r.setter
+    def r(self, rv):
+        
+        if not isinstance(rv, float):
+            raise DiskError('disk radius must be of float type')
+        
+        self._r = rv
+
+    @idx.setter
+    def idx(self, iv):
+        
+        if not isinstance(iv, Index):
+            raise DiskError('disk index must be of Index type')
+        
+        self._idx = iv
+        
     def __eq__(self, other):
         if not isinstance(other, Disk):
-            print("Error: compared object is not a disk object!")
-            return NotImplemented
+            raise DiskError('disk object cannot equal to non disk object')
         
-        if not (self.idx == other.idx) or self.r != other.r:
+        if not (self._idx == other.idx) or self._r != other.r:
             # print(f"Error: comarison failed: index not matching: {self.idx}, {other.idx}")
             return False
 
-        if not (self.c == other.c):
+        if not (self._c == other.c):
             return False
 
         return True
@@ -222,15 +360,15 @@ class Disk:
         other line object has the same pt1 and ot2
         '''
         if isinstance(other, Point):
-            self.c += other
+            self._c += other
             return self
         
-        return NotImplemented
+        raise DiskError('addition cannot be done with non-Disk type')
     
     def __key__(self):
-        center = self.c
-        r = self.r
-        indx = self.idx
+        center = self._c
+        r = self._r
+        indx = self._idx
         return (indx.I1, indx.I2, indx.I3, center.x, center.y, r)
 
     def __hash__(self):
@@ -238,83 +376,245 @@ class Disk:
 
     def __repr__(self):
           
-        return "index: " + repr(self.idx) + " " + \
-               "center: " + repr(self.c) + " " + \
-               str("radius: {}".format(self.r))
+        return "index: " + repr(self._idx) + " " + \
+               "center: " + repr(self._c) + " " + \
+               str("radius: {}".format(self._r))
 
     def __lt__(self, other):
         if not isinstance(other, Disk):
-            return NotImplemented
+            raise DiskError('comparison cannot be done with non-Disk type')
 
-        if not (self.idx == other.idx):
-           return self.idx < other.idx
+        if not (self._idx == other.idx):
+           return self._idx < other.idx
 
-        if not (self.c == other.c):
-           return self.c < other.c
+        if not (self._c == other.c):
+           return self._c < other.c
 
-        if self.r != other.r:
-            return self.r < other.r 
+        if self._r != other.r:
+            return self._r < other.r 
 
         return False
 
     def __iter__(self):
-        cx, cy = self.c
-        i1, i2, i3 = self.idx
-        return iter((cx, cy, self.r, i1, i2, i3))
+        cx, cy = self._c
+        i1, i2, i3 = self._idx
+        return iter((cx, cy, self._r, i1, i2, i3))
 
 class diffPattern:
+    # TODO 6/24
     def __init__(self, diff_dict):
-        self.name = diff_dict["name"]
-        self.nklines = diff_dict["nums"]["nklines"]
-        self.ndisks = diff_dict["nums"]["ndisks"]
-        self.nhlines = diff_dict["nums"]["nhlines"]
-        self.shift = Point(diff_dict['bounds'][0], diff_dict['bounds'][1])
+        # validation first
+        if not diff_dict or not isinstance(diff_dict, dict):
+            raise DPError("failed to construct diffraction pattern object")
+
+        # print(f'Input data for DP class: {diff_dict}')
+        if 'nums' not in diff_dict or \
+           'name' not in diff_dict or \
+           'klines' not in diff_dict or \
+           'hlines' not in diff_dict or \
+           'disks' not in diff_dict:
+            raise DPError("Invalid diffraction data")
+
+        ndiffs = diff_dict['nums']
+        if not isinstance(ndiffs, dict) or \
+           'nklines' not in ndiffs or \
+           'nhlines' not in ndiffs or \
+           'ndisks' not in ndiffs:
+            raise DPError("Invaild diffraction data")
+
+        if 'bounds' not in diff_dict:
+            setattr(self, 'shift', [0.0,0.0])
+        else:
+        # set the shifts first
+            setattr(self, 'shift', diff_dict['bounds'])
+
+
+        for k, v in diff_dict.items():
+            if k != 'nums' and k != 'bounds':
+                setattr(self, k, v)
+
+            elif k == 'nums':
+                
+                for k1, v1 in v.items():
+                    setattr(self, k1, v1)
+
+    @property
+    def klines(self):
+        ''' Kikuchi lines array '''
+        return self._klines
+
+    @property
+    def hlines(self):
+        ''' Holz lines array '''
+        return self._hlines
+
+    @property
+    def disks(self):
+        ''' Disks array '''
+        return self._disks
+
+    @property
+    def nklines(self):
+        ''' Number of Kikuchi lines '''
+        return self._nklines
+
+    @property
+    def nhlines(self):
+        ''' Number of HOLZ lines '''
+        return self._nhlines
+
+    @property
+    def ndisks(self):
+        ''' Number of Disks '''
+        return self._ndisks
+
+    @property
+    def shift(self):
+        ''' Shifts of the diffraction pattern '''
+        return self._shift
+
+    @property
+    def name(self):
+        ''' Crystal name '''
+        return self._name
+
+    @klines.setter
+    def klines(self, kls):
         
-        self.klines = []
-        for kline in diff_dict["klines"]:
-            pt1 = Point(kline[0][0], kline[0][1])
-            pt2 = Point(kline[1][0], kline[1][1])
-            pt1 += self.shift
-            pt2 += self.shift
+        if not hasattr(kls, "__len__"):
+            raise DPError("klines must be an array of Point objects")
+        
+        self._klines = []
+        for k in kls:
+            if not hasattr(k, "__len__") or len(k) != 2:
+                raise DPError("klines must be an array of two tuples")
+
+            if not isinstance(k[0], tuple) or len(k[0]) != 2:
+                raise DPError("klines end points must be a tuple of floating points")
             
-            self.klines.append(Line(pt1,pt2))
-        self.klines = sorted(self.klines)
+            if not isinstance(k[1], tuple) or len(k[1]) != 2:
+                raise DPError('klines end points must be a tuple of floating points')
 
-        self.disks = []
+            pt1 = Point(k[0])
+            pt2 = Point(k[1])
 
-        for disk in diff_dict["disks"]:
-            ctr = Point(disk["c"][0], disk["c"][1])
-            indx = Index(disk["idx"][0], disk["idx"][1], disk["idx"][2])
+            pt1 += self._shift
+            pt2 += self._shift
 
-            ctr += self.shift
+            ln = Line(pt1, pt2)
 
-            self.disks.append(Disk(ctr, disk["r"], indx))
-        self.disks = sorted(self.disks)
+            self._klines.append(ln)
+
+    @hlines.setter
+    def hlines(self, hls):
         
-        self.hlines = []
-        for hline in diff_dict["hlines"]:
-            pt1 = Point(hline[0][0], hline[0][1])
-            pt2 = Point(hline[1][0], hline[1][1])
-            pt1 += self.shift
-            pt2 += self.shift
-            self.hlines.append(Line(pt1,pt2, 2))
-        self.hlines = sorted(self.hlines)
+        if not hasattr(hls, "__len__"):
+            raise DPError("hlines must be an array of Point objects")
+        
+        self._hlines = []
+        for h in hls:
+            if not hasattr(h, "__len__") or len(h) != 2:
+                raise DPError("hlines must be an array of two Point objects")
+
+            if not isinstance(h[0], tuple) or len(h[0]) != 2:
+                raise DPError("hlines end points must be a tuple of floating points")
+            
+            if not isinstance(h[1], tuple) or len(h[1]) != 2:
+                raise DPError("hlines end points must be a tuple of floating points")
+
+            pt1 = Point(h[0])
+            pt2 = Point(h[1])
+            pt1 += self._shift
+            pt2 += self._shift
+
+            ln = Line(pt1, pt2)
+
+            self._hlines.append(ln)
+
+    @disks.setter
+    def disks(self, dks):
+        
+        if not hasattr(dks, "__len__"):
+            raise DPError("disks must be an array of Disk objects")
+        
+        self._disks =[]
+        for d in dks:
+            if not "c" in d or len(d['c']) != 2:
+                raise DPError("disks must have a center of Point type")
+            
+            if not "r" in d or not isinstance(d['r'], float):
+                raise DPError("disks must have a radius")
+
+            if not "idx" in d or len(d['idx']) != 3 or \
+                list(map(type, d['idx'])) != [int, int, int]:
+                raise DPError("disks must be an index of three integers")
+
+            ctr = Point(d['c'])
+            ctr += self._shift
+            
+            r = d['r']
+            indx = Index(d['idx'])
+            dk = Disk(ctr, r, indx)
+
+            self._disks.append(dk)
+
+    @name.setter
+    def name(self, name):
+        
+        if not isinstance(name, str):
+            raise DPError("name must be of string type")
+
+        self._name = name
+
+    @shift.setter
+    def shift(self, sft):
+        
+        if isinstance(sft, tuple) and \
+            list(map(type, sft)) != [float, float]:
+            raise DPError("diffraction pattern shift must be a tuple of two floats")
+
+        self._shift = Point(sft)
+
+    @nklines.setter
+    def nklines(self, nk):
+        
+        if not isinstance(nk, int):
+            raise DPError("input must be integer")
+
+        self._nklines = nk
+
+    @nhlines.setter
+    def nhlines(self, nh):
+        
+        if not isinstance(nh, int):
+            raise DPError("input must be integer")
+            
+        self._nhlines = nh
+
+    @ndisks.setter
+    def ndisks(self, nd):
+        
+        if not isinstance(nd, int):
+            raise DPError("input must be integer")
+            
+        self._ndisks = nd
 
     def __eq__(self, other):
+
         if not isinstance(other, diffPattern):
-            return NotImplemented
+            raise DPError("DP object does not compare with objects of rother types")
         
-        if self.name != other.name:
+        if self._name != other.name:
             return False
 
-        if self.nklines != other.nklines or \
-            self.ndisks != other.ndisks or \
-            self.nhlines != other.nhlines:
+        if self._nklines != other.nklines or \
+            self._ndisks != other.ndisks or \
+            self._nhlines != other.nhlines:
             return False
 
-        if len(self.klines) != len(other.klines) or \
-            len(self.disks) != len(other.disks) or \
-            len(self.hlines) != len(other.hlines):
+        if len(self._klines) != len(other.klines) or \
+            len(self._disks) != len(other.disks) or \
+            len(self._hlines) != len(other.hlines):
             return False
 
         dk, dh, dd = self.difference(other)
@@ -330,13 +630,15 @@ class diffPattern:
     def __contains__(self, lc):
 
         if (not isinstance(lc, Line)) and (not isinstance(lc, Disk)):
-            return NotImplemented
+            raise DPError("DP object does not contain other types other than defined lines, disks")
         
         dlist = []
         if isinstance(lc, Line) and lc.type == 1:
             dlist = self.klines
+
         elif isinstance(lc, Line) and lc.type == 2:
             dlist = self.hlines
+
         else:
             dlist = self.disks
 
@@ -347,14 +649,15 @@ class diffPattern:
         return False
 
     def __str__(self):
-        sDiff=[]
-        for i, k in enumerate(self.klines):
+
+        sDiff=[str(f'# of klines: {self._nklines}')]
+        for i, k in enumerate(self._klines):
             sDiff.append(str("kline# {}:".format(i+1)).ljust(10) + repr(k))
 
-        for i, d in enumerate(self.disks):
+        for i, d in enumerate(self._disks):
             sDiff.append(str("disk# {}:".format(i+1)).ljust(10) + repr(d))
         
-        for i, h in enumerate(self.hlines):
+        for i, h in enumerate(self._hlines):
             sDiff.append(str("hline# {}:".format(i+1)).ljust(10) + repr(h))
         
         return "\n".join(sDiff)
@@ -362,20 +665,20 @@ class diffPattern:
     def difference(self, other):
         # A - B (self - other)
         if not isinstance(other, diffPattern):
-            return NotImplemented
+            raise DPError("DP object does not compare with objects of DP types")
         
         kdiff = []
-        for sk in self.klines:
+        for sk in self._klines:
             if not (sk in other):
                 kdiff.append(sk)
 
         hdiff = []
-        for sh in self.hlines:
+        for sh in self._hlines:
             if not (sh in other):
                 hdiff.append(sh)
 
         ddiff = []
-        for d in self.disks:
+        for d in self._disks:
             if not (d in other):
                 ddiff.append(d)
         
@@ -387,16 +690,16 @@ class diffPattern:
         import matplotlib.transforms as mtransforms
         
         fig, ax = plt.subplots()
-        fig.canvas.set_window_title('Kinematical Diffraction')
+        fig.canvas.set_window_title('PYEMAPS - Kinematical Diffraction')
 
         ax.set_title(f"{self.name}")
         ax.set_aspect('equal')
-        for kl in self.klines:
+        for kl in self._klines:
             xx = [kl.pt1.x, kl.pt2.x]
             yy = [kl.pt1.y, kl.pt2.y]
             ax.plot(xx, yy, 'k', alpha=0.2)
 
-        for hl in self.hlines:
+        for hl in self._hlines:
             xx = [hl.pt1.x, hl.pt2.x]
             yy = [hl.pt1.y, hl.pt2.y]
             ax.plot(xx, yy, 'k', alpha=0.2)
@@ -404,13 +707,13 @@ class diffPattern:
         if not ctrl:
             ctrl = EMC()
 
-        for d in self.disks:
+        for d in self._disks:
             centre = (d.c.x, d.c.y)
-            # idx = '' + str(d.idx)
+            
             bFill = True if mode == 1 else False
             dis = patches.Circle(centre, d.r, fill=bFill, linewidth = 0.5, alpha=1.0, fc='blue')
             ax.add_patch(dis)
-            # ax.annotate(idx,centre,)
+            
             yoffset = 0.0 if mode == 2 else d.r/2
             trans_offset = mtransforms.offset_copy(ax.transData, fig=fig,
                                        x=0.0, y=yoffset, units='points')
@@ -423,7 +726,7 @@ class diffPattern:
                     transform=trans_offset)
     
         controls_text = []
-        # controls_text.append('Mode: Normal' if self.mode == 1 else 'Mode: CBED')
+        
         controls_text.append(str(ctrl))
 
         # finding control text plgit ot coordinates:
@@ -441,15 +744,58 @@ class diffPattern:
         plt.show()
 
 class Diffraction:
-
+    '''
+    list of DP objects and its associated EMC 
+    '''
     def __init__(self, name, mode=DEF_MODE):
-        self.name = name
-        self.mode = mode
-        self.diffList = [] 
+        
+        setattr(self, 'name', name)
+        setattr(self, 'mode', mode)
+        setattr(self, 'diffList', [])
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def mode(self):
+        return self._mode
+    
+    @property
+    def diffList(self):
+        return self._diffList
+
+    @name.setter
+    def name(self, n):
+        if not isinstance(n, str) or len(n) == 0:
+            raise DPListError('crystal name invalid')
+        
+        self._name = n
+
+    @mode.setter
+    def mode(self, md):
+        
+        if not isinstance(md, int) or (md != 1 and md != 2):
+            raise DPListError('DP mode can only be 1 - normal and 2 - CBED')
+        
+        self._mode = md
+
+    @diffList.setter
+    def diffList(self, dpl):
+        if not isinstance(dpl, list):
+            raise DPListError('invalid input DP list')
+
+        for emc, dp in dpl:
+            if not isinstance(dp, diffPattern) or \
+               not isinstance(emc, EMC):
+                raise DPListError('invalid data found in DP list')
+
+        self._diffList = dpl
+
     # Adding new diffraction patterns
     def add(self, emc, diffP):
         if not isinstance(diffP, diffPattern):
-            return NotImplemented
+            raise DPListError('failed to add DP')
 
         self.diffList.append((emc, diffP))
             
@@ -458,19 +804,17 @@ class Diffraction:
         if not isinstance(other, Diffraction):
             return False
         
-        if self.name != other.name or self.mode != other.mode:
+        if self._name != other.name or self._mode != other.mode:
             return False
 
-        if len(self.diffList) != len(other.diffList):
+        if len(self._diffList) != len(other.diffList):
             return False
 
         found = False
         for c, d in self:
             found = False
-            # cl = list(c.values())
+            
             for oc, od in other.diffList:
-                # ocl = list(oc.values())
-                # print(f"controls compare: {cl} and {ocl}")
                 if c == oc:
                     found = (d==od)
                     if not found:
@@ -554,13 +898,13 @@ class Diffraction:
     def report_difference(self, other):
 
         if not isinstance(other, Diffraction):
-            return NotImplemented
+            raise DPListError('connt report difference between two different type of objects')
         
         rep = []
         if self == other:
             return rep
         
-        if self.name != other.name or self.mode != other.mode:
+        if self._name != other.name or self._mode != other.mode:
             rep.append(str(f"Diffractions are generated in different mode/name" ))
             return rep
 
@@ -625,7 +969,9 @@ class Diffraction:
         return rep
                 
     def __str__(self):
+        sdpl=[]
         for c, d in self:
-            print(f"*****EM Contols: {c}")
-            print(f"{d}")
-        return " "
+            sdpl.append(str(f"*****EM Contols: {c}"))
+            sdpl.append(f"{d}")
+
+        return "\n".join(sdpl)

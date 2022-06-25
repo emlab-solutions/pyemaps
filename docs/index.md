@@ -128,7 +128,11 @@ with:
 ```python
 si = cryst.from_xtl(fn)
 ```
-where _fn_ is a crystal data file name.
+CIF format has recently been added to sources where __pyemaps__ can import:
+```python
+si = cryst.from_cif(fn)
+```
+where _fn_ is a crystal data file name. See release notes for details how pyemaps imports .cif data
 
 Note: __pyemaps__ searches for _fn_ if the full path is provided. Otherwise, it will look up the file in current working directory or in the directory set by *PYEMAPS_CRYSTALS* environment variable. In latter cases, _fn_ is the file name without path.
 
@@ -458,3 +462,33 @@ See sample code _si_csf.py_ for detailed guide on using these methods.
 The first methods takes user input of high votage and scattering angle 2ϴ, along with many others to generate the electron powder diffraction in intensity array. __plotPowder__ plots single powder diffraction, while _powder.py_ sample code included in the package also demonstates the electron pwoder diffarction of two crystals: Silicon and Diamond. The latter is with absorption. See sample code _powder.py__ for details on using these mothods.
 
 ![](https://github.com/emlab-solutions/imagepypy/blob/main/powder.png?raw=True "Electron powder diffraction for silicon python script powder.py")
+
+
+### __0.3.8 Alpha__ June 24th, 2022  
+
+#### NEW
+
+* __CIF format crystal import__: (IUCr) Crystallographic Information Framework files are now being imported into pyemaps crystal class. The basic usage:
+```python
+    from pyemaps import Crystal
+    Crystal.from_cif(fn)
+```
+The function tries to extract crystal information for cell parameters, unit cells from defined field keys and does its best to match space group data from information provided with what is in pyemaps. We welcome your contributions to the parsing and compiling of CIF in __pyemaps__ in order to improve this feature. More document on this feature along with others are forthcoming.
+
+
+#### IMPROVEMENTS
+
+* __Better error handling__: Many exceptions classes are now added to better handle the failures in pyemaps operations. For example, _CIFError_ for catching CIF import failures and errors. _CrytsalClassError_ can be used to catch most of errors during importing cif files as follows:
+```python
+    from pyemaps import Crystal as cr
+    from pyemaps import CrystalClassError, DPError
+    try:
+        cf = cr.from_cif(cif_fn)
+        _, cf_dp = cf.generateDP()
+    except (CrystalClassError, DPError) as v:
+        print(f'%%%%%%%Loading {cif_fn} failed with message: {v}')
+    else:
+        cf_dp.plot()
+```
+See _errors.py_ for all exception classes
+* __Regression fixed__: _all_builtin_crystals()_ added back to __pyemaps__

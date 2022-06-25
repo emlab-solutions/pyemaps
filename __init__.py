@@ -63,10 +63,18 @@ Date:       May 07, 2022
 """
 
 
-from pyemaps import __config__
+from . import __config__
 
-#from diffraction extension
+#--------------from diffraction extension module------------------------
 from .diffract import dif
+
+#CIF & XTL crystal data import dependent modules
+#
+#
+from .spg import spgseek
+from .scattering import sct
+
+#--------------optional modules in pyemaps----------------
 
 #fall through if dpgen is not found
 
@@ -90,7 +98,8 @@ try:
 except ImportError as e:
     pass
 
-#Wrappers class around diffraction extensions
+#--------------Wrapper classes around diffraction extensions---------------
+from .errors import *
 
 from .crystals import Crystal
 
@@ -101,7 +110,7 @@ from .emcontrols import EMControl as EMC
 from .kdiffs import diffPattern as DP
 from .kdiffs import Diffraction as DPList
 
-#Extension control defaults
+#-----------------------Extension control defaults------------------------
 #       DEF_CONTROLS --- default controls in dictionary object
 #       DEF_CONTROLS = dict(zone = (0,0,1),
 #                     tilt = (0.0,0.0),

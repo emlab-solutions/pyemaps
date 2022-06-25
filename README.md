@@ -127,7 +127,11 @@ with:
 ```python
 si = cryst.from_xtl(fn)
 ```
-where _fn_ is a crystal data file name.
+CIF format has recently been added to sources where __pyemaps__ can import:
+```python
+si = cryst.from_cif(fn)
+```
+where _fn_ is a crystal data file name. See release notes for details how pyemaps imports .cif data
 
 Note: __pyemaps__ searches for _fn_ if the full path is provided. Otherwise, it will look up the file in current working directory or in the directory set by *PYEMAPS_CRYSTALS* environment variable. In latter cases, _fn_ is the file name without path.
 

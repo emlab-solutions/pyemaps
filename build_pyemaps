@@ -9,6 +9,8 @@ MAKE_LOOKUP = dict(
     dpgen = 'CDPOBJ DPGENPYF',
     csf = 'CSFPYF',
     powder = 'POWDERPYF',
+    spg = 'SPGSEEKPYF',
+    scattering = 'SCTPYF',
     all = 'CDPOBJ ALLPYF'
 )
 
@@ -85,6 +87,29 @@ def make_pyf(comp):
 
     os.system(makestr)
 
+    # build spg standalone spg module
+    os.system("make " + MAKE_LOOKUP['spg'])
+    pyf_fname = 'spg_spgseek.pyf'
+    try:
+         os.path.exists(pyf_fname)
+
+    except FileNotFoundError as e:
+        os.chdir(pyemapsroot)
+        raise ValueError("Error: compiling PYF file {pyf_fname} for: {spg}") 
+    os.system("make " + MAKE_LOOKUP['spg'])
+
+    # build scattering standalone module
+    scatteringpyf = MAKE_LOOKUP['scattering']
+    os.system("make " + scatteringpyf)
+    pyf_fname = 'scattering_sct.pyf'
+    try:
+         os.path.exists(pyf_fname)
+
+    except FileNotFoundError as e:
+        os.chdir(pyemapsroot)
+        raise ValueError("Error: compiling PYF file {pyf_fname} for: {scattering}") 
+    os.system("make " + scatteringpyf)
+    
     pyf_fn = os.path.join(emapsdir, pyf_fname)
     
     try:
