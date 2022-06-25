@@ -27,8 +27,9 @@ Date:       May 07, 2022
 
 """
 from pickle import EMPTY_DICT
+
 from pyemaps import DEF_CBED_DSIZE, DEF_MODE
-from pyemaps import EMC
+from pyemaps import EMC, DPError, DPListError, EMCError
 
 # import copy
 
@@ -36,8 +37,7 @@ MAX_PROCWORKERS = 4
 def genDP(cr=None, dsize = None, mode = DEF_MODE, em_dict=EMPTY_DICT):
 
     if not isinstance(em_dict, dict) and len(em_dict) != 1: 
-        raise ValueError("Control arguement incorrect")
-        # return None, None
+        raise DPError("Control arguement incorrect")
 
     emc = EMC()
     
@@ -85,17 +85,17 @@ def generate_difs(name = 'silicon', mode = DEF_MODE):
         for f in concurrent.futures.as_completed(fs):
             try:
                 emc, diffP = f.result()
-            except Exception as e:
-                print('%r generated an exception: %s' % (f, e))
-            else:
-                difs.add(emc, diffP) 
-
+                difs.add(emc, diffP)
+            except (DPError, EMCError, DPListError) as e:
+                print(f'{f} generated an exception: {e.message}')
+            except:
+                print('failed to generate doffraction patterns')
+            
     return difs
 
 def generate_difs_defl(name = 'silicon', mode = DEF_MODE):
     from pyemaps import DPList
     from pyemaps import Crystal as cryst
-    # from pyemaps import dif 
     
     import concurrent.futures
 
@@ -116,18 +116,19 @@ def generate_difs_defl(name = 'silicon', mode = DEF_MODE):
             fs.append(e.submit(genDP, cr=cr, dsize=dsize, mode=mode, em_dict=third))
 
         for f in concurrent.futures.as_completed(fs):
-            try:
+           try:
                 emc, diffP = f.result()
-            except Exception as e:
-                print('%r generated an exception: %s' % (f, e))
-            else:
-                difs.add(emc, diffP) 
+                difs.add(emc, diffP)
+           except (DPError, EMCError, DPListError) as e:
+                print(f'{f} generated an exception: {e.message}')
+           except:
+                print('failed to generate doffraction patterns')
+
     return difs
 
 def generate_difs_zone(name = 'silicon', mode = DEF_MODE):
     from pyemaps import DPList
     from pyemaps import Crystal as cryst
-    # from pyemaps import dif 
     
     import concurrent.futures
 
@@ -148,19 +149,20 @@ def generate_difs_zone(name = 'silicon', mode = DEF_MODE):
             fs.append(e.submit(genDP, cr=cr, dsize=dsize, mode=mode, em_dict=third))
 
         for f in concurrent.futures.as_completed(fs):
-            try:
+           try:
                 emc, diffP = f.result()
-            except Exception as e:
-                print('%r generated an exception: %s' % (f, e))
-            else:
-                difs.add(emc, diffP) 
+                difs.add(emc, diffP)
+           except (DPError, EMCError, DPListError) as e:
+                print(f'{f} generated an exception: {e.message}')
+           except:
+                print('failed to generate doffraction patterns')
 
     return difs
 
 def generate_difs_cl(name = 'silicon', mode = DEF_MODE):
     from pyemaps import DPList
     from pyemaps import Crystal as cryst
-    # from pyemaps import dif 
+    
     
     import concurrent.futures
 
@@ -181,12 +183,13 @@ def generate_difs_cl(name = 'silicon', mode = DEF_MODE):
             fs.append(e.submit(genDP, cr=cr, dsize=dsize, mode=mode, em_dict=third))
 
         for f in concurrent.futures.as_completed(fs):
-            try:
+           try:
                 emc, diffP = f.result()
-            except Exception as e:
-                print('%r generated an exception: %s' % (f, e))
-            else:
-                difs.add(emc, diffP) 
+                difs.add(emc, diffP)
+           except (DPError, EMCError, DPListError) as e:
+                print(f'{f} generated an exception: {e.message}')
+           except:
+                print('failed to generate doffraction patterns')
     return difs
 
 def generate_difs_vt(name = 'silicon', mode = DEF_MODE):
@@ -212,10 +215,12 @@ def generate_difs_vt(name = 'silicon', mode = DEF_MODE):
             fs.append(e.submit(genDP, cr=cr, dsize=dsize, mode=mode, em_dict=third))
 
         for f in concurrent.futures.as_completed(fs):
-            try:
+           try:
                 emc, diffP = f.result()
-            except Exception as e:
-                print('%r generated an exception: %s' % (f, e))
-            else:
-                difs.add(emc, diffP) 
+                difs.add(emc, diffP)
+           except (DPError, EMCError, DPListError) as e:
+                print(f'{f} generated an exception: {e.message}')
+           except:
+                print('failed to generate doffraction patterns')
+
     return difs

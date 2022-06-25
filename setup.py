@@ -8,6 +8,9 @@ from numpy.distutils.command.build_ext import build_ext as numpy_build_ext
 import os
 
 emaps_fsource = 'emaps'
+scatteringdir = 'scattering'
+spgdir = 'spg'
+
 dpgen_cobj = 'write_dpbin.o'
 
 def get_comp():
@@ -75,6 +78,9 @@ def configuration(parent_package='',top_path=None):
     )
 
     config.add_subpackage('diffract',emaps_fsource)
+    config.add_subpackage('spg',spgdir)
+    config.add_subpackage('scattering',scatteringdir)
+    
     config.add_data_files('license.txt', 'README.md', 'COPYING')
     config.add_data_dir('test')
     config.add_data_dir('cdata')
