@@ -650,13 +650,15 @@ class diffPattern:
 
     def __str__(self):
 
-        sDiff=[str(f'# of klines: {self._nklines}')]
+        sDiff=[str(f'# of Kikuchi lines (kline): {self._nklines}')]
         for i, k in enumerate(self._klines):
             sDiff.append(str("kline# {}:".format(i+1)).ljust(10) + repr(k))
 
+        sDiff.append(str(f'\n# of diffracted beams (disk, index = Miller Index): {self._nklines}'))
         for i, d in enumerate(self._disks):
             sDiff.append(str("disk# {}:".format(i+1)).ljust(10) + repr(d))
         
+        sDiff.append(str(f'\n# of HOLZ lines (hline): {self._nhlines}'))
         for i, h in enumerate(self._hlines):
             sDiff.append(str("hline# {}:".format(i+1)).ljust(10) + repr(h))
         

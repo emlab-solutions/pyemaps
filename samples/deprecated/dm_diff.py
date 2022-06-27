@@ -17,8 +17,12 @@ For how to install pyemaps, go to https://emlab-solutions.github.io/pyemaps/
 Contact supprort@emlabsoftware.com for any questions and comments.
 ___________________________
 
+Additional copyright notices and license terms applicable to portions of 
+pyemaps are set forth in the COPYING file.
+
 This sample code demonstrates how pyemaps can be integrated into 
 DigitalMicrograph to render the diffraction patterns for silicon crystal.
+
 
 Author:     EMLab Solutions, Inc.
 Date:       May 07, 2022    
