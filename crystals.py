@@ -663,7 +663,7 @@ def add_csf(target):
         print(dss)
         
         if sftype > 1:
-            print(f"     high voltage\t: {kv} kV\n")
+            print(f"     high voltage\t: {kv} V\n")
         else:
             print(f" ")
 

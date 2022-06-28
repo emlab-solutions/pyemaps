@@ -840,7 +840,7 @@ class Diffraction:
         import matplotlib.transforms as mtransforms
         
         fig, ax = plt.subplots()
-        fig.canvas.set_window_title('Kinematical Diffraction')
+        fig.canvas.set_window_title('PYEMAPS - Kinematic Diffraction')
         figManager = plt.get_current_fig_manager()
         # figManager.full_screen_toggle()
         # figManager.resize(*figManager.window.maxsize())
