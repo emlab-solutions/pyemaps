@@ -318,8 +318,40 @@ The first methods takes user input of high votage and scattering angle 2ϴ, alon
     from pyemaps import Crystal
     Crystal.from_cif(fn)
 ```
+
 The function tries to extract crystal information for cell parameters, unit cells from defined field keys and does its best to match space group data from information provided with what is in pyemaps. We welcome your contributions to the parsing and compiling of CIF in __pyemaps__ in order to improve this feature. More document on this feature along with others are forthcoming.
 
+* __Crystallographic Transformations and Calculations__: 
+1) Real to reciprocal space transformation and vice versa; 
+2) Angles between two vectors in real and reciprical spaces; 
+3) Vector length in real and reciprocal spaces;
+4) Wavelength;
+
+```python
+    from pyemaps import Crystal as cr
+    si = cr.from_builtin('Silicon')
+    
+    # real to reciprocal transformation
+    xt, yt, zt = si.d2r(x = 1.0, y = 1.0, z = 2.0)   
+    
+    #reciprocal to real transformation
+    xtt, ytt, ztt = si.r2d(xt, yt, zt) # xtt ~= 1.0, ytt ~= 1.0, ztt ~= 2.0
+
+    #angle in real space 
+    ra = si.angle(x1 = 1.0, y1 = 1.0, z1 = 2.0, x2 = 1.0, y2 = 1.0, z2 = 1.0)
+
+    #angle in reciprocal space
+    rsa = si.angle(x1 = 1.0, y1 = 1.0, z1 = 2.0, x2 = 1.0, y2 = 1.0, z2 = 1.0, type = 1)
+
+    #vector length in real space
+    rvl = si.vlen(x = 1.0, y = 1.0, z = 2.0)
+
+    #vector length in reciprocal space
+    rsvl = si.vlen(x = 1.0, y = 1.0, z = 2.0, type = 1)
+
+    #wave length with high voltage of 200 kV
+    wl = si.wavelength(200)
+```
 
 #### IMPROVEMENTS
 
