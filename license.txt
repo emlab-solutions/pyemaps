@@ -17,10 +17,6 @@ along with pemaps.  If not, see <https://www.gnu.org/licenses/>.
 Contact supprort@emlabsoftware.com for any questions and comments.
 
 -----------------------------------------------------
-PYCIFRW - used by pyemaps for its ReadCif component in the cif crystal 
-data importing function. 
-Copyright (c) 2001-2014 ANSTO; All Rights Reserved.
 
-You should have received a copy of the PYCIFRW License in COPYING file
-along pyemaps. If not, see <https://bitbucket.org/jamesrhester/
-pycifrw/raw/efd90c5e6dec7caf1e61fac68492a7fd66661d97/LICENSE/>.
+Additional copyright notices and license terms applicable to portions 
+of pyemaps are set forth in the COPYING file.

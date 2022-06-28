@@ -842,7 +842,7 @@ class Diffraction:
         fig, ax = plt.subplots()
         fig.canvas.set_window_title('Kinematical Diffraction')
         figManager = plt.get_current_fig_manager()
-        figManager.full_screen_toggle()
+        # figManager.full_screen_toggle()
         # figManager.resize(*figManager.window.maxsize())
 
         for c, dp in self:
@@ -896,6 +896,7 @@ class Diffraction:
             plt.draw()
             plt.pause(1)
             ax.cla()
+        plt.close()
             
     def report_difference(self, other):
 
