@@ -1,3 +1,4 @@
 exclude emaps/*.f95
+exclude samples/deprecated/*.py
 prune __pycache__ 
 prune emaps/__pycache__
