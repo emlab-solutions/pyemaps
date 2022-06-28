@@ -12,9 +12,9 @@ __pyemaps__ package is a collection of python modules and libraries designed for
 
 >**Crystal** : crystal data module, classes and methods for loading crystal data from various sources; for generating __diffraction patterns__ with microscope and sample control parameters; for creating __electron powder diffraction__; for calculating the following __crystal structure factors__:
 >    * X-Ray Structure Factors
->    * Electron Structure Factor in kV (kilo volts)
+>    * Electron Structure Factor in V (volts)
 >    * Electron Structure Factor in 1/&#8491;^2
->    * Electron Absorption Structure Factor in 1/&#8491;^  
+>    * Electron Absorption Structure Factor in 1/&#8491;^2  
 
 >**EMC** : electron microscope control module. Its class __EMC__ makes it easy to handle simulation control parameters.  
 
@@ -78,7 +78,7 @@ where sample.py is as follows:
  #import Crystal class from pyemaps as cryst
 from pyemaps import Crystal as cryst
 # create a crystal class instance and load it with builtin silicon data
-si = cryst.from_builtin('silicon')
+si = cryst.from_builtin('Silicon')
 
 # generate diffraction on the crystal instance with all default controls
 # parameters, default controls returned as the first output ignored
@@ -108,7 +108,7 @@ and default electron microscope and sample control parameters:
 zone axis: (0,0,1)
 microscope mode: normal
 microscope camera length : 1000 mm
-microscope voltage: 200 kV
+microscope voltage: 200 V
 sample tilt: (0.0,0.0)
 sample offset: (0.0,0.0)
 spot size: 0.05 Å
@@ -124,7 +124,7 @@ where cryst is imported __pyemaps__ Crystal class
 
 To use a crystal data not in built-in database in above format (as xtl format), replace the code in _sample.py_:
 ```python
-si = cryst.from_builtin('silicon')
+si = cryst.from_builtin('Silicon')
 ```
 with:
 ```python
