@@ -163,11 +163,6 @@ Accessing diffraction patterns data is easy for pyemaps users to visualize the d
     dp.shift #deflection shifts of all of the above
     ...
 ```
-<!-- 
-In addition to the above and and pyemaps' built-in _matplotlib_ rendering of diffraction pattern, DigitalMicrography (referred as DM here) is another option with its line and circle annotations objects. Simply open and execute the python script in DM __dm_diff.py__ in _samples_ directory for example.
-
-
-![](https://github.com/emlab-solutions/imagepypy/blob/main/kdiff_si_dm.png?raw=True "Kinematic diffraction for silicon python script dm_diff.py") -->
 
 Other sample scripts designed for you to explore pyemaps are available in samples directory:
 * __si_tilt.py__: spot diffraction patterns generated with silicon crystal data, plotted with _matplotlib pyplot_ module. The code also shows how a list of diffraction patterns are generated and displayed as one of electron microscope and sample controls - tilt in x direction changes.
