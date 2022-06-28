@@ -13,9 +13,9 @@ __pyemaps__ package is a collection of python modules and libraries designed for
 
 >**Crystal** : crystal data module, classes and methods for loading crystal data from various sources; for generating __diffraction patterns__ with microscope and sample control parameters; for creating __electron powder diffraction__; for calculating the following __crystal structure factors__:
 >    * X-Ray Structure Factors
->    * Electron Structure Factor in kV (kilo volts)
+>    * Electron Structure Factor in V (volts)
 >    * Electron Structure Factor in 1/&#8491;^2
->    * Electron Absorption Structure Factor in 1/&#8491;^  
+>    * Electron Absorption Structure Factor in 1/&#8491;^2  
 
 >**EMC** : electron microscope control module. Its class __EMC__ makes it easy to handle simulation control parameters.  
 
@@ -79,7 +79,7 @@ where sample.py is as follows:
  #import Crystal class from pyemaps as cryst
 from pyemaps import Crystal as cryst
 # create a crystal class instance and load it with builtin silicon data
-si = cryst.from_builtin('silicon')
+si = cryst.from_builtin('Silicon')
 
 # generate diffraction on the crystal instance with all default controls
 # parameters, default controls returned as the first output ignored
@@ -109,7 +109,7 @@ and default electron microscope and sample control parameters:
 zone axis: (0,0,1)
 microscope mode: normal
 microscope camera length : 1000 mm
-microscope voltage: 200 kV
+microscope voltage: 200 V
 sample tilt: (0.0,0.0)
 sample offset: (0.0,0.0)
 spot size: 0.05 Å
@@ -125,7 +125,7 @@ where cryst is imported __pyemaps__ Crystal class
 
 To use a crystal data not in built-in database in above format (as xtl format), replace the code in _sample.py_:
 ```python
-si = cryst.from_builtin('silicon')
+si = cryst.from_builtin('Silicon')
 ```
 with:
 ```python
@@ -273,7 +273,7 @@ An excerpt of output from the sample code _si_csf.py_ run for electron absorptio
     h k l              : Miller Index
     s-w                : Sin(ϴ)/Wavelength <= 1.0
     d-s                : D-Spacing
-    high voltage       : 100 kV
+    high voltage       : 100 V
 
     SF output format   : (amplitude, phase)
 
@@ -331,26 +331,42 @@ The function tries to extract crystal information for cell parameters, unit cell
     from pyemaps import Crystal as cr
     si = cr.from_builtin('Silicon')
     
+    vd = si.d2r()
+    print(f'\nDefault real space to reciprocal space transform: \n{vd}')
+    vd = si.r2d()
+    print(f'\nDefault reciprocal space to real space transform: \n{vd}')
+
     # real to reciprocal transformation
-    xt, yt, zt = si.d2r(x = 1.0, y = 1.0, z = 2.0)   
+    v = (1.0, 1.0, 2.0)
+    v_recip = si.d2r(v) 
+    print(f'\nReal space to reciprocal space transform for {v}:\n{v_recip}')
+  
     
     #reciprocal to real transformation
-    xtt, ytt, ztt = si.r2d(xt, yt, zt) # xtt ~= 1.0, ytt ~= 1.0, ztt ~= 2.0
+    v_ = si.r2d(v_recip) # v_ ~= v
+    print(f'\nReciprocal space to real space transform for {v_recip}:\n{v_}')
 
-    #angle in real space 
-    ra = si.angle(x1 = 1.0, y1 = 1.0, z1 = 2.0, x2 = 1.0, y2 = 1.0, z2 = 1.0)
+    #angle in real space
+    v1 = (1.0, 1.0, 2.0)
+    v2 = (1.0, 1.0, 1.0)
+    real_a = si.angle(v1, v2)
+    print(f'\nAngle in real space by vectors {v1} and {v2}: \n{real_a} \u00B0')
 
     #angle in reciprocal space
-    rsa = si.angle(x1 = 1.0, y1 = 1.0, z1 = 2.0, x2 = 1.0, y2 = 1.0, z2 = 1.0, type = 1)
+    recip_a = si.angle(v1, v2, type = 1)
+    print(f'\nAngle in reciprocal space by vectors {v1} and {v2}: \n{recip_a} \u00B0')
 
     #vector length in real space
-    rvl = si.vlen(x = 1.0, y = 1.0, z = 2.0)
+    r_vlen = si.vlen(v)
+    print(f'\nLength in real space for vector {v}:\n{r_vlen} in \u212B')
 
     #vector length in reciprocal space
-    rsvl = si.vlen(x = 1.0, y = 1.0, z = 2.0, type = 1)
+    recip_vlen = si.vlen(v, type = 1)
+    print(f'\nLength in reciprocal space for vector {v}:\n{recip_vlen} in 1/\u212B')
 
-    #wave length with high voltage of 200 kV
-    wl = si.wavelength(200)
+    #wave length with high voltage of 200 V
+    print(f'\nWave length with high voltage of 200 V:\n{si.wavelength(200)} \u212B')
+
 ```
 
 #### IMPROVEMENTS

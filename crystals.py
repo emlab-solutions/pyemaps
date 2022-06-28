@@ -1996,7 +1996,7 @@ class Crystal:
         dif.diff_delete()
         return 200, data
 
-    def d2r(self, x = 0.0, y = 0.0, z = 0.0):
+    def d2r(self, v = (0.0, 0.0, 0.0)):
         '''
         Transform from real to recriprocal space
         '''           
@@ -2005,12 +2005,13 @@ class Crystal:
         
         dif.loadcrystal(cell, atoms, atn, spg, ndw=self.dw)
 
+        x, y, z = v
         rx, ry, rz = dif.drtrans(x, y, z, 0)
 
         dif.crystaldelete()
         return rx, ry, rz
 
-    def r2d(self, x = 0.0, y = 0.0, z = 0.0):
+    def r2d(self,  v = (0.0, 0.0, 0.0)):
         '''
         Transform from recriprocal to real space
         '''          
@@ -2019,22 +2020,24 @@ class Crystal:
         
         dif.loadcrystal(cell, atoms, atn, spg, ndw=self.dw)
 
+        x, y, z = v
         dx, dy, dz = dif.drtrans(x, y, z, 1)
 
         dif.crystaldelete()
         return dx, dy, dz
 
-    def angle(self, x1 = 1.0, y1 = 0.0, z1 = 0.0,
-                    x2 = 0.0, y2 = 0.0, z2 = 1.0,
-                    type = 0):
+    def angle(self, v1 =(1.0, 0.0, 0.0), \
+                     v2 = (0.0, 0.0, 1.0),
+                     type = 0):
         '''
         Type = 0: Calculate angle between two real space vectors
 	    Type = 1: Calculate angle between two reciprocal space vectors
         '''
+        x1, y1, z1 = v1
         if x1 == 0.0 and y1 == 0.0 and z1 == 0.0:
             raise ValueError("Error: input vector can't be zero")
-
         
+        x2, y2, z2 = v2
         if x2 == 0.0 and y2 == 0.0 and z2 == 0.0:
             raise ValueError("Error: input vector can't be zero")           
 
@@ -2047,7 +2050,7 @@ class Crystal:
         dif.crystaldelete()
         return a
 
-    def vlen(self, x = 1.0, y = 0.0, z = 0.0, type = 0):
+    def vlen(self, v = (1.0, 0.0, 0.0), type = 0):
         
         '''
         Type = 0: Calculate length of a real space vector
@@ -2058,6 +2061,7 @@ class Crystal:
         
         dif.loadcrystal(cell, atoms, atn, spg, ndw=self.dw)
 
+        x, y, z = v
         ln = dif.vlen(x, y, z, type)
 
         dif.crystaldelete()
