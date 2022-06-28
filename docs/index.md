@@ -382,23 +382,26 @@ Examples of the above improvements shown as follows:
     try:
         cf = cr.from_cif(cif_fn)
         _, cf_dp = cf.generateDP()
-    except (CrystalClassError, DPError) as v:
+    except (CrystalClassError, DPError) as v:   #<---- Notice the new error handling
         print(f'Loading {cif_fn} failed with message: {v}')
-    else:
-        cf_dp.plot()
-        # print the diffraction pattern using the builtin format
-        print(f'Diffraction Pattern printout with builtin stdout:\n{cf_dp}\n\n')
-
-        # get the raw diffraction pattern in python dictionary 
-        # in case you want to import DP in your own program
-        dp_dict = cf_dp.__dict__
-        print(f'Raw diffraction pattern in python dictionary:\n{dp_dict}\n\n')
+    except:
+        print('Other unknown failures, exiting...')
+        exit(1)
         
-        # or the raw data of each components of kinematic diffraction pattern 
-        # into your program and/or print them out
-        print(f'# of Kikuchi lines: {cf_dp.nklines}\nKikuchi lines list:\n{cf_dp.klines}\n\n')
-        print(f'# of diffracted beams (a.k.a Disks): {cf_dp.ndisks}\ndiffracted beams list:\n{cf_dp.disks}\n\n')
-        print(f'# of HOLZ lines: {cf_dp.nhlines}\nHOLZ lines list:\n{cf_dp.hlines}')
+    cf_dp.plot()
+    # print the diffraction pattern using the builtin format
+    print(f'Diffraction Pattern:\n{cf_dp}\n\n')
+
+    # get the raw diffraction pattern in python dictionary 
+    # in case you want to import DP into your own program
+    dp_dict = cf_dp.__dict__
+    print(f'Raw diffraction pattern in python dictionary:\n{dp_dict}\n\n')
+    
+    # or the raw data of each components of kinematic diffraction pattern 
+    # into your program and/or print them out
+    print(f'# of Kikuchi lines: {cf_dp.nklines}\nKikuchi lines list:\n{cf_dp.klines}\n\n')
+    print(f'# of diffracted beams (a.k.a Disks): {cf_dp.ndisks}\ndiffracted beams list:\n{cf_dp.disks}\n\n')
+    print(f'# of HOLZ lines: {cf_dp.nhlines}\nHOLZ lines list:\n{cf_dp.hlines}')
 ```
 See _errors.py_ for all exception classes.
 * __Regression fixed__: _all_builtin_crystals()_ added back to __pyemaps__
