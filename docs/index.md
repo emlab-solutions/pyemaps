@@ -306,6 +306,7 @@ See sample code _si_csf.py_ for detailed guide on using these methods.
 ```
 The first methods takes user input of high votage and scattering angle 2ϴ, along with many others to generate the electron powder diffraction in intensity array. __plotPowder__ plots single powder diffraction, while _powder.py_ sample code included in the package also demonstates the electron pwoder diffarction of two crystals: Silicon and Diamond. The latter is with absorption. See sample code _powder.py__ for details on using these mothods.
 
+
 ![](https://github.com/emlab-solutions/imagepypy/blob/main/powder.png?raw=True "Electron powder diffraction for silicon python script powder.py")
 
 ### __0.3.8 Alpha__ June 15th, 2022  
@@ -411,3 +412,4 @@ Examples of the above improvements shown as follows:
 ```
 See _errors.py_ for all exception classes.
 * __Regression fixed__: _all_builtin_crystals()_ added back to __pyemaps__
+
