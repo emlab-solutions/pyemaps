@@ -2,6 +2,7 @@ from ast import keyword
 from ensurepip import version
 from multiprocessing import AuthenticationError
 from nturl2path import url2pathname
+from random import sample
 from ssl import Options
 
 from numpy.distutils.command.build_ext import build_ext as numpy_build_ext
@@ -51,6 +52,19 @@ class build_dp_ext(numpy_build_ext):
         cobj = os.path.join(emaps_fsource, dpgen_cobj)
         self.link_objects = [cobj]
 
+def get_samples(sdn = 'samples'):
+    '''
+    input: sdn = sample directory name under pyemaps
+    '''
+
+    import os, glob
+    base_dir = os.path.realpath(__file__)
+    samples_base_dir = os.path.join(os.path.dirname(base_dir), sdn)
+    sbase_files = os.path.join(samples_base_dir, '*.py')
+    sfile_list = glob.glob(sbase_files)
+
+    return [os.path.join(sdn, os.path.basename(name)) for name in sfile_list]
+
 def configuration(parent_package='',top_path=None):
     from codecs import open
     from os import path
@@ -81,10 +95,12 @@ def configuration(parent_package='',top_path=None):
     config.add_subpackage('spg',spgdir)
     config.add_subpackage('scattering',scatteringdir)
     
-    config.add_data_files('license.txt', 'README.md', 'COPYING')
+    samplelist = get_samples()
+    print(f'samples files found: {samplelist}')
+    config.add_data_files('license.txt', 'README.md', 'COPYING', ('samples', samplelist))
     config.add_data_dir('test')
     config.add_data_dir('cdata')
-    config.add_data_dir('samples')
+    # config.add_data_files(('samples', '*.py'))
     config.make_config_py() #generated automatically by distutil based on supplied __config__.py
     return config
 

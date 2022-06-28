@@ -36,6 +36,9 @@ If you benefit from __pyemaps__ in your microscopy and crystallography research 
 ## Requirements [`↩`](#contents) <a id="requirements"></a>
 
 * __Python__: Version >= 3.6
+* __numpy__: Version >= 1.21.2
+* __matplotlib__: Version >= 3.2.1
+* __PyCifRW__ Version == 4.4.3
 * __Operating Systems__: Windows
 
 Linux support planned in future releases, stay tuned.
@@ -306,7 +309,7 @@ The first methods takes user input of high votage and scattering angle 2ϴ, alon
 ![](https://github.com/emlab-solutions/imagepypy/blob/main/powder.png?raw=True "Electron powder diffraction for silicon python script powder.py")
 
 
-### __0.3.8 Alpha__ June 27th, 2022  
+### __0.3.8 Alpha__ June 28th, 2022  
 
 #### NEW
 
