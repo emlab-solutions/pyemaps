@@ -1,5 +1,5 @@
 pyemaps - a transmission electron diffraction simulations in python
-Copyright ©  2021, 2022 EMLab Solutions, Inc. All Rights Reserved
+Copyright ©  2021 - 2022 EMLab Solutions, Inc. All Rights Reserved
 
 pemaps is free software for non-commercial use: you can 
 redistribute it and/or modify it under the terms of the GNU General \
@@ -15,3 +15,8 @@ You should have received a copy of the GNU General Public License
 along with pemaps.  If not, see <https://www.gnu.org/licenses/>.
 
 Contact supprort@emlabsoftware.com for any questions and comments.
+
+-----------------------------------------------------
+
+Additional copyright notices and license terms applicable to portions 
+of pyemaps are set forth in the COPYING file.

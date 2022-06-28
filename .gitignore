@@ -122,6 +122,7 @@ venv.bak/
 
 # mkdocs documentation
 /site
+/cif
 
 # mypy
 .mypy_cache/
@@ -139,3 +140,9 @@ __version__.py
 
 # pyemaps samples code dir
 *pyemaps_samples*/
+
+#specific excludes
+cif_test
+crystals_06232022
+crystals_save
+kdiffs_06232022
