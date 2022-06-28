@@ -19,9 +19,8 @@
 # ___________________________
 
 
-Author:     EMLab Solutions, Inc.
-Date:       May 07, 2022   
-Updated:    June 23rd, 2022 
+Author:             EMLab Solutions, Inc.
+Date Created:       May 07, 2022  
 
 '''
 
@@ -2000,12 +1999,7 @@ class Crystal:
     def d2r(self, x = 0.0, y = 0.0, z = 0.0):
         '''
         Transform from real to recriprocal space
-        '''
-        # try:
-        #     from emaps import dif
-
-        # except ImportError as e:               
-        #     print(f"Error: required module pyemaps.dif not found")            
+        '''           
 
         cell, atoms, atn, spg = self.prepareDif()
         
@@ -2019,12 +2013,7 @@ class Crystal:
     def r2d(self, x = 0.0, y = 0.0, z = 0.0):
         '''
         Transform from recriprocal to real space
-        '''
-        # try:
-        #     from emaps import dif
-
-        # except ImportError as e:               
-        #     print(f"Error: required module pyemaps.dif not found")            
+        '''          
 
         cell, atoms, atn, spg = self.prepareDif()
         
@@ -2047,13 +2036,7 @@ class Crystal:
 
         
         if x2 == 0.0 and y2 == 0.0 and z2 == 0.0:
-            raise ValueError("Error: input vector can't be zero")
-
-        # try:
-        #     from emaps import dif
-
-        # except ImportError as e:               
-        #     print(f"Error: required module pyemaps.dif not found")            
+            raise ValueError("Error: input vector can't be zero")           
 
         cell, atoms, atn, spg = self.prepareDif()
         
@@ -2069,13 +2052,7 @@ class Crystal:
         '''
         Type = 0: Calculate length of a real space vector
 	    Type = 1: Calculate length of a reciprocal space vector
-        '''
-
-        # try:
-        #     from emaps import dif
-
-        # except ImportError as e:               
-        #     print(f"Error: required module pyemaps.dif not found")            
+        '''        
            
         cell, atoms, atn, spg = self.prepareDif()
         
