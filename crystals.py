@@ -25,8 +25,6 @@ Updated:    June 23rd, 2022
 
 '''
 
-# import emaps
-# from emaps.errors import SPGError
 import numpy as np
 from numpy import asfortranarray as farray
 from functools import wraps
@@ -165,7 +163,7 @@ def scrubCIFSymmXYZ(cf, maxlen):
 
     '''
     import re
-    # print(f'In scrub call: {cf}')
+    
     res = []
     l = 0
     for c in cf:
@@ -174,7 +172,7 @@ def scrubCIFSymmXYZ(cf, maxlen):
         if len(s) <= maxlen:
             l += 1
             res.append(s)
-    # print(f'input symmetry: {res}, {l}')
+            
     return l, res
 
 def simplifyCIF(str1, str2):
@@ -185,7 +183,7 @@ def simplifyCIF(str1, str2):
     l2 = re.split(r'[+]', s2)
 
     if len(l1) != len(l2):
-        # print(f'After set: {str1}, {str2} are not equal')
+        
         return 1
 
     exp1 = set(l1)
@@ -561,9 +559,9 @@ def add_dpgen(target):
             print(f"Error: required module pyemaps.dpgen not found")
             return -1
 
-        ediom_dp_res_lookup = [('small', 0.01),
-                               ('medium', 0.005),
-                               ('large', 0.0025)]
+        dp_res_lookup = [('small', 0.01),
+                        ('medium', 0.005),
+                        ('large', 0.0025)]
 
         dif.initcontrols()
         
@@ -580,7 +578,7 @@ def add_dpgen(target):
         vertices0 = np.array([[0,0,1],[1,1,1],[0,1,1]])
         vertices = farray(vertices0.transpose(), dtype=int)
 
-        sres, fres = ediom_dp_res_lookup[res-1]
+        sres, fres = dp_res_lookup[res-1]
         output_fn = self.name +'_' + sres
 
         print(f"input for do_gen: {vertices},{output_fn}")
@@ -700,13 +698,7 @@ def add_csf(target):
         print('\n')          
 
     def generateCSF(self, kv = 100, smax = 0.5, sftype = 1, aptype = 0):
-        # try:
-        #     from .emaps import dif
-
-        # except ImportError as e:               
-        #     print(f"Error: required module pyemaps.dif not found")
-        #     return []
-
+       
         try:
             from . import csf
 
@@ -1909,8 +1901,6 @@ class Crystal:
 
         """
         import copy
-
-        # cell, atoms, atn, spg, dw = self._get_params()
 
         dif.initcontrols()
         # mode defaults to DEF_MODE, in which dsize is not used

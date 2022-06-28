@@ -46,11 +46,6 @@ def configuration(parent_package='', top_path=None):
 
     config = Configuration('spg', parent_package, top_path)
 
-    # c, src_files = get_sources()
-    
-    # if not src_files:
-    #     raise ValueError("Error finding extension source!")
-
     src_list = get_sources()
     
     config.add_extension(
