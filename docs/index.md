@@ -308,8 +308,14 @@ The first methods takes user input of high votage and scattering angle 2ϴ, alon
 
 ![](https://github.com/emlab-solutions/imagepypy/blob/main/powder.png?raw=True "Electron powder diffraction for silicon python script powder.py")
 
+### __0.3.8 Alpha__ June 15th, 2022  
 
-### __0.3.8 Alpha__ June 28th, 2022  
+#### IMPROVED
+
+* Bug fixes on built-in scattering and space group data.
+
+
+### __0.3.9 Alpha__ June 28th, 2022  
 
 #### NEW
 
