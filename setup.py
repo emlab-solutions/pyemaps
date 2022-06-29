@@ -8,7 +8,7 @@ from ssl import Options
 from numpy.distutils.command.build_ext import build_ext as numpy_build_ext
 import os
 
-emaps_fsource = 'emaps'
+emaps_fsource = 'diffract'
 scatteringdir = 'scattering'
 spgdir = 'spg'
 
