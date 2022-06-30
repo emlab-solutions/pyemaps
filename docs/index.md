@@ -196,9 +196,9 @@ Contact supprort@emlabsoftware.com for any questions regarding the licence terms
 
 ## Frequently Asked Questions [`↩`](#contents) <a id="faq"></a>
 
-* __Q__: __pyemaps__ installation failed, what's likely cause of the failure?
+* __Q__: __pyemaps__ installation failed, what's likely the cause of the failure?
 
-__A__: The installation include version requirements on pip, its setuptools and wheel that make downloading and installing packages like __pyemaps__ correct and fast. These tools and their right versions may not come with your _python_ installation and environment. Without them, pip tries to re-build __pyemaps__ from source and will fail due to the fact that __pyemaps__ contains extensions modules. Make sure you have the latest version of pip, setuptools, and wheel.
+__A__: __pyemaps__ installation includes version requirements on pip, its setuptools and wheel that make downloading and installing the package correct and fast. These tools and their right versions may not come with your _python_ installation and environment. Without them, pip tries to re-build __pyemaps__ from source and will fail due to the fact that __pyemaps__ contains extensions modules. Make sure you have the latest version of pip, setuptools, and wheel.
 ```python
     pip install -U pip setuptools wheel 
 ```
