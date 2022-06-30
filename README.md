@@ -56,10 +56,9 @@ crystal data files are located provides central location for organizing your own
 ```
     PYEMAPS_CRYSTALS=<local directory>
 ```
-Note: __pyemaps__ requires up-to-date python packages such as setuptools and wheel in your environment. If your installation fails, try to update these tools as follows:
-```python
-    pip install -U pip setuptools wheel
-```
+
+See [FAQ](https://emlab-solutions.github.io/pyemaps/#faq) for solutions to possible installation issues.
+
 ## Basic Usage [`↩`](#contents) <a id="basic-usage"></a>
 
 ```
