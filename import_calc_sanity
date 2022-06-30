@@ -5,8 +5,8 @@ def run_si_sample(ty = 2):
     import time
     from pyemaps import CrystalClassError
 
-    CIF_DIR = "C:/Apps/Python37/Lib/site-packages/crystals/cifs"
-    # CIF_DIR = "C:/Users/employee1/Downloads/drawxtl/cifs"
+    #CIF_DIR = "C:/Apps/Python37/Lib/site-packages/crystals/cifs"
+    CIF_DIR = "C:/Users/employee1/Downloads/drawxtl/cifs"
     XTL_DIR = "C:/Apps/Python37/Lib/site-packages/pyemaps/cdata"
     cif_ext = '.cif'
     xtl_ext = '.xtl'
