@@ -6,7 +6,8 @@
 5. <a id="contents"></a>[Getting Started](#getting-started)
 6. <a id="contents"></a>[Visualisation](#visualisation)
 7. <a id="contents"></a>[Licence](#licence)
-8. <a id="contents"></a>[Release Notes](#release-notes)
+8. <a id="contents"></a>[Frequently Asked Questions](#faq)
+9. <a id="contents"></a>[Release Notes](#release-notes)
 
 ## Overview [`↩`](#contents) <a id="overview"></a>
 __pyemaps__ package is a collection of python modules and libraries designed for transmission electron diffraction simulations and related crystallographic calculations. Main features include:
@@ -187,6 +188,22 @@ all of the samples will be copied from __pyemaps__ install directory to a folder
 
  __pyemaps__ is distributed for electron diffraction and microscopy research, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public Licence for more details.
 * __pyemaps__ is for non-commercial use.
+* __pyemaps__ is free software under the terms of the GNU General Public Licence as published by the Free Software Foundation, either version 3 of the Licence, or (at your option) any later version. You should have received a copy of the GNU General Public Licence along with __pyemaps__.  If not, see <https://www.gnu.org/licenses/>.
+
+Additional copyright notices and license terms applicable to portions of pyemaps are set forth in the COPYING file.
+
+Contact supprort@emlabsoftware.com for any questions regarding the licence terms.
+
+## Frequently Asked Questions [`↩`](#contents) <a id="faq"></a>
+
+* __Q__: __pyemaps__ installation failed, what's likely cause of the failure?
+
+__A__: The installation include version requirements on pip, its setuptools and wheel that make downloading and installing packages like __pyemaps__ correct and fast. These tools and their right versions may not come with your _python_ installation and environment. Without them, pip tries to re-build __pyemaps__ from source and will fail due to the fact that __pyemaps__ contains extensions modules. Make sure you have the latest version of pip, setuptools, and wheel.
+```python
+    pip install -U pip setuptools wheel 
+```
+before re-installing __pyemaps__ again.
+
 * __pyemaps__ is free software under the terms of the GNU General Public Licence as published by the Free Software Foundation, either version 3 of the Licence, or (at your option) any later version. You should have received a copy of the GNU General Public Licence along with __pyemaps__.  If not, see <https://www.gnu.org/licenses/>.
 
 Additional copyright notices and license terms applicable to portions of pyemaps are set forth in the COPYING file.
