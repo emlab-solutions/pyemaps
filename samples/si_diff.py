@@ -43,6 +43,10 @@ def run_si_sample():
     _, si_dp = si.generateDP()
     #plot and show the diffraction pattern using pyemaps built-in plot function
     si_dp.plot()
+    si_dp.plot(kshow=False)
+    si_dp.plot(kshow=False, ishow=False)
+    si_dp.plot(ishow=False)
+
 
     
 

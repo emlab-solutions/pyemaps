@@ -26,11 +26,11 @@ This sample code is to render kinematic diffraction patterns generated
 by pyemaps by changing zone axis
 '''
 
-from sample_base import generate_difs_zone 
+from sample_base import generate_difs 
 
 if __name__ == '__main__':
-    generate_difs_zone().plot()
-    generate_difs_zone(mode = 2).plot()
+    generate_difs(ckey='zone').plot()
+    generate_difs(mode = 2,ckey='zone').plot()
 
 
 

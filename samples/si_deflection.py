@@ -28,9 +28,9 @@ by pyemaps by changing deflection in x direction
 Required: sample_base.py in the same directory
 '''
 
-from sample_base import generate_difs_defl    
+from sample_base import generate_difs    
 
 if __name__ == '__main__':
     
-    generate_difs_defl().plot()
-    generate_difs_defl(mode = 2).plot()
+    generate_difs(ckey='defl').plot()
+    generate_difs(mode = 2,ckey='defl').plot()

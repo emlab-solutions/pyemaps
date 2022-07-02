@@ -40,7 +40,7 @@ def runCSFTests():
     for i in [1,2,3,4]:
         for j in [1, 0]:
             sfs = si.generateCSF(kv = v, smax = sm, sftype = i, aptype = j)
-            si.printCSF(sfs, kv = v, smax = sm, sftype = i, aptype = j)
+            si.printCSF(sfs)
 
 if __name__ == "__main__":
     runCSFTests()
