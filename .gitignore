@@ -151,4 +151,4 @@ crystals_save
 kdiffs_06232022
 
 #test output
-*test/sanity/output.*
+test/sanity/output.*
