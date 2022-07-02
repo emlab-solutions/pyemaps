@@ -686,20 +686,28 @@ class diffPattern:
         
         return (kdiff, hdiff, ddiff)
 
-    def plot(self, mode = 1, ctrl = None):
+    def plot(self, fig = None, ax = None, mode = 1, ctrl = None, *, kshow=True, ishow=True):
         import matplotlib.pyplot as plt
+        singleplot = 0
+        if not fig and not ax:
+            singleplot = 1
+            fig, ax = plt.subplots()
+
         import matplotlib.patches as patches
         import matplotlib.transforms as mtransforms
         
-        fig, ax = plt.subplots()
+        # fig, ax = plt.subplots()
         fig.canvas.set_window_title('PYEMAPS - Kinematical Diffraction')
 
         ax.set_title(f"{self.name}")
         ax.set_aspect('equal')
+        
+        line_color = 'k' if kshow else 'w'
+        
         for kl in self._klines:
             xx = [kl.pt1.x, kl.pt2.x]
             yy = [kl.pt1.y, kl.pt2.y]
-            ax.plot(xx, yy, 'k', alpha=0.2)
+            ax.plot(xx, yy, line_color, alpha=0.2)
 
         for hl in self._hlines:
             xx = [hl.pt1.x, hl.pt2.x]
@@ -716,22 +724,23 @@ class diffPattern:
             dis = patches.Circle(centre, d.r, fill=bFill, linewidth = 0.5, alpha=1.0, fc='blue')
             ax.add_patch(dis)
             
-            yoffset = 0.0 if mode == 2 else d.r/2
-            trans_offset = mtransforms.offset_copy(ax.transData, fig=fig,
-                                       x=0.0, y=yoffset, units='points')
+            if ishow:
+                yoffset = 0.0 if mode == 2 else d.r/2
+                trans_offset = mtransforms.offset_copy(ax.transData, fig=fig,
+                                        x=0.0, y=yoffset, units='points')
 
-            plt.text(centre[0],centre[1], 
-                    str(d.idx),
-                    {'color': 'red', 'fontsize': 8},
-                    horizontalalignment='center',
-                    verticalalignment='bottom' if mode == 1 else 'center',
-                    transform=trans_offset)
+                plt.text(centre[0],centre[1], 
+                        str(d.idx),
+                        {'color': 'red', 'fontsize': 8},
+                        horizontalalignment='center',
+                        verticalalignment='bottom' if mode == 1 else 'center',
+                        transform=trans_offset)
     
         controls_text = []
         
         controls_text.append(str(ctrl))
 
-        # finding control text plgit ot coordinates:
+        # finding control text plot or coordinates:
         x0, _ = plt.xlim()
         y0, _ = plt.ylim()
 
@@ -742,8 +751,15 @@ class diffPattern:
 
         fig.canvas.draw()
 
-        ax.set_axis_off()
-        plt.show()
+        if singleplot:
+            ax.set_axis_off()
+            plt.draw()
+            plt.pause(2)
+            plt.close()
+            return None, None
+        else:
+            return fig, ax
+
 
 class Diffraction:
     '''
@@ -834,64 +850,16 @@ class Diffraction:
         '''
         return self.diffList[key]
 
-    def plot(self):
+    def plot(self, *, kshow=True, ishow =True):
         import matplotlib.pyplot as plt
         import matplotlib.patches as patches
         import matplotlib.transforms as mtransforms
         
         fig, ax = plt.subplots()
         fig.canvas.set_window_title('PYEMAPS - Kinematic Diffraction')
-        figManager = plt.get_current_fig_manager()
-        # figManager.full_screen_toggle()
-        # figManager.resize(*figManager.window.maxsize())
-
         for c, dp in self:
-            
             ax.set_axis_off()
-            ax.set_title(f"{self.name}")
-            ax.set_aspect('equal')
-
-            # dp.plot(mode = self.mode, ctrl = c)
-            for kl in dp.klines:
-                xx = [kl.pt1.x, kl.pt2.x]
-                yy = [kl.pt1.y, kl.pt2.y]
-                ax.plot(xx, yy, 'k', alpha=0.2)
-
-            for hl in dp.hlines:
-                xx = [hl.pt1.x, hl.pt2.x]
-                yy = [hl.pt1.y, hl.pt2.y]
-                ax.plot(xx, yy, 'b', alpha=0.2)
-
-            for d in dp.disks:
-                centre = (d.c.x, d.c.y)
-                # idx = '' + str(d.idx)
-                bFill = True if self.mode == 1 else False
-                dis = patches.Circle(centre, d.r, fill=bFill, linewidth = 0.5, alpha=1.0, fc='blue')
-                ax.add_patch(dis)
-                # ax.annotate(idx,centre,)
-                yoffset = 0.0 if self.mode == 2 else d.r/2
-                trans_offset = mtransforms.offset_copy(ax.transData, fig=fig,
-                                        x=0.0, y=yoffset, units='points')
-
-                plt.text(centre[0],centre[1], 
-                        str(d.idx),
-                        {'color': 'red', 'fontsize': 8},
-                        horizontalalignment='center',
-                        verticalalignment='bottom' if self.mode == 1 else 'center',
-                        transform=trans_offset)        
-
-            controls_text = []
-            controls_text.append('Mode: Normal' if self.mode == 1 else 'Mode: CBED')
-            controls_text.append(str(c))
-
-            # finding control text plot coordinates:
-            x0, _ = plt.xlim()
-            y0, _ = plt.ylim()
-
-            plt.text(x0 + 10, y0 + 10,  
-                    '\n'.join(controls_text),
-                    {'color': 'grey', 'fontsize': 6}
-            )
+            dp.plot(fig, ax, self._mode, c, kshow=kshow, ishow=ishow)
 
             plt.draw()
             plt.pause(1)

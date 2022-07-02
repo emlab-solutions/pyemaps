@@ -141,8 +141,14 @@ __version__.py
 # pyemaps samples code dir
 *pyemaps_samples*/
 
+#pyemaps local build/debug
+.libs/
+
 #specific excludes
 cif_test
 crystals_06232022
 crystals_save
 kdiffs_06232022
+
+#test output
+test/sanity/output*
