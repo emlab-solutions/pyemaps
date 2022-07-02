@@ -83,9 +83,9 @@ class EMControl:
         t = z = d = vt = c = None 
         for k, v in emc_dict.items():
             if k not in DEF_CONTROLS:
-                err_msg = str(f'Invilid key {k} found in the input')
-                raise EMCError(err_msg)
-
+                print(f'Invilid key {k} found in the input, ignored')
+                continue
+            
             if k == 'tilt':
                 t = v
             if k == 'zone':
