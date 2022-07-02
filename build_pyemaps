@@ -66,9 +66,13 @@ def make_pyf(comp):
     '''
     make .pyf file according to comp name
     '''
-    # first change working directory to emaps
-    pyemapsroot = os.getcwd()
-    os.chdir('emaps')
+    from pathlib import Path
+    # first change working directory to emaps from here
+    thisfile_dir = Path(os.path.abspath(__file__)).parent.absolute()
+    print(f'pyemaps root dir: {thisfile_dir}')
+
+    pyemapsroot = thisfile_dir
+    os.chdir(os.path.join(thisfile_dir, 'emaps'))
     emapsdir = os.getcwd()
 
     os.system("make clean")
@@ -192,7 +196,11 @@ def hideEMAPSPYFiles():
     emaps directory. manifest.in exclude for these files 
     does not seem to work
     '''
-    currdir = os.path.dirname(os.path.realpath(__file__))
+    from pathlib import Path
+    # first change working directory to emaps from here
+    currdir = Path(os.path.abspath(__file__)).parent.absolute()
+    # currdir = os.path.dirname(os.path.realpath(__file__))
+    print(f'Current dir in hideEMAPSFiles: {os.path.abspath(__file__)}, {currdir}')
     emapsdir = os.path.join(currdir, 'emaps')
     
     for f in os.listdir(emapsdir):
@@ -213,7 +221,7 @@ def restoreEMAPSPYFiles():
     does not seem to work
     '''
     
-    currdir = os.path.dirname(os.path.realpath(__file__))
+    currdir = Path(os.path.abspath(__file__)).parent.absolute()
     emapsdir = os.path.join(currdir, 'emaps')
       
     for f in os.listdir(emapsdir):
@@ -288,6 +296,60 @@ def install_package(btest = True, ver= '0.0.0'):
     print(f'installation: {install_cmd}')
     os.system(install_cmd)
 
+def install_local():
+    import shutil
+
+    LIBDIR = '.libs'
+
+    pyemaps_dir = Path(os.path.abspath(__file__)).parent.absolute()
+    print(f'pyemaps directoty {pyemaps_dir}')
+    os.chdir(pyemaps_dir)
+
+    install_cmd = 'python -m pip install -e .'
+    
+    os.system(install_cmd)
+
+    # copy .lib dir into right place
+    local_pyemaps = os.path.join(pyemaps_dir, 'pyemaps')
+    my_list = os.listdir(local_pyemaps)
+
+    for ld in my_list:
+        if ld == LIBDIR:
+            src_dir = os.path.join(local_pyemaps, ld)
+            dest_dir = os.path.join(pyemaps_dir, LIBDIR)
+            if os.path.exists(dest_dir):
+                print(f'removing existing directory before copy: {dest_dir}')
+                shutil.rmtree(dest_dir)
+            shutil.move(src_dir, pyemaps_dir,copy_function = shutil.copytree)
+
+    # remove the local pyeamps dir
+    
+    shutil.rmtree(local_pyemaps)
+
+    #also copy all sample code into parent directory
+    samples_src_dir = os.path.join(pyemaps_dir, 'samples')
+    sample_dest = pyemaps_dir.parent.absolute()
+
+    print(f'sampme dirs: {samples_src_dir}, {sample_dest}')
+    for f in os.listdir(samples_src_dir):
+        src_file = os.path.join(samples_src_dir, f)
+        print(f'source sample file name: {src_file}')
+        if os.path.isfile(src_file):
+            print(f'destination: {sample_dest}')
+            shutil.copy(src_file, sample_dest)
+
+    # copy a couple of files into its parent dir
+    # sanity.bat
+    sanity_src_dir = os.path.join(pyemaps_dir, 'test')
+    sanity_src_dir = os.path.join(sanity_src_dir, 'sanity')
+
+    for f in os.listdir(sanity_src_dir):
+            src_file = os.path.join(sanity_src_dir, f)
+            print(f'source sanity file name: {src_file}')
+            if os.path.isfile(src_file):
+                print(f'destination: {sample_dest}')
+                shutil.copy(src_file, sample_dest)
+
 
 if __name__ == "__main__":
     import argparse
@@ -298,6 +360,7 @@ if __name__ == "__main__":
     parser.add_argument("-t", "--test-repo", action="store_true", help="upload to the build to test repo test.pypi.org", required=False)
     parser.add_argument("-i", "--install", action="store_true", help="install the package from above repo", required=False)
     parser.add_argument("-nb", "--no-build", action="store_true", help="no build", required=False)
+    parser.add_argument("-il", "--install-local", action="store_true", help="no build", required=False)
     # parser.add_argument("-n", "--no-build", action="store_true", help="No build", required=False)
     
     args = parser.parse_args()
@@ -305,12 +368,16 @@ if __name__ == "__main__":
 
     if not comp:
         # defaults to dif pyeamps module
-        comp = 'dif'
+        comp = 'powder'
 
     ver = get_bversion(btest = args.test_repo)
     
     if not args.no_build:
         build_package(comp)
+
+    if args.install_local:
+        install_local()
+        exit(0)
 
     if not args.upload:
         exit(0)
@@ -322,12 +389,14 @@ if __name__ == "__main__":
         # user canceled upload in case of release   
         exit(0)
 
-    if not args.install:
+    if not args.install or not args.install_local:
         exit(0)
     
     # wait for the upload is done 
     time.sleep(10)
-    install_package(btest = args.test_repo, ver=ver)
+
+    if args.install:
+        install_package(btest = args.test_repo, ver=ver)
     
 
     

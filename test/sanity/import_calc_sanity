@@ -1,4 +1,10 @@
 
+def get_builtin_dir():
+    import pyemaps
+    from pathlib import Path
+
+    return(Path(pyemaps.__file__).parent.absolute())
+
 def run_si_sample(ty = 2):
     from pyemaps import Crystal as cr
     import os
@@ -7,7 +13,7 @@ def run_si_sample(ty = 2):
 
     #CIF_DIR = "C:/Apps/Python37/Lib/site-packages/crystals/cifs"
     CIF_DIR = "C:/Users/employee1/Downloads/drawxtl/cifs"
-    XTL_DIR = "C:/Apps/Python37/Lib/site-packages/pyemaps/cdata"
+    XTL_DIR = os.path.join(get_builtin_dir(), "cdata")
     cif_ext = '.cif'
     xtl_ext = '.xtl'
 

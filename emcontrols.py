@@ -44,21 +44,63 @@ class EMControl:
                     vt = 200
                     )
     '''
-    def __init__(self, emc_dict = DEF_CONTROLS):
-        
-        if not isinstance(emc_dict, dict) or len(emc_dict) != 5:
-            raise EMCError('invalid data')
+    def __init__(self, *, tilt = None, 
+                       zone = None, 
+                       defl = None, 
+                       vt = None, 
+                       cl = None):
 
-        if 'tilt' not in emc_dict or \
-           'zone' not in emc_dict or \
-           'defl' not in emc_dict or \
-           'cl' not in emc_dict or \
-           'vt' not in emc_dict:
-           raise EMCError('missing key(s) in EMC data')
+        if not tilt:
+            tilt = DEF_CONTROLS['tilt']
+        
+        if not zone:
+            zone = DEF_CONTROLS['zone']
+        
+        if not defl:
+            defl = DEF_CONTROLS['defl']
+
+        if not vt:
+            vt = DEF_CONTROLS['vt']
+
+        if not cl:
+            cl = DEF_CONTROLS['cl']
+
+        emc_dict = dict(tilt = tilt, 
+                       zone = zone, 
+                       defl = defl,
+                       vt = vt,
+                       cl = cl)
         
         for k, v in emc_dict.items():
             setattr(self, k, v)
-    
+
+    @classmethod
+    def from_dict(cls, emc_dict):
+
+        if not isinstance(emc_dict, dict):
+            raise EMCError('invalid data input in constructing EMC from a dictionary')
+
+        t = z = d = vt = c = None 
+        for k, v in emc_dict.items():
+            if k not in DEF_CONTROLS:
+                err_msg = str(f'Invilid key {k} found in the input')
+                raise EMCError(err_msg)
+
+            if k == 'tilt':
+                t = v
+            if k == 'zone':
+                z = v
+            if k == 'defl':
+                d = v
+            if k == 'vt':
+                vt = v
+            if k == 'cl':
+                c = v
+
+        return cls(tilt = t, zone = z,
+                    defl = d, vt = vt,
+                    cl = c)
+        
     @property
     def zone(self):
         return self._zone
@@ -85,28 +127,39 @@ class EMControl:
 
     @zone.setter
     def zone(self, zv):
-        if not isinstance(zv, tuple) or \
-           list(map(type, zv)) != [int, int, int] or \
-           len(zv) != 3:
+        if not isinstance(zv, tuple) or len(zv) != 3 or \
+           list(map(type, zv)) != [int, int, int]:
            raise EMCError("Zone axis must be tuple of three intergers")
         
+        if zv == (0,0,0):
+           raise EMCError("Zone axis must not be (0,0,0)")
+
         self._zone = zv 
 
     @tilt.setter
     def tilt(self, tl):
-        if not isinstance(tl, tuple) or \
-           list(map(type, tl)) != [float, float] or \
-           len(tl) != 2:
-           raise EMCError("Tilt must be tuple of two floats")
+        if not isinstance(tl, tuple) or len(tl) != 2:
+           raise EMCError("Tilt must be tuple of two numbers")
+
+        typelist = list(map(type, tl))
+        
+        for vt in typelist:
+            if vt != float and vt != int:
+                raise EMCError('Input values for tilt must be nmeric')
 
         self._tilt = tl
 
     @defl.setter
     def defl(self, df):
-        if not isinstance(df, tuple) or \
-           list(map(type, df)) != [float, float]:
-           raise EMCError("deflection must be tuple of two floats")
+        if not isinstance(df, tuple) or len(df) != 2:
+           raise EMCError("deflection must be tuple of two numbers")
         
+        typelist = list(map(type, df))
+
+        for vt in typelist:
+            if vt != float and vt != int:
+                raise EMCError('Input values for deflection must be nmeric')
+
         self._defl = df
 
     @cl.setter

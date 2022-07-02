@@ -605,7 +605,7 @@ def add_csf(target):
     '''
     #####INPUT#######
     -------------kv-----------------------
-      Accelaration Voltage in Kilo-Volts
+      Accelaration Voltage in Volts
     --------------------------------------
     -------------smax---------------------
       Limit of Sin(theta)/Wave length
@@ -613,9 +613,9 @@ def add_csf(target):
     -------------sftype-------------------
       Structure Factors Type:
       1 - x-ray structure factor (default)
-      2 - electron structure factor in volts (KV)
-      3 - electron structure factor in 1/angstrom^2 in (KV)
-      4 - electron absorption structure factor in 1/angstrom^2 (KV)
+      2 - electron structure factor in volts (V)
+      3 - electron structure factor in 1/angstrom^2 in (V)
+      4 - electron absorption structure factor in 1/angstrom^2 (V)
     --------------------------------------
     -------------aptype-------------------
       Structure Factor in (Amplitude, Phase) or (Real, Imaginary):
@@ -640,7 +640,10 @@ def add_csf(target):
 
     sf_ap_flag = [('real', 'imaginary'), ('amplitude', 'phase')]
 
-    def printCSF(self, sfs, kv, smax, sftype, aptype):
+    def printCSF(self, sfs):
+
+        sftype =sfs[0]['sftype']
+        aptype =sfs[0]['aptype']
         if sftype < 1 or sftype > 4:
             print(f'Invalid structure factor type input: {sftype}')
             return sfs
@@ -657,13 +660,13 @@ def add_csf(target):
 
         mi = "     h k l \t\t: Miller Index"
         print(mi)
-        ssw = str(f"     s-w   \t\t: Sin(\u03F4)/Wavelength <= {smax}")
+        ssw = str(f"     s-w   \t\t: Sin(\u03F4)/Wavelength <= {sfs[0]['smax']}")
         print(ssw )
         dss = "     d-s   \t\t: D-Spacing"
         print(dss)
         
         if sftype > 1:
-            print(f"     high voltage\t: {kv} V\n")
+            print(f"     high voltage\t: {sfs[0]['kv']} V\n")
         else:
             print(f" ")
 
@@ -674,7 +677,7 @@ def add_csf(target):
         print(f"{'h':^4}{'k':^4}{'l':^5}{'s-w':^16}{'d-s':^16}{sap1:^16}{sap2:^16}\n")
         
         nb = len(sfs)
-        for i in range(0, nb, 1):
+        for i in range(1, nb, 1):
             h,k,l = sfs[i]['hkl']
             sw,ds = sfs[i]['sw'], sfs[i]['ds']
             sf1,sf2 = sfs[i]['amp_re'], sfs[i]['phase_im']
@@ -705,7 +708,7 @@ def add_csf(target):
             print(f"Error: required module pyemaps.csf not found")
             return []
         
-        sfs = []
+        sfs = [dict(kv = kv, smax = smax, sftype = sftype, aptype = aptype)]
 
         cell, atoms, atn, spg = self.prepareDif()
         dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
@@ -727,7 +730,8 @@ def add_csf(target):
                        sw = s,
                        ds = d,
                        amp_re = sf1,
-                       phase_im = sf2)
+                       phase_im = sf2
+                     )
             sfs.append(sf)    
 
         #release the memory
@@ -1833,6 +1837,7 @@ class Crystal:
         """
         from . import DP
         from . import DPError
+
 
         if not em_controls:
             em_controls =EMC()
