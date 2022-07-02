@@ -149,3 +149,6 @@ cif_test
 crystals_06232022
 crystals_save
 kdiffs_06232022
+
+#test output
+*test/sanity/output.*
