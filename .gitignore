@@ -141,6 +141,9 @@ __version__.py
 # pyemaps samples code dir
 *pyemaps_samples*/
 
+#pyemaps local build/debug
+.libs/
+
 #specific excludes
 cif_test
 crystals_06232022
