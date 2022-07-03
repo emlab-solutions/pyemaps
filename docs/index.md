@@ -318,7 +318,7 @@ See sample code _si_csf.py_ for detailed guide on using these methods.
                   gamma = 0.001...)         <= Gamma Is the Fwhm
     plotPowder(PW)                          <= PW: Output powder Data from generatePowder()         
 ```
-The first methods takes user input of high votage and scattering angle 2ϴ, along with many others to generate the electron powder diffraction in intensity array. __plotPowder__ plots single powder diffraction, while _powder.py_ sample code included in the package also demonstates the electron pwoder diffarction of two crystals: Silicon and Diamond. The latter is with absorption. See sample code _powder.py__ for details on using these mothods.
+The first methods takes user input of high voltage and scattering angle 2ϴ, along with many others to generate the electron powder diffraction in intensity array. __plotPowder__ plots single powder diffraction, while _powder.py_ sample code included in the package also demonstates the electron pwoder diffarction of two crystals: Silicon and Diamond. The latter is with absorption. See sample code _powder.py__ for details on using these mothods.
 
 
 ![](https://github.com/emlab-solutions/imagepypy/blob/main/powder.png?raw=True "Electron powder diffraction for silicon python script powder.py")
