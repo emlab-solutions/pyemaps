@@ -433,12 +433,14 @@ See _errors.py_ for all exception classes.
 #### IMPROVEMENTS
 
 * __Selective Plotting of Diffraction Patterns__: DP plotting function now has two selective parameters: _kshow_ and _ishow_ both of value _True_ or _False_ and  defaults of _True_. _kshow_ is for whether the plot shows __Kikuchi__ lines, while _ishow_ for __Miller Index__ of diffracted beams:
-```python
-    dp.plot() # show all components of DP object: Kikuchi lines, diffracted beams etc.
-    dp.plot(kshow=False) #hide Kikuchi lines only
-    dp.plot(kshow=False, ishow=False) #hide both Kikuchi lines and Miller Indices
-    dp.plot(ishow=False) #hide Miller indices only
-
+```python  
+    from pyemaps import Crystal as cr
+    si = cr.from_builtin('Silicon')
+    _, si_dp = si.generateDP()
+    si_dp.plot() # show all components of DP object: Kikuchi lines, diffracted beams etc.
+    si_dp.plot(kshow=False) #hide Kikuchi lines only
+    si_dp.plot(kshow=False, ishow=False) #hide both Kikuchi lines and Miller Indices
+    si_dp.plot(ishow=False) #hide Miller indices only
 ```
 See sample code _si_diff.py_ for more details.
 
