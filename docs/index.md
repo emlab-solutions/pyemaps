@@ -432,30 +432,38 @@ See _errors.py_ for all exception classes.
 
 #### IMPROVEMENTS
 
-* __Selective Plotting of DP__: DP plotting function now add two selective parameters: _kshow_ and _ishow_ both of value of _True_ or _False_ with defaults set to True for both. _kshow_ for whether the plot shows __Kikuchi__ lines, while _ishow_ for __Miller index__ of diffracted beam:
+* __Selective Plotting of Diffraction Patterns__: DP plotting function now has two selective parameters: _kshow_ and _ishow_ both of value _True_ or _False_ and  defaults of _True_. _kshow_ is for whether the plot shows __Kikuchi__ lines, while _ishow_ for __Miller Index__ of diffracted beams:
 ```python
     dp.plot() # show all components of DP object: Kikuchi lines, diffracted beams etc.
-    si_dp.plot(kshow=False) #hide Kikuchi lines only
-    si_dp.plot(kshow=False, ishow=False) #hide both Kikuchi lines and Miller Indices
-    si_dp.plot(ishow=False) #hide Miller indices only
+    dp.plot(kshow=False) #hide Kikuchi lines only
+    dp.plot(kshow=False, ishow=False) #hide both Kikuchi lines and Miller Indices
+    dp.plot(ishow=False) #hide Miller indices only
 
 ```
-* __EMC class creation enhancement__: EMC is now created by each control keys - tilt, zone, defl, vt and cl (sample tilting, zone, deflection, high voltage and camera lenght) and their values for more efficient construction, instead of by a python dictionary in previous versions. If any one of them missing from the class parameter list, default values will be filled in:
+See sample code _si_diff.py_ for more details.
+
+* __EMC class creation enhancement__: EMC is now created by each control key(s) - tilt, zone, defl, vt and cl (sample tilting, zone, deflection, high voltage and camera lenght respectively) and their values for more efficient construction, instead of by a python dictionary in previous versions. If any one of the parameters is missing, default values assumed:
 ```python
     from pyemaps import EMC
-    emc = EMC(tilt=(0.0,0.0)) # EMC object created with given tilt value and rest on defaults: zone=(0,0,1) for example
+    emc = EMC(tilt=(0.5,0.0)) 
+    # EMC object created with given tilt value and the rest assumed 
+    # defaults: zone=(0,0,1); defl=(0.0, 0.0); vt=200;cl=1000 
+    # (tilt=(0.0,0.0) if not specified)
 ```
-If a dictionary is desired, from_dict() function is added for alternative for such construction.
+If a dictionary is desired, from_dict() function is an alternative for such construction:
 ```python
     from pyemaps import EMC
     emc = EMC.from_dict(emc_dict) 
 ```
 
-* __Structure Factor Plotting__: The plotting function of structure factors by a crystal object is now simpler
+* __Structure Factor Plotting__: The built-in display function of structure factors by a crystal object is now simplified:
 ```python
     from pyemaps import Crystal as cr
     si = cr.from_builtin('Silicon')
-    sfs = si.generateCSF(kv, smax, sftype, aptype)  #<= sftype is x-ray ... aptype=1 indicating SF in amplitue and phase
-    si.printCSF(sfs) #<= other parameters no longer needed and are written into sfs header
+    sfs = si.generateCSF(kv, smax, sftype, aptype)  
+    #sftype is x-ray and others aptype=1 indicating SF in amplitue and phase
+    si.printCSF(sfs) 
+    #other parameters in previous versions no longer needed and are written into sfs header
     ...
 ``` 
+See _si_csf.py_ sample code for more details.
