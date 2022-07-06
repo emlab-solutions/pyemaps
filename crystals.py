@@ -24,6 +24,7 @@ Date Created:       May 07, 2022
 
 '''
 
+from turtle import title
 import numpy as np
 from numpy import asfortranarray as farray
 from functools import wraps
@@ -36,9 +37,10 @@ from . import spgseek as spgra
     
 from .errors import *
 
-from .emcontrols import DEF_CBED_DSIZE
-from .emcontrols import EMControl as EMC
-
+# from .emcontrols import DEF_CBED_DSIZE
+# from .emcontrols import EMControl as EMC
+from . import DEF_CBED_DSIZE
+from . import EMC
 import re
 
 # pyemaps scattering data 
@@ -846,6 +848,175 @@ def add_powder(target):
 
     return target
 
+def add_bloch(target):
+    '''
+    bloch module interfaces
+    '''
+    def plotBloch(self, img, fig = None, ax = None, bColor=False, emc=EMC()):
+        """
+        plot one powder diffraction
+        """
+        import matplotlib.pyplot as plt
+       
+        qedDPI = 600
+
+        clrs = ["#2973A5", "cyan", "limegreen", "yellow", "red"]
+        gclrs=plt.get_cmap('gray')
+        figSize = 1.5 # in inches
+
+        clrMap = gclrs #default to grey
+
+        singleplot = 0
+        if not fig and not ax:
+            singleplot = 1
+            fig = plt.figure(figsize=(figSize,figSize), dpi=qedDPI) #setting image size in pixels
+            fig.canvas.set_window_title('PYEMAPS - Dynamic Bloch Diffraction') 
+            ax = plt.subplot(111, label='bloch')   
+            if not ax: print('-----I am here')
+
+        # import matplotlib.pyplot as plt
+        from matplotlib.colors import LinearSegmentedColormap
+
+        if bColor:
+            clrMap = LinearSegmentedColormap.from_list("mycmap", clrs)
+
+        ax.set_axis_off()
+        ax.set_title(self.name, fontsize=2)
+        plt.imshow(img, cmap=clrMap)
+        x0, _ = plt.xlim()
+        y0, _ = plt.ylim()
+
+        plt.text(x0 + 10, y0 - 10, str(emc),
+                {'color': 'grey', 'fontsize': 1}
+        )
+
+        if singleplot:
+            plt.show()
+            plt.close(fig)
+            return None, None
+        else:
+            plt.draw() 
+            plt.pause(1)
+            ax.cla()
+            return fig, ax
+
+        
+
+          
+# def plotBloch(self, img, bColor=False):
+#         """
+#         plot one powder diffraction
+#         """
+        
+
+#         import matplotlib.pyplot as plt
+#         from matplotlib.colors import LinearSegmentedColormap, PowerNorm
+
+#         qedDPI = 600
+
+#         clrs = ["#2973A5", "cyan", "limegreen", "yellow", "red"]
+#         gclrs=plt.get_cmap('gray')
+#         figSize = 1.5 # in inches
+
+#         fig = plt.figure(figsize=(figSize,figSize), dpi=qedDPI) #setting image size in pixels
+#         fig.canvas.set_window_title('PYEMAPS - Dynamic Bloch Diffraction')
+        
+#         plt.title(f"{self.name}", fontsize=2)
+
+#         clrMap = gclrs #default to grey
+        
+#         if bColor:
+#             clrMap = LinearSegmentedColormap.from_list("mycmap", clrs)
+
+#         plt.imshow(img, cmap=clrMap)
+#         plt.axis("off")
+#         # imgfn = f'bloch_{self.name}.png'
+#         # plt.savefig(imgfn, bbox_inches='tight', pad_inches=0)
+#         plt.show()
+#         plt.close(fig)
+    
+    def generateBloch(self, *, aperture = 1.0, 
+                            omega = 10,  
+                            sampling = 8,
+                            bm3 = 0.0,
+                            thickness = 200,
+                            pix_size = 100,
+                            det_size = 512,
+                            disk_size = 0.16,
+                            em_controls = EMC()):
+        try:
+            from . import bloch
+
+        except ImportError as e:               
+            print(f"Error: required module pyemaps.bloch not found")
+            return []
+
+        dif.initcontrols()
+        dif.setmode(2) # alway in CBED mode
+        # TODO need to figure out how to pass these changes
+
+        dif.setglen(1.0)
+        dif.setgcutoff(0.1)
+        dif.setexcitation(0.3,1.0)
+        dif.setdisksize(disk_size)
+
+        cell, atoms, atn, spg = self.prepareDif()
+        dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+
+        # rawP = farray(np.zeros((2,1000), dtype=np.double))
+        tx, ty = em_controls.tilt[0], em_controls.tilt[1]
+        dx, dy = em_controls.defl[0], em_controls.defl[1]
+        z = em_controls.zone
+        vt, cl = em_controls.vt,  em_controls.cl
+        
+        dif.setsamplecontrols(tx, ty, dx, dy)
+        dif.setemcontrols(cl, vt)        
+        dif.setzone(z[0], z[1], z[2])
+        
+        ret = dif.diffract(1)
+        if ret == 0:
+            raise BlochError('Error bloch runtime1')
+
+        nbeams = dif.get_nbeams()
+        # print(f'nbeams: {nbeams}')
+
+        # print(nbeams)
+        if nbeams >= 500: #max number of beams allowed
+            dif.diff_internaldelete(1)
+            dif.diff_delete()
+            raise BlochError('bloch runtime exceeds resource limit')
+
+        th_start = thickness
+        th_end = thickness
+        th_step = 100
+        bloch.setsamplethickness(th_start, th_end, th_step)
+
+        ret = bloch.dobloch(aperture,omega,sampling,bm3)
+        # bloch.bloch_print()
+        # bloch.bloch_print_inherit()
+        if ret != 0:
+            raise BlochError('Error from bloch runtime2')
+
+        #successful bloch runtime, then retreive bloch image
+        # 
+        #     
+        ret = bloch.imagegen(thickness,0,pix_size,det_size)
+        if(ret != 0):
+            raise BlochError("bloch image generation failed!")
+
+        raw_image = farray(np.zeros((det_size,det_size), dtype=np.double))
+        bloch.get_rawimagedata(raw_image)
+
+        # img = raw_image.reshape(det_size,det_size)
+
+        return em_controls, raw_image
+    
+    target.generateBloch = generateBloch
+    target.plotBloch = plotBloch
+
+    return target
+
+@add_bloch
 @add_powder
 @add_csf    
 @add_dpgen   

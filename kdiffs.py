@@ -25,6 +25,7 @@ Date:       May 07, 2022
 '''
 
 # from .emcontrols import EMControl as EMC
+# from samples.sample_base import plotBlochImages
 from . import EMC
 from . import DPError, PointError, LineError, PIndexError, \
               DiskError, DPListError
@@ -33,6 +34,7 @@ from . import DPError, PointError, LineError, PIndexError, \
 NDIGITS = 1
 DIFF_PRECISION = 0.95
 XMAX, YMAX = 75, 75
+PLOT_MULTIPLIER = 6
 
 DEF_MODE = 1 #normal mode by default
 
@@ -87,6 +89,15 @@ class Point:
 
         raise PointError("comparison must be of Point objects")
 
+    def __imul__(self, rhs):
+        if not isinstance(rhs, int) and not isinstance(rhs, float):
+            raise ValueError('right hand side must be numberic')
+        
+        self._x *= rhs
+        self._y *= rhs
+
+        return self
+            
     def __iadd__(self, other):
         if isinstance(other, Point):
             self._x += other.x
@@ -191,7 +202,15 @@ class Line:
             return self
         
         raise LineError("addition of different type not supported")
-    
+    def __imul__(self, rhs):
+        if not isinstance(rhs, int) and not isinstance(rhs, float):
+            raise ValueError('right hand side must be numberic')
+        
+        self._pt1 *= rhs
+        self._pt2 *= rhs
+
+        return self
+
     def __eq__(self, other):
         if isinstance(other, Line):
             if self._type != other.type:
@@ -365,6 +384,16 @@ class Disk:
         
         raise DiskError('addition cannot be done with non-Disk type')
     
+    def __imul__(self, rhs):
+        
+        if not isinstance(rhs, int) and not isinstance(rhs, float):
+            raise ValueError('right hand side must be numberic')
+
+        self._c *= rhs
+        self._r *= rhs
+
+        return self
+
     def __key__(self):
         center = self._c
         r = self._r
@@ -698,18 +727,23 @@ class diffPattern:
         
         # fig, ax = plt.subplots()
         fig.canvas.set_window_title('PYEMAPS - Kinematical Diffraction')
-
+        fig.set_size_inches(900/96, 900/96)
+        fig.set_dpi(96)
         ax.set_title(f"{self.name}")
         ax.set_aspect('equal')
         
         line_color = 'k' if kshow else 'w'
         
         for kl in self._klines:
+            # print(f'old kline: {kl}')
+            kl *=PLOT_MULTIPLIER
             xx = [kl.pt1.x, kl.pt2.x]
             yy = [kl.pt1.y, kl.pt2.y]
+            # print(f'new end points: {xx}, {yy}')
             ax.plot(xx, yy, line_color, alpha=0.2)
 
         for hl in self._hlines:
+            hl *=PLOT_MULTIPLIER
             xx = [hl.pt1.x, hl.pt2.x]
             yy = [hl.pt1.y, hl.pt2.y]
             ax.plot(xx, yy, 'k', alpha=0.2)
@@ -718,10 +752,16 @@ class diffPattern:
             ctrl = EMC()
 
         for d in self._disks:
+            d *= PLOT_MULTIPLIER
             centre = (d.c.x, d.c.y)
             
             bFill = True if mode == 1 else False
-            dis = patches.Circle(centre, d.r, fill=bFill, linewidth = 0.5, alpha=1.0, fc='blue')
+            dis = patches.Circle(centre, 
+                                  d.r, 
+                                  fill=bFill, 
+                                  linewidth = 0.5, 
+                                  alpha=1.0, 
+                                  fc='blue')
             ax.add_patch(dis)
             
             if ishow:
@@ -744,16 +784,18 @@ class diffPattern:
         x0, _ = plt.xlim()
         y0, _ = plt.ylim()
 
-        plt.text(x0 + 10, y0 + 10,  
-                '\n'.join(controls_text),
+        plt.text(x0 + 10, y0 - 10, str(ctrl),
                 {'color': 'grey', 'fontsize': 6}
         )
 
+        # fig = matplotlib.pyplot.gcf()
+        
+        # fig.savefig('te?st2png.png', dpi=100)
         fig.canvas.draw()
 
         if singleplot:
             ax.set_axis_off()
-            plt.draw()
+            # plt.draw()
             plt.pause(2)
             plt.close()
             return None, None

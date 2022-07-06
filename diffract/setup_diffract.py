@@ -36,7 +36,8 @@ dif_source = ['diffract.f95',
             ]
 
 bloch_files = ['cg.f95',
-               'bloch.f95'
+               'bloch.f95',
+               'bloch_mem.f95'
             ]
 
 dpgen_files =['dp_types.f95',
@@ -106,6 +107,7 @@ def get_sources():
     import os
 
     comp = get_comp()
+    print(f'----------comp: {comp}')
 
     src_list = []
     if comp == 'dif':
@@ -114,12 +116,12 @@ def get_sources():
         src_list.extend(dif_source)
         # return comp, src_list
     
-    if comp == 'bloch':
-        pyf = ".".join([mod_name+'_bloch','pyf'])
-        src_list.append(pyf)
-        src_list.extend(dif_source)
-        src_list.extend(bloch_files)
-        # return comp, src_list
+    # if comp == 'bloch':
+    #     pyf = ".".join([mod_name+'_bloch','pyf'])
+    #     src_list.append(pyf)
+    #     src_list.extend(dif_source)
+    #     src_list.extend(bloch_files)
+    #     # return comp, src_list
 
     if comp == 'dpgen':
         pyf = ".".join([mod_name+'_dpgen','pyf'])
@@ -142,6 +144,20 @@ def get_sources():
         src_list.extend(csf_files)
         src_list.extend(powder_files)
         # return comp, src_list
+
+    if comp == 'bloch':
+        # print(f'----------srclist0: {src_list}')
+        pyf = ".".join([mod_name+'_bloch','pyf'])
+        src_list.append(pyf)
+        # print(f'----------srclist1: {src_list}')
+        src_list.extend(dif_source)
+        # print(f'----------srclist2: {src_list}')
+        src_list.extend(csf_files)
+        # print(f'----------srclist3: {src_list}')
+        src_list.extend(powder_files)
+        # print(f'----------srclist4: {src_list}')
+        src_list.extend(bloch_files)
+        # print(f'----------srclist5: {src_list}')
 
     emapsdir = get_emapsdir()
     return [os.path.join(emapsdir, srcfn) for srcfn in src_list]

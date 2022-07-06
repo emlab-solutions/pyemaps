@@ -40,3 +40,9 @@ try:
 
 except ImportError as e:
     pass
+
+try:
+    from .emaps import bloch
+
+except ImportError as e:
+    pass

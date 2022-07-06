@@ -117,6 +117,11 @@ class DPListError(Exception):
         self.message = str(f'Error creating DP list: {message}')
         super().__init__(self.message)
 
+class BlochError(Exception):
+    def __init__(self, message=''):
+        self.message = str(f'Error generating dynamic diffraction: {message}')
+        super().__init__(self.message)
+
 # EM controls
 
 class EMCError(Exception):
