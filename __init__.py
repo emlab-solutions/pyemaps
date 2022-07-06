@@ -98,10 +98,16 @@ try:
 except ImportError as e:
     pass
 
+#fall through if blch module is not found
+try:
+    from .diffract import bloch
+except ImportError as e:
+    print(f'importing error from here....')
+
 #--------------Wrapper classes around diffraction extensions---------------
 from .errors import *
 
-from .crystals import Crystal
+# from .crystals import Crystal
 
 #Microscope control data classes handling data properties
 from .emcontrols import EMControl as EMC
@@ -122,5 +128,10 @@ from .kdiffs import Diffraction as DPList
 #       XMAX YMAX --- DP generation bound (-XMAX, XMAX, -YMAX, YMAX)
 #
 #       THESE CONSTANTS ARE SET IN PYEMAPS DIF MODULE
-from .emcontrols import DEF_CONTROLS, DEF_CBED_DSIZE
+try:
+    from .emcontrols import DEF_CONTROLS, DEF_CBED_DSIZE
+except ImportError as e:
+    print(f'got here: {e}')
+
+from .crystals import Crystal
 from .kdiffs import XMAX, YMAX, DEF_MODE

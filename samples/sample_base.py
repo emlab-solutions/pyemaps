@@ -28,8 +28,13 @@ Date:       May 07, 2022
 """
 from pickle import EMPTY_DICT
 
-from pyemaps import DEF_CBED_DSIZE, DEF_MODE
-from pyemaps import EMC, DPError, DPListError, EMCError
+try:
+    from pyemaps import DEF_CBED_DSIZE, DEF_MODE
+except ImportError as e:
+    print(f'Importing error: {e}')
+    exit(1)
+
+from pyemaps import EMC, DPError, DPListError, EMCError, BlochError
 
 MAX_PROCWORKERS = 4
 
@@ -79,9 +84,65 @@ def generate_difs(name = 'silicon', mode = DEF_MODE, ckey = 'tilt'):
                 emc, diffP = f.result()
                 difs.add(emc, diffP)
                 
-            except (DPError, EMCError, DPListError) as e:
+            except (DPError, EMCError) as e:
                 print(f'{f} generated an exception: {e.message}')
+                exit(1)
             except:
-                print('failed to generate diffraction patterns')
+                print('failed to generate diffraction patterns with unknow error')
+                exit(1)
             
     return difs
+
+def test_blochs(name = 'silicon', dsize = 0.16, ckey = 'tilt'):
+    # from pyemaps import bloch
+    import concurrent.futures
+    from pyemaps import Crystal as cryst
+    import matplotlib.pyplot as plt
+
+    cr = cryst.from_builtin(name)
+    
+    fs=[]
+    # create an empty diffraction pattern list
+    emclist =[] 
+    imgs = []
+    figSize = 1.5 # in inches
+    qedDPI = 600
+
+    for i in range(-3,3): 
+
+        if ckey == 'tilt':
+            emclist.append(EMC(tilt=(i*0.5, 0.0)))
+        
+        if ckey == 'zone':
+            emclist.append(EMC(zone=(0, i, 1)))
+
+        if ckey == 'defl':
+            emclist.append(EMC(defl=(i*0.5, 0.0)))
+
+        if ckey == 'vt':
+            emclist.append(EMC(vt=200 + i*10))
+
+        if ckey == 'cl':
+            emclist.append(EMC(cl=1000 + i*50))
+
+    fig = plt.figure(figsize=(figSize,figSize), dpi=qedDPI) #setting image size in pixels
+    fig.canvas.set_window_title('PYEMAPS - Dynamic Bloch Diffraction') 
+    ax = plt.subplot(111, label='bloch')
+    with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
+
+        for ec in emclist:
+            fs.append(e.submit(cr.generateBloch, disk_size=dsize, em_controls = ec))
+
+        for f in concurrent.futures.as_completed(fs):
+            try:
+               emc, img = f.result()
+               cr.plotBloch(img, fig, ax, False, emc=emc)
+            except (BlochError, EMCError, DPListError) as e:
+                print(f'{f} generated an exception: {e.message}')
+            except:
+                print('failed to generate diffraction patterns')    
+            imgs.append((emc, img))
+
+    plt.close()
+                
+ 

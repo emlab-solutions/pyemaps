@@ -368,7 +368,7 @@ if __name__ == "__main__":
 
     if not comp:
         # defaults to dif pyeamps module
-        comp = 'powder'
+        comp = 'bloch'
 
     ver = get_bversion(btest = args.test_repo)
     

@@ -20,7 +20,6 @@
 '''
 
 from copy import copy
-from .samples.si_diff import run_si_sample
 
 rel_stage = 'Alpha'
 pyemaps_samples_dir = 'pyemaps_samples'
@@ -78,6 +77,11 @@ if __name__ == '__main__':
         python -m pyemaps -c (--copyright)
         python -m pyemaps -v (--version)
     """
+    try:
+        from .samples.si_diff import run_si_sample
+    except ImportError as e:
+        print(f"got here: {e}")
+        
     import argparse
     import datetime
     import pkg_resources
