@@ -54,7 +54,7 @@ def copy_samples():
     # fetch all files
     for file_name in os.listdir(pkg_samples_dir):
         # construct full file path
-        if file_name == 'si_diff.py':
+        if file_name == 'si_pyemaps.py':
             continue
         source = os.path.join(pkg_samples_dir, file_name)
         destination = os.path.join(curr_samples_dir, file_name)
@@ -78,7 +78,7 @@ if __name__ == '__main__':
         python -m pyemaps -v (--version)
     """
     try:
-        from .samples.si_diff import run_si_sample
+        from .samples.si_pyemaps import run_si_sample
     except ImportError as e:
         print(f"got here: {e}")
         

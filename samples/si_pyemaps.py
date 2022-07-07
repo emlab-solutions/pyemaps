@@ -34,7 +34,7 @@ Date:       May 07, 2022
 def run_si_sample():
     #import Crystal class from pyemaps as cryst
     from pyemaps import Crystal as cryst
-    from pyemaps import showDif
+    from pyemaps import showDif, showBloch
     from pyemaps import DPList
     # create a crystal class instance and load it with builtin silicon data
     c_name = 'Silicon'
@@ -57,6 +57,9 @@ def run_si_sample():
     showDif(dpl, kshow=False, ishow=False) 
     showDif(dpl, ishow=False)
 
-
-    
+    bimglist = []
+    emc, img = si.generateBloch()
+    bimglist.append((emc, img))
+    showBloch(bimglist)
+    showBloch(bimglist, clrMap=1)
 
