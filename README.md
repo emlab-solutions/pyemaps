@@ -10,7 +10,7 @@
 ## Overview [`↩`](#contents) <a id="overview"></a>
 __pyemaps__ package is a collection of python modules and libraries designed for transmission electron diffraction simulations and related crystallographic calculations. Main features include:
 
->**Crystal** : crystal data module, classes and methods for loading crystal data from various sources; for generating __diffraction patterns__ with microscope and sample control parameters; for creating __electron powder diffraction__; for calculating the following __crystal structure factors__:
+>**Crystal** : crystal data module, classes and methods for loading crystal data from various sources; for generating __kinematic and dynamic (bloch) diffraction patterns__ with microscope and sample control parameters; for creating __electron powder diffraction__; for calculating the following __crystal structure factors__:
 >    * X-Ray Structure Factors
 >    * Electron Structure Factor in V (volts)
 >    * Electron Structure Factor in 1/&#8491;^2
@@ -24,9 +24,6 @@ See sample code and latest [release notes](https://emlab-solutions.github.io/pye
 
 __pyemaps__ is based on the proprietary Fortran applications released as backend of [cloudEMAPS2.0](https://emaps.emlabsolutions.com). 
 
-Future releases planned include:
-
->*Bloch* : dynamic Bloch wave simulation.
 
 Check [EMlab Solution, Inc.](https://www.emlabsolutions.com) for updates and releases. We welcome comments and suggestions from our user community. For reporting any issues and requesting pyemaps improvements, or sharing scripts using __pyemaps__, please go to [our support page](https://www.emlabsolutions.com/contact/). 
 
@@ -77,17 +74,42 @@ python sample.py
 where sample.py is as follows:
 
 ```python
- #import Crystal class from pyemaps as cryst
-from pyemaps import Crystal as cryst
-# create a crystal class instance and load it with builtin silicon data
-si = cryst.from_builtin('Silicon')
+    from pyemaps import Crystal as cr
+    from pyemaps import showDif, showBloch
+    from pyemaps import DPList
+    # create a crystal class instance and load it with builtin silicon data
+    c_name = 'Silicon'
+    si = cr.from_builtin(c_name)
 
-# generate diffraction on the crystal instance with all default controls
-# parameters, default controls returned as the first output ignored
+    # generate diffraction on the crystal instance with all default controls
+    # parameters, default controls returned as the first output ignored
+    
+    dpl = DPList(c_name)
 
-_, si_dp = si.generateDP()
-#plot and show the diffraction pattern using pyemaps built-in plot function
-si_dp.plot()
+    emc, si_dp = si.generateDP()
+    dpl.add(emc, si_dp)    
+
+    #plot and show the diffraction pattern using pyemaps built-in plot function
+    showDif(dpl)
+
+    #hide Kikuchi lines
+    showDif(dpl, kshow=False) 
+
+    #hide both Kukuchi line and Miller Indices
+    showDif(dpl, kshow=False, ishow=False) 
+
+    #hide Miller Indices
+    showDif(dpl, ishow=False)
+
+    #Generate dynamic diffraction patterns using pyemaps' bloch module 
+    bloch_imgs_list = []
+    emc, img = si.generateBloch() #with all default parameters
+    
+    #create a dynamic diffraction pattern list /w assiated controls
+    bloch_imgs_list.append((emc, img)) 
+    
+    showBloch(bloch_imgs_list, name = c_name) #grey color map
+    showBloch(bloch_imgs_list, bColor=True) #with predefined color map
 ```
 
 The alternative to run the above without creating sample.py:
@@ -117,6 +139,9 @@ spot size: 0.05 Å
 ```
 
 ![](https://github.com/emlab-solutions/imagepypy/raw/main/kdiff_si.png?raw=True "Kinematic diffraction for silicon")
+
+The following is the dynamic diffraction pattern for _Silicon_ builtin crystal with sampling set at 20. The left is the image in gray scale and the righ in a predefined color map
+![](https://github.com/emlab-solutions/imagepypy/raw/main/si_bloch.png?raw=True "Dynamic diffraction for silicon")
 
 To see all crystal names with builtin data, call:
 ```python
@@ -164,6 +189,8 @@ Accessing diffraction patterns data is easy for pyemaps users to visualize the d
     dp.shift #deflection shifts of all of the above
     ...
 ```
+* Raw dynamic diffraction data (Bloch) is an _numpy_ array of floats with dimension of NxN where N is the detector size input for _generateBloch(...)_ function. Each point in the array represent the image intensity. Python _matplotlib_ can be used to display the pattern as shown in _pyemaps_ builtin display function _showBloch()_.  
+
 <!-- 
 In addition to the above and and pyemaps' built-in _matplotlib_ rendering of diffraction pattern, DigitalMicrography (referred as DM here) is another option with its line and circle annotations objects. Simply open and execute the python script in DM __dm_diff.py__ in _samples_ directory for example.
 
@@ -171,9 +198,9 @@ In addition to the above and and pyemaps' built-in _matplotlib_ rendering of dif
 ![](https://github.com/emlab-solutions/imagepypy/blob/main/kdiff_si_dm.png?raw=True "Kinematic diffraction for silicon python script dm_diff.py") -->
 
 Other sample scripts designed for you to explore pyemaps are available in samples directory:
-* __si_tilt.py__: spot diffraction patterns generated with silicon crystal data, plotted with _matplotlib pyplot_ module. The code also shows how a list of diffraction patterns are generated and displayed as one of electron microscope and sample controls - tilt in x direction changes.
+* __si_dif.py__: spot diffraction patterns generated with silicon crystal data, plotted with _matplotlib pyplot_ module. The code also shows how a list of diffraction patterns are generated and displayed as one of electron microscope and sample controls - tilt in x direction changes, for example.
 
-* __si_zone.py__: same as above except the control that changes is zone axis.
+* __si_bloch.py__: demonstrates dynamic diffraction generation with similar control change as _si_dif.py_.
 <!-- 
 * __pyplot_dm_si_diff.py__: DM python script which generate and plot diffraction pattern for silicon crystal using _matplotlib pyplot_ module. The rendering of diffracttion patterns are in black for normal mode and CBED in color. -->
 

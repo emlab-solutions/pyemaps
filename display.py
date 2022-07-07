@@ -146,7 +146,7 @@ def showDif(dpl=None, kshow=True, ishow=True):
         ax.cla()
     plt.close()
 
-def showBloch(bimgs, name = 'Silicon', clrMap = None):
+def showBloch(bimgs, name = 'Silicon', bColor = False):
     """
     plot one powder diffraction
     """
@@ -159,9 +159,8 @@ def showBloch(bimgs, name = 'Silicon', clrMap = None):
     clrs = ["#2973A5", "cyan", "limegreen", "yellow", "red"]
     gclrs=plt.get_cmap('gray')
 
-    if not clrMap:
-        clrMap = gclrs #default to grey
-    else:
+    clrMap = gclrs #default to grey
+    if bColor:
         clrMap = LinearSegmentedColormap.from_list("mycmap", clrs)
 
     curr_dpi = find_dpi()
