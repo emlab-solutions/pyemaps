@@ -29,5 +29,11 @@ by pyemaps by changing zone axis
 from sample_base import generate_difs 
 
 if __name__ == '__main__':
-    generate_difs(ckey='cl').plot()
-    generate_difs(mode = 2, ckey='cl').plot()
+    from pyemaps import showDif
+
+    key = 'cl'
+    dps = generate_difs(ckey=key)
+    showDif(dps)
+
+    dps_cbed = generate_difs(mode = 2, ckey=key)
+    showDif(dps_cbed, ishow=False)

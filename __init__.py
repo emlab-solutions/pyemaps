@@ -135,3 +135,4 @@ except ImportError as e:
 
 from .crystals import Crystal
 from .kdiffs import XMAX, YMAX, DEF_MODE
+from .display import showDif, showBloch

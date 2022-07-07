@@ -34,18 +34,28 @@ Date:       May 07, 2022
 def run_si_sample():
     #import Crystal class from pyemaps as cryst
     from pyemaps import Crystal as cryst
+    from pyemaps import showDif
+    from pyemaps import DPList
     # create a crystal class instance and load it with builtin silicon data
-    si = cryst.from_builtin('silicon')
+    c_name = 'Silicon'
+    si = cryst.from_builtin(c_name)
 
     # generate diffraction on the crystal instance with all default controls
     # parameters, default controls returned as the first output ignored
     
-    _, si_dp = si.generateDP()
+    dpl = DPList(c_name)
+
+    emc, si_dp = si.generateDP()
+    dpl.add(emc, si_dp)    
+
     #plot and show the diffraction pattern using pyemaps built-in plot function
-    si_dp.plot()
-    si_dp.plot(kshow=False)
-    si_dp.plot(kshow=False, ishow=False)
-    si_dp.plot(ishow=False)
+    
+    showDif(dpl)
+    showDif(dpl, kshow=False) 
+
+
+    showDif(dpl, kshow=False, ishow=False) 
+    showDif(dpl, ishow=False)
 
 
     
