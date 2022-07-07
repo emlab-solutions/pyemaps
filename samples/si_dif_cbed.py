@@ -19,21 +19,22 @@ Contact supprort@emlabsoftware.com for any questions and comments.
 ___________________________
 
 Author:     EMLab Solutions, Inc.
-Date:       May 11, 2022    
+Date:       May 07, 2022    
 
-
-This sample code is to render kinematic diffraction patterns generated
-by pyemaps by changing zone axis
 '''
 
-from sample_base import generate_difs 
+from pyemaps import showDif
+from sample_base import generate_difs
+c_name = 'Silicon'
+
+def run_cbed_dp_tests():
+    from sample_base import generate_difs
+
+    em_keys = ['tilt', 'zone', 'defl', 'vt', 'cl']
+    for k in em_keys:
+        dpl = generate_difs(ckey=k, mode = 2)
+        showDif(dpl)
 
 if __name__ == '__main__':
-    from pyemaps import showDif
-
-    key = 'vt'
-    dps = generate_difs(ckey=key)
-    showDif(dps)
-
-    dps_cbed = generate_difs(mode = 2, ckey=key)
-    showDif(dps_cbed, ishow=False)
+    
+    run_cbed_dp_tests()

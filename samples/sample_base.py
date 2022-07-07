@@ -26,8 +26,6 @@ Author:     EMLab Solutions, Inc.
 Date:       May 07, 2022    
 
 """
-from pickle import EMPTY_DICT
-
 try:
     from pyemaps import DEF_CBED_DSIZE, DEF_MODE
 except ImportError as e:
