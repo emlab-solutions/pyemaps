@@ -33,12 +33,12 @@ Date:       May 07, 2022
 
 def run_si_sample():
     #import Crystal class from pyemaps as cryst
-    from pyemaps import Crystal as cryst
+    from pyemaps import Crystal as cr
     from pyemaps import showDif, showBloch
     from pyemaps import DPList
     # create a crystal class instance and load it with builtin silicon data
     c_name = 'Silicon'
-    si = cryst.from_builtin(c_name)
+    si = cr.from_builtin(c_name)
 
     # generate diffraction on the crystal instance with all default controls
     # parameters, default controls returned as the first output ignored
@@ -46,20 +46,32 @@ def run_si_sample():
     dpl = DPList(c_name)
 
     emc, si_dp = si.generateDP()
-    dpl.add(emc, si_dp)    
-
-    #plot and show the diffraction pattern using pyemaps built-in plot function
+    dpl.add(emc, si_dp) 
     
+    #plot and show the diffraction pattern using pyemaps built-in plot function
     showDif(dpl)
+
+    #hide Kikuchi lines
     showDif(dpl, kshow=False) 
 
+    #plot the following two DP in CBED mode (mode = 2)
+    dpl = DPList(c_name, mode = 2)
 
+    emc, si_dp = si.generateDP(mode = 2)
+    dpl.add(emc, si_dp) 
+
+    #hide both Kukuchi line and Miller Indices
     showDif(dpl, kshow=False, ishow=False) 
+
+    #hide Miller Indices
     showDif(dpl, ishow=False)
 
-    bimglist = []
-    emc, img = si.generateBloch()
-    bimglist.append((emc, img))
-    showBloch(bimglist)
-    showBloch(bimglist, clrMap=1)
-
+    #Generate dynamic diffraction patterns using pyemaps' bloch module 
+    bloch_imgs_list = []
+    emc, img = si.generateBloch() #with all default parameters
+    
+    #create a dynamic diffraction pattern list /w assiated controls
+    bloch_imgs_list.append((emc, img)) 
+    
+    showBloch(bloch_imgs_list, name = c_name) #grey color map
+    showBloch(bloch_imgs_list, bColor=True) #with predefined color map
