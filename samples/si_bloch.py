@@ -1,25 +1,20 @@
-from sample_base import test_blochs
 
+from pyemaps import showBloch
 
-def run_bloch():
-    from pyemaps import dif, bloch
+def sanity_check_bloch():
     from pyemaps import Crystal as cr
 
     si = cr.from_builtin('Silicon')
     ec, img = si.generateBloch()
-    si.plotBloch(img, emc=ec)
-    si.plotBloch(img, bColor = True, emc=ec)
+    showBloch([(ec, img)])
 
-def run_blochs():
-    from sample_base import test_blochs
-    
-    test_blochs(ckey='tilt')
-    test_blochs(ckey='zone')
-    test_blochs(ckey='defl')
-    test_blochs(ckey='vt')
-    test_blochs(ckey='cl')
-    # plotBlochImages(imgs, bColor = True)
+def run_bloch_tests():
+    from sample_base import generate_bimages
+    em_keys = ['tilt', 'zone', 'defl', 'vt', 'cl']
+    for k in em_keys:
+        imgs = generate_bimages(ckey=k)
+        showBloch(imgs)
 
 if __name__ == '__main__':
-    # run_bloch()
-    run_blochs()
+    sanity_check_bloch()
+    run_bloch_tests()

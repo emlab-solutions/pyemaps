@@ -852,88 +852,6 @@ def add_bloch(target):
     '''
     bloch module interfaces
     '''
-    def plotBloch(self, img, fig = None, ax = None, bColor=False, emc=EMC()):
-        """
-        plot one powder diffraction
-        """
-        import matplotlib.pyplot as plt
-       
-        qedDPI = 600
-
-        clrs = ["#2973A5", "cyan", "limegreen", "yellow", "red"]
-        gclrs=plt.get_cmap('gray')
-        figSize = 1.5 # in inches
-
-        clrMap = gclrs #default to grey
-
-        singleplot = 0
-        if not fig and not ax:
-            singleplot = 1
-            fig = plt.figure(figsize=(figSize,figSize), dpi=qedDPI) #setting image size in pixels
-            fig.canvas.set_window_title('PYEMAPS - Dynamic Bloch Diffraction') 
-            ax = plt.subplot(111, label='bloch')   
-            if not ax: print('-----I am here')
-
-        # import matplotlib.pyplot as plt
-        from matplotlib.colors import LinearSegmentedColormap
-
-        if bColor:
-            clrMap = LinearSegmentedColormap.from_list("mycmap", clrs)
-
-        ax.set_axis_off()
-        ax.set_title(self.name, fontsize=2)
-        plt.imshow(img, cmap=clrMap)
-        x0, _ = plt.xlim()
-        y0, _ = plt.ylim()
-
-        plt.text(x0 + 10, y0 - 10, str(emc),
-                {'color': 'grey', 'fontsize': 1}
-        )
-
-        if singleplot:
-            plt.show()
-            plt.close(fig)
-            return None, None
-        else:
-            plt.draw() 
-            plt.pause(1)
-            ax.cla()
-            return fig, ax
-
-        
-
-          
-# def plotBloch(self, img, bColor=False):
-#         """
-#         plot one powder diffraction
-#         """
-        
-
-#         import matplotlib.pyplot as plt
-#         from matplotlib.colors import LinearSegmentedColormap, PowerNorm
-
-#         qedDPI = 600
-
-#         clrs = ["#2973A5", "cyan", "limegreen", "yellow", "red"]
-#         gclrs=plt.get_cmap('gray')
-#         figSize = 1.5 # in inches
-
-#         fig = plt.figure(figsize=(figSize,figSize), dpi=qedDPI) #setting image size in pixels
-#         fig.canvas.set_window_title('PYEMAPS - Dynamic Bloch Diffraction')
-        
-#         plt.title(f"{self.name}", fontsize=2)
-
-#         clrMap = gclrs #default to grey
-        
-#         if bColor:
-#             clrMap = LinearSegmentedColormap.from_list("mycmap", clrs)
-
-#         plt.imshow(img, cmap=clrMap)
-#         plt.axis("off")
-#         # imgfn = f'bloch_{self.name}.png'
-#         # plt.savefig(imgfn, bbox_inches='tight', pad_inches=0)
-#         plt.show()
-#         plt.close(fig)
     
     def generateBloch(self, *, aperture = 1.0, 
                             omega = 10,  
@@ -1007,12 +925,9 @@ def add_bloch(target):
         raw_image = farray(np.zeros((det_size,det_size), dtype=np.double))
         bloch.get_rawimagedata(raw_image)
 
-        # img = raw_image.reshape(det_size,det_size)
-
         return em_controls, raw_image
     
     target.generateBloch = generateBloch
-    target.plotBloch = plotBloch
 
     return target
 

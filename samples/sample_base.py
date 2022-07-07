@@ -38,7 +38,7 @@ from pyemaps import EMC, DPError, DPListError, EMCError, BlochError
 
 MAX_PROCWORKERS = 4
 
-def generate_difs(name = 'silicon', mode = DEF_MODE, ckey = 'tilt'):
+def generate_difs(name = 'Silicon', mode = DEF_MODE, ckey = 'tilt'):
     from pyemaps import DPList
     import concurrent.futures
     from pyemaps import Crystal as cryst
@@ -92,21 +92,17 @@ def generate_difs(name = 'silicon', mode = DEF_MODE, ckey = 'tilt'):
                 exit(1)
             
     return difs
-
-def test_blochs(name = 'silicon', dsize = 0.16, ckey = 'tilt'):
-    # from pyemaps import bloch
+                
+def generate_bimages(name = 'Silicon', dsize = 0.16, ckey = 'tilt'):
     import concurrent.futures
     from pyemaps import Crystal as cryst
-    import matplotlib.pyplot as plt
 
     cr = cryst.from_builtin(name)
     
     fs=[]
-    # create an empty diffraction pattern list
+   
     emclist =[] 
     imgs = []
-    figSize = 1.5 # in inches
-    qedDPI = 600
 
     for i in range(-3,3): 
 
@@ -125,9 +121,6 @@ def test_blochs(name = 'silicon', dsize = 0.16, ckey = 'tilt'):
         if ckey == 'cl':
             emclist.append(EMC(cl=1000 + i*50))
 
-    fig = plt.figure(figsize=(figSize,figSize), dpi=qedDPI) #setting image size in pixels
-    fig.canvas.set_window_title('PYEMAPS - Dynamic Bloch Diffraction') 
-    ax = plt.subplot(111, label='bloch')
     with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
 
         for ec in emclist:
@@ -136,13 +129,10 @@ def test_blochs(name = 'silicon', dsize = 0.16, ckey = 'tilt'):
         for f in concurrent.futures.as_completed(fs):
             try:
                emc, img = f.result()
-               cr.plotBloch(img, fig, ax, False, emc=emc)
+
             except (BlochError, EMCError, DPListError) as e:
                 print(f'{f} generated an exception: {e.message}')
             except:
                 print('failed to generate diffraction patterns')    
             imgs.append((emc, img))
-
-    plt.close()
-                
- 
+    return imgs

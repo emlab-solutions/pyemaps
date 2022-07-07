@@ -24,8 +24,6 @@ Author:     EMLab Solutions, Inc.
 Date:       May 07, 2022    
 '''
 
-# from .emcontrols import EMControl as EMC
-# from samples.sample_base import plotBlochImages
 from . import EMC
 from . import DPError, PointError, LineError, PIndexError, \
               DiskError, DPListError
@@ -34,7 +32,6 @@ from . import DPError, PointError, LineError, PIndexError, \
 NDIGITS = 1
 DIFF_PRECISION = 0.95
 XMAX, YMAX = 75, 75
-PLOT_MULTIPLIER = 6
 
 DEF_MODE = 1 #normal mode by default
 
@@ -715,94 +712,6 @@ class diffPattern:
         
         return (kdiff, hdiff, ddiff)
 
-    def plot(self, fig = None, ax = None, mode = 1, ctrl = None, *, kshow=True, ishow=True):
-        import matplotlib.pyplot as plt
-        singleplot = 0
-        if not fig and not ax:
-            singleplot = 1
-            fig, ax = plt.subplots()
-
-        import matplotlib.patches as patches
-        import matplotlib.transforms as mtransforms
-        
-        # fig, ax = plt.subplots()
-        fig.canvas.set_window_title('PYEMAPS - Kinematical Diffraction')
-        fig.set_size_inches(900/96, 900/96)
-        fig.set_dpi(96)
-        ax.set_title(f"{self.name}")
-        ax.set_aspect('equal')
-        
-        line_color = 'k' if kshow else 'w'
-        
-        for kl in self._klines:
-            # print(f'old kline: {kl}')
-            kl *=PLOT_MULTIPLIER
-            xx = [kl.pt1.x, kl.pt2.x]
-            yy = [kl.pt1.y, kl.pt2.y]
-            # print(f'new end points: {xx}, {yy}')
-            ax.plot(xx, yy, line_color, alpha=0.2)
-
-        for hl in self._hlines:
-            hl *=PLOT_MULTIPLIER
-            xx = [hl.pt1.x, hl.pt2.x]
-            yy = [hl.pt1.y, hl.pt2.y]
-            ax.plot(xx, yy, 'k', alpha=0.2)
-
-        if not ctrl:
-            ctrl = EMC()
-
-        for d in self._disks:
-            d *= PLOT_MULTIPLIER
-            centre = (d.c.x, d.c.y)
-            
-            bFill = True if mode == 1 else False
-            dis = patches.Circle(centre, 
-                                  d.r, 
-                                  fill=bFill, 
-                                  linewidth = 0.5, 
-                                  alpha=1.0, 
-                                  fc='blue')
-            ax.add_patch(dis)
-            
-            if ishow:
-                yoffset = 0.0 if mode == 2 else d.r/2
-                trans_offset = mtransforms.offset_copy(ax.transData, fig=fig,
-                                        x=0.0, y=yoffset, units='points')
-
-                plt.text(centre[0],centre[1], 
-                        str(d.idx),
-                        {'color': 'red', 'fontsize': 8},
-                        horizontalalignment='center',
-                        verticalalignment='bottom' if mode == 1 else 'center',
-                        transform=trans_offset)
-    
-        controls_text = []
-        
-        controls_text.append(str(ctrl))
-
-        # finding control text plot or coordinates:
-        x0, _ = plt.xlim()
-        y0, _ = plt.ylim()
-
-        plt.text(x0 + 10, y0 - 10, str(ctrl),
-                {'color': 'grey', 'fontsize': 6}
-        )
-
-        # fig = matplotlib.pyplot.gcf()
-        
-        # fig.savefig('te?st2png.png', dpi=100)
-        fig.canvas.draw()
-
-        if singleplot:
-            ax.set_axis_off()
-            # plt.draw()
-            plt.pause(2)
-            plt.close()
-            return None, None
-        else:
-            return fig, ax
-
-
 class Diffraction:
     '''
     list of DP objects and its associated EMC 
@@ -892,22 +801,6 @@ class Diffraction:
         '''
         return self.diffList[key]
 
-    def plot(self, *, kshow=True, ishow =True):
-        import matplotlib.pyplot as plt
-        import matplotlib.patches as patches
-        import matplotlib.transforms as mtransforms
-        
-        fig, ax = plt.subplots()
-        fig.canvas.set_window_title('PYEMAPS - Kinematic Diffraction')
-        for c, dp in self:
-            ax.set_axis_off()
-            dp.plot(fig, ax, self._mode, c, kshow=kshow, ishow=ishow)
-
-            plt.draw()
-            plt.pause(1)
-            ax.cla()
-        plt.close()
-            
     def report_difference(self, other):
 
         if not isinstance(other, Diffraction):

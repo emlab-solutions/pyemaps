@@ -27,10 +27,14 @@ by pyemaps by changing deflection in x direction
 
 Required: sample_base.py in the same directory
 '''
-
-from sample_base import generate_difs    
+from sample_base import generate_difs 
 
 if __name__ == '__main__':
-    
-    generate_difs(ckey='defl').plot()
-    generate_difs(mode = 2,ckey='defl').plot()
+    from pyemaps import showDif
+
+    key = 'defl'
+    dps = generate_difs(ckey=key)
+    showDif(dps)
+
+    dps_cbed = generate_difs(mode = 2, ckey=key)
+    showDif(dps_cbed, ishow=False)

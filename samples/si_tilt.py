@@ -26,9 +26,14 @@ This sample code is to render kinematic diffraction patterns generated
 by pyemaps by changing sample tilt in x direction
 '''
 
-from sample_base import generate_difs    
+from sample_base import generate_difs 
 
 if __name__ == '__main__':
-    # generate_difs()
-    generate_difs().plot()
-    generate_difs(mode = 2).plot()
+    from pyemaps import showDif
+
+    key = 'tilt'
+    dps = generate_difs(ckey=key)
+    showDif(dps)
+
+    dps_cbed = generate_difs(mode = 2, ckey=key)
+    showDif(dps_cbed)

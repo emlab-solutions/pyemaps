@@ -3,9 +3,8 @@ call python -m pyemaps -s
 call python -m pyemaps -c
 call python -m pyemaps -v
 
-python .\import_calc_sanity 
-
 if "%1"=="local" (
+    python .\import_calc_sanity 
     echo n | call python -m pyemaps -cp
     call python .\si_csf.py
     call python .\powder.py
@@ -16,6 +15,7 @@ if "%1"=="local" (
     call python .\si_cl.py
     goto:eof
 ) else (
+    python test\sanity\import_calc_sanity
     echo y | call python -m pyemaps -cp
     call python .\pyemaps_samples\si_csf.py
     call python .\pyemaps_samples\powder.py
