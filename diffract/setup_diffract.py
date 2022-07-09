@@ -187,6 +187,7 @@ def configuration(parent_package='', top_path=None):
                  name                   = mod_name,
                  sources                = src_files,
                  extra_f90_compile_args = compile_args,
+                 define_macros          = [('__BFREE__', 5),]
     )
 
     # print(f"####Before building pyemaps package for {c}...")  
