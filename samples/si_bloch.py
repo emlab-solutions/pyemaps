@@ -62,13 +62,13 @@ def generate_bloch_images(name = 'Silicon', dsize = 0.16, ckey = 'tilt'):
     with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
 
         for ec in emclist:
-            fs.append(e.submit(cr.generateBloch, disk_size=dsize, em_controls = ec))
+            fs.append(e.submit(cr.generateBloch, disk_size=dsize, sampling = 20, em_controls = ec))
 
         for f in concurrent.futures.as_completed(fs):
             try:
                emc, img = f.result()
 
-            except (BlochError, EMCError, DPListError) as e:
+            except (BlochError, EMCError) as e:
                 print(f'{f} generated an exception: {e.message}')
             except:
                 print('failed to generate diffraction patterns')    

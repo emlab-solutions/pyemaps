@@ -895,25 +895,28 @@ def add_bloch(target):
         if ret == 0:
             raise BlochError('Error bloch runtime1')
 
-        nbeams = dif.get_nbeams()
-        # print(f'nbeams: {nbeams}')
+        # nbeams = dif.get_nbeams()
+        # # print(f'nbeams: {nbeams}')
 
-        # print(nbeams)
-        if nbeams >= 500: #max number of beams allowed
-            dif.diff_internaldelete(1)
-            dif.diff_delete()
-            raise BlochError('bloch runtime exceeds resource limit')
-
-        th_start = thickness
-        th_end = thickness
-        th_step = 100
-        bloch.setsamplethickness(th_start, th_end, th_step)
+        # # print(nbeams)
+        # if nbeams >= 500: #max number of beams allowed
+        #     dif.diff_internaldelete(1)
+        #     dif.diff_delete()
+        #     raise BlochError('bloch runtime exceeds resource limit')
+        
+        dif.diff_internaldelete(1)
+        bloch.setsamplethickness(thickness, thickness, 100)
 
         ret = bloch.dobloch(aperture,omega,sampling,bm3)
         # bloch.bloch_print()
         # bloch.bloch_print_inherit()
+        if ret == 2:
+            print('Contact support@emlabsoftware.com for how to register for ' +
+            'a full and accelerated version of pyemaps without such limit')
+            raise BlochError('Bloch computation resource limit reached')
+
         if ret != 0:
-            raise BlochError('Error from bloch runtime2')
+            raise BlochError('Error computing dynamic diffraction')
 
         #successful bloch runtime, then retreive bloch image
         # 
@@ -924,6 +927,9 @@ def add_bloch(target):
 
         raw_image = farray(np.zeros((det_size,det_size), dtype=np.double))
         bloch.get_rawimagedata(raw_image)
+
+        bloch.imgmemdelete()
+        dif.diff_delete()
 
         return em_controls, raw_image
     
