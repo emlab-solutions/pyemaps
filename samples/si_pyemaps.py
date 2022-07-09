@@ -68,7 +68,7 @@ def run_si_sample():
 
     #Generate dynamic diffraction patterns using pyemaps' bloch module 
     bloch_imgs_list = []
-    emc, img = si.generateBloch() #with all default parameters
+    emc, img = si.generateBloch(sampling = 20) #with all default parameters
     
     #create a dynamic diffraction pattern list /w assiated controls
     bloch_imgs_list.append((emc, img)) 
