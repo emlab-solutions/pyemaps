@@ -1938,8 +1938,8 @@ class Crystal:
         dx0, dy0 = em_controls.defl
         cl, vt = em_controls.cl, em_controls.vt
         zone = em_controls.zone
-
         ret, diffp = self._get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize)
+        
         if ret != 200:
             raise DPError('failed to generate diffraction patterns')
 
@@ -1997,34 +1997,37 @@ class Crystal:
 
         """
         import copy
-
+        
+        # print('got here 0')
         dif.initcontrols()
         # mode defaults to DEF_MODE, in which dsize is not used
         # Electron Microscope controls defaults - DEF_CONTROLS
-
+        ds = DEF_CBED_DSIZE
         if mode == 2:
             dif.setmode(mode)
-            if dsize == None:
-                ds = DEF_CBED_DSIZE          
-            else:
+            if dsize:
                 ds = dsize
             dif.setdisksize(float(ds))
-
+        
         if tx0 != None and ty0 != None and dx0 != None and dy0 != None:
             dif.setsamplecontrols(tx0, ty0, dx0, dy0)
 
         if cl != None and vt != None:
             dif.setemcontrols(cl, vt)
-        
         if zone != None:
             dif.setzone(zone[0], zone[1], zone[2])
         
+        
+        # print(f'got here 1: {ds}')
         cell, atoms, atn, spg = self.prepareDif()
+        # print(f'got here 2: {cell}, {atoms}, {atn}, {spg}')
         dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
 
         ret = 1
+        # print(f'before dif call')
         ret = dif.diffract()
         if ret == 0:
+            print('Diffraction module failed to run')
             return 500, ({})
 
         shiftx, shifty = dif.get_shifts()
