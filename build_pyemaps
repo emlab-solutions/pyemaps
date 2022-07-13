@@ -310,21 +310,21 @@ def install_local():
     os.system(install_cmd)
 
     # copy .lib dir into right place
-    local_pyemaps = os.path.join(pyemaps_dir, 'pyemaps')
-    my_list = os.listdir(local_pyemaps)
+    # local_pyemaps = os.path.join(pyemaps_dir, 'pyemaps')
+    # my_list = os.listdir(pyemaps_dir)
 
-    for ld in my_list:
-        if ld == LIBDIR:
-            src_dir = os.path.join(local_pyemaps, ld)
-            dest_dir = os.path.join(pyemaps_dir, LIBDIR)
-            if os.path.exists(dest_dir):
-                print(f'removing existing directory before copy: {dest_dir}')
-                shutil.rmtree(dest_dir)
-            shutil.move(src_dir, pyemaps_dir,copy_function = shutil.copytree)
+    # for ld in my_list:
+    #     if ld == LIBDIR:
+    #         src_dir = os.path.join(pyemaps_dir, ld)
+    #         dest_dir = os.path.join(pyemaps_dir, LIBDIR)
+    #         if os.path.exists(dest_dir):
+    #             print(f'removing existing directory before copy: {dest_dir}')
+    #             shutil.rmtree(dest_dir)
+    #         shutil.move(src_dir, pyemaps_dir,copy_function = shutil.copytree)
 
-    # remove the local pyeamps dir
+    # # remove the local pyeamps dir
     
-    shutil.rmtree(local_pyemaps)
+    # shutil.rmtree(local_pyemaps)
 
     #also copy all sample code into parent directory
     samples_src_dir = os.path.join(pyemaps_dir, 'samples')

@@ -5,18 +5,25 @@ from unicodedata import name
 mod_name = "scattering"
 ver = "1.0.0"
 
-sct_files =['scattering_sct.pyf', 'scattering.f95']
+sct_files =['scattering_sct.pyf', 'scattering.f90']
 
-compile_args=['-m64',         
-            '-Wno-tabs', 
-            '-Warray-bounds',
-            '-fdefault-double-8',
-            '-fdefault-real-8',
-            '-fopenmp',
-            '-fcheck=all,no-array-temps',
-            '-cpp', 
-            '-Wall',
-            '-O3']
+compile_args=['-Qm64',
+              '-WB',
+            #   '-double-size:64',
+              '-Qopenmp',
+              '-GS', 
+              '-fast',
+              '-4R8',
+              '-check:all',
+            #   '-check:nostack',
+              '-fpp',
+            #   '-nogen-interfaces',
+            #   '-Qipo',
+            #   '-warn:all',
+              '-warn:nointerfaces',
+              '-O3', 
+              '-Qfp-stack-check',
+              '-c']
 
 def get_sources():
     import os
