@@ -9,7 +9,7 @@ spgra_files =['spg_spgseek.pyf', 'spgseek.f90', 'spgra.f90']
 
 compile_args=['-Qm64',
               '-WB',
-            #   '-double-size:64',
+              '-double-size:64',
               '-Qopenmp',
               '-GS', 
               '-fast',
