@@ -9,7 +9,7 @@ sct_files =['scattering_sct.pyf', 'scattering.f90']
 
 compile_args=['-Qm64',
               '-WB',
-            #   '-double-size:64',
+              '-double-size:64',
               '-Qopenmp',
               '-GS', 
               '-fast',

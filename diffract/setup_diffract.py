@@ -9,6 +9,7 @@ dp_cobj = "write_dpbin.o"
 compile_args=['-Qm64',
               '-WB',
             #   '-double-size:64',
+              '-'
               '-Qopenmp',
               '-GS', 
               '-fast',
