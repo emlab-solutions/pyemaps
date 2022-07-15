@@ -912,7 +912,7 @@ def add_bloch(target):
         # bloch.bloch_print_inherit()
         if ret == 2:
             print('Contact support@emlabsoftware.com for how to register for ' +
-            'a full and accelerated version of pyemaps without such limit')
+            'a full and accelerated version of pyemaps')
             raise BlochError('Bloch computation resource limit reached')
 
         if ret != 0:
