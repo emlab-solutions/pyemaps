@@ -12,16 +12,11 @@ compile_args=['-Qm64',
               '-double-size:64',
               '-Qopenmp',
               '-GS', 
-              '-fast',
               '-4R8',
-              '-check:all',
-            #   '-check:nostack',
               '-fpp',
-            #   '-nogen-interfaces',
-            #   '-Qipo',
-            #   '-warn:all',
               '-warn:nointerfaces',
-              '-O3', 
+              '-O3',
+              # '-fast' 
               '-Qfp-stack-check',
               '-c']
 

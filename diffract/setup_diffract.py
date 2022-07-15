@@ -6,22 +6,35 @@ mod_name = "emaps"
 ver = "1.0.0"
 dp_cobj = "write_dpbin.o"
 
+# compile_args=['-Qm64',
+#               '-WB',
+#               '-double-size:64',
+#               '-Qopenmp',
+#               '-GS', 
+#             #   '-fast',
+#               '-4R8',
+#               '-check:all',
+#               '-check:nostack',
+#               '-fpp',
+#             #   '-nogen-interfaces',
+#             #   '-Qipo',
+#             #   '-warn:all',
+#               '-warn:nointerfaces',
+#               '-O2', 
+#               '-Qfp-stack-check',
+#               '-c']
+
 compile_args=['-Qm64',
               '-WB',
+              '-heap-arrays:512',
             #   '-double-size:64',
-              '-'
               '-Qopenmp',
               '-GS', 
-              '-fast',
               '-4R8',
-              '-check:all',
-            #   '-check:nostack',
               '-fpp',
-            #   '-nogen-interfaces',
-              '-Qipo',
-            #   '-warn:all',
               '-warn:nointerfaces',
-              '-O3', 
+              '-O3', #this option does not work with -fast
+            #   '-fast' 
               '-Qfp-stack-check',
               '-c']
 
@@ -187,7 +200,13 @@ def get_sources():
 def configuration(parent_package='', top_path=None):
     import os
     from numpy.distutils.misc_util import Configuration
+    # from numpy.distutils.fcompiler import get_default_fcompiler
 
+    # compiler = get_default_fcompiler()
+
+    # f90flags = []
+    # if compiler == 'intel' or compiler == 'intelvem':
+    #     print()
     config = Configuration('diffract', parent_package, top_path)
 
     src_files = get_sources()
@@ -203,8 +222,7 @@ def configuration(parent_package='', top_path=None):
                  name                   = mod_name,
                  sources                = src_files,
                  extra_f90_compile_args = compile_args,
-                 define_macros          = [('__BFREE__', 5),]
-                #  extra_objects          = obj_files
+                 define_macros          = [('__BFREE__', 120),]
     )
 
     # print(f"####Before building pyemaps package for {c}...")  
