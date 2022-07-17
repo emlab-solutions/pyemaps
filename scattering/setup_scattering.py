@@ -7,17 +7,19 @@ ver = "1.0.0"
 
 sct_files =['scattering_sct.pyf', 'scattering.f90']
 
+
 compile_args=['-Qm64',
               '-WB',
-              '-double-size:64',
+              '-heap-arrays:768',
+            #   '-double-size:64',
               '-Qopenmp',
               '-GS', 
               '-4R8',
               '-fpp',
               '-warn:nointerfaces',
-              '-O3',
-              # '-fast' 
-              '-Qfp-stack-check',
+            #   '-fast', 
+              '-O2', #this option does not work with -fast
+            #   '-Qfp-stack-check',
               '-c']
 
 def get_sources():
