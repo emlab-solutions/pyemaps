@@ -184,6 +184,6 @@ def showBloch(bimgs, name = 'Silicon', bColor = False):
                 {'color': 'grey', 'fontsize': 8}
         )
         plt.draw() 
-        plt.pause(1)
+        plt.pause(5)
         ax.cla()
     plt.close()

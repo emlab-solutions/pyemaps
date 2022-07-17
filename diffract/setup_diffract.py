@@ -26,16 +26,16 @@ dp_cobj = "write_dpbin.o"
 
 compile_args=['-Qm64',
               '-WB',
-              '-heap-arrays:512',
+              '-heap-arrays:768',
             #   '-double-size:64',
               '-Qopenmp',
               '-GS', 
               '-4R8',
               '-fpp',
               '-warn:nointerfaces',
-              '-O3', #this option does not work with -fast
-            #   '-fast' 
-              '-Qfp-stack-check',
+              '-O2', #this option does not work with -fast
+            #   '-fast', 
+            #   '-Qfp-stack-check',
               '-c']
 
 dif_source = ['diffract.f90',

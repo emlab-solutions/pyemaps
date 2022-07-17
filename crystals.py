@@ -714,6 +714,7 @@ def add_csf(target):
 
         cell, atoms, atn, spg = self.prepareDif()
         dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        # dif.crystal_printall()
 
         nb, ret = csf.generate_sf(kv, smax, sftype, aptype)
 
