@@ -115,6 +115,7 @@ from .emcontrols import EMControl as EMC
 #diffraction classes handling diffraction pattern data
 from .kdiffs import diffPattern as DP
 from .kdiffs import Diffraction as DPList
+from .ddiffs import BlochImgs as BImgList
 
 #-----------------------Extension control defaults------------------------
 #       DEF_CONTROLS --- default controls in dictionary object

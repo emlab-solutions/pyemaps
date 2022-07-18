@@ -799,7 +799,7 @@ class Diffraction:
         '''
         Array like method for retrieving DP
         '''
-        return self.diffList[key]
+        return self._diffList[key]
 
     def report_difference(self, other):
 

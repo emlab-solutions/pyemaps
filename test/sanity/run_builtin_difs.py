@@ -1,6 +1,6 @@
 from numpy import asfortranarray as farray
 from numpy import array
-from pyemaps import dif,bloch
+from pyemaps import ddiffs, dif
 # from emaps import bloch
 import numpy as np
 import os
@@ -10,6 +10,7 @@ import math
 import timeit
 
 from pyemaps.emcontrols import DEF_CBED_DSIZE
+from pyemaps.errors import CrystalClassError
 MAX_PROCWORKERS = 4
 
 def bloch_wrapper(func, *args, **kwargs):
@@ -20,7 +21,7 @@ def bloch_wrapper(func, *args, **kwargs):
 def run_builtin_bloch(sampling = 8, dsize = 0.15, thickness = 800):
     import concurrent.futures
     from pyemaps import Crystal as cryst
-    from pyemaps import EMC, EMCError
+    from pyemaps import EMC, EMCError,BlochListError
     from pyemaps import showBloch
 
     cnames = cryst.list_all_builtin_crystals()
@@ -30,20 +31,20 @@ def run_builtin_bloch(sampling = 8, dsize = 0.15, thickness = 800):
         for n in cnames:
             print(f'--------------Loading crystal: {n}')
             cr = cryst.from_builtin(n)
-            fs.append(e.submit(cr.generateBloch, disk_size=dsize, 
+            fs.append(e.submit(cr.generateBlochImgs, disk_size=dsize, 
                 sampling = sampling, thickness = thickness, em_controls = EMC()))
+
         count = 0
         for f in concurrent.futures.as_completed(fs):
-            imgs = []
+            
             try:
-               emc, img = f.result()
-            except (EMCError) as e:
+               bimgs = f.result()
+            except (EMCError, BlochListError, CrystalClassError) as e:
                 print(f'{f} generated an exception: {e.message}')
             except:
                 print('failed to generate diffraction patterns')
             else:    
-                imgs.append((emc, img))
-                showBloch(imgs, name='Bloch', bColor=True)
+                showBloch(bimgs)
                 count += 1
 
         print(f'Successful bloch runs: {count}')
