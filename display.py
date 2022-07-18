@@ -150,6 +150,8 @@ def showBloch(bimgs, name = 'Silicon', bColor = False):
     """
     plot one powder diffraction
     """
+    # from pyemaps import BlochImgs
+
     from matplotlib.colors import LinearSegmentedColormap
 
     # TODO validating input of bimgs
@@ -175,7 +177,7 @@ def showBloch(bimgs, name = 'Silicon', bColor = False):
     
     for c, img in bimgs:
         ax.set_axis_off()
-        ax.set_title(name, fontsize=12)
+        ax.set_title(bimgs.name, fontsize=12)
         plt.imshow(img, cmap=clrMap)
         x0, _ = plt.xlim()
         y0, _ = plt.ylim()

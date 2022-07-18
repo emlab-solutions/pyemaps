@@ -853,7 +853,37 @@ def add_bloch(target):
     '''
     bloch module interfaces
     '''
-    
+
+    def generateBlochImgs(self, *, aperture = 1.0, 
+                            omega = 10,  
+                            sampling = 8,
+                            bm3 = 0.0,
+                            thickness = 200,
+                            pix_size = 100,
+                            det_size = 512,
+                            disk_size = 0.16,
+                            em_controls = EMC()):
+        from . import BImgList
+
+        try:
+            emc, bimg = self.generateBloch(aperture = aperture, 
+                                omega = omega,  
+                                sampling = sampling,
+                                bm3 = bm3,
+                                thickness = thickness,
+                                pix_size = pix_size,
+                                det_size = det_size,
+                                disk_size = disk_size,
+                                em_controls = em_controls)
+
+            myBlochImgs = BImgList(self._name)
+            myBlochImgs.add(emc, bimg)
+        except BlochListError as e:
+            raise CrystalClassError('Failed to generate bloch image' + {e.message})
+
+        return myBlochImgs
+
+        
     def generateBloch(self, *, aperture = 1.0, 
                             omega = 10,  
                             sampling = 8,
@@ -867,9 +897,8 @@ def add_bloch(target):
             from . import bloch
 
         except ImportError as e:               
-            print(f"Error: required module pyemaps.bloch not found")
-            return []
-
+            raise CrystalClassError('Failed to import bloch - dynamic diffraction simulation module')
+                         
         dif.initcontrols()
         dif.setmode(2) # alway in CBED mode
         # TODO need to figure out how to pass these changes
@@ -881,7 +910,7 @@ def add_bloch(target):
 
         cell, atoms, atn, spg = self.prepareDif()
         dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
-
+  
         # rawP = farray(np.zeros((2,1000), dtype=np.double))
         tx, ty = em_controls.tilt[0], em_controls.tilt[1]
         dx, dy = em_controls.defl[0], em_controls.defl[1]
@@ -928,13 +957,13 @@ def add_bloch(target):
 
         raw_image = farray(np.zeros((det_size,det_size), dtype=np.double))
         bloch.get_rawimagedata(raw_image)
-
         bloch.imgmemdelete()
         dif.diff_delete()
 
         return em_controls, raw_image
     
     target.generateBloch = generateBloch
+    target.generateBlochImgs = generateBlochImgs
 
     return target
 
@@ -1914,7 +1943,31 @@ class Crystal:
         cfile_list = glob.glob(cbase_files)
 
         return [os.path.basename(name).split('.')[0] for name in cfile_list]
-            
+
+    def generateDif(self, mode = None, dsize = None, em_controls = None):
+        """
+        This routine returns a DPList object.
+
+        New DP generation based on the crystal data and Microscope control 
+        parameters. We will add more controls as we see fit.  
+
+        :param mode: Optional mode of diffraction mode - normal(1) or CBED(2)
+        :param dsize: Optional of CBED circle size - defaults to dif.DEF_DSIZE = 0.16
+        :param: Optional em_controls of electron microscope controls dictionary - defaults to DEF_CONTROLS
+        :return: a DP object
+        :rtype: diffPattern
+        """
+        from . import DPList
+        
+        try:
+            emc, cdp = self.generateDP(mode = mode, dsize=dsize, em_controls = em_controls)
+            myDif = DPList(self._name, mode = mode)
+            myDif.add(emc, cdp)
+        except (DPListError, EMCError, DPError) as e:
+            raise CrystalClassError('failed to generate diffraction')
+
+        return myDif   
+
     def generateDP(self, mode = None, dsize = None, em_controls = None):
         """
         This routine returns a DP object.
