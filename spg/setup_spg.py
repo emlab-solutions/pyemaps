@@ -1,7 +1,27 @@
 from ensurepip import version
 from nturl2path import url2pathname
 from unicodedata import name
+# import importlib.util as ilu
+from pathlib import Path
+import os
+import importlib.util as ilu
 
+# from ..diffract.setup_diffract import compiler_args
+# import sys
+
+# current_path = Path(os.path.abspath(__file__))
+# parent_path = current_path.parent.parent.absolute()
+
+# folder = os.path.join(parent_path, 'diffract')
+# sys.path.append(folder)
+
+# from setup_diffract import compile_args
+# # file = 'setup_diffract'
+# # spec = ilu.spec_from_file_location(file, folder)
+
+# # print(f'------parent path found: {spec}')
+# # difbuildmod = ilu.module_from_spec(spec)
+# # spec.loader.exec_module(difbuildmod)
 mod_name = "spg"
 ver = "1.0.0"
 

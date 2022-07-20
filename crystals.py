@@ -858,28 +858,87 @@ def add_bloch(target):
                             omega = 10,  
                             sampling = 8,
                             bm3 = 0.0,
-                            thickness = 200,
                             pix_size = 100,
                             det_size = 512,
                             disk_size = 0.16,
+                            sample_thickness = (200, 1000, 100),
                             em_controls = EMC()):
-        from . import BImgList
-
         try:
-            emc, bimg = self.generateBloch(aperture = aperture, 
-                                omega = omega,  
-                                sampling = sampling,
-                                bm3 = bm3,
-                                thickness = thickness,
-                                pix_size = pix_size,
-                                det_size = det_size,
-                                disk_size = disk_size,
-                                em_controls = em_controls)
+            from . import bloch
 
+        except ImportError as e:               
+            raise CrystalClassError('Failed to import bloch - dynamic diffraction simulation module')
+        from pyemaps import BImgList
+
+        th_start, th_end, th_step = sample_thickness
+
+        if th_start > th_end or th_step <= 0:
+            raise BlochListError('Sample thickness parameter invalid')               
+
+        dif.initcontrols()
+        dif.setmode(2) # alway in CBED mode
+        # TODO need to figure out how to pass these changes
+
+        dif.setglen(1.0)
+        dif.setgcutoff(0.1)
+        dif.setexcitation(0.3,1.0)
+        dif.setdisksize(disk_size)
+
+        cell, atoms, atn, spg = self.prepareDif()
+        dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+  
+        # rawP = farray(np.zeros((2,1000), dtype=np.double))
+        tx, ty = em_controls.tilt[0], em_controls.tilt[1]
+        dx, dy = em_controls.defl[0], em_controls.defl[1]
+        z = em_controls.zone
+        vt, cl = em_controls.vt,  em_controls.cl
+        
+        dif.setsamplecontrols(tx, ty, dx, dy)
+        dif.setemcontrols(cl, vt)        
+        dif.setzone(z[0], z[1], z[2])
+        
+        ret = dif.diffract(1)
+        if ret == 0:
+            raise BlochError('Error bloch runtime1')
+        
+        dif.diff_internaldelete(1)
+        bloch.setsamplethickness(th_start, th_end, th_step)
+
+        ret = bloch.dobloch(aperture,omega,sampling,bm3)
+        # bloch.bloch_print()
+        # bloch.bloch_print_inherit()
+        if ret == 2:
+            print('Contact support@emlabsoftware.com for how to register for ' +
+            'a full and accelerated version of pyemaps')
+            raise BlochError('Bloch computation resource limit reached')
+
+        if ret != 0:
+            raise BlochError('Error computing dynamic diffraction')
+
+        #successful bloch runtime, then retreive bloch image
+        # 
+        #     
+        
+        slice_step = th_step # 25 * th_step, can be adjusted
+        slice_num = 1 + (th_end-th_start) // slice_step
+        th = th_start
+
+        for i in range(slice_num):
+            ret = bloch.imagegen(th,0,pix_size,det_size)
+            if(ret != 0):
+                raise BlochError("bloch image generation failed!")
+
+            raw_image = farray(np.zeros((det_size,det_size), dtype=np.double))
+            
+            bloch.get_rawimagedata(raw_image)
+            
             myBlochImgs = BImgList(self._name)
-            myBlochImgs.add(emc, bimg)
-        except BlochListError as e:
-            raise CrystalClassError('Failed to generate bloch image' + {e.message})
+            myBlochImgs.add(em_controls, raw_image)
+
+            th += slice_step
+
+        bloch.imgmemdelete()
+        dif.diff_delete()
 
         return myBlochImgs
 
@@ -888,10 +947,10 @@ def add_bloch(target):
                             omega = 10,  
                             sampling = 8,
                             bm3 = 0.0,
-                            thickness = 200,
                             pix_size = 100,
                             det_size = 512,
                             disk_size = 0.16,
+                            thickness = 200,
                             em_controls = EMC()):
         try:
             from . import bloch
@@ -1963,6 +2022,7 @@ class Crystal:
             emc, cdp = self.generateDP(mode = mode, dsize=dsize, em_controls = em_controls)
             myDif = DPList(self._name, mode = mode)
             myDif.add(emc, cdp)
+
         except (DPListError, EMCError, DPError) as e:
             raise CrystalClassError('failed to generate diffraction')
 
@@ -1992,7 +2052,9 @@ class Crystal:
         dx0, dy0 = em_controls.defl
         cl, vt = em_controls.cl, em_controls.vt
         zone = em_controls.zone
+        
         ret, diffp = self._get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize)
+        
         
         if ret != 200:
             raise DPError('failed to generate diffraction patterns')

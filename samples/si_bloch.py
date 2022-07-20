@@ -34,13 +34,13 @@ MAX_PROCWORKERS = 4
 def generate_bloch_images(name = 'Silicon', dsize = 0.16, ckey = 'tilt'):
     import concurrent.futures
     from pyemaps import Crystal as cryst
+    from pyemaps import BImgList
 
     cr = cryst.from_builtin(name)
     
     fs=[]
    
     emclist =[] 
-    imgs = []
 
     for i in range(-3,3): 
 
@@ -63,7 +63,8 @@ def generate_bloch_images(name = 'Silicon', dsize = 0.16, ckey = 'tilt'):
 
         for ec in emclist:
             fs.append(e.submit(cr.generateBloch, disk_size=dsize, sampling = 20, em_controls = ec))
-
+        
+        bimgs = BImgList(name) 
         for f in concurrent.futures.as_completed(fs):
             try:
                emc, img = f.result()
@@ -71,9 +72,10 @@ def generate_bloch_images(name = 'Silicon', dsize = 0.16, ckey = 'tilt'):
             except (BlochError, EMCError) as e:
                 print(f'{f} generated an exception: {e.message}')
             except:
-                print('failed to generate diffraction patterns')    
-            imgs.append((emc, img))
-    return imgs
+                print('failed to generate diffraction patterns')  
+            bimgs.add(emc, img) 
+            
+    return bimgs
 
 from pyemaps import showBloch
 

@@ -31,6 +31,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
+from pyemaps.errors import BlochListError
+
 DISPLAY_SIZE = 900 # default
 PLOT_MULTIPLIER = 6
 
@@ -146,16 +148,19 @@ def showDif(dpl=None, kshow=True, ishow=True):
         ax.cla()
     plt.close()
 
-def showBloch(bimgs, name = 'Silicon', bColor = False):
+def showBloch(bimgs, bColor = False):
     """
     plot one powder diffraction
     """
     # from pyemaps import BlochImgs
 
     from matplotlib.colors import LinearSegmentedColormap
+    from pyemaps import BImgList
 
     # TODO validating input of bimgs
-    
+    if not bimgs or not isinstance(bimgs, BImgList):
+        raise BlochListError('showBloch must have BImgList object as its first input')
+
     curr_dpi = find_dpi()
 
     clrs = ["#2973A5", "cyan", "limegreen", "yellow", "red"]
@@ -186,6 +191,6 @@ def showBloch(bimgs, name = 'Silicon', bColor = False):
                 {'color': 'grey', 'fontsize': 8}
         )
         plt.draw() 
-        plt.pause(5)
+        plt.pause(1)
         ax.cla()
     plt.close()
