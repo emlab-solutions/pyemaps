@@ -58,10 +58,8 @@ def find_dpi():
     user32 = ctypes.windll.user32
     user32.SetProcessDPIAware()
     w = user32.GetSystemMetrics(0)
-    # print('Size is %f %f' % (w, h))
     
     dpi = w*96/width_px
-    # print('Current DPI is %f' % (dpi))
     return dpi
 
 def position_fig(f, x, y):
@@ -99,11 +97,11 @@ def showDif(dpl=None, kshow=True, ishow=True):
         line_color = 'k' if kshow else 'w'
     
         for kl in dp.klines:
-            # print(f'old kline: {kl}')
+            
             kl *=PLOT_MULTIPLIER
             xx = [kl.pt1.x, kl.pt2.x]
             yy = [kl.pt1.y, kl.pt2.y]
-            # print(f'new end points: {xx}, {yy}')
+            
             ax.plot(xx, yy, line_color, alpha=0.2)
 
         for hl in dp.hlines:
@@ -148,7 +146,7 @@ def showDif(dpl=None, kshow=True, ishow=True):
         ax.cla()
     plt.close()
 
-def showBloch(bimgs, bColor = False):
+def showBloch(bimgs, bColor = False, bSave = False):
     """
     plot one powder diffraction
     """
@@ -191,6 +189,8 @@ def showBloch(bimgs, bColor = False):
                 {'color': 'grey', 'fontsize': 8}
         )
         plt.draw() 
+        if bSave:
+            plt.savefig(bimgs.name + '.png')
         plt.pause(1)
         ax.cla()
     plt.close()

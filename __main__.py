@@ -94,8 +94,6 @@ if __name__ == '__main__':
     parser.add_argument("-cp", "--copysamples", type=bool, nargs="?", const=True, default=False, help="for copying sample code into working directory", required=False)
     
     #parsing for the arguements
-    # print(f"Congratulations! you have successfully installed pyemaps!")
-
     args = parser.parse_args()
 
     #default to always print version and version
