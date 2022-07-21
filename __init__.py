@@ -101,8 +101,9 @@ except ImportError as e:
 #fall through if blch module is not found
 try:
     from .diffract import bloch
+    
 except ImportError as e:
-    print(f'importing error from here....')
+    pass
 
 #--------------Wrapper classes around diffraction extensions---------------
 from .errors import *
@@ -132,8 +133,12 @@ from .ddiffs import BlochImgs as BImgList
 try:
     from .emcontrols import DEF_CONTROLS, DEF_CBED_DSIZE
 except ImportError as e:
-    print(f'got here: {e}')
+    print(f'Error importing control constants: {e}')
 
 from .crystals import Crystal
-from .kdiffs import XMAX, YMAX, DEF_MODE
+try:
+    from .kdiffs import XMAX, YMAX, DEF_MODE
+except ImportError as e:
+    print(f'Error importing kinematic constants: {e}')
+    
 from .display import showDif, showBloch

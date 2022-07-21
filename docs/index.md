@@ -53,7 +53,7 @@ If you benefit from __pyemaps__ in your microscopy and crystallography research 
 * __numpy__: Version >= 1.21.2
 * __matplotlib__: Version >= 3.2.1
 * __PyCifRW__ Version == 4.4.3
-* __Operating Systems__: Windows
+* __Operating Systems__: Windows, 64-bit, >= 8GB RAM
 
 Linux support planned in future releases, stay tuned.
 
@@ -481,11 +481,11 @@ See _errors.py_ for all exception classes.
 * __Regression fixed__: _all_builtin_crystals()_ added back to __pyemaps__
 
 
-### __0.4.1 Alpha__ July 14th, 2022  
+### __0.4.1 Alpha__ July 22th, 2022  
 
 #### NEW
 
-* __Dynamic Diffraction Generation__: __bloch__ module is now added in __pyemaps__ which generate dynamic diffraction patterns. The sample code _si_bloch.py_ demostrates the basic usage of the new addition to pyemaps' Crystal object. In addition to pyemaps EMC microscope control input, the feature also takes many other control parameter as listed below with their default values:
+* __Dynamic Diffraction Generation__: __bloch__ module is now added in __pyemaps__ which generate dynamic diffraction patterns. The sample code in the above basic usage demostrates the usage of the new addition to pyemaps' Crystal object in _generateBloch_(...). In addition to pyemaps EMC microscope control input, the method also takes many other control parameter as listed below with their default values:
 ```python
     aperture = 1.0,     #  Camera aperture
     omega = 10,         #  Camera parameter                            
@@ -495,7 +495,15 @@ See _errors.py_ for all exception classes.
     det_size = 512,     #  Detector size (it's also resulting bloch image array dimension)
     disk_size = 0.16,   #  Diffracted Beams Size
 ```
-See _si_bloch.py_ for more details of the usage.
+Additional helper classes and method are also added to assist multiple bloch calcaluation and image handling. See _si_bloch.py_ for more details of the usage.
+
+* __BImgList__: similar to DPList class, _BImgList_ is designed to hold and handle multiple bloch images and their associated controls.
+
+* __generateBlochImgs__: This is Crystal method that generate a BImgList objects for input of sample thickness range and step tuple: 
+    sample_thickness=(thickness_start, thickness_start, thickness_step)
+where thichness_step must be positive number. The usage of this method can be very slow due to the fact that it causes pyemaps to calculate multiple slices of bloch images. The advantage is that it saves computation time when such calculation is needed compared to such computation for each sample thickness with _generateBloch_ call.
+
+* __Limitations__: This free version of Bloch image generation has a limitations on crystals and the number of sampling points due to extensive resource requirements for matrix computation during bloch image generations. These limit generally requires less complexity on input crystals and sampling point of 30 or less. Contact support@emlabsoftware.com for a quote for purchasing a full and accelerated version of pyemaps with no limits.   
 
 #### IMPROVEMENTS
 
@@ -518,3 +526,5 @@ See _si_bloch.py_ for more details of the usage.
     showBloch(dpl, bSave=True)
 ```
 Detailed plotting function implementations are lised in _display.py_.
+
+*__generateDif(...) Method Added__: This method in _Crystal_ class generates a list of DPs and their associated electron microscopy controls, or _diffraction_ object. It is in contrast to the existing generateDP(...) method that generate a single diffarction pattern (DP).
