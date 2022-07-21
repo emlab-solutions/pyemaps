@@ -362,7 +362,7 @@ class Disk:
             raise DiskError('disk object cannot equal to non disk object')
         
         if not (self._idx == other.idx) or self._r != other.r:
-            # print(f"Error: comarison failed: index not matching: {self.idx}, {other.idx}")
+            
             return False
 
         if not (self._c == other.c):
@@ -433,7 +433,7 @@ class diffPattern:
         if not diff_dict or not isinstance(diff_dict, dict):
             raise DPError("failed to construct diffraction pattern object")
 
-        # print(f'Input data for DP class: {diff_dict}')
+
         if 'nums' not in diff_dict or \
            'name' not in diff_dict or \
            'klines' not in diff_dict or \
@@ -814,14 +814,12 @@ class Diffraction:
             rep.append(str(f"Diffractions are generated in different mode/name" ))
             return rep
 
-        # if len(self.diffList) != len(other.diffList):
-        #     return False
 
         for c, d in self:
             cl = list(c.values())
             for oc, od in other:
                 ocl = list(oc.values())
-                # print(f"controls compare: {cl} and {ocl}")
+                
                 if cl == ocl:
                     if not (d == od):
                         dk,dh,dd = d.difference(od)

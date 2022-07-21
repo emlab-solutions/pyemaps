@@ -903,14 +903,13 @@ def add_bloch(target):
         
         dif.diff_internaldelete(1)
         bloch.setsamplethickness(th_start, th_end, th_step)
-
+        
         ret = bloch.dobloch(aperture,omega,sampling,bm3)
+        
         # bloch.bloch_print()
         # bloch.bloch_print_inherit()
         if ret == 2:
-            print('Contact support@emlabsoftware.com for how to register for ' +
-            'a full and accelerated version of pyemaps')
-            raise BlochError('Bloch computation resource limit reached')
+            raise BlochError('Predefined Bloch computation resource limit reached')
 
         if ret != 0:
             raise BlochError('Error computing dynamic diffraction')
@@ -983,15 +982,6 @@ def add_bloch(target):
         ret = dif.diffract(1)
         if ret == 0:
             raise BlochError('Error bloch runtime1')
-
-        # nbeams = dif.get_nbeams()
-        # # print(f'nbeams: {nbeams}')
-
-        # # print(nbeams)
-        # if nbeams >= 500: #max number of beams allowed
-        #     dif.diff_internaldelete(1)
-        #     dif.diff_delete()
-        #     raise BlochError('bloch runtime exceeds resource limit')
         
         dif.diff_internaldelete(1)
         bloch.setsamplethickness(thickness, thickness, 100)
@@ -1398,6 +1388,7 @@ class Crystal:
         cell = {}
         
         c_dict = cf[name]
+        
         if '_cell_length_a' not in c_dict or \
            '_cell_length_b' not in c_dict or \
            '_cell_length_c' not in c_dict or \
@@ -1450,10 +1441,13 @@ class Crystal:
            raise CIFError(cfn, 'missing unit cell keys for atom site label')
 
         atlabels=[]
+        
         if '_atom_site_type_symbol' in c_dict:
             atlabels = c_dict['_atom_site_type_symbol']
+            
         else:
             atlabels = c_dict['_atom_site_label']
+            
 
         at_len = len(atlabels)
 
@@ -1773,6 +1767,7 @@ class Crystal:
                 coords = farray(np.empty((SPG_SYMMETRY_MAXCOL, SPG_SYMMETRY_MAXLEN), dtype='c'))
                 coords, n = spgra.getsymmetryxyz(sp[0], sp[1], coords)
                 
+                
                 if n == -1:
                     # This should not happen but check for it anyway
                     raise CIFError(cfn, 'symmetry lookup in pyemaps space group failed')
@@ -1859,9 +1854,6 @@ class Crystal:
                         if owlen > 3 or owlen < 2:
                             raise XTLError(fn, 'invalid dw and occ data input')
 
-                        # if owlen < 1:
-                        #     print(f"Error: dw data retireval failure for {cname}")
-                        #     return name, data
                         dwkey = dwocc[0].strip().lower()
                         if dwkey != 'dw':
                             raise XTLError(fn, 'missing dye-waller factor key')
@@ -2114,7 +2106,6 @@ class Crystal:
         """
         import copy
         
-        # print('got here 0')
         dif.initcontrols()
         # mode defaults to DEF_MODE, in which dsize is not used
         # Electron Microscope controls defaults - DEF_CONTROLS
@@ -2134,13 +2125,11 @@ class Crystal:
             dif.setzone(zone[0], zone[1], zone[2])
         
         
-        # print(f'got here 1: {ds}')
         cell, atoms, atn, spg = self.prepareDif()
-        # print(f'got here 2: {cell}, {atoms}, {atn}, {spg}')
         dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
 
         ret = 1
-        # print(f'before dif call')
+        
         ret = dif.diffract()
         if ret == 0:
             print('Diffraction module failed to run')
@@ -2189,7 +2178,7 @@ class Crystal:
         num_hlines = 0
         if (mode == 2):
             num_hlines = dif.gethnum()
-            # print(f"hline number: {num_hlines}")
+            
             if (num_hlines > 0):
                 hlines_arr = farray(np.zeros((num_hlines, 4)), dtype=np.double)
                 if dif.get_hlines(hlines_arr) == 0:

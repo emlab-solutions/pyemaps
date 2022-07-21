@@ -173,40 +173,27 @@ def get_sources():
         # return comp, src_list
 
     if comp == 'bloch':
-        # print(f'----------srclist0: {src_list}')
+        
         pyf = ".".join([mod_name+'_bloch','pyf'])
         src_list.append(pyf)
-        # print(f'----------srclist1: {src_list}')
+        
         src_list.extend(dif_source)
-        # print(f'----------srclist2: {src_list}')
+        
         src_list.extend(csf_files)
-        # print(f'----------srclist3: {src_list}')
+        
         src_list.extend(powder_files)
-        # print(f'----------srclist4: {src_list}')
+        
         src_list.extend(bloch_files)
-        # print(f'----------srclist5: {src_list}')
+        
 
     emapsdir = get_emapsdir()
     return [os.path.join(emapsdir, srcfn) for srcfn in src_list]
 
-    # if comp == 'spgra':
-    #     pyf = ".".join([mod_name+'_spgra','pyf'])
-    #     src_list.append(pyf)
-    #     src_list.extend(spgra_files)
-    #     return comp, src_list
-        
-    # return comp, None
 
 def configuration(parent_package='', top_path=None):
     import os
     from numpy.distutils.misc_util import Configuration
-    # from numpy.distutils.fcompiler import get_default_fcompiler
 
-    # compiler = get_default_fcompiler()
-
-    # f90flags = []
-    # if compiler == 'intel' or compiler == 'intelvem':
-    #     print()
     config = Configuration('diffract', parent_package, top_path)
 
     src_files = get_sources()
@@ -215,17 +202,13 @@ def configuration(parent_package='', top_path=None):
         raise ValueError("Error finding extension source!")
 
     print(f'source list for duffract: {src_files}')
-    # exit(1)
-
-    # obj_files = get_objs()
+    
     config.add_extension(
                  name                   = mod_name,
                  sources                = src_files,
                  extra_f90_compile_args = compile_args,
                  define_macros          = [('__BFREE__', 120),]
     )
-
-    # print(f"####Before building pyemaps package for {c}...")  
 
     return config
 
