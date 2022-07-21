@@ -857,7 +857,6 @@ def add_bloch(target):
     def generateBlochImgs(self, *, aperture = 1.0, 
                             omega = 10,  
                             sampling = 8,
-                            bm3 = 0.0,
                             pix_size = 100,
                             det_size = 512,
                             disk_size = 0.16,
@@ -904,7 +903,7 @@ def add_bloch(target):
         dif.diff_internaldelete(1)
         bloch.setsamplethickness(th_start, th_end, th_step)
         
-        ret = bloch.dobloch(aperture,omega,sampling,bm3)
+        ret = bloch.dobloch(aperture,omega,sampling,0.0)
         
         # bloch.bloch_print()
         # bloch.bloch_print_inherit()
@@ -945,7 +944,6 @@ def add_bloch(target):
     def generateBloch(self, *, aperture = 1.0, 
                             omega = 10,  
                             sampling = 8,
-                            bm3 = 0.0,
                             pix_size = 100,
                             det_size = 512,
                             disk_size = 0.16,
@@ -986,7 +984,7 @@ def add_bloch(target):
         dif.diff_internaldelete(1)
         bloch.setsamplethickness(thickness, thickness, 100)
 
-        ret = bloch.dobloch(aperture,omega,sampling,bm3)
+        ret = bloch.dobloch(aperture,omega,sampling,0.0)
         # bloch.bloch_print()
         # bloch.bloch_print_inherit()
         if ret == 2:
