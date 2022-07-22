@@ -184,9 +184,6 @@ def get_bversion(btest = True):
     new_version = '.'.join([str(major), str(minor), str(sub)])
     print(f"new releases: {new_version}")
 
-    with open('__version__.py', 'w') as vf:
-        vf.write('__version__ = \"' + new_version + '\"')
-
     return new_version
 
 
@@ -361,7 +358,7 @@ if __name__ == "__main__":
     parser.add_argument("-i", "--install", action="store_true", help="install the package from above repo", required=False)
     parser.add_argument("-nb", "--no-build", action="store_true", help="no build", required=False)
     parser.add_argument("-il", "--install-local", action="store_true", help="no build", required=False)
-    # parser.add_argument("-n", "--no-build", action="store_true", help="No build", required=False)
+    parser.add_argument("-v", "--build-version", type=str, nargs="?", const="", default="", help="build version input", required=False)
     
     args = parser.parse_args()
     comp = args.component
@@ -370,8 +367,14 @@ if __name__ == "__main__":
         # defaults to dif pyeamps module
         comp = 'bloch'
 
-    ver = get_bversion(btest = args.test_repo)
+    ver = args.build_version
+    if not ver or ver == '':
+        ver = get_bversion(btest = args.test_repo)
     
+    # write the version into __version__.py file
+    with open('__version__.py', 'w') as vf:
+        vf.write('__version__ = \"' + ver + '\"')
+
     if not args.no_build:
         build_package(comp)
 

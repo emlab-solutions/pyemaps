@@ -17,24 +17,24 @@ __pyemaps__ package is a collection of python modules and libraries designed for
 >**Crystallographic Transformations and Calculations**
 
 >**Crystal Structure Factors Calculations**
->    * X-Ray Structure Factors
->    * Electron Structure Factor in V (volts)
->    * Electron Structure Factor in 1/&#8491;^2
->    * Electron Absorption Structure Factor in 1/&#8491;^2 
+> * X-Ray Structure Factors
+> * Electron Structure Factor in V (volts)
+> * Electron Structure Factor in 1/&#8491;^2
+> * Electron Absorption Structure Factor in 1/&#8491;^2 
 
 __pyemaps__ comes with a set of helper classes with the intent of making accesses to above feature easy for users:
 
->**Crystal** : crystal data module, classes and methods for loading crystal data from various data sources such _pyemaps' own builtin data formatted files and (IUCr) Crystallographic Information Framework (CIF); for preparing microscope and sample control parameters for the above simulations.
+* **Crystal** : crystal data module, classes and methods for loading crystal data from various data sources such _pyemaps_' own builtin data formatted files and (IUCr) Crystallographic Information Framework (CIF); for preparing microscope and sample control parameters for the above simulations.
 
->**EMC** : electron microscope control module. Its class __EMC__ makes it easy to handle simulation control parameters.  
+* **EMC** : electron microscope control module. Its class __EMC__ makes it easy to handle simulation control parameters.  
 
->**DP** :  kinematic diffraction python class. It encapsulates and models diffraction pattern generated from __Crystal__ class instance.   
+* **DP** :  kinematic diffraction python class. It encapsulates and models diffraction pattern generated from __Crystal__ class instance.   
 
->**BlochImgs** : dynamic diffraction images list class. This class is design for handling multiple slices of bloch images with their associated controls. 
+* **BlochImgs** : dynamic diffraction images list class. This class is design for handling multiple slices of bloch images with their associated controls. 
 
->**Display**: This python helper class provides a builtin visualisation of kinematic diffraction patterns with Kikuchi and HOLZ lines, and diffracted beams or disks and their Miller indices. Its methods also include rendering of dynamic diffraction (Bloch) images. Users can easily replace or extend these methods into their own application.   
+* **Display**: This python helper class provides a builtin visualisation of kinematic diffraction patterns with Kikuchi and HOLZ lines, and diffracted beams or disks and their Miller indices. Its methods also include rendering of dynamic diffraction (Bloch) images. Users can easily replace or extend these methods into their own application.   
 
->**Errors**: Error handling for __pyemaps__, capturing errors and making actionable and trackable error messages.
+* **Errors**: Error handling for __pyemaps__, capturing errors and making actionable and trackable error messages.
 
 See sample code and latest [release notes](https://emlab-solutions.github.io/pyemaps/#release-notes) for details.
 
@@ -210,7 +210,7 @@ Accessing diffraction patterns data is easy for pyemaps users to visualize the d
     dp.shift #deflection shifts of all of the above
     ...
 ```
-* Raw dynamic diffraction data (Bloch) is an _numpy_ array of floats with dimension of NxN where N is the detector size input for _generateBloch(...)_ function. Each point in the array represent the image intensity. Pyemaps uses Python _matplotlib_ its builtin display function _showBloch()_. See its usage in sample code _si_bloch.py_ 
+* Raw dynamic diffraction data (Bloch) is an _numpy_ array of floats with dimension of NxN where N is the detector size input for _generateBloch(...)_ function. Each point in the array represent the image intensity. Pyemaps uses Python _matplotlib_ in its builtin display function _showBloch()_. See its usage in sample code _si_bloch.py_ 
 
 <!-- 
 In addition to the above and and pyemaps' built-in _matplotlib_ rendering of diffraction pattern, DigitalMicrography (referred as DM here) is another option with its line and circle annotations objects. Simply open and execute the python script in DM __dm_diff.py__ in _samples_ directory for example.
@@ -227,7 +227,7 @@ Sample scripts designed for you to explore pyemaps features are available in pye
 
 * __si_csf.py__: _structure factors_ generation and output by __CSF__ pyemaps module. 
 
-* __powder.py__: _electron powder diffraction_ generation and intensity plot by __POWDER__ pyemaps module. 
+* __powder.py__: _electron powder diffraction_ generation and intensity plot by ____ pyemaps module. 
 
 More samples code will be added as more features and releases are available. 
 
