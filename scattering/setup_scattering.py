@@ -14,15 +14,12 @@ sct_files =['scattering_sct.pyf', 'scattering.f90']
 compile_args=['-Qm64',
               '-WB',
               '-heap-arrays:768',
-            #   '-double-size:64',
               '-Qopenmp',
               '-GS', 
               '-4R8',
               '-fpp',
               '-warn:nointerfaces',
-            #   '-fast', 
               '-O2', #this option does not work with -fast
-            #   '-Qfp-stack-check',
               '-c']
 
 def get_sources():

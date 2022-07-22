@@ -37,8 +37,6 @@ from . import spgseek as spgra
     
 from .errors import *
 
-# from .emcontrols import DEF_CBED_DSIZE
-# from .emcontrols import EMControl as EMC
 from . import DEF_CBED_DSIZE
 from . import EMC
 import re
@@ -857,11 +855,11 @@ def add_bloch(target):
     def generateBlochImgs(self, *, aperture = 1.0, 
                             omega = 10,  
                             sampling = 8,
-                            pix_size = 100,
+                            pix_size = 25,
                             det_size = 512,
                             disk_size = 0.16,
                             sample_thickness = (200, 1000, 100),
-                            em_controls = EMC()):
+                            em_controls = EMC(cl=200)):
         try:
             from . import bloch
 
@@ -944,11 +942,11 @@ def add_bloch(target):
     def generateBloch(self, *, aperture = 1.0, 
                             omega = 10,  
                             sampling = 8,
-                            pix_size = 100,
+                            pix_size = 25,
                             det_size = 512,
                             disk_size = 0.16,
                             thickness = 200,
-                            em_controls = EMC()):
+                            em_controls = EMC(cl=200)):
         try:
             from . import bloch
 
@@ -967,6 +965,9 @@ def add_bloch(target):
         cell, atoms, atn, spg = self.prepareDif()
         dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
   
+        # if not em_controls:
+        #     em_controls = EMC(cl=400)
+
         # rawP = farray(np.zeros((2,1000), dtype=np.double))
         tx, ty = em_controls.tilt[0], em_controls.tilt[1]
         dx, dy = em_controls.defl[0], em_controls.defl[1]

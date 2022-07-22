@@ -68,7 +68,7 @@ def run_builtin_dif(mode = 1, dsize= 0.05):
         try:
             dpl = cr.generateDif(mode = mode, dsize=ds, em_controls = EMC())
         except (EMCError, DPError) as e:
-                print(f'{f} generated an exception: {e.message}')
+                print(f'Error generating diffraction: {e.message}')
         except:
             print('failed to generate diffraction patterns')  
         else: 
@@ -102,8 +102,7 @@ def run_builtin_bloch_np(sampling = 8, thickness = 200):
             
             try:
                 bis = cr.generateBlochImgs(sampling = s, 
-                                          sample_thickness = st, 
-                                          em_controls = EMC())
+                                          sample_thickness = st)
             except (EMCError, BlochListError, DPError) as e:
                     print(f'{bis} generated an exception: {e.message}')
             except:
@@ -131,6 +130,6 @@ def run_builtin_bloch_np(sampling = 8, thickness = 200):
 #     plt.show()
 
 if __name__=="__main__":
-    # run_builtin_dif()
+    run_builtin_dif()
     # run_builtin_bloch()
-    run_builtin_bloch_np()
+    # run_builtin_bloch_np()

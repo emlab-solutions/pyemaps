@@ -487,13 +487,14 @@ See _errors.py_ for all exception classes.
 
 * __Dynamic Diffraction Generation__: __bloch__ module is now added in __pyemaps__ which generate dynamic diffraction patterns. The sample code in the above basic usage demostrates the usage of the new addition to pyemaps' Crystal object in _generateBloch_(...). In addition to pyemaps EMC microscope control input, the method also takes many other control parameter as listed below with their default values:
 ```python
-    aperture = 1.0,     #  Camera aperture
-    omega = 10,         #  Camera parameter                            
-    sampling = 8,       #  Number of sampling points
-    pix_size = 100,      #  Detector pixel size in microns
-    thickness = 200,    #  Sample thickness
-    det_size = 512,     #  Detector size (it's also resulting bloch image array dimension)
-    disk_size = 0.16,   #  Diffracted Beams Size
+    aperture = 1.0,                 #  Camera aperture
+    omega = 10,                     #  Camera parameter                            
+    sampling = 8,                   #  Number of sampling points
+    pix_size = 25,                  #  Detector pixel size in microns
+    thickness = 200,                #  Sample thickness
+    det_size = 512,                 #  Detector size (it's also resulting bloch image array dimension)
+    disk_size = 0.16,               #  Diffracted Beams Size
+    em_controls = EMC(cl=200)       #  Electron Microscope controls
 ```
 Additional helper classes and method are also added to assist multiple bloch calcaluation and image handling. See _si_bloch.py_ for more details of the usage.
 

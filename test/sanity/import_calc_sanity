@@ -140,7 +140,7 @@ def run_si_bloch(ty = 2):
                     failure_count += 1
                     failure_cases.append(f)
                     continue
-                showBloch(bimgs, bSave=True)
+                showBloch(bimgs)
                 
                 # # cf_dp.plot()
                 print(f"-------generating bloch for {cfn} succeeded with time: {toc - tic:0.4f}")
