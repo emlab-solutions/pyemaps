@@ -6,36 +6,15 @@ mod_name = "emaps"
 ver = "1.0.0"
 dp_cobj = "write_dpbin.o"
 
-# compile_args=['-Qm64',
-#               '-WB',
-#               '-double-size:64',
-#               '-Qopenmp',
-#               '-GS', 
-#             #   '-fast',
-#               '-4R8',
-#               '-check:all',
-#               '-check:nostack',
-#               '-fpp',
-#             #   '-nogen-interfaces',
-#             #   '-Qipo',
-#             #   '-warn:all',
-#               '-warn:nointerfaces',
-#               '-O2', 
-#               '-Qfp-stack-check',
-#               '-c']
-
 compile_args=['-Qm64',
               '-WB',
               '-heap-arrays:768',
-            #   '-double-size:64',
               '-Qopenmp',
               '-GS', 
               '-4R8',
               '-fpp',
               '-warn:nointerfaces',
               '-O2', #this option does not work with -fast
-            #   '-fast', 
-            #   '-Qfp-stack-check',
               '-c']
 
 dif_source = ['diffract.f90',
@@ -100,12 +79,6 @@ def get_comp():
 
     except IOError as e:
         raise ValueError(f"Error reading component configure file: {e}")
-   
-    # delete temp config file comp.json
-    # if os.path.exists(comp_cfg):
-    #     os.remove(comp_cfg)
-    # else:
-    #     print(f"The comfiguration file {comp_cfg)} does not exits")
 
     return comp
 
@@ -141,14 +114,6 @@ def get_sources():
         pyf = ".".join([mod_name+'_dif','pyf'])
         src_list.append(pyf)
         src_list.extend(dif_source)
-        # return comp, src_list
-    
-    # if comp == 'bloch':
-    #     pyf = ".".join([mod_name+'_bloch','pyf'])
-    #     src_list.append(pyf)
-    #     src_list.extend(dif_source)
-    #     src_list.extend(bloch_files)
-    #     # return comp, src_list
 
     if comp == 'dpgen':
         pyf = ".".join([mod_name+'_dpgen','pyf'])

@@ -45,19 +45,10 @@ def generate_bloch_images(name = 'Silicon', dsize = 0.16, ckey = 'tilt'):
     for i in range(-3,3): 
 
         if ckey == 'tilt':
-            emclist.append(EMC(tilt=(i*0.5, 0.0)))
+            emclist.append(EMC(tilt=(i*0.5, 0.0), cl = 200))
         
         if ckey == 'zone':
-            emclist.append(EMC(zone=(0, i, 1)))
-
-        if ckey == 'defl':
-            emclist.append(EMC(defl=(i*0.5, 0.0)))
-
-        if ckey == 'vt':
-            emclist.append(EMC(vt=200 + i*10))
-
-        if ckey == 'cl':
-            emclist.append(EMC(cl=1000 + i*50))
+            emclist.append(EMC(zone=(0, i, 1), cl = 200))
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
 
@@ -81,7 +72,7 @@ from pyemaps import showBloch
 
 def run_bloch_tests():
     # from sample_base import generate_bimages
-    em_keys = ['tilt', 'zone', 'defl', 'vt', 'cl']
+    em_keys = ['tilt', 'zone']
     for k in em_keys:
         imgs = generate_bloch_images(ckey=k)
         showBloch(imgs)
