@@ -355,7 +355,7 @@ See sample code _si_csf.py_ for detailed guide on using these methods.
                   gamma = 0.001...)         <= Gamma Is the Fwhm
     plotPowder(PW)                          <= PW: Output powder Data from generatePowder()         
 ```
-The first methods takes user input of high votage and scattering angle 2ϴ, along with many others to generate the electron powder diffraction in intensity array. __plotPowder__ plots single powder diffraction, while _powder.py_ sample code included in the package also demonstates the electron pwoder diffarction of two crystals: Silicon and Diamond. The latter is with absorption. See sample code _powder.py__ for details on using these mothods.
+The first methods takes user input of high voltage and scattering angle 2ϴ, along with many others to generate the electron powder diffraction in intensity array. __plotPowder__ plots single powder diffraction, while _powder.py_ sample code included in the package also demonstates the electron pwoder diffarction of two crystals: Silicon and Diamond. The latter is with absorption. See sample code _powder.py__ for details on using these mothods.
 
 
 ![](https://github.com/emlab-solutions/imagepypy/blob/main/powder.png?raw=True "Electron powder diffraction for silicon python script powder.py")
@@ -464,6 +464,47 @@ Examples of the above improvements shown as follows:
 See _errors.py_ for all exception classes.
 * __Regression fixed__: _all_builtin_crystals()_ added back to __pyemaps__
 
+### __0.4.0 Alpha__ July 4th, 2022  
+
+#### IMPROVEMENTS
+
+* __Selective Plotting of Diffraction Patterns__: DP plotting function now has two selective parameters: _kshow_ and _ishow_ both of value _True_ or _False_ and  defaults of _True_. _kshow_ is for whether the plot shows __Kikuchi__ lines, while _ishow_ for __Miller Index__ of diffracted beams:
+```python  
+    from pyemaps import Crystal as cr
+    si = cr.from_builtin('Silicon')
+    _, si_dp = si.generateDP()
+    si_dp.plot() # show all components of DP object: Kikuchi lines, diffracted beams etc.
+    si_dp.plot(kshow=False) #hide Kikuchi lines only
+    si_dp.plot(kshow=False, ishow=False) #hide both Kikuchi lines and Miller Indices
+    si_dp.plot(ishow=False) #hide Miller indices only
+```
+See sample code _si_diff.py_ for more details.
+
+* __EMC class creation enhancement__: EMC is now created by each control key(s) - tilt, zone, defl, vt and cl (sample tilting, zone, deflection, high voltage and camera lenght respectively) and their values for more efficient construction, instead of by a python dictionary in previous versions. If any one of the parameters is missing, default values assumed:
+```python
+    from pyemaps import EMC
+    emc = EMC(tilt=(0.5,0.0)) 
+    # EMC object created with given tilt value and the rest assumed 
+    # defaults: zone=(0,0,1); defl=(0.0, 0.0); vt=200;cl=1000 
+    # (tilt=(0.0,0.0) if not specified)
+```
+If a dictionary is desired, from_dict() function is an alternative for such construction:
+```python
+    from pyemaps import EMC
+    emc = EMC.from_dict(emc_dict) 
+```
+
+* __Structure Factor Plotting__: The built-in display function of structure factors by a crystal object is now simplified:
+```python
+    from pyemaps import Crystal as cr
+    si = cr.from_builtin('Silicon')
+    sfs = si.generateCSF(kv, smax, sftype, aptype)  
+    #sftype is x-ray and others aptype=1 indicating SF in amplitue and phase
+    si.printCSF(sfs) 
+    #other parameters in previous versions no longer needed and are written into sfs header
+    ...
+``` 
+See _si_csf.py_ sample code for more details.
 
 ### __0.4.1 Alpha__ July 22th, 2022  
 
@@ -513,3 +554,4 @@ where thichness_step must be positive number. The usage of this method can be ve
 Detailed plotting function implementations are lised in _display.py_.
 
 *__generateDif(...) Method Added__: This method in _Crystal_ class generates a list of DPs and their associated electron microscopy controls, or _diffraction_ object. It is in contrast to the existing generateDP(...) method that generate a single diffarction pattern (DP).
+
