@@ -1,18 +1,21 @@
 
+from pyemaps.display import showBloch
+
+
 def get_builtin_dir():
     import pyemaps
     from pathlib import Path
 
     return(Path(pyemaps.__file__).parent.absolute())
 
-def run_si_sample(ty = 2):
+def run_si_difs(ty = 2):
     from pyemaps import Crystal as cr
     import os
     import time
-    from pyemaps import CrystalClassError
+    from pyemaps import CrystalClassError, DPList, showDif
 
     #CIF_DIR = "C:/Apps/Python37/Lib/site-packages/crystals/cifs"
-    CIF_DIR = "C:/Users/employee1/Downloads/drawxtl/cifs"
+    CIF_DIR = "C:/Users/sharon/dev_space/Downloads/cod-cifs-mysql/cif/1/01/01"
     XTL_DIR = os.path.join(get_builtin_dir(), "cdata")
     cif_ext = '.cif'
     xtl_ext = '.xtl'
@@ -26,15 +29,16 @@ def run_si_sample(ty = 2):
         datadir = CIF_DIR
     
     failure_cases = []
+    total_count = 0
     for f in os.listdir(datadir):
         
         if f.endswith(ext):
             cfn = os.path.join(datadir, f)
+            total_count += 1
             print(f'\n+++++++\nLoading {cfn}...')
             cf = None
             try:    
-                if ty == 1:
-                    
+                if ty == 1:                    
                     cf = cr.from_xtl(cfn) 
                 else:        
                     tic = time.perf_counter()
@@ -48,28 +52,103 @@ def run_si_sample(ty = 2):
                 continue
             else:
                 print(cf)
-                # _, cf_dp = cf.generateDP()
-               
-                # # print the diffraction pattern using the builtin format
-                # print(f'Diffraction Pattern printout with builtin stdout:\n{cf_dp}\n\n')
-
-                # # get the raw diffraction pattern in python dictionary 
-                # # in case you want to import DP in your own program
-                # dp_dict = cf_dp.__dict__
-                # print(f'Raw diffraction pattern in python dictionary:\n{dp_dict}\n\n')
+                try:
+                    emc, cf_dp = cf.generateDP()
+                    dpl = DPList(cf.name)
+                    dpl.add(emc, cf_dp)
+                except:
+                    failure_count += 1
+                    failure_cases.append(f)
+                    continue
+                showDif(dpl, ishow=False)
                 
-                # # or the raw data of each components of kinematic diffraction pattern 
-                # # into your program and/or print them out
-                # print(f'# of Kikuchi lines: {cf_dp.nklines}\nKikuchi lines list:\n{cf_dp.klines}\n\n')
-                # print(f'# of diffracted beams (a.k.a Disks): {cf_dp.ndisks}\ndiffracted beams list:\n{cf_dp.disks}\n\n')
-                # print(f'# of HOLZ lines: {cf_dp.nhlines}\nHOLZ lines list:\n{cf_dp.hlines}')
                 # # cf_dp.plot()
                 # # print(f"-------Loading {cfn} succeeded: \n{cf}")
 
     if failure_count == 0:
         print(f'***********Test Summary: All tests succeeded')
     else:
-        print(f'Summary: total failure runs: {failure_count}')
+        print(f'Summary: total failure runs: {failure_count} out of {total_count} runs')
+        print(f'Failure cases list: {failure_cases}')
+        # for f in failure_cases:
+        #     cfn = os.path.join(datadir, f)
+        #     print(f'\n+++++++\Loading failure cases {cfn}...')
+        #     try:    
+        #         if ty == 1:
+        #             cf = cr.from_xtl(cfn) 
+        #         else:        
+        #             # tic = time.perf_counter()
+        #             cf = cr.from_cif(cfn)
+        #             # toc = time.perf_counter()
+        #             # print(f"Time it takes for loading {f} in {toc - tic:0.4f} seconds")
+        #     except CrystalClassError as v:
+        #         print(f'********Loading {cfn} failed with message: {v}')
+    
+    # _, eu_dp = eu.generateDP()
+    # #plot and show the diffraction pattern using pyemaps built-in plot function
+    # eu_dp.plot()
+
+def run_si_bloch(ty = 2):
+    from pyemaps import Crystal as cr
+    import os
+    import time
+    from pyemaps import CrystalClassError, DPList, showDif
+
+    #CIF_DIR = "C:/Apps/Python37/Lib/site-packages/crystals/cifs"
+    CIF_DIR = "C:/Users/sharon/dev_space/Downloads/cod-cifs-mysql/cif/1/01/01"
+    XTL_DIR = os.path.join(get_builtin_dir(), "cdata")
+    cif_ext = '.cif'
+    xtl_ext = '.xtl'
+
+    failure_count = 0
+    if ty == 1:
+        ext = xtl_ext
+        datadir = XTL_DIR
+    else:
+        ext = cif_ext
+        datadir = CIF_DIR
+    
+    failure_cases = []
+    total_count = 0
+    for f in os.listdir(datadir):
+        
+        if f.endswith(ext):
+            cfn = os.path.join(datadir, f)
+            total_count += 1
+            print(f'\n+++++++\nLoading {cfn}...')
+            cf = None
+            try:    
+                if ty == 1:                    
+                    cf = cr.from_xtl(cfn) 
+                else:        
+                    tic = time.perf_counter()
+                    cf = cr.from_cif(cfn)
+                    toc = time.perf_counter()
+                    print(f"Time it takes for loading {f} in {toc - tic:0.4f} seconds")
+            except CrystalClassError as v:
+                print(f'%%%%%%%Loading {cfn} failed with message: {v}')
+                failure_count += 1
+                failure_cases.append(f)
+                continue
+            else:
+                print(cf)
+                try:                   
+                    tic = time.perf_counter()
+                    bimgs= cf.generateBlochImgs(disk_size = 0.1, sample_thickness = (200, 200, 100))
+                    toc = time.perf_counter()
+                except:
+                    failure_count += 1
+                    failure_cases.append(f)
+                    continue
+                showBloch(bimgs)
+                
+                # # cf_dp.plot()
+                print(f"-------generating bloch for {cfn} succeeded with time: {toc - tic:0.4f}")
+
+    if failure_count == 0:
+        print(f'***********Test Summary: All tests succeeded')
+    else:
+        print(f'Summary: total failure runs: {failure_count} out of {total_count} runs')
         print(f'Failure cases list: {failure_cases}')
         # for f in failure_cases:
         #     cfn = os.path.join(datadir, f)
@@ -131,6 +210,8 @@ def run_metrics():
 
 if __name__ == '__main__':
 
-    run_si_sample()
-    run_si_sample(1)
+    run_si_difs() 
+    run_si_difs(1)
+    run_si_bloch(1)
+    run_si_bloch() 
     run_metrics()

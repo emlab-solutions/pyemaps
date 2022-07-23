@@ -98,10 +98,17 @@ try:
 except ImportError as e:
     pass
 
+#fall through if blch module is not found
+try:
+    from .diffract import bloch
+    
+except ImportError as e:
+    pass
+
 #--------------Wrapper classes around diffraction extensions---------------
 from .errors import *
 
-from .crystals import Crystal
+# from .crystals import Crystal
 
 #Microscope control data classes handling data properties
 from .emcontrols import EMControl as EMC
@@ -109,6 +116,7 @@ from .emcontrols import EMControl as EMC
 #diffraction classes handling diffraction pattern data
 from .kdiffs import diffPattern as DP
 from .kdiffs import Diffraction as DPList
+from .ddiffs import BlochImgs as BImgList
 
 #-----------------------Extension control defaults------------------------
 #       DEF_CONTROLS --- default controls in dictionary object
@@ -122,5 +130,15 @@ from .kdiffs import Diffraction as DPList
 #       XMAX YMAX --- DP generation bound (-XMAX, XMAX, -YMAX, YMAX)
 #
 #       THESE CONSTANTS ARE SET IN PYEMAPS DIF MODULE
-from .emcontrols import DEF_CONTROLS, DEF_CBED_DSIZE
-from .kdiffs import XMAX, YMAX, DEF_MODE
+try:
+    from .emcontrols import DEF_CONTROLS, DEF_CBED_DSIZE
+except ImportError as e:
+    print(f'Error importing control constants: {e}')
+
+from .crystals import Crystal
+try:
+    from .kdiffs import XMAX, YMAX, DEF_MODE
+except ImportError as e:
+    print(f'Error importing kinematic constants: {e}')
+    
+from .display import showDif, showBloch

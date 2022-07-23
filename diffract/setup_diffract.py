@@ -6,54 +6,56 @@ mod_name = "emaps"
 ver = "1.0.0"
 dp_cobj = "write_dpbin.o"
 
-compile_args=['-m64',         
-            '-Wno-tabs', 
-            '-Warray-bounds',
-            '-fdefault-double-8',
-            '-fdefault-real-8',
-            '-fopenmp',
-            '-fcheck=all,no-array-temps',
-            '-cpp', 
-            '-Wall',
-            '-O3']
+compile_args=['-Qm64',
+              '-WB',
+              '-heap-arrays:768',
+              '-Qopenmp',
+              '-GS', 
+              '-4R8',
+              '-fpp',
+              '-warn:nointerfaces',
+              '-O2', #this option does not work with -fast
+              '-c']
 
-dif_source = ['diffract.f95',
-            'diff_types.f95', 
-            'scattering.f95', 
-            'spgra.f95',
-            'diff_memalloc.f95',
-            'crystal_mem.f95', 
-            'emaps_consts.f95',
-            'xtal0.f95', 
-            'helper.f95', 
-            'asf.f95', 
-            'atom.f95',
-            'metric.f95', 
-            'readutils.f95',
-            'sfsub.f95', 
-            'spgroup.f95', 
-            'lafit.f95'
+dif_source = ['diffract.f90',
+            'diff_types.f90', 
+            'scattering.f90', 
+            'spgra.f90',
+            'diff_memalloc.f90',
+            'crystal_mem.f90', 
+            'emaps_consts.f90',
+            'xtal0.f90', 
+            'helper.f90', 
+            'asf.f90', 
+            'atom.f',
+            'metric.f', 
+            'readutils.f',
+            'sfsub.f90', 
+            'spgroup.f90', 
+            'lafit.f90'
             ]
 
-bloch_files = ['cg.f95',
-               'bloch.f95'
+bloch_files = ['cg.f90',
+               'bloch.f90',
+               'bloch_mem.f90'
             ]
 
-dpgen_files =['dp_types.f95',
-			  'dp_gen.f95'
+dpgen_files =['dp_types.f90',
+			  'dp_gen.f90'
             ]
 
-csf_files =['csf_types.f95',
-			  'csf.f95'
+csf_files =['csf_types.f90',
+			  'csf.f90'
             ]
 
-powder_files =['powder_types.f95',
-			  'powder.f95',
-              'pkprof.f95'
+powder_files =['powder_types.f90',
+			  'powder.f90',
+              'pkprof.f90'
             ]
 
-spgra_files =['spgra.f95']
+spgra_files =['spgra.f90']
 
+f77obj_files = ['atom.o', 'metric.o', 'readutils.o']
         
 def get_comp():
     '''
@@ -77,12 +79,6 @@ def get_comp():
 
     except IOError as e:
         raise ValueError(f"Error reading component configure file: {e}")
-   
-    # delete temp config file comp.json
-    # if os.path.exists(comp_cfg):
-    #     os.remove(comp_cfg)
-    # else:
-    #     print(f"The comfiguration file {comp_cfg)} does not exits")
 
     return comp
 
@@ -101,25 +97,23 @@ def get_emapsdir():
     print(f'Parent dir found: {emaps_dir}')
 
     return emaps_dir
+def get_objs():
+    import os
+    obj_list = []
+    emapsdir = get_emapsdir()
+    return [os.path.join(emapsdir, objn) for objn in f77obj_files]
 
 def get_sources():
     import os
 
     comp = get_comp()
+    print(f'----------comp: {comp}')
 
     src_list = []
     if comp == 'dif':
         pyf = ".".join([mod_name+'_dif','pyf'])
         src_list.append(pyf)
         src_list.extend(dif_source)
-        # return comp, src_list
-    
-    if comp == 'bloch':
-        pyf = ".".join([mod_name+'_bloch','pyf'])
-        src_list.append(pyf)
-        src_list.extend(dif_source)
-        src_list.extend(bloch_files)
-        # return comp, src_list
 
     if comp == 'dpgen':
         pyf = ".".join([mod_name+'_dpgen','pyf'])
@@ -143,16 +137,23 @@ def get_sources():
         src_list.extend(powder_files)
         # return comp, src_list
 
+    if comp == 'bloch':
+        
+        pyf = ".".join([mod_name+'_bloch','pyf'])
+        src_list.append(pyf)
+        
+        src_list.extend(dif_source)
+        
+        src_list.extend(csf_files)
+        
+        src_list.extend(powder_files)
+        
+        src_list.extend(bloch_files)
+        
+
     emapsdir = get_emapsdir()
     return [os.path.join(emapsdir, srcfn) for srcfn in src_list]
 
-    # if comp == 'spgra':
-    #     pyf = ".".join([mod_name+'_spgra','pyf'])
-    #     src_list.append(pyf)
-    #     src_list.extend(spgra_files)
-    #     return comp, src_list
-        
-    return comp, None
 
 def configuration(parent_package='', top_path=None):
     import os
@@ -166,14 +167,13 @@ def configuration(parent_package='', top_path=None):
         raise ValueError("Error finding extension source!")
 
     print(f'source list for duffract: {src_files}')
-
+    
     config.add_extension(
                  name                   = mod_name,
                  sources                = src_files,
                  extra_f90_compile_args = compile_args,
+                 define_macros          = [('__BFREE__', 120),]
     )
-
-    # print(f"####Before building pyemaps package for {c}...")  
 
     return config
 

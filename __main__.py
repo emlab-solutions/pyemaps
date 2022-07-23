@@ -20,7 +20,6 @@
 '''
 
 from copy import copy
-from .samples.si_diff import run_si_sample
 
 rel_stage = 'Alpha'
 pyemaps_samples_dir = 'pyemaps_samples'
@@ -55,7 +54,7 @@ def copy_samples():
     # fetch all files
     for file_name in os.listdir(pkg_samples_dir):
         # construct full file path
-        if file_name == 'si_diff.py':
+        if file_name == 'si_pyemaps.py':
             continue
         source = os.path.join(pkg_samples_dir, file_name)
         destination = os.path.join(curr_samples_dir, file_name)
@@ -78,6 +77,11 @@ if __name__ == '__main__':
         python -m pyemaps -c (--copyright)
         python -m pyemaps -v (--version)
     """
+    try:
+        from .samples.si_pyemaps import run_si_sample
+    except ImportError as e:
+        print(f"Error importing builtin sample: {e}")
+        
     import argparse
     import datetime
     import pkg_resources
@@ -90,8 +94,6 @@ if __name__ == '__main__':
     parser.add_argument("-cp", "--copysamples", type=bool, nargs="?", const=True, default=False, help="for copying sample code into working directory", required=False)
     
     #parsing for the arguements
-    # print(f"Congratulations! you have successfully installed pyemaps!")
-
     args = parser.parse_args()
 
     #default to always print version and version

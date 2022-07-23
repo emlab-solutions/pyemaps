@@ -23,65 +23,60 @@ kinematic diffraction patterns while changing with sample tilt in
 x direction 
 
 Author:     EMLab Solutions, Inc.
-Date:       May 07, 2022    
+Date:       July 07, 2022    
 
 """
-from pickle import EMPTY_DICT
 
-from pyemaps import DEF_CBED_DSIZE, DEF_MODE
-from pyemaps import EMC, DPError, DPListError, EMCError
+from pyemaps import EMC, EMCError, BlochError
 
 MAX_PROCWORKERS = 4
 
-def generate_difs(name = 'silicon', mode = DEF_MODE, ckey = 'tilt'):
-    from pyemaps import DPList
+def generate_bloch_images(name = 'Silicon', dsize = 0.16, ckey = 'tilt'):
     import concurrent.futures
     from pyemaps import Crystal as cryst
+    from pyemaps import BImgList
 
     cr = cryst.from_builtin(name)
-
-    if mode == 2:
-        dsize = DEF_CBED_DSIZE
-    else:
-        dsize = None
-
     
     fs=[]
-    # create an empty diffraction pattern list
-    difs = DPList(name, mode = mode)
-
+   
     emclist =[] 
 
     for i in range(-3,3): 
 
         if ckey == 'tilt':
-            emclist.append(EMC(tilt=(i*0.5, 0.0)))
+            emclist.append(EMC(tilt=(i*0.5, 0.0), cl = 200))
         
         if ckey == 'zone':
-            emclist.append(EMC(zone=(0, i, 1)))
-
-        if ckey == 'defl':
-            emclist.append(EMC(defl=(i*0.5, 0.0)))
-
-        if ckey == 'vt':
-            emclist.append(EMC(vt=200 + i*10))
-
-        if ckey == 'cl':
-            emclist.append(EMC(cl=1000 + i*50))
+            emclist.append(EMC(zone=(0, i, 1), cl = 200))
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
 
         for ec in emclist:
-            fs.append(e.submit(cr.generateDP, mode=mode,  dsize=dsize, em_controls = ec))
-
+            fs.append(e.submit(cr.generateBloch, disk_size=dsize, sampling = 20, em_controls = ec))
+        
+        bimgs = BImgList(name) 
         for f in concurrent.futures.as_completed(fs):
             try:
-                emc, diffP = f.result()
-                difs.add(emc, diffP)
-                
-            except (DPError, EMCError, DPListError) as e:
+               emc, img = f.result()
+
+            except (BlochError, EMCError) as e:
                 print(f'{f} generated an exception: {e.message}')
             except:
-                print('failed to generate diffraction patterns')
+                print('failed to generate diffraction patterns')  
+            bimgs.add(emc, img) 
             
-    return difs
+    return bimgs
+
+from pyemaps import showBloch
+
+def run_bloch_tests():
+    # from sample_base import generate_bimages
+    em_keys = ['tilt', 'zone']
+    for k in em_keys:
+        imgs = generate_bloch_images(ckey=k)
+        showBloch(imgs)
+
+if __name__ == '__main__':
+    
+    run_bloch_tests()
