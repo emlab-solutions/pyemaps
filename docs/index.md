@@ -249,6 +249,16 @@ Additional copyright notices and license terms applicable to portions of pyemaps
 
 Contact supprort@emlabsoftware.com for any questions regarding the licence terms.
 
+## Frequently Asked Questions [`↩`](#contents) <a id="faq"></a>
+
+* __Q__: __pyemaps__ installation failed, what's likely the cause of the failure?
+
+__A__: __pyemaps__ installation includes version requirements on pip, its setuptools and wheel that make downloading and installing the package correct and fast. These tools and their right versions may not come with your _python_ installation and environment. Without them, pip tries to re-build __pyemaps__ from source and will fail due to the fact that __pyemaps__ contains extensions modules. Make sure you have the latest version of pip, setuptools, and wheel.
+```python
+    pip install -U pip setuptools wheel 
+```
+before re-installing __pyemaps__ again.
+
 ## Release Notes [`↩`](#contents) <a id="release-notes"></a>
 
 ### __0.3.3 Alpha__ May 4th, 2022 
@@ -553,5 +563,5 @@ where thichness_step must be positive number. The usage of this method can be ve
 ```
 Detailed plotting function implementations are lised in _display.py_.
 
-*__generateDif(...) Method Added__: This method in _Crystal_ class generates a list of DPs and their associated electron microscopy controls, or _diffraction_ object. It is in contrast to the existing generateDP(...) method that generate a single diffarction pattern (DP).
+* __generateDif(...) Method Added__: This method in _Crystal_ class generates a list of DPs and their associated electron microscopy controls, or _diffraction_ object. It is in contrast to the existing generateDP(...) method that generate a single diffarction pattern (DP).
 
