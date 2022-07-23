@@ -538,7 +538,7 @@ Additional helper classes and method are also added to assist multiple bloch cal
 * __BImgList__: similar to DPList class, _BImgList_ is designed to hold and handle multiple bloch images and their associated controls.
 
 * __generateBlochImgs__: This is Crystal method that generate a BImgList objects for input of sample thickness range and step tuple: 
-    sample_thickness=(thickness_start, thickness_start, thickness_step)
+    sample_thickness=(thickness_start, thickness_end, thickness_step)
 where thichness_step must be positive number. The usage of this method can be very slow due to the fact that it causes pyemaps to calculate multiple slices of bloch images. The advantage is that it saves computation time when such calculation is needed compared to such computation for each sample thickness with _generateBloch_ call.
 
 * __Limitations__: This free version of Bloch image generation has a limitations on crystals and the number of sampling points due to extensive resource requirements for matrix computation during bloch image generations. These limit generally requires less complexity on input crystals and sampling point of 30 or less. Contact support@emlabsoftware.com for a quote for purchasing a full and accelerated version of pyemaps with no limits.   
