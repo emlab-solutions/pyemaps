@@ -80,6 +80,8 @@ def run_builtin_dif(mode = 1, dsize= 0.05):
 def run_builtin_bloch_np(sampling = 8, thickness = 200):
     from pyemaps import Crystal as cryst
     from pyemaps import EMC, DPError, EMCError,BlochListError
+    from pyemaps import showBloch
+    import time
 
     cnames = cryst.list_all_builtin_crystals()
     count = 0
@@ -101,8 +103,10 @@ def run_builtin_bloch_np(sampling = 8, thickness = 200):
             print(f'--------------Loading crystal: {n}')
             
             try:
+                tic = time.perf_counter()
                 bis = cr.generateBlochImgs(sampling = s, 
-                                          sample_thickness = st)
+                        sample_thickness = st)
+                toc = time.perf_counter()
             except (EMCError, BlochListError, DPError) as e:
                     print(f'{bis} generated an exception: {e.message}')
             except:
@@ -110,7 +114,7 @@ def run_builtin_bloch_np(sampling = 8, thickness = 200):
             else: 
                 count += 1
 
-        print(f'*************Successful bloch runs at sampling points of {s}: {count}')
+            print(f'*************Successful bloch runs at sampling points of {s}: {count} in {toc - tic:0.4f} seconds')
 # def runtime_beam_fit(beams,rtimes):
 #     x = beams
 #     y = rtimes

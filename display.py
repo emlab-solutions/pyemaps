@@ -178,6 +178,7 @@ def showBloch(bimgs, bColor = False, bSave = False):
 
     fig.canvas.set_window_title('PYEMAPS - Dynamic Diffraction') 
     
+    count = 1
     for c, img in bimgs:
         ax.set_axis_off()
         ax.set_title(bimgs.name, fontsize=12)
@@ -190,7 +191,8 @@ def showBloch(bimgs, bColor = False, bSave = False):
         )
         plt.draw() 
         if bSave:
-            plt.savefig(bimgs.name + '.png')
+            plt.savefig(bimgs.name + str(count) + '.png')
         plt.pause(1)
         ax.cla()
+        count += 1
     plt.close()
