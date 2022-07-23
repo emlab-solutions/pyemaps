@@ -2,24 +2,27 @@ from ensurepip import version
 from nturl2path import url2pathname
 from unicodedata import name
 
+from pathlib import Path
+import os
+
 mod_name = "scattering"
 ver = "1.0.0"
 
-sct_files =['scattering_sct.pyf', 'scattering.f95']
+sct_files =['scattering_sct.pyf', 'scattering.f90']
 
-compile_args=['-m64',         
-            '-Wno-tabs', 
-            '-Warray-bounds',
-            '-fdefault-double-8',
-            '-fdefault-real-8',
-            '-fopenmp',
-            '-fcheck=all,no-array-temps',
-            '-cpp', 
-            '-Wall',
-            '-O3']
+
+compile_args=['-Qm64',
+              '-WB',
+              '-heap-arrays:768',
+              '-Qopenmp',
+              '-GS', 
+              '-4R8',
+              '-fpp',
+              '-warn:nointerfaces',
+              '-O2', #this option does not work with -fast
+              '-c']
 
 def get_sources():
-    import os
     from pathlib import Path
 
     current_path = Path(os.path.abspath(__file__))

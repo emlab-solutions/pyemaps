@@ -2,35 +2,32 @@ from ensurepip import version
 from nturl2path import url2pathname
 from unicodedata import name
 
+from pathlib import Path
+import os
 mod_name = "spg"
 ver = "1.0.0"
 
-spgra_files =['spg_spgseek.pyf', 'spgseek.f95', 'spgra.f95']
+spgra_files =['spg_spgseek.pyf', 'spgseek.f90', 'spgra.f90']
 
-compile_args=['-m64',         
-            '-Wno-tabs', 
-            '-Warray-bounds',
-            '-fdefault-double-8',
-            '-fdefault-real-8',
-            '-fopenmp',
-            '-fcheck=all,no-array-temps',
-            '-cpp', 
-            '-Wall',
-            '-O3']
+
+compile_args=['-Qm64',
+              '-WB',
+              '-heap-arrays:768',
+              '-Qopenmp',
+              '-GS', 
+              '-4R8',
+              '-fpp',
+              '-warn:nointerfaces',
+              '-O2', #this option does not work with -fast
+              '-c']
 
 def get_sources():
-    import os
-    from pathlib import Path
-
-    print(f'current file path: {__file__}')
+    
     current_path = Path(os.path.abspath(__file__))
-    print(f'current directory: {current_path}')
 
     parent_path = current_path.parent.parent.absolute()
-    print(f'current parent directory: {parent_path}')
 
     emaps_dir = os.path.join(parent_path, 'emaps')
-    print(f'Parent dir found: {emaps_dir}')
 
     src_list = []
     for sf in spgra_files:

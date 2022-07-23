@@ -24,6 +24,7 @@ Date Created:       May 07, 2022
 
 '''
 
+from turtle import title
 import numpy as np
 from numpy import asfortranarray as farray
 from functools import wraps
@@ -36,9 +37,8 @@ from . import spgseek as spgra
     
 from .errors import *
 
-from .emcontrols import DEF_CBED_DSIZE
-from .emcontrols import EMControl as EMC
-
+from . import DEF_CBED_DSIZE
+from . import EMC
 import re
 
 # pyemaps scattering data 
@@ -712,6 +712,7 @@ def add_csf(target):
 
         cell, atoms, atn, spg = self.prepareDif()
         dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        # dif.crystal_printall()
 
         nb, ret = csf.generate_sf(kv, smax, sftype, aptype)
 
@@ -846,6 +847,175 @@ def add_powder(target):
 
     return target
 
+def add_bloch(target):
+    '''
+    bloch module interfaces
+    '''
+
+    def generateBlochImgs(self, *, aperture = 1.0, 
+                            omega = 10,  
+                            sampling = 8,
+                            pix_size = 25,
+                            det_size = 512,
+                            disk_size = 0.16,
+                            sample_thickness = (200, 1000, 100),
+                            em_controls = EMC(cl=200)):
+        try:
+            from . import bloch
+
+        except ImportError as e:               
+            raise CrystalClassError('Failed to import bloch - dynamic diffraction simulation module')
+        from pyemaps import BImgList
+
+        th_start, th_end, th_step = sample_thickness
+
+        if th_start > th_end or th_step <= 0:
+            raise BlochListError('Sample thickness parameter invalid')               
+
+        dif.initcontrols()
+        dif.setmode(2) # alway in CBED mode
+        # TODO need to figure out how to pass these changes
+
+        dif.setglen(1.0)
+        dif.setgcutoff(0.1)
+        dif.setexcitation(0.3,1.0)
+        dif.setdisksize(disk_size)
+
+        cell, atoms, atn, spg = self.prepareDif()
+        dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+  
+        # rawP = farray(np.zeros((2,1000), dtype=np.double))
+        tx, ty = em_controls.tilt[0], em_controls.tilt[1]
+        dx, dy = em_controls.defl[0], em_controls.defl[1]
+        z = em_controls.zone
+        vt, cl = em_controls.vt,  em_controls.cl
+        
+        dif.setsamplecontrols(tx, ty, dx, dy)
+        dif.setemcontrols(cl, vt)        
+        dif.setzone(z[0], z[1], z[2])
+        
+        ret = dif.diffract(1)
+        if ret == 0:
+            raise BlochError('Error bloch runtime1')
+        
+        dif.diff_internaldelete(1)
+        bloch.setsamplethickness(th_start, th_end, th_step)
+        
+        ret = bloch.dobloch(aperture,omega,sampling,0.0)
+        
+        # bloch.bloch_print()
+        # bloch.bloch_print_inherit()
+        if ret == 2:
+            raise BlochError('Predefined Bloch computation resource limit reached')
+
+        if ret != 0:
+            raise BlochError('Error computing dynamic diffraction')
+
+        #successful bloch runtime, then retreive bloch image
+        # 
+        #     
+        
+        slice_step = th_step # 25 * th_step, can be adjusted
+        slice_num = 1 + (th_end-th_start) // slice_step
+        th = th_start
+
+        for i in range(slice_num):
+            ret = bloch.imagegen(th,0,pix_size,det_size)
+            if(ret != 0):
+                raise BlochError("bloch image generation failed!")
+
+            raw_image = farray(np.zeros((det_size,det_size), dtype=np.double))
+            
+            bloch.get_rawimagedata(raw_image)
+            
+            myBlochImgs = BImgList(self._name)
+            myBlochImgs.add(em_controls, raw_image)
+
+            th += slice_step
+
+        bloch.imgmemdelete()
+        dif.diff_delete()
+
+        return myBlochImgs
+
+        
+    def generateBloch(self, *, aperture = 1.0, 
+                            omega = 10,  
+                            sampling = 8,
+                            pix_size = 25,
+                            det_size = 512,
+                            disk_size = 0.16,
+                            thickness = 200,
+                            em_controls = EMC(cl=200)):
+        try:
+            from . import bloch
+
+        except ImportError as e:               
+            raise CrystalClassError('Failed to import bloch - dynamic diffraction simulation module')
+                         
+        dif.initcontrols()
+        dif.setmode(2) # alway in CBED mode
+        # TODO need to figure out how to pass these changes
+
+        dif.setglen(1.0)
+        dif.setgcutoff(0.1)
+        dif.setexcitation(0.3,1.0)
+        dif.setdisksize(disk_size)
+
+        cell, atoms, atn, spg = self.prepareDif()
+        dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+  
+        # if not em_controls:
+        #     em_controls = EMC(cl=400)
+
+        # rawP = farray(np.zeros((2,1000), dtype=np.double))
+        tx, ty = em_controls.tilt[0], em_controls.tilt[1]
+        dx, dy = em_controls.defl[0], em_controls.defl[1]
+        z = em_controls.zone
+        vt, cl = em_controls.vt,  em_controls.cl
+        
+        dif.setsamplecontrols(tx, ty, dx, dy)
+        dif.setemcontrols(cl, vt)        
+        dif.setzone(z[0], z[1], z[2])
+        
+        ret = dif.diffract(1)
+        if ret == 0:
+            raise BlochError('Error bloch runtime1')
+        
+        dif.diff_internaldelete(1)
+        bloch.setsamplethickness(thickness, thickness, 100)
+
+        ret = bloch.dobloch(aperture,omega,sampling,0.0)
+        # bloch.bloch_print()
+        # bloch.bloch_print_inherit()
+        if ret == 2:
+            print('Contact support@emlabsoftware.com for how to register for ' +
+            'a full and accelerated version of pyemaps')
+            raise BlochError('Bloch computation resource limit reached')
+
+        if ret != 0:
+            raise BlochError('Error computing dynamic diffraction')
+
+        #successful bloch runtime, then retreive bloch image
+        # 
+        #     
+        ret = bloch.imagegen(thickness,0,pix_size,det_size)
+        if(ret != 0):
+            raise BlochError("bloch image generation failed!")
+
+        raw_image = farray(np.zeros((det_size,det_size), dtype=np.double))
+        bloch.get_rawimagedata(raw_image)
+        bloch.imgmemdelete()
+        dif.diff_delete()
+
+        return em_controls, raw_image
+    
+    target.generateBloch = generateBloch
+    target.generateBlochImgs = generateBlochImgs
+
+    return target
+
+@add_bloch
 @add_powder
 @add_csf    
 @add_dpgen   
@@ -1217,6 +1387,7 @@ class Crystal:
         cell = {}
         
         c_dict = cf[name]
+        
         if '_cell_length_a' not in c_dict or \
            '_cell_length_b' not in c_dict or \
            '_cell_length_c' not in c_dict or \
@@ -1269,10 +1440,13 @@ class Crystal:
            raise CIFError(cfn, 'missing unit cell keys for atom site label')
 
         atlabels=[]
+        
         if '_atom_site_type_symbol' in c_dict:
             atlabels = c_dict['_atom_site_type_symbol']
+            
         else:
             atlabels = c_dict['_atom_site_label']
+            
 
         at_len = len(atlabels)
 
@@ -1592,6 +1766,7 @@ class Crystal:
                 coords = farray(np.empty((SPG_SYMMETRY_MAXCOL, SPG_SYMMETRY_MAXLEN), dtype='c'))
                 coords, n = spgra.getsymmetryxyz(sp[0], sp[1], coords)
                 
+                
                 if n == -1:
                     # This should not happen but check for it anyway
                     raise CIFError(cfn, 'symmetry lookup in pyemaps space group failed')
@@ -1678,9 +1853,6 @@ class Crystal:
                         if owlen > 3 or owlen < 2:
                             raise XTLError(fn, 'invalid dw and occ data input')
 
-                        # if owlen < 1:
-                        #     print(f"Error: dw data retireval failure for {cname}")
-                        #     return name, data
                         dwkey = dwocc[0].strip().lower()
                         if dwkey != 'dw':
                             raise XTLError(fn, 'missing dye-waller factor key')
@@ -1821,7 +1993,32 @@ class Crystal:
         cfile_list = glob.glob(cbase_files)
 
         return [os.path.basename(name).split('.')[0] for name in cfile_list]
-            
+
+    def generateDif(self, mode = None, dsize = None, em_controls = None):
+        """
+        This routine returns a DPList object.
+
+        New DP generation based on the crystal data and Microscope control 
+        parameters. We will add more controls as we see fit.  
+
+        :param mode: Optional mode of diffraction mode - normal(1) or CBED(2)
+        :param dsize: Optional of CBED circle size - defaults to dif.DEF_DSIZE = 0.16
+        :param: Optional em_controls of electron microscope controls dictionary - defaults to DEF_CONTROLS
+        :return: a DP object
+        :rtype: diffPattern
+        """
+        from . import DPList
+        
+        try:
+            emc, cdp = self.generateDP(mode = mode, dsize=dsize, em_controls = em_controls)
+            myDif = DPList(self._name, mode = mode)
+            myDif.add(emc, cdp)
+
+        except (DPListError, EMCError, DPError) as e:
+            raise CrystalClassError('failed to generate diffraction')
+
+        return myDif   
+
     def generateDP(self, mode = None, dsize = None, em_controls = None):
         """
         This routine returns a DP object.
@@ -1846,8 +2043,10 @@ class Crystal:
         dx0, dy0 = em_controls.defl
         cl, vt = em_controls.cl, em_controls.vt
         zone = em_controls.zone
-
+        
         ret, diffp = self._get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize)
+        
+        
         if ret != 200:
             raise DPError('failed to generate diffraction patterns')
 
@@ -1905,34 +2104,34 @@ class Crystal:
 
         """
         import copy
-
+        
         dif.initcontrols()
         # mode defaults to DEF_MODE, in which dsize is not used
         # Electron Microscope controls defaults - DEF_CONTROLS
-
+        ds = DEF_CBED_DSIZE
         if mode == 2:
             dif.setmode(mode)
-            if dsize == None:
-                ds = DEF_CBED_DSIZE          
-            else:
+            if dsize:
                 ds = dsize
             dif.setdisksize(float(ds))
-
+        
         if tx0 != None and ty0 != None and dx0 != None and dy0 != None:
             dif.setsamplecontrols(tx0, ty0, dx0, dy0)
 
         if cl != None and vt != None:
             dif.setemcontrols(cl, vt)
-        
         if zone != None:
             dif.setzone(zone[0], zone[1], zone[2])
+        
         
         cell, atoms, atn, spg = self.prepareDif()
         dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
 
         ret = 1
+        
         ret = dif.diffract()
         if ret == 0:
+            print('Diffraction module failed to run')
             return 500, ({})
 
         shiftx, shifty = dif.get_shifts()
@@ -1978,7 +2177,7 @@ class Crystal:
         num_hlines = 0
         if (mode == 2):
             num_hlines = dif.gethnum()
-            # print(f"hline number: {num_hlines}")
+            
             if (num_hlines > 0):
                 hlines_arr = farray(np.zeros((num_hlines, 4)), dtype=np.double)
                 if dif.get_hlines(hlines_arr) == 0:

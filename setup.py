@@ -97,8 +97,10 @@ def configuration(parent_package='',top_path=None):
     
     samplelist = get_samples()
     print(f'samples files found: {samplelist}')
-    config.add_data_files('license.txt', 'README.md', 'COPYING', ('samples', samplelist))
-    config.add_data_dir('test')
+    config.add_data_files('license.txt', 'README.md', 'COPYING', 
+                          ('samples', samplelist),
+                          ('test', []))
+                          
     config.add_data_dir('cdata')
     
     config.make_config_py() #generated automatically by distutil based on supplied __config__.py
