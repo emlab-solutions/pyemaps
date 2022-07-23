@@ -712,8 +712,7 @@ def add_csf(target):
 
         cell, atoms, atn, spg = self.prepareDif()
         dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
-        # dif.crystal_printall()
-
+        
         nb, ret = csf.generate_sf(kv, smax, sftype, aptype)
 
         if ret != 0 and nb <= 0:
@@ -874,7 +873,6 @@ def add_bloch(target):
 
         dif.initcontrols()
         dif.setmode(2) # alway in CBED mode
-        # TODO need to figure out how to pass these changes
 
         dif.setglen(1.0)
         dif.setgcutoff(0.1)
@@ -884,7 +882,7 @@ def add_bloch(target):
         cell, atoms, atn, spg = self.prepareDif()
         dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
   
-        # rawP = farray(np.zeros((2,1000), dtype=np.double))
+  
         tx, ty = em_controls.tilt[0], em_controls.tilt[1]
         dx, dy = em_controls.defl[0], em_controls.defl[1]
         z = em_controls.zone
@@ -903,8 +901,6 @@ def add_bloch(target):
         
         ret = bloch.dobloch(aperture,omega,sampling,0.0)
         
-        # bloch.bloch_print()
-        # bloch.bloch_print_inherit()
         if ret == 2:
             raise BlochError('Predefined Bloch computation resource limit reached')
 
@@ -915,7 +911,7 @@ def add_bloch(target):
         # 
         #     
         
-        slice_step = th_step # 25 * th_step, can be adjusted
+        slice_step = th_step 
         slice_num = 1 + (th_end-th_start) // slice_step
         th = th_start
 
@@ -955,7 +951,7 @@ def add_bloch(target):
                          
         dif.initcontrols()
         dif.setmode(2) # alway in CBED mode
-        # TODO need to figure out how to pass these changes
+        
 
         dif.setglen(1.0)
         dif.setgcutoff(0.1)
@@ -965,10 +961,6 @@ def add_bloch(target):
         cell, atoms, atn, spg = self.prepareDif()
         dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
   
-        # if not em_controls:
-        #     em_controls = EMC(cl=400)
-
-        # rawP = farray(np.zeros((2,1000), dtype=np.double))
         tx, ty = em_controls.tilt[0], em_controls.tilt[1]
         dx, dy = em_controls.defl[0], em_controls.defl[1]
         z = em_controls.zone
@@ -986,8 +978,7 @@ def add_bloch(target):
         bloch.setsamplethickness(thickness, thickness, 100)
 
         ret = bloch.dobloch(aperture,omega,sampling,0.0)
-        # bloch.bloch_print()
-        # bloch.bloch_print_inherit()
+        
         if ret == 2:
             print('Contact support@emlabsoftware.com for how to register for ' +
             'a full and accelerated version of pyemaps')
@@ -1679,7 +1670,6 @@ class Crystal:
                                             '_cod_original_sg_symbol_H-M'
                                             )
 
-            # TODO: custome exception for SPG, Atom and cell?
             hm = None
             if '_symmetry_space_group_name_H-M' in c_dict:
                 hm0 = c_dict['_symmetry_space_group_name_H-M']
@@ -1868,7 +1858,7 @@ class Crystal:
                             occ = int(dwocc[2].strip())
 
                         # validating dw:
-                        if dw != 'iso' and dw != 'uij' and dw != 'bij': #TODO message on dw
+                        if dw != 'iso' and dw != 'uij' and dw != 'bij': 
                             raise XTLError(fn, 'invalid dye-Waller facttor data: must be one of iso, bij and uij')
 
                         data['dw'] = dw
