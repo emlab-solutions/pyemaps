@@ -95,6 +95,7 @@ where sample.py is as follows:
     from pyemaps import Crystal as cr
     from pyemaps import showDif, showBloch
     from pyemaps import DPList
+    from pyemaps import BImgList
     # create a crystal class instance and load it with builtin silicon data
     c_name = 'Silicon'
     si = cr.from_builtin(c_name)
@@ -119,14 +120,15 @@ where sample.py is as follows:
     #hide Miller Indices
     showDif(dpl, ishow=False)
 
-    #Generate dynamic diffraction patterns using pyemaps' bloch module 
-    bloch_imgs_list = []
-    emc, img = si.generateBloch() #with all default parameters
+    #Generate dynamic diffraction patterns using pyemaps' bloch module
+    bloch_imgs_list = BImgList(c_name)
+    emc, img = si.generateBloch(sampling = 20) #with all default parameters
     
     #create a dynamic diffraction pattern list /w assiated controls
-    bloch_imgs_list.append((emc, img)) 
+
+    bloch_imgs_list.add(emc, img) 
     
-    showBloch(bloch_imgs_list, name = c_name) #grey color map
+    showBloch(bloch_imgs_list) #grey color map
     showBloch(bloch_imgs_list, bColor=True) #with predefined color map
 ```
 
