@@ -30,7 +30,7 @@ __pyemaps__ comes with a set of helper classes with the intent of making accesse
 
 * **DP** :  kinematic diffraction python class. It encapsulates and models diffraction pattern generated from __Crystal__ class instance.   
 
-* **BlochImgs** : dynamic diffraction images list class. This class is design for handling multiple slices of bloch images with their associated controls. 
+* **BlochImgs** : dynamic diffraction images list class. This class is designed for handling multiple slices of bloch images with their associated controls. 
 
 * **Display**: This python helper class provides a builtin visualisation of kinematic diffraction patterns with Kikuchi and HOLZ lines, and diffracted beams or disks and their Miller indices. Its methods also include rendering of dynamic diffraction (Bloch) images. Users can easily replace or extend these methods into their own application.   
 
@@ -93,6 +93,7 @@ where sample.py is as follows:
     from pyemaps import Crystal as cr
     from pyemaps import showDif, showBloch
     from pyemaps import DPList
+    from pyemaps import BImgList
     # create a crystal class instance and load it with builtin silicon data
     c_name = 'Silicon'
     si = cr.from_builtin(c_name)
@@ -117,14 +118,15 @@ where sample.py is as follows:
     #hide Miller Indices
     showDif(dpl, ishow=False)
 
-    #Generate dynamic diffraction patterns using pyemaps' bloch module 
-    bloch_imgs_list = []
-    emc, img = si.generateBloch() #with all default parameters
+    #Generate dynamic diffraction patterns using pyemaps' bloch module
+    bloch_imgs_list = BImgList(c_name)
+    emc, img = si.generateBloch(sampling = 20) #with all default parameters
     
     #create a dynamic diffraction pattern list /w assiated controls
-    bloch_imgs_list.append((emc, img)) 
+
+    bloch_imgs_list.add(emc, img) 
     
-    showBloch(bloch_imgs_list, name = c_name) #grey color map
+    showBloch(bloch_imgs_list) #grey color map
     showBloch(bloch_imgs_list, bColor=True) #with predefined color map
 ```
 
