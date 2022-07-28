@@ -177,7 +177,7 @@ class DifPlotter:
 
             if self.save:
                 plt.savefig(save_prefix + self.name + str(self.save) + '.png')
-            plt.pause(0.5)
+            plt.pause(1.0)
 
         return True
     
@@ -201,7 +201,7 @@ class DifPlotter:
         self.ax.set_axis_off()
         pyemaps_title = 'PYEMAPS - Kinematic Diffraction' if type == 1 else 'PYEMAPS - Dynamic Diffraction'
         self.fig.canvas.set_window_title(pyemaps_title)
-        timer = self.fig.canvas.new_timer(interval=1000)
+        timer = self.fig.canvas.new_timer(interval=1500)
         timer.add_callback(self.call_back)
         timer.start()
 
@@ -268,7 +268,7 @@ def showBloch(bimgs, bColor = False, bSave = False):
             save = count
         d = (c, name, save, (img, bColor))
         pl.plot(data = d)
-        time.sleep(0.5)
+        time.sleep(1.0)
         count += 1
 
     pl.plot(finished=True)
