@@ -28,13 +28,21 @@ Date:       May 07, 2022
 
 """
 import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import multiprocessing as mp
 
-from pyemaps.errors import BlochListError
+from pyemaps import BlochListError
+from pyemaps import DP
+
+import time
 
 DISPLAY_SIZE = 900 # default
 PLOT_MULTIPLIER = 6
+
+clrs = ["#2973A5", "cyan", "limegreen", "yellow", "red"]
+gclrs=plt.get_cmap('gray')
 
 def find_dpi():
     dpi = 96 #default
@@ -62,53 +70,43 @@ def find_dpi():
     dpi = w*96/width_px
     return dpi
 
-def position_fig(f, x, y):
-    backend = matplotlib.get_backend()
-    if backend == 'TkAgg':
-        f.canvas.manager.window.wm_geometry("+%d+%d" % (x, y))
+class DifPlotter:
+    '''
+    diffraction data plotter that receives data from the pipe and
+    plot them with pyplot
+    '''
+    def __init__(self):
+        self.name = 'Silicon'
+        self.save = 0
+        self.difData = None
+        self.emc = None
 
-    elif backend == 'WXAgg':
-        f.canvas.manager.window.SetPosition((x, y))
+    def terminate(self):
+        plt.close('all')
 
-    else:
-        pass
+    def plotKDif(self):
+        dp, mode, kshow, ishow = self.difData
+        
+        self.ax.clear()
+        
+        self.ax.set_axis_off()
+        self.ax.set_aspect('equal')
+        self.ax.set_title(self.name)
 
-def showDif(dpl=None, kshow=True, ishow=True):
-    from pyemaps import DPList
-
-    if not dpl or not isinstance(dpl, DPList):
-        print('Nothing to plot: must pass a valid Diffraction object')
-
-    curr_dpi = find_dpi()
-
-    fig, ax = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
-                        dpi=curr_dpi) #setting image size in pixels
-    position_fig(fig, 20, 20)                      
-    fig.canvas.set_window_title('PYEMAPS - Kinematic Diffraction') 
-    
-    mode = dpl.mode
-    name = dpl.name
-
-    for c, dp in dpl:
-        ax.set_axis_off()
-        ax.set_title(name)
-        ax.set_aspect('equal')
-    
         line_color = 'k' if kshow else 'w'
-    
         for kl in dp.klines:
-            
+        
             kl *=PLOT_MULTIPLIER
             xx = [kl.pt1.x, kl.pt2.x]
             yy = [kl.pt1.y, kl.pt2.y]
-            
-            ax.plot(xx, yy, line_color, alpha=0.2)
+        
+            self.ax.plot(xx, yy, line_color, alpha=0.2)
 
         for hl in dp.hlines:
             hl *=PLOT_MULTIPLIER
             xx = [hl.pt1.x, hl.pt2.x]
             yy = [hl.pt1.y, hl.pt2.y]
-            ax.plot(xx, yy, 'k', alpha=0.2)
+            self.ax.plot(xx, yy, 'k', alpha=0.2)
 
         for d in dp.disks:
             d *= PLOT_MULTIPLIER
@@ -121,7 +119,7 @@ def showDif(dpl=None, kshow=True, ishow=True):
                                 linewidth = 0.5, 
                                 alpha=1.0, 
                                 fc='blue')
-            ax.add_patch(dis)
+            self.ax.add_patch(dis)
         
             if ishow:
                 plt.text(centre[0],centre[1], 
@@ -130,69 +128,147 @@ def showDif(dpl=None, kshow=True, ishow=True):
                         horizontalalignment='center',
                         verticalalignment='bottom' if mode == 1 else 'center')
 
-        controls_text = []
-        
-        controls_text.append(str(c))
+    def plotDDif(self):
+        from matplotlib.colors import LinearSegmentedColormap
+
+        img, color = self.difData
+
+        clrMap = gclrs #default to grey
+        if color:
+            clrMap = LinearSegmentedColormap.from_list("mycmap", clrs)
+
+        self.ax.clear()
+        self.ax.set_axis_off()
+        self.ax.set_title(self.name, fontsize=12)
+        plt.imshow(img, cmap=clrMap)
+
+    def plotControls(self):
+        controls_text = str(self.emc)
 
         # finding control text plot or coordinates:
         x0, _ = plt.xlim()
         y0, _ = plt.ylim()
 
-        plt.text(x0 + 10, y0 - 10, str(c),
+        plt.text(x0 + 10, y0 - 10, controls_text,
                 {'color': 'grey', 'fontsize': 6}
         )
-        plt.draw()
-        plt.pause(1)
-        ax.cla()
-    plt.close()
+
+    def call_back(self):
+        while self.pipe.poll():
+            command = self.pipe.recv()
+            
+            if command is None:
+                self.terminate()
+                return False
+            else:
+                save_prefix = 'DDif_'
+                self.emc, self.name, self.save, self.difData = command
+
+                if isinstance(self.difData[0], DP):
+                    self.plotKDif()
+                    save_prefix = 'KDif_'
+                else:
+                    self.plotDDif()
+                
+            self.plotControls()
+            self.fig.canvas.draw_idle()
+            
+            self.plotControls()
+
+            if self.save:
+                plt.savefig(save_prefix + self.name + str(self.save) + '.png')
+            plt.pause(0.5)
+
+        return True
+    
+    def position_fig(self, x, y):
+        backend = matplotlib.get_backend()
+        if backend == 'TkAgg':
+            self.fig.canvas.manager.window.wm_geometry("+%d+%d" % (x, y))
+
+        elif backend == 'WXAgg':
+            self.fig.canvas.manager.window.SetPosition((x, y))
+
+        else:
+            pass
+
+    def __call__(self, pipe, type):
+        self.pipe = pipe
+        curr_dpi = find_dpi()
+        self.fig, self.ax = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
+                        dpi=curr_dpi) #setting image size in pixels
+        self.position_fig(20, 20)
+        self.ax.set_axis_off()
+        pyemaps_title = 'PYEMAPS - Kinematic Diffraction' if type == 1 else 'PYEMAPS - Dynamic Diffraction'
+        self.fig.canvas.set_window_title(pyemaps_title)
+        timer = self.fig.canvas.new_timer(interval=1000)
+        timer.add_callback(self.call_back)
+        timer.start()
+
+        plt.show()
+
+class NBPlot:
+    '''
+    Creating a non-bloch plot object with pipe sending diffraction data
+    '''
+    def __init__(self, type = 1):
+        self.plot_pipe, plotter_pipe = mp.Pipe()
+        self.plotter = DifPlotter()
+        self.plot_process = mp.Process(
+            target=self.plotter, args=(plotter_pipe, type), daemon=True)
+        self.plot_process.start()
+
+    def plot(self, data = (), finished=False):
+        send = self.plot_pipe.send
+        if finished:
+            send(None)
+        else:
+            send(data)
+
+
+def showDif(dpl=None, kshow=True, ishow=True, bSave = False):
+    """
+    Show kinematic diffractions
+    """
+    from pyemaps import DPList
+
+    if not dpl or not isinstance(dpl, DPList):
+        print('Nothing to plot: must pass a valid Diffraction object')
+    
+    mode = dpl.mode
+    name = dpl.name
+    count = 1
+    pl = NBPlot(1)
+    for c, dp in dpl:       
+        save = 0
+        if bSave:
+            save = count
+        d = (c, name, save, (dp, mode, kshow, ishow))
+        pl.plot(data = d)
+        time.sleep(1.0)
+        count += 1
+
+    pl.plot(finished=True)
 
 def showBloch(bimgs, bColor = False, bSave = False):
     """
-    plot one powder diffraction
+    Show bloch diffractions
     """
-    # from pyemaps import BlochImgs
-
-    from matplotlib.colors import LinearSegmentedColormap
     from pyemaps import BImgList
 
-    # TODO validating input of bimgs
     if not bimgs or not isinstance(bimgs, BImgList):
         raise BlochListError('showBloch must have BImgList object as its first input')
 
-    curr_dpi = find_dpi()
-
-    clrs = ["#2973A5", "cyan", "limegreen", "yellow", "red"]
-    gclrs=plt.get_cmap('gray')
-
-    clrMap = gclrs #default to grey
-    if bColor:
-        clrMap = LinearSegmentedColormap.from_list("mycmap", clrs)
-
-    curr_dpi = find_dpi()
-
-    curr_dpi = find_dpi()
-
-    fig, ax = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
-                        dpi=curr_dpi) #setting image size in pixels
-    position_fig(fig, 20, 20)
-
-    fig.canvas.set_window_title('PYEMAPS - Dynamic Diffraction') 
-    
+    name = bimgs.name
     count = 1
-    for c, img in bimgs:
-        ax.set_axis_off()
-        ax.set_title(bimgs.name, fontsize=12)
-        plt.imshow(img, cmap=clrMap)
-        x0, _ = plt.xlim()
-        y0, _ = plt.ylim()
-
-        plt.text(x0 + 10, y0 - 10, str(c),
-                {'color': 'grey', 'fontsize': 8}
-        )
-        plt.draw() 
+    pl = NBPlot(2)
+    for c, img in bimgs:       
+        save = 0
         if bSave:
-            plt.savefig(bimgs.name + str(count) + '.png')
-        plt.pause(1)
-        ax.cla()
+            save = count
+        d = (c, name, save, (img, bColor))
+        pl.plot(data = d)
+        time.sleep(0.5)
         count += 1
-    plt.close()
+
+    pl.plot(finished=True)

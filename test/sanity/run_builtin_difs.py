@@ -77,7 +77,7 @@ def run_builtin_dif(mode = 1, dsize= 0.05):
 
     print(f'Successful bloch runs: {count}')
 
-def run_builtin_bloch_np(sampling = 8, thickness = 200):
+def run_builtin_bloch_np(sampling = 8, thickness = 200, bSave = False, bShow=False):
     from pyemaps import Crystal as cryst
     from pyemaps import EMC, DPError, EMCError,BlochListError
     from pyemaps import showBloch
@@ -99,9 +99,10 @@ def run_builtin_bloch_np(sampling = 8, thickness = 200):
     for s in range(s_start, s_end+1, s_step):
         print(f'Sampling: {s}')
         for n in cnames:
+         if n == 'BiMnO3':
             cr = cryst.from_builtin(n)
             print(f'--------------Loading crystal: {n}')
-            
+            tic = toc = 0.0
             try:
                 tic = time.perf_counter()
                 bis = cr.generateBlochImgs(sampling = s, 
@@ -112,28 +113,13 @@ def run_builtin_bloch_np(sampling = 8, thickness = 200):
             except:
                 print('failed to generate bloch diffraction patterns')  
             else: 
+                if bShow:
+                    showBloch(bis, bSave=bSave)
                 count += 1
 
             print(f'*************Successful bloch runs at sampling points of {s}: {count} in {toc - tic:0.4f} seconds')
-# def runtime_beam_fit(beams,rtimes):
-#     x = beams
-#     y = rtimes
-
-#     z = np.polyfit(x,y,7)
-#     f = np.poly1d(z)
-
-#     # calculate new x's and y's
-#     xmin = min(x)
-#     xmax = max(x)
-#     x_new = np.linspace(xmin, xmax, 50)
-#     y_new = f(x_new)
-
-#     plt.plot(x,y,'o', x_new, y_new)
-#     plt.xlim([0, xmax ])
-    
-#     plt.show()
 
 if __name__=="__main__":
-    run_builtin_dif()
+    # run_builtin_dif()
     # run_builtin_bloch()
-    # run_builtin_bloch_np()
+    run_builtin_bloch_np(bShow=True)
