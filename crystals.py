@@ -914,7 +914,7 @@ def add_bloch(target):
         slice_step = th_step 
         slice_num = 1 + (th_end-th_start) // slice_step
         th = th_start
-
+        myBlochImgs = BImgList(self._name)
         for i in range(slice_num):
             ret = bloch.imagegen(th,0,pix_size,det_size)
             if(ret != 0):
@@ -924,7 +924,6 @@ def add_bloch(target):
             
             bloch.get_rawimagedata(raw_image)
             
-            myBlochImgs = BImgList(self._name)
             myBlochImgs.add(em_controls, raw_image)
 
             th += slice_step

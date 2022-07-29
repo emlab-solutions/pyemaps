@@ -32,7 +32,7 @@ __pyemaps__ comes with a set of helper classes with the intent of making accesse
 
 * **DP** :  kinematic diffraction python class. It encapsulates and models diffraction pattern generated from __Crystal__ class instance.   
 
-* **BlochImgs** : dynamic diffraction images list class. This class is design for handling multiple slices of bloch images with their associated controls. 
+* **BlochImgs** : dynamic diffraction images list class. This class is designed for handling multiple slices of bloch images with their associated controls. 
 
 * **Display**: This python helper class provides a builtin visualisation of kinematic diffraction patterns with Kikuchi and HOLZ lines, and diffracted beams or disks and their Miller indices. Its methods also include rendering of dynamic diffraction (Bloch) images. Users can easily replace or extend these methods into their own application.   
 
@@ -567,3 +567,10 @@ Detailed plotting function implementations are lised in _display.py_.
 
 * __generateDif(...) Method Added__: This method in _Crystal_ class generates a list of DPs and their associated electron microscopy controls, or _diffraction_ object. It is in contrast to the existing generateDP(...) method that generate a single diffarction pattern (DP).
 
+### __0.4.2 Beta__ July 22th, 2022  
+
+#### IMPROEMENT
+
+*__Dynamic Diffraction Performance and Computation Accuracy Improvements__: Switching to LAPACK libraries in eigen calculations has resulted in great improvements in matrix computations employed in Bloch module. An average of over 100% performance improvements. More performance improvements are planned with OpenMP implementations in compute intense Bloch module. Stay tuned...  
+
+*__Bug Fixes__: Fixed runtime error in display functions on some system. 
