@@ -82,7 +82,7 @@ class DifPlotter:
         self.emc = None
 
     def terminate(self):
-        plt.close('all')
+        plt.close(self.fig) #just close the current figure
 
     def plotKDif(self):
         dp, mode, kshow, ishow = self.difData
@@ -170,14 +170,14 @@ class DifPlotter:
                 else:
                     self.plotDDif()
                 
-            self.plotControls()
-            self.fig.canvas.draw_idle()
-            
-            self.plotControls()
+                self.plotControls()
+                self.fig.canvas.draw_idle()
+                
+                self.plotControls()
 
-            if self.save:
-                plt.savefig(save_prefix + self.name + str(self.save) + '.png')
-            plt.pause(1.0)
+                if self.save:
+                    plt.savefig(save_prefix + self.name + str(self.save) + '.png')
+                plt.pause(1.0)
 
         return True
     
@@ -199,8 +199,15 @@ class DifPlotter:
                         dpi=curr_dpi) #setting image size in pixels
         self.position_fig(20, 20)
         self.ax.set_axis_off()
+
+
         pyemaps_title = 'PYEMAPS - Kinematic Diffraction' if type == 1 else 'PYEMAPS - Dynamic Diffraction'
-        self.fig.canvas.set_window_title(pyemaps_title)
+        
+        if self.fig.canvas.manager is not None:
+            self.fig.canvas.manager.set_window_title(pyemaps_title)
+        else:
+            self.fig.canvas.set_window_title(pyemaps_title)
+
         timer = self.fig.canvas.new_timer(interval=1500)
         timer.add_callback(self.call_back)
         timer.start()
@@ -209,7 +216,8 @@ class DifPlotter:
 
 class NBPlot:
     '''
-    Creating a non-bloch plot object with pipe sending diffraction data
+    Creating a non-bloch plot object with a pipe object sending diffraction data
+    to difPlotter
     '''
     def __init__(self, type = 1):
         self.plot_pipe, plotter_pipe = mp.Pipe()

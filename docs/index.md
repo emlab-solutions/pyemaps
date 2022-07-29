@@ -557,3 +557,10 @@ Detailed plotting function implementations are lised in _display.py_.
 
 *__generateDif(...) Method Added__: This method in _Crystal_ class generates a list of DPs and their associated electron microscopy controls, or _diffraction_ object. It is in contrast to the existing generateDP(...) method that generate a single diffarction pattern (DP).
 
+### __0.4.2 Beta__ July 22th, 2022  
+
+#### IMPROEMENT
+
+*__Dynamic Diffraction Performance and Computation Accuracy Improvements__: Switching to LAPACK libraries in eigen calculations has resulted in great improvements in matrix computations employed in Bloch module. An average of over 100% performance improvements. More performance improvements are planned with OpenMP implementations in compute intense Bloch module. Stay tuned...  
+
+*__Bug Fixes__: Fixed runtime error in display functions on some system. 
