@@ -34,7 +34,12 @@ def plot2Powder(pw1, pw2):
     import matplotlib.pyplot as plt
 
     fig, (ax1, ax2) = plt.subplots(nrows = 2)
-    fig.canvas.set_window_title('PYEMAPS')      
+    
+    title = 'PYEMAPS - Powder Diffraction'
+    if fig.canvas.manager is not None:
+        fig.canvas.manager.set_window_title(title)
+    else:
+        fig.canvas.set_window_title(title)    
     
     ax1.plot(pw1[0], pw1[1], 'r')
     ax1.set_title('Silicon')
