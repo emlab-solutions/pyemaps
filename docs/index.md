@@ -569,7 +569,7 @@ Detailed plotting function implementations are lised in _display.py_.
 
 ### __0.4.2 Alpha__ July 28th, 2022  
 
-#### IMPROEMENT
+#### IMPROVEMENTS
 
 *__Dynamic Diffraction Performance and Computation Accuracy Improvements__: Switching to LAPACK libraries in eigen calculations has resulted in great improvements in matrix computations employed in Bloch module. An average of over 100% performance improvements. More performance improvements are planned with OpenMP implementations in compute intense Bloch module. Stay tuned...  
 
