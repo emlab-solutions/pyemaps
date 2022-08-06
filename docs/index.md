@@ -518,7 +518,7 @@ If a dictionary is desired, from_dict() function is an alternative for such cons
 ``` 
 See _si_csf.py_ sample code for more details.
 
-### __0.4.1 Alpha__ July 22th, 2022  
+### __0.4.1 Alpha__ July 22th, 2022  (Yanked, due to major blocking issues, check back for the fixes after 8/14/2022)
 
 #### NEW
 
@@ -567,7 +567,7 @@ Detailed plotting function implementations are lised in _display.py_.
 
 * __generateDif(...) Method Added__: This method in _Crystal_ class generates a list of DPs and their associated electron microscopy controls, or _diffraction_ object. It is in contrast to the existing generateDP(...) method that generate a single diffarction pattern (DP).
 
-### __0.4.2 Alpha__ July 28th, 2022  
+### __0.4.2 Alpha__ July 28th, 2022  (Yanked, due to major blocking issues, check back for the fixes after 8/14/2022) 
 
 #### IMPROVEMENTS
 
