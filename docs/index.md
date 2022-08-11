@@ -49,7 +49,7 @@ If you benefit from __pyemaps__ in your microscopy and crystallography research 
 
 ## Requirements [`↩`](#contents) <a id="requirements"></a>
 
-* __Python__: Version >= 3.6
+* __Python__: Version == 3.7 (other python version support upcoming)
 * __numpy__: Version >= 1.21.2
 * __matplotlib__: Version >= 3.2.1
 * __PyCifRW__ Version == 4.4.3
@@ -260,6 +260,33 @@ __A__: __pyemaps__ installation includes version requirements on pip, its setupt
     pip install -U pip setuptools wheel 
 ```
 before re-installing __pyemaps__ again.
+
+* __Q__: How do I install and run __pyemaps__ in Anaconda environment with Jupyter Notebook?
+
+__A__: Follow the steps below to install and run pyemaps in Anaconda and Jupyter Notebooks
+
+    1) Install Anaconda: 
+        You may need to make a clean install by doing a "Full Uninstall" of existing Anaconda by 
+        deleting old environment and packages folders as old packages can cause dependencies issues.
+    2) Create a new environment called 'pyemaps' in Anaconda command prompt:
+        conda create -n pyemaps python=3.7 
+       Please note, 3.7 is the only supported version for now, more version support upcoming
+    3) Activate the new conda environment:
+        conda activate pyemaps
+    4) Install latest pyemaps:
+        pip install pyemaps (or pyemaps==X.X.X)
+    5) Install Jupyter:
+        pip install jupyter
+    6) Install miscellaneous support for Jupyter Notebook including interactive python:
+        pip install ipython
+        python -m ipykernel install --user --name pyemaps --display-name "pyemaps (python 3.7)" 
+       replace --display-name value with your own string if desired
+    7) Run Jupyter local server:
+        jupyter notebook
+    8) Running pyemaps with Jupyter Notebook browser page:
+        Select "pyemaps (python 3.7)" or
+        Select "Terminal"
+       in <New> dropdown to start an interactive session with pyemaps or running pyemaps scripts
 
 ## Release Notes [`↩`](#contents) <a id="release-notes"></a>
 
@@ -518,7 +545,7 @@ If a dictionary is desired, from_dict() function is an alternative for such cons
 ``` 
 See _si_csf.py_ sample code for more details.
 
-### __0.4.1 Alpha__ July 22th, 2022  (Yanked, due to major blocking issues, check back for the fixes after 8/14/2022)
+### __0.4.1 Alpha__ July 22th, 2022
 
 #### NEW
 
@@ -567,7 +594,7 @@ Detailed plotting function implementations are lised in _display.py_.
 
 * __generateDif(...) Method Added__: This method in _Crystal_ class generates a list of DPs and their associated electron microscopy controls, or _diffraction_ object. It is in contrast to the existing generateDP(...) method that generate a single diffarction pattern (DP).
 
-### __0.4.2 Alpha__ July 28th, 2022  (Yanked, due to major blocking issues, check back for the fixes after 8/14/2022) 
+### __0.4.2 Alpha__ July 28th, 2022
 
 #### IMPROVEMENTS
 
