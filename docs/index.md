@@ -270,7 +270,7 @@ __A__: Follow the steps below to install and run pyemaps in Anaconda and Jupyter
        Restart after the installation is completed.
     3) Create a new environment in Anaconsa called 'pyemaps' in Anaconda command prompt:
        conda create -n pyemaps python=3.7 
-       Please note, 3.7 is the only supported version for now, more version support upcoming.
+       Please note, 3.7 is the only supported python version for now, more version support upcoming.
     4) Activate the new conda environment:
        conda activate pyemaps
     5) Install latest pyemaps & its runtime distributables from Intel Fortran needed for pyemaps modules:
@@ -282,9 +282,9 @@ __A__: Follow the steps below to install and run pyemaps in Anaconda and Jupyter
     7) Run "conda install ipywidgets" and "conda install widgetsnbextension"
        python -m ipykernel install --user --name pyemaps --display-name "pyemaps (python 3.7)" 
        note: replace --display-name value with your own string if desired
-    7) Run Jupyter local server:
+    8) Run Jupyter local server:
        jupyter notebook
-    8) Run "jupyter notebook" and create a new notebook file to run pyemaps tasks.
+       Create a new notebook file to run pyemaps tasks.
 
 ## Release Notes [`↩`](#contents) <a id="release-notes"></a>
 
