@@ -36,12 +36,9 @@ __pyemaps__ comes with a set of helper classes with the intent of making accesse
 
 * **Errors**: Error handling for __pyemaps__, capturing errors and making actionable and trackable error messages.
 
-See sample code and latest [release notes](https://emlab-solutions.github.io/pyemaps/#release-notes) for details.
-
 __pyemaps__ is based on the proprietary Fortran applications released as backend of [cloudEMAPS2.0](https://emaps.emlabsolutions.com). 
 
-
-Check [EMlab Solution, Inc.](https://www.emlabsolutions.com) for updates and releases. We welcome comments and suggestions from our user community. For reporting any issues and requesting pyemaps improvements, or sharing scripts using __pyemaps__, please go to [our support page](https://www.emlabsolutions.com/contact/). 
+Check [pyemaps release notes](https://emlab-solutions.github.io/pyemaps/#release-notes) for updates and releases. We welcome comments and suggestions from our user community. For reporting any issues and requesting pyemaps improvements, or sharing scripts using __pyemaps__, please go to [our support page](https://www.emlabsolutions.com/contact/). 
 
 If you benefit from __pyemaps__ in your microscopy and crystallography research and education and would like to donate, go to [PayPal](https://www.paypal.com/paypalme/pyemaps22). Your generous donations are greatly appreciated and will keep us in the business of providing free software to the communities.   
 
