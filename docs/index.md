@@ -38,12 +38,9 @@ __pyemaps__ comes with a set of helper classes with the intent of making accesse
 
 * **Errors**: Error handling for __pyemaps__, capturing errors and making actionable and trackable error messages.
 
-See sample code and latest [release notes](https://emlab-solutions.github.io/pyemaps/#release-notes) for details.
-
 __pyemaps__ is based on the proprietary Fortran applications released as backend of [cloudEMAPS2.0](https://emaps.emlabsolutions.com). 
 
-
-Check [EMlab Solution, Inc.](https://www.emlabsolutions.com) for updates and releases. We welcome comments and suggestions from our user community. For reporting any issues and requesting pyemaps improvements, or sharing scripts using __pyemaps__, please go to [our support page](https://www.emlabsolutions.com/contact/). 
+Check [pyemaps release notes](https://emlab-solutions.github.io/pyemaps/#release-notes) for updates and releases. We welcome comments and suggestions from our user community. For reporting any issues and requesting pyemaps improvements, or sharing scripts using __pyemaps__, please go to [our support page](https://www.emlabsolutions.com/contact/). 
 
 If you benefit from __pyemaps__ in your microscopy and crystallography research and education and would like to donate, go to [PayPal](https://www.paypal.com/paypalme/pyemaps22). Your generous donations are greatly appreciated and will keep us in the business of providing free software to the communities.   
 
@@ -266,27 +263,28 @@ before re-installing __pyemaps__ again.
 __A__: Follow the steps below to install and run pyemaps in Anaconda and Jupyter Notebooks
 
     1) Install Anaconda: 
-        You may need to make a clean install by doing a "Full Uninstall" of existing Anaconda by 
-        deleting old environment and packages folders as old packages can cause dependencies issues.
-    2) Create a new environment called 'pyemaps' in Anaconda command prompt:
-        conda create -n pyemaps python=3.7 
-       Please note, 3.7 is the only supported version for now, more version support upcoming
-    3) Activate the new conda environment:
-        conda activate pyemaps
-    4) Install latest pyemaps:
-        pip install pyemaps (or pyemaps==X.X.X)
-    5) Install Jupyter:
-        pip install jupyter
-    6) Install miscellaneous support for Jupyter Notebook including interactive python:
-        pip install ipython
-        python -m ipykernel install --user --name pyemaps --display-name "pyemaps (python 3.7)" 
-       replace --display-name value with your own string if desired
+       You may need to make a clean install by doing a "Full Uninstall" of existing Anaconda by 
+       deleting old environment and packages folders as old packages can cause dependencies issues.
+    2) (In some systems) Download Microsoft Visual Studio Community
+       Select "Desktop Development with C++" workload on the install page 
+       Restart after the installation is completed.
+    3) Create a new environment in Anaconsa called 'pyemaps' in Anaconda command prompt:
+       conda create -n pyemaps python=3.7 
+       Please note, 3.7 is the only supported version for now, more version support upcoming.
+    4) Activate the new conda environment:
+       conda activate pyemaps
+    5) Install latest pyemaps & its runtime distributables from Intel Fortran needed for pyemaps modules:
+       pip install pyemaps (or pyemaps==X.X.X)
+       pip install intel-fortran-rt 
+       Note: intel-fortran-rt step will not be needed in next release as it will be integrated into pyemaps install.
+    6) Install Jupyter:
+       pip install jupyter
+    7) Run "conda install ipywidgets" and "conda install widgetsnbextension"
+       python -m ipykernel install --user --name pyemaps --display-name "pyemaps (python 3.7)" 
+       note: replace --display-name value with your own string if desired
     7) Run Jupyter local server:
-        jupyter notebook
-    8) Running pyemaps with Jupyter Notebook browser page:
-        Select "pyemaps (python 3.7)" or
-        Select "Terminal"
-       in <New> dropdown to start an interactive session with pyemaps or running pyemaps scripts
+       jupyter notebook
+    8) Run "jupyter notebook" and create a new notebook file to run pyemaps tasks.
 
 ## Release Notes [`↩`](#contents) <a id="release-notes"></a>
 
