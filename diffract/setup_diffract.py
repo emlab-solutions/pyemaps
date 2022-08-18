@@ -13,20 +13,19 @@ IFORTROOT = os.getenv('IFORTROOT')
 compile_args=['-Qm64',
               '-WB',
               '-heap-arrays:768',
-            #   '-double-size:64',
               '-Qopenmp',
               '-GS', 
               '-4R8',
               '-fpp',
               '-warn:nointerfaces',
-              '-O2', #this option does not work with -fast
-            #   '-fast', 
-            #   '-Qfp-stack-check',
+              '-O2', 
+              'module:' + os.path.join(MKLROOT, 'include', 'intel64', 'lp64'),
               '-c']
 
 intel_libs = ['mkl_intel_lp64',
               'mkl_intel_thread',
               'mkl_core', 
+              'ifconsol',
               'libiomp5md']
 
 lapack_lib = 'mkl_lapack95_lp64'
@@ -74,8 +73,8 @@ f77obj_files = ['atom.o', 'metric.o', 'readutils.o']
 def get_library_dirs():
     # pass
     libdir = []
-    libdir.append(os.path.join(IFORTROOT, 'lib', 'intel64')) #intel openmp libdir
-    libdir.append(os.path.join(MKLROOT, 'lib', 'intel64' ))
+    libdir.append(os.path.join(IFORTROOT, 'compiler', 'lib', 'intel64_win')) #intel openmp libdir
+    libdir.append(os.path.join(MKLROOT, 'lib', 'intel64_win' ))
     # print(f'libraries dirs: {libdir}')
     # exit(1)
     return libdir
