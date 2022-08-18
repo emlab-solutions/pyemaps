@@ -168,22 +168,32 @@ def get_bversion(btest = True):
         raise ValueError("Error: version number validation error")
     
     major, minor, sub = ver
-    
-    ver_num = int(major)*MAX_VER_DIGIT**2 + int(minor)*MAX_VER_DIGIT + int(sub)
+    print(f"existing releases: {major},{minor}, {sub}")
+
+    mr = int(minor)
+    mx = int(major)
+    su = int(sub)
+
+    if int(mr >= MAX_VER_DIGIT):
+        mr %= MAX_VER_DIGIT
+
+    ver_num = mx*MAX_VER_DIGIT**2 + mr*MAX_VER_DIGIT + su
+    print(f"incremented releases: {ver_num}")
     # increment the version number
-    print(f"releases numer: {ver_num}")
     ver_num += 1
+    print(f"releases numer: {ver_num}")
 
     if ver_num > MAX_VER_DIGIT**3:
         raise ValueError(f"Error: version numbers are full")
 
-    sub = ver_num % MAX_VER_DIGIT
-    minor = ver_num // MAX_VER_DIGIT
-    major = ver_num // MAX_VER_DIGIT**2
+    sver = str(ver_num)
+    ssub = sver[2]
+    sminor = sver[1] 
+    smajor = sver[0]
 
-    new_version = '.'.join([str(major), str(minor), str(sub)])
+    new_version = '.'.join([smajor, sminor, ssub])
     print(f"new releases: {new_version}")
-
+    # exit()
     return new_version
 
 
@@ -245,10 +255,12 @@ def build_package(comp = 'dif', repo_test = True):
 
     hideEMAPSPYFiles()
     #  build the source distribution
-    os.system('python -m build -s')
+    # os.system('python -m build -s')
+    os.system('python -m build -s -n')
 
     #  build the wheel distribution (linrary build)
-    os.system('python -m build -w')
+    # os.system('python -m build -w')
+    os.system('python -m build -w -n')
     restoreEMAPSPYFiles()
 
 
@@ -302,26 +314,10 @@ def install_local():
     print(f'pyemaps directoty {pyemaps_dir}')
     os.chdir(pyemaps_dir)
 
-    install_cmd = 'python -m pip install -e .'
+    # install_cmd = 'python -m pip install -e .'
+    install_cmd = 'python -m pip install --no-build-isolation -e .'
     
     os.system(install_cmd)
-
-    # copy .lib dir into right place
-    # local_pyemaps = os.path.join(pyemaps_dir, 'pyemaps')
-    # my_list = os.listdir(pyemaps_dir)
-
-    # for ld in my_list:
-    #     if ld == LIBDIR:
-    #         src_dir = os.path.join(pyemaps_dir, ld)
-    #         dest_dir = os.path.join(pyemaps_dir, LIBDIR)
-    #         if os.path.exists(dest_dir):
-    #             print(f'removing existing directory before copy: {dest_dir}')
-    #             shutil.rmtree(dest_dir)
-    #         shutil.move(src_dir, pyemaps_dir,copy_function = shutil.copytree)
-
-    # # remove the local pyeamps dir
-    
-    # shutil.rmtree(local_pyemaps)
 
     #also copy all sample code into parent directory
     samples_src_dir = os.path.join(pyemaps_dir, 'samples')
