@@ -64,6 +64,10 @@ def get_samples(sdn = 'samples'):
     sfile_list = glob.glob(sbase_files)
 
     return [os.path.join(sdn, os.path.basename(name)) for name in sfile_list]
+    
+def get_intel_redist():
+    intel_redistdir = os.path.join(os.getenv('IFORTROOT'), 'redist', 'intel64_win', 'compiler')
+    return intel_redistdir
 
 def configuration(parent_package='',top_path=None):
     from codecs import open
@@ -94,14 +98,19 @@ def configuration(parent_package='',top_path=None):
     config.add_subpackage('diffract',emaps_fsource)
     config.add_subpackage('spg',spgdir)
     config.add_subpackage('scattering',scatteringdir)
+    # config.add_subpackage('CifReader','CifReader')
     
     samplelist = get_samples()
     print(f'samples files found: {samplelist}')
     config.add_data_files('license.txt', 'README.md', 'COPYING', 
                           ('samples', samplelist),
                           ('test', []))
-                          
+
+
     config.add_data_dir('cdata')
+                          
+# add intel redist folder to .lib   
+    config.add_data_dir(('.libs', get_intel_redist()))
     
     config.make_config_py() #generated automatically by distutil based on supplied __config__.py
     return config
