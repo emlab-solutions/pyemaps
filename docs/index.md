@@ -267,7 +267,8 @@ __A__: Follow the steps below to install and run pyemaps in Anaconda and Jupyter
        deleting old environment and packages folders as old packages can cause dependencies issues.
     2) (In some systems) Download Microsoft Visual Studio Community
        Select "Desktop Development with C++" workload on the install page 
-       Restart after the installation is completed.
+       Restart after the installation is completed. 
+       NOTE: This step is no longer needed starting from version 0.4.3
     3) Create a new environment in Anaconsa called 'pyemaps' in Anaconda command prompt:
        conda create -n pyemaps python=3.7 
        Please note, 3.7 is the only supported python version for now, more version support upcoming.
@@ -275,8 +276,7 @@ __A__: Follow the steps below to install and run pyemaps in Anaconda and Jupyter
        conda activate pyemaps
     5) Install latest pyemaps & its runtime distributables from Intel Fortran needed for pyemaps modules:
        pip install pyemaps (or pyemaps==X.X.X)
-       pip install intel-fortran-rt 
-       Note: intel-fortran-rt step will not be needed in next release as it will be integrated into pyemaps install.
+       pip install intel-fortran-rt (NOTE: This install is no longer needed starting from version 0.4.3)
     6) Install Jupyter:
        pip install jupyter
     7) Run "conda install ipywidgets" and "conda install widgetsnbextension"
@@ -599,3 +599,10 @@ Detailed plotting function implementations are lised in _display.py_.
 *__Dynamic Diffraction Performance and Computation Accuracy Improvements__: Switching to LAPACK libraries in eigen calculations has resulted in great improvements in matrix computations employed in Bloch module. An average of over 100% performance improvements. More performance improvements are planned with OpenMP implementations in compute intense Bloch module. Stay tuned...  
 
 *__Bug Fixes__: Fixed runtime error in display functions on some system. 
+
+### __0.4.3 Alpha__ Augusr 18th, 2022
+
+#### IMPROVEMENTS
+
+*__Installation Dependencies Removed__: CIF reader support for python 3.7 is now added. As result, __pyemaps__ installation no longer requires of MSVC build tool to build it from the source package and additional runtime install also removed. 
+
