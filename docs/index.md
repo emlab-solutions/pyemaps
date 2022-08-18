@@ -265,8 +265,8 @@ __A__: Follow the steps below to install and run pyemaps in Anaconda and Jupyter
     1) Install Anaconda: 
        You may need to make a clean install by doing a "Full Uninstall" of existing Anaconda by 
        deleting old environment and packages folders as old packages can cause dependencies issues.
-    2) (In some systems) Download Microsoft Visual Studio Community
-       Select "Desktop Development with C++" workload on the install page 
+    2) (In some systems) Download Microsoft Visual Studio Build Tools needed for building required PyCifRW-4.4.3 from source
+       Follow https://www.scivision.dev/python-windows-visual-c-14-required/ to download the latest (or any version >= 2019) 
        Restart after the installation is completed. 
        NOTE: This step is no longer needed starting from version 0.4.3
     3) Create a new environment in Anaconsa called 'pyemaps' in Anaconda command prompt:
