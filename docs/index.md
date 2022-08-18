@@ -600,9 +600,9 @@ Detailed plotting function implementations are lised in _display.py_.
 
 *__Bug Fixes__: Fixed runtime error in display functions on some system. 
 
-### __0.4.3 Alpha__ Augusr 18th, 2022
+### __0.4.3 Alpha__ Augusr 19th, 2022 (upcoming)
 
 #### IMPROVEMENTS
 
-*__Installation Dependencies Removed__: CIF reader support for python 3.7 is now added. As result, __pyemaps__ installation no longer requires of MSVC build tool to build it from the source package and additional runtime install also removed. 
+*__Installation Dependencies Removed__: CIF reader support for python 3.7 is now added. As result, __pyemaps__ installation no longer requires of MSVC build tool to build it from the source package and additional runtime installation requirement also removed. 
 
