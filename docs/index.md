@@ -265,24 +265,19 @@ __A__: Follow the steps below to install and run pyemaps in Anaconda and Jupyter
     1) Install Anaconda: 
        You may need to make a clean install by doing a "Full Uninstall" of existing Anaconda by 
        deleting old environment and packages folders as old packages can cause dependencies issues.
-    2) (In some systems) Download Microsoft Visual Studio Build Tools needed for building required PyCifRW-4.4.3 from source
-       Follow https://www.scivision.dev/python-windows-visual-c-14-required/ to download the latest (or any version >= 2019) 
-       Restart after the installation is completed. 
-       NOTE: This step is no longer needed starting from version 0.4.3
-    3) Create a new environment in Anaconsa called 'pyemaps' in Anaconda command prompt:
+    2) Create a new environment in Anaconsa called 'pyemaps' in Anaconda command prompt:
        conda create -n pyemaps python=3.7 
-       Please note, 3.7 is the only supported python version for now, more version support upcoming.
-    4) Activate the new conda environment:
+       NOTE: 3.7 is the only supported python version for now, more version support upcoming.
+    3) Switch to pyemaps environment by activating it:
        conda activate pyemaps
-    5) Install latest pyemaps & its runtime distributables from Intel Fortran needed for pyemaps modules:
+    4) Install latest pyemaps in the new environment:
        pip install pyemaps (or pyemaps==X.X.X)
-       pip install intel-fortran-rt (NOTE: This install is no longer needed starting from version 0.4.3)
-    6) Install Jupyter:
+    5) Install Jupyter:
        pip install jupyter
-    7) Run "conda install ipywidgets" and "conda install widgetsnbextension"
+    6) Run "conda install ipywidgets" and "conda install widgetsnbextension"
        python -m ipykernel install --user --name pyemaps --display-name "pyemaps (python 3.7)" 
-       note: replace --display-name value with your own string if desired
-    8) Run Jupyter local server:
+       NOTE: replace --display-name value with your own string if desired
+    7) Run Jupyter local server:
        jupyter notebook
        Create a new notebook file to run pyemaps tasks.
 
