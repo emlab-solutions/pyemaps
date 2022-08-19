@@ -44,7 +44,7 @@ If you benefit from __pyemaps__ in your microscopy and crystallography research 
 
 ## Requirements [`↩`](#contents) <a id="requirements"></a>
 
-* __Python__: Version >= 3.6
+* __Python__: Version == 3.7
 * __numpy__: Version >= 1.21.2
 * __matplotlib__: Version >= 3.2.1
 * __PyCifRW__ Version == 4.4.3
