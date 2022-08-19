@@ -595,7 +595,7 @@ Detailed plotting function implementations are lised in _display.py_.
 
 *__Bug Fixes__: Fixed runtime error in display functions on some system. 
 
-### __0.4.3 Alpha__ August 19th, 2022 (upcoming)
+### __0.4.3 Alpha__ August 19th, 2022
 
 #### IMPROVEMENTS
 
