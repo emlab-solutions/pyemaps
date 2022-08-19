@@ -187,6 +187,8 @@ def get_bversion(btest = True):
         raise ValueError(f"Error: version numbers are full")
 
     sver = str(ver_num)
+    if mx == 0 and len(sver) == 2:
+        sver = '0' + sver
     ssub = sver[2]
     sminor = sver[1] 
     smajor = sver[0]
