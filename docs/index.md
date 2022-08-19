@@ -591,13 +591,13 @@ Detailed plotting function implementations are lised in _display.py_.
 
 #### IMPROVEMENTS
 
-*__Dynamic Diffraction Performance and Computation Accuracy Improvements__: Switching to LAPACK libraries in eigen calculations has resulted in great improvements in matrix computations employed in Bloch module. An average of over 100% performance improvements. More performance improvements are planned with OpenMP implementations in compute intense Bloch module. Stay tuned...  
+* __Dynamic Diffraction Performance and Computation Accuracy Improvements__: Switching to LAPACK libraries in eigen calculations has resulted in great improvements in matrix computations employed in Bloch module. An average of over 100% performance improvements. More performance improvements are planned with OpenMP implementations in compute intense Bloch module. Stay tuned...  
 
-*__Bug Fixes__: Fixed runtime error in display functions on some system. 
+* __Bug Fixes__: Fixed runtime error in display functions on some system. 
 
 ### __0.4.3 Alpha__ August 19th, 2022
 
 #### IMPROVEMENTS
 
-*__Installation Dependencies Removed__: CIF reader support for python 3.7 is now added. As result, __pyemaps__ installation no longer requires of MSVC build tool to build it from the source package and additional runtime installation requirement also removed. 
+* __Installation Dependencies Removed__: CIF reader support for python 3.7 is now added. As result, __pyemaps__ installation no longer requires of MSVC build tool to build it from the source package and additional runtime installation requirement also removed. 
 
