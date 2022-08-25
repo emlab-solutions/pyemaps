@@ -46,11 +46,12 @@ If you benefit from __pyemaps__ in your microscopy and crystallography research 
 
 ## Requirements [`↩`](#contents) <a id="requirements"></a>
 
+* __Operating Systems__: Windows, 64-bit, >= 8GB RAM
+
 * __Python__: Version == 3.7 (other python version support upcoming)
 * __numpy__: Version >= 1.21.2
 * __matplotlib__: Version >= 3.2.1
 * __PyCifRW__ Version == 4.4.3
-* __Operating Systems__: Windows, 64-bit, >= 8GB RAM
 
 Linux support planned in future releases, stay tuned.
 
