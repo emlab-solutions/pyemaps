@@ -1343,7 +1343,7 @@ class Crystal:
         
         """
         import os, re
-        from emapsCifFile import ReadCif
+        from .CifFile import ReadCif
 
         SPG_NUMBER_CIFKEY=['_symmetry_Int_Tables_number', 
                            '_symmetry_IT_number',
