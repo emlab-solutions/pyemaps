@@ -32,10 +32,10 @@ def clean():
         shutil.rmtree(builddir)
 
 
-    distdir = Path('dist')
-    print(f"Distribution dir: {distdir}")
-    if os.path.exists(distdir) and os.path.isdir(distdir):
-        shutil.rmtree(distdir)
+    # distdir = Path('dist')
+    # print(f"Distribution dir: {distdir}")
+    # if os.path.exists(distdir) and os.path.isdir(distdir):
+    #     shutil.rmtree(distdir)
 
 
     eggdir = Path('pyemaps.egg-info')
