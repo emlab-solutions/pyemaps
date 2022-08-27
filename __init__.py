@@ -112,6 +112,7 @@ from .errors import *
 
 #Microscope control data classes handling data properties
 from .emcontrols import EMControl as EMC
+from .em import *
 
 #diffraction classes handling diffraction pattern data
 from .kdiffs import diffPattern as DP

@@ -129,6 +129,11 @@ class EMCError(Exception):
         self.message = str(f'Error creating EMC object: {message}')
         super().__init__(self.message)
 
+class EMSIMError(Exception):
+    def __init__(self, message=''):
+        self.message = str(f'Error creating Simulation object: {message}')
+        super().__init__(self.message)
+
 
 class BlochListError(Exception):
     def __init__(self, message=''):
