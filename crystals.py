@@ -951,9 +951,9 @@ def add_bloch(target):
         dif.initcontrols()
         dif.setmode(2) # alway in CBED mode
         
-
+#       
         dif.setglen(1.0)
-        dif.setgcutoff(0.1)
+        dif.setgcutoff(0.1) 
         dif.setexcitation(0.3,1.0)
         dif.setdisksize(disk_size)
 
@@ -999,9 +999,113 @@ def add_bloch(target):
         dif.diff_delete()
 
         return em_controls, raw_image
+        
+    def generateDDP(self, *, microscope_ctrl = None,
+                             simulation_ctrl = None,
+                             sample_ctrl = None):
+        try:
+            from . import bloch
+
+        except ImportError as e:               
+            raise CrystalClassError('Failed to import bloch - dynamic diffraction simulation module')
+        
+        from . import MICControl, SIMControl, SAMControl
+        
+        if not microscope_ctrl:
+            microscope_ctrl = MICControl()
+
+        if not simulation_ctrl:
+            simulation_ctrl = SIMControl()
+
+        if not sample_ctrl:
+            sample_ctrl = SAMControl()
+
+        dif.initcontrols()
+
+        dif.setglen(simulation_ctrl.gmax)
+        dif.setgcutoff(simulation_ctrl.bmin)
+
+        # excitation settings
+        sgmax, sgmin = simulation_ctrl.excitation
+        dif.setexcitation(sgmin, sgmax)
+
+        # intensity control
+        intensity, intencity0 = simulation_ctrl.intctl, simulation_ctrl.intz0
+        dif.setintensities(intensity, intencity0)
+
+        mode = 2
+        dif.setmode(mode) # alway in CBED mode
+        
+        #setting other simulation controls
+        #such as excitation, ...
+        gmax, bmin = simulation_ctrl.gmax, simulation_ctrl.bmin
+        dif.setglen(gmax)
+        dif.setgcutoff(bmin) 
+
+        sgmin, sgmax = simulation_ctrl.excitation
+        dif.setexcitation(sgmin, sgmax)
+
+        dsize = microscope_ctrl.ds
+        dif.setdisksize(dsize)
+
+        cell, atoms, atn, spg = self.prepareDif()
+        dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        
+         # load sample comtrols
+        tx, ty = sample_ctrl.tilt
+        z = sample_ctrl.zone
+        
+        # load microscope controls
+        dx, dy = microscope_ctrl.defl
+        cl, vt = microscope_ctrl.cl, microscope_ctrl.vt
+
+        dif.setsamplecontrols(tx, ty, dx, dy)
+        dif.setemcontrols(cl, vt)        
+        dif.setzone(z[0], z[1], z[2])
+        
+        ret = dif.diffract(1)
+        if ret == 0:
+            raise BlochError('Error bloch runtime1')
+        
+        dif.diff_internaldelete(1)
+
+        thickness = sample_ctrl.thickness
+        bloch.setsamplethickness(thickness, thickness, 100)
+
+        aperture =microscope_ctrl.aper
+        omega = simulation_ctrl.omega
+        sampling =simulation_ctrl.sampling
+
+        ret = bloch.dobloch(aperture,omega,sampling,0.0)
+        
+        if ret == 2:
+            print('Contact support@emlabsoftware.com for how to register for ' +
+            'a full and accelerated version of pyemaps')
+            raise BlochError('Bloch computation resource limit reached')
+
+        if ret != 0:
+            raise BlochError('Error computing dynamic diffraction')
+
+        #successful bloch runtime, then retreive bloch image
+        # 
+        # 
+        pix_size = simulation_ctrl.pixsize
+        det_size = simulation_ctrl.detsize    
+        ret = bloch.imagegen(thickness,0,pix_size,det_size)
+
+        if(ret != 0):
+            raise BlochError("bloch image generation failed!")
+
+        raw_image = farray(np.zeros((det_size,det_size), dtype=np.double))
+        bloch.get_rawimagedata(raw_image)
+        bloch.imgmemdelete()
+        dif.diff_delete()
+
+        return raw_image
     
     target.generateBloch = generateBloch
     target.generateBlochImgs = generateBlochImgs
+    target.generateDDP = generateDDP
 
     return target
 
@@ -2007,6 +2111,72 @@ class Crystal:
             raise CrystalClassError('failed to generate diffraction')
 
         return myDif   
+
+    def generateKDP(self, simulation_ctrl = None, 
+                          sample_ctrl = None, 
+                          microscope_ctrl = None):
+        """
+        This routine returns a kinematic diffraction object.
+
+        New DP generation based on the crystal data and Microscope control 
+        parameters. We will add more controls as we see fit.  
+
+        :param simulation_ctrl: SIMControl class object defined in em.py
+        :param sample_ctrl: SAMPControl object
+        :param microscope_ctrl: MICControl object
+        :return: a DP object
+        :rtype: diffPattern
+        """
+        from . import DP
+        from . import DPError
+        from . import SIMControl, SAMControl, MICControl
+
+        if not microscope_ctrl:
+            microscope_ctrl = MICControl()
+
+        if not simulation_ctrl:
+            simulation_ctrl = SIMControl()
+
+        if not sample_ctrl:
+            sample_ctrl = SAMControl()
+
+        # load sample comtrols
+        tx0, ty0 = sample_ctrl.tilt
+        zone = sample_ctrl.zone
+        
+        # load microscope controls
+        dx0, dy0 = microscope_ctrl.defl
+        cl, vt = microscope_ctrl.cl, microscope_ctrl.vt
+        dsize = microscope_ctrl.ds
+
+        # samulation controls
+        mode = simulation_ctrl.mode
+        
+        #setting other simulation controls
+        #such as excitation, ...
+
+        dif.setglen(simulation_ctrl.gmax)
+        dif.setgcutoff(simulation_ctrl.bmin)
+
+        # excitation settings
+        sgmax, sgmin = simulation_ctrl.excitation
+        dif.setexcitation(sgmin, sgmax)
+
+        # intensity control
+        intensity, intencity0 = simulation_ctrl.intctl, simulation_ctrl.intz0
+        dif.setintensities(intensity, intencity0)
+
+        #setting xaxis ??
+        # dif.set_xaxis(1, sample_ctrl.xaxis[0], 
+        #                  sample_ctrl.xaxis[1],
+        #                  sample_ctrl.xaxis[2])
+        
+        ret, diffp = self._get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize)
+        
+        if ret != 200:
+            raise DPError('failed to generate diffraction patterns')
+
+        return DP(diffp)   
 
     def generateDP(self, mode = None, dsize = None, em_controls = None):
         """
