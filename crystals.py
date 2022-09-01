@@ -984,8 +984,6 @@ def add_bloch(target):
 
         dif.setdisksize(disk_size)
         
-        # print(f'disk size 1: {aperture},{omega}, {sampling},{pix_size},{det_size},{thickness}')
-        # print(f'disk size 1: {em_controls},{omega}, \n{sim_controls}')
         # setting default simulation controls
         self.set_sim_controls(sim_controls)
 
@@ -1031,109 +1029,6 @@ def add_bloch(target):
         dif.diff_delete()
 
         return em_controls, raw_image
-        
-    # def generateDDP(self, *, microscope_ctrl = None,
-    #                          simulation_ctrl = None,
-    #                          sample_ctrl = None):
-    #     try:
-    #         from . import bloch
-
-    #     except ImportError as e:               
-    #         raise CrystalClassError('Failed to import bloch - dynamic diffraction simulation module')
-        
-    #     from . import MICControl, SIMControl, SAMControl
-        
-    #     if not microscope_ctrl:
-    #         microscope_ctrl = MICControl()
-
-    #     if not simulation_ctrl:
-    #         simulation_ctrl = SIMControl()
-
-    #     if not sample_ctrl:
-    #         sample_ctrl = SAMControl()
-
-    #     dif.initcontrols()
-
-    #     dif.setglen(simulation_ctrl.gmax)
-    #     dif.setgcutoff(simulation_ctrl.bmin)
-
-    #     # excitation settings
-    #     sgmax, sgmin = simulation_ctrl.excitation
-    #     dif.setexcitation(sgmin, sgmax)
-
-    #     # intensity control
-    #     intensity, intencity0 = simulation_ctrl.intctl, simulation_ctrl.intz0
-    #     dif.setintensities(intensity, intencity0)
-
-    #     mode = 2
-    #     dif.setmode(mode) # alway in CBED mode
-        
-    #     #setting other simulation controls
-    #     #such as excitation, ...
-    #     gmax, bmin = simulation_ctrl.gmax, simulation_ctrl.bmin
-    #     dif.setglen(gmax)
-    #     dif.setgcutoff(bmin) 
-
-    #     sgmin, sgmax = simulation_ctrl.excitation
-    #     dif.setexcitation(sgmin, sgmax)
-
-    #     dsize = microscope_ctrl.ds
-    #     dif.setdisksize(dsize)
-
-    #     cell, atoms, atn, spg = self.prepareDif()
-    #     dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
-        
-    #      # load sample comtrols
-    #     tx, ty = sample_ctrl.tilt
-    #     z = sample_ctrl.zone
-        
-    #     # load microscope controls
-    #     dx, dy = microscope_ctrl.defl
-    #     cl, vt = microscope_ctrl.cl, microscope_ctrl.vt
-
-    #     dif.setsamplecontrols(tx, ty, dx, dy)
-    #     dif.setemcontrols(cl, vt)        
-    #     dif.setzone(z[0], z[1], z[2])
-        
-    #     ret = dif.diffract(1)
-    #     if ret == 0:
-    #         raise BlochError('Error bloch runtime1')
-        
-    #     dif.diff_internaldelete(1)
-
-    #     thickness = sample_ctrl.thickness
-    #     bloch.setsamplethickness(thickness, thickness, 100)
-
-    #     aperture =microscope_ctrl.aper
-    #     omega = simulation_ctrl.omega
-    #     sampling =simulation_ctrl.sampling
-
-    #     ret = bloch.dobloch(aperture,omega,sampling,0.0)
-        
-    #     if ret == 2:
-    #         print('Contact support@emlabsoftware.com for how to register for ' +
-    #         'a full and accelerated version of pyemaps')
-    #         raise BlochError('Bloch computation resource limit reached')
-
-    #     if ret != 0:
-    #         raise BlochError('Error computing dynamic diffraction')
-
-    #     #successful bloch runtime, then retreive bloch image
-    #     # 
-    #     # 
-    #     pix_size = simulation_ctrl.pixsize
-    #     det_size = simulation_ctrl.detsize    
-    #     ret = bloch.imagegen(thickness,0,pix_size,det_size)
-
-    #     if(ret != 0):
-    #         raise BlochError("bloch image generation failed!")
-
-    #     raw_image = farray(np.zeros((det_size,det_size), dtype=np.double))
-    #     bloch.get_rawimagedata(raw_image)
-    #     bloch.imgmemdelete()
-    #     dif.diff_delete()
-
-    #     return raw_image
     
     target.generateBloch = generateBloch
     target.generateBlochImgs = generateBlochImgs
@@ -2165,6 +2060,10 @@ class Crystal:
             intctl, intz0 = simc.intencity
             dif.setintencity(intctl, intz0)
 
+        if not simc.isDefXaxis():
+            x0,x1,x2 = simc.xaxis
+            dif.set_xaxis(1, x0, x1, x2)
+
         if not simc.isDefGctl():
             dif.setgctl(simc.gctl)
 
@@ -2286,7 +2185,7 @@ class Crystal:
         if mode == 2:
             dif.setmode(mode)
             ds = DEF_CBED_DSIZE
-            
+
         if dsize != ds:    
             dif.setdisksize(float(ds))
         

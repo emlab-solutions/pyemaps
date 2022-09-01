@@ -43,7 +43,15 @@ else:
     # Default gctl from backend: DEF_GCTL  
     # Default zctl from backend: DEF_ZCTL
     #  
-    sgmn, sgmx, DEF_GMAX, DEF_BMIN, intc, intz, DEF_GCTL, DEF_ZCTL, DEF_MODE = dif.get_sim_defs()
+    (sgmn, 
+     sgmx, 
+     DEF_GMAX, 
+     DEF_BMIN, 
+     intc, 
+     intz, 
+     DEF_GCTL, 
+     DEF_ZCTL, 
+     DEF_MODE) = dif.get_sim_defs()
 
     DEF_EXCITATION= (sgmn, sgmx)
     DEF_INTENCITY = (intc, intz)
@@ -65,7 +73,12 @@ else:
     # Default CBED disk size: DEF_CBED_DS
     # Default disk size: DEF_DS_LIMITS (min, max)
     DEF_DEFL = (tlt0, tlt0)
-    DEF_CL, DEF_KV, DEF_NORM_DSIZE, DEF_CBED_DSIZE, dmin, dmax = dif.get_mic_defs()
+    (DEF_CL, 
+     DEF_KV, 
+     DEF_NORM_DSIZE, 
+     DEF_CBED_DSIZE, 
+     dmin, 
+     dmax) = dif.get_mic_defs()
 
     DEF_DSIZE_LIMITS = (dmin, dmax)
     # print(f'cl default: {DEF_CL}')
@@ -120,7 +133,11 @@ else:
     # detsize: DEF_DETSIZE
     # default image slices number: DEF_DEPTH
     # default omega: DEF_OMEGA
-    DEF_SAMPLING, DEF_PIXSIZE, DEF_DETSIZE, MAX_DEPTH, DEF_OMEGA = bloch.get_sim_defs()
+    (DEF_SAMPLING, 
+     DEF_PIXSIZE, 
+     DEF_DETSIZE, 
+     MAX_DEPTH, 
+     DEF_OMEGA) = bloch.get_sim_defs()
     # Microoscope setting default
     DEF_APERTURE = bloch.get_mic_defs()
 
