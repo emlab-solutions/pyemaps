@@ -60,7 +60,7 @@ class SIMControl:
                        bmin = DEF_BMIN,
                        intctl = DEF_INTCTL,
                        intz0 = DEF_INTZ0,
-                       mode = DEF_MODE,
+                    #    mode = DEF_MODE,
                        **args):
         
         # excit=gmax=bmin=intclt=intz0=mode=
@@ -115,7 +115,7 @@ class SIMControl:
         setattr(self, 'bmin', bmin)
         setattr(self, 'intctl', intctl)
         setattr(self, 'intz0', intz0)
-        setattr(self, 'mode', mode)
+        # setattr(self, 'mode', mode)
         setattr(self, 'omega', omega)
         setattr(self, 'sampling', sampling)
         setattr(self, 'pixsize', pixsize)
@@ -167,8 +167,8 @@ class SIMControl:
        if not excit or \
           not isinstance(excit, tuple) or \
           len(excit) != 2 or \
-          isinstance(excit(0), (int, float)) or \
-          isinstance(excit(1), (int, float)):
+          isinstance(excit[0], (int, float)) or \
+          isinstance(excit[1], (int, float)):
               raise EMSIMError('Excitation values must be a tuple of tow numbers')
        
        self._excitation = excit
@@ -201,12 +201,12 @@ class SIMControl:
        
        self._intz0 = intz
 
-    @mode.setter
-    def loc(self, mode):
-       if isinstance(mode, int):
-              raise EMSIMError('kinematic mode values must be an integer of 1 or 2')
+    # @mode.setter
+    # def loc(self, mode):
+    #    if isinstance(mode, int):
+    #           raise EMSIMError('kinematic mode values must be an integer of 1 or 2')
        
-       self._mode = mode
+    #    self._mode = mode
 
     @omega.setter
     def loc(self, om):
@@ -256,8 +256,8 @@ class SIMControl:
        if self._intz0 != other.intz0:
               return False
 
-       if self._mode != other.mode:
-              return False
+    #    if self._mode != other.mode:
+    #           return False
 
        if self._omega != other.omega:
               return False
@@ -277,7 +277,7 @@ class SIMControl:
        
        simulation = ['Simulation Controls Parameters:']
 
-       simulation.append('Mode: ' + 'Normal' if self._mode == DEF_MODE else 'CBED')
+    #    simulation.append('Mode: ' + 'Normal' if self._mode == DEF_MODE else 'CBED')
        simulation.append('excitation: ' +  str(self._exciation))
        simulation.append('gmax??: ' + str(self._gmax))
        simulation.append('bmin??: ' + str(self._bmin))
@@ -307,292 +307,292 @@ DEF_APERTURE         = bloch.DEF_APER
 #                     ds = DEF_NORM_DSIZE
 #                     )
 
-class MICControl:
-    '''
-    Microscope Control Parameter:
-        initializing class with a control dictionary of the format:
-        camera length                  cl
-        high voltage                   vt
-        deflection:                    defl
-        beams convergence angle        ds 
-        aperture:                      aper??
-    This is the newer version of EMControl class
-    '''
-    def __init__(self, cl = None, 
-                       vt = None, 
-                       defl = None,
-                       aper = None):
+# class MICControl:
+#     '''
+#     Microscope Control Parameter:
+#         initializing class with a control dictionary of the format:
+#         camera length                  cl
+#         high voltage                   vt
+#         deflection:                    defl
+#         beams convergence angle        ds 
+#         aperture:                      aper??
+#     This is the newer version of EMControl class
+#     '''
+#     def __init__(self, cl = None, 
+#                        vt = None, 
+#                        defl = None,
+#                        aper = None):
         
-        if not defl:
-            defl = DEF_DEFL
+#         if not defl:
+#             defl = DEF_DEFL
 
-        if not vt:
-            vt = DEF_KV
+#         if not vt:
+#             vt = DEF_KV
 
-        if not cl:
-            cl = DEF_CL
+#         if not cl:
+#             cl = DEF_CL
 
-        if not ds:
-            ds = DEF_NORM_DSIZE
+#         if not ds:
+#             ds = DEF_NORM_DSIZE
 
-        if not aper:
-            aper = DEF_APERTURE
+#         if not aper:
+#             aper = DEF_APERTURE
 
-        emc_dict = dict(defl = defl,
-                       vt = vt,
-                       cl = cl,
-                       ds = ds,
-                       aper =aper)
+#         emc_dict = dict(defl = defl,
+#                        vt = vt,
+#                        cl = cl,
+#                        ds = ds,
+#                        aper =aper)
         
-        for k, v in emc_dict.items():
-            setattr(self, k, v)
+#         for k, v in emc_dict.items():
+#             setattr(self, k, v)
 
-    @classmethod
-    def from_dict(cls, emc_dict):
+#     @classmethod
+#     def from_dict(cls, emc_dict):
 
-        if not isinstance(emc_dict, dict):
-            raise EMCError('invalid data input in constructing EMC from a dictionary')
+#         if not isinstance(emc_dict, dict):
+#             raise EMCError('invalid data input in constructing EMC from a dictionary')
 
-        d = vt = c = dk = ap = None 
-        for k, v in emc_dict.items():
-            if k not in DEF_EMCONTROLS:
-                print(f'Invilid key {k} found in the input, ignored')
-                continue
+#         d = vt = c = dk = ap = None 
+#         for k, v in emc_dict.items():
+#             if k not in DEF_EMCONTROLS:
+#                 print(f'Invilid key {k} found in the input, ignored')
+#                 continue
             
-            if k == 'defl':
-                d = v
-            if k == 'vt':
-                vt = v
-            if k == 'cl':
-                c = v
-            if k == 'ds':
-                dk = v
-            if k == 'aper':
-                ap = v
+#             if k == 'defl':
+#                 d = v
+#             if k == 'vt':
+#                 vt = v
+#             if k == 'cl':
+#                 c = v
+#             if k == 'ds':
+#                 dk = v
+#             if k == 'aper':
+#                 ap = v
 
-        return cls(defl = d, vt = vt,
-                   cl = c, ds = dk, aper=ap)
+#         return cls(defl = d, vt = vt,
+#                    cl = c, ds = dk, aper=ap)
     
-    @property
-    def defl(self):
-        return self._defl
+#     @property
+#     def defl(self):
+#         return self._defl
     
-    @property
-    def cl(self):
-        return self._cl
+#     @property
+#     def cl(self):
+#         return self._cl
     
-    @property
-    def vt(self):
-        return self._vt
+#     @property
+#     def vt(self):
+#         return self._vt
     
-    @property
-    def ds(self):
-        return self._ds
+#     @property
+#     def ds(self):
+#         return self._ds
     
-    @property
-    def aper(self):
-        return self._aper
+#     @property
+#     def aper(self):
+#         return self._aper
 
-    @cl.setter
-    def cl(self, clen):
-        if not isinstance(clen, int) and not isinstance(clen, float):
-           raise ValueError("Camera length must be of number")
+#     @cl.setter
+#     def cl(self, clen):
+#         if not isinstance(clen, int) and not isinstance(clen, float):
+#            raise ValueError("Camera length must be of number")
 
-        self._cl = clen
+#         self._cl = clen
     
-    @vt.setter
-    def vt(self, kv):
-        if not isinstance(kv, int) and not isinstance(kv, float):
-           raise EMCError("Voltage must be of integer")
+#     @vt.setter
+#     def vt(self, kv):
+#         if not isinstance(kv, int) and not isinstance(kv, float):
+#            raise EMCError("Voltage must be of integer")
         
-        self._vt = kv
+#         self._vt = kv
 
-    @defl.setter
-    def defl(self, df):
-        if not isinstance(df, tuple) or len(df) != 2:
-           raise EMCError("deflection must be tuple of two numbers")
+#     @defl.setter
+#     def defl(self, df):
+#         if not isinstance(df, tuple) or len(df) != 2:
+#            raise EMCError("deflection must be tuple of two numbers")
         
-        typelist = list(map(type, df))
+#         typelist = list(map(type, df))
 
-        for vt in typelist:
-            if vt != float and vt != int:
-                raise EMCError('Input values for deflection must be numeric')
+#         for vt in typelist:
+#             if vt != float and vt != int:
+#                 raise EMCError('Input values for deflection must be numeric')
 
-        self._defl = df
+#         self._defl = df
     
-    @ds.setter
-    def ds(self, dv):
-        if not isinstance(dv, int) and not isinstance(dv, float):
-           raise EMCError("Voltage must be of integer")
+#     @ds.setter
+#     def ds(self, dv):
+#         if not isinstance(dv, int) and not isinstance(dv, float):
+#            raise EMCError("Voltage must be of integer")
         
-        if dv < DISK_MIN or dv > DISK_MAX:
-            raise EMCError("Beam diffraction angle too small")
+#         if dv < DISK_MIN or dv > DISK_MAX:
+#             raise EMCError("Beam diffraction angle too small")
 
-        self._ds = dv
+#         self._ds = dv
     
-    @aper.setter
-    def ds(self, ap):
-        if not isinstance(ap, int) and not isinstance(ap, float):
-           raise EMCError("Aperture must be numberal")
+#     @aper.setter
+#     def ds(self, ap):
+#         if not isinstance(ap, int) and not isinstance(ap, float):
+#            raise EMCError("Aperture must be numberal")
         
-        self._aper = ap
+#         self._aper = ap
 
-    def __eq__(self, other):
-        if not isinstance(other, MICControl):
-           raise EMCError("Comparison must be done with EMControl object")
+#     def __eq__(self, other):
+#         if not isinstance(other, MICControl):
+#            raise EMCError("Comparison must be done with EMControl object")
 
-        if other.defl != self._defl:
-            return False 
+#         if other.defl != self._defl:
+#             return False 
 
-        if other.cl != self._cl:
-            return False 
+#         if other.cl != self._cl:
+#             return False 
 
-        if other.vt != self._vt:
-            return False 
+#         if other.vt != self._vt:
+#             return False 
 
-        if other.ds != self._ds:
-            return False 
+#         if other.ds != self._ds:
+#             return False 
 
-        if other.aper != self._aper:
-            return False 
+#         if other.aper != self._aper:
+#             return False 
 
-        return True
+#         return True
 
 
-    def __str__(self):
-        cstr = ['Microscope Control Parameters:']
+#     def __str__(self):
+#         cstr = ['Microscope Control Parameters:']
         
-        cstr.append('Camera Length: ' + str(self._cl))
-        cstr.append('Voltage: ' + str(self._vt))
-        cstr.append('Deflection: ' + str(self._defl))
-        cstr.append('Beam Diffraction Angle: ' + str(self._ds))
-        cstr.append('Aperture: ' + str(self._aper))
+#         cstr.append('Camera Length: ' + str(self._cl))
+#         cstr.append('Voltage: ' + str(self._vt))
+#         cstr.append('Deflection: ' + str(self._defl))
+#         cstr.append('Beam Diffraction Angle: ' + str(self._ds))
+#         cstr.append('Aperture: ' + str(self._aper))
 
-        return '\n'.join(cstr)
+#         return '\n'.join(cstr)
 
-DEF_TILT             = (DEF_TILT, DEF_TILT, DEF_TILT)
-DEF_ZONE             = (0,0,1)
-DEF_XAXIS            = (0,0,0)
-DEF_THICKNESS        = bloch.DEF_THICKNESS
+# DEF_TILT             = (DEF_TILT, DEF_TILT, DEF_TILT)
+# DEF_ZONE             = (0,0,1)
+# DEF_XAXIS            = (0,0,0)
+# DEF_THICKNESS        = bloch.DEF_THICKNESS
 
-class SAMControl:
-    '''
-       Sample control parameter class
-       x-axis
-       tilt:                (x,y)
-       zone                 (0,0,1)
-       thickness            only applied to dynamic diffraction
-    '''
+# class SAMControl:
+#     '''
+#        Sample control parameter class
+#        x-axis
+#     #    tilt:                (x,y)
+#     #    zone                 (0,0,1)
+#        thickness            only applied to dynamic diffraction
+#     '''
      
-    def __init__(self, zone = None, 
-                       tilt = None, 
-                       xaxis = None, 
-                       thickness = None):
+#     def __init__(self, #zone = None, 
+#                        #tilt = None, 
+#                        xaxis = None, 
+#                        thickness = None):
        
-       if not zone:
-              zone = DEF_ZONE
+#     #    if not zone:
+#     #           zone = DEF_ZONE
        
-       if not tilt:
-              tilt = DEF_TILT
+#     #    if not tilt:
+#     #           tilt = DEF_TILT
        
-       if not xaxis:
-              xaxis = DEF_XAXIS
+#        if not xaxis:
+#               xaxis = DEF_XAXIS
        
-       if not thickness:
-              xaxis = DEF_THICKNESS
+#        if not thickness:
+#               xaxis = DEF_THICKNESS
 
-       setattr(self, 'zone', zone)
-       setattr(self, 'tilt', tilt)
-       setattr(self, 'xaxis', xaxis)
-       setattr(self, 'thickness', thickness)
+#     #    setattr(self, 'zone', zone)
+#     #    setattr(self, 'tilt', tilt)
+#        setattr(self, 'xaxis', xaxis)
+#        setattr(self, 'thickness', thickness)
 
-    @property
-    def zone(self):
-        return self._zone
+#     # @property
+#     # def zone(self):
+#     #     return self._zone
     
-    @property
-    def tilt(self):
-        return self._tilt
+#     # @property
+#     # def tilt(self):
+#     #     return self._tilt
 
-    @property
-    def xaxis(self):
-        return self._xaxis
+#     @property
+#     def xaxis(self):
+#         return self._xaxis
     
-    @property
-    def thickness(self):
-        return self._thickness
+#     @property
+#     def thickness(self):
+#         return self._thickness
 
-    @zone.setter
-    def zone(self, zv):
-        if not isinstance(zv, tuple) or len(zv) != 3 or \
-           list(map(type, zv)) != [int, int, int]:
-           raise EMCError("Zone axis must be tuple of three intergers")
+#     # @zone.setter
+#     # def zone(self, zv):
+#     #     if not isinstance(zv, tuple) or len(zv) != 3 or \
+#     #        list(map(type, zv)) != [int, int, int]:
+#     #        raise EMCError("Zone axis must be tuple of three intergers")
         
-        if zv == (0,0,0):
-           raise EMCError("Zone axis must not be (0,0,0)")
+#     #     if zv == (0,0,0):
+#     #        raise EMCError("Zone axis must not be (0,0,0)")
 
-        self._zone = zv 
+#     #     self._zone = zv 
 
-    @tilt.setter
-    def tilt(self, tl):
-        if not isinstance(tl, tuple) or len(tl) != 2:
-           raise EMCError("Tilt must be tuple of two numbers")
+#     # @tilt.setter
+#     # def tilt(self, tl):
+#     #     if not isinstance(tl, tuple) or len(tl) != 2:
+#     #        raise EMCError("Tilt must be tuple of two numbers")
 
-        typelist = list(map(type, tl))
+#     #     typelist = list(map(type, tl))
         
-        for vt in typelist:
-            if vt != float and vt != int:
-                raise EMCError('Input values for tilt must be nmeric')
+#     #     for vt in typelist:
+#     #         if vt != float and vt != int:
+#     #             raise EMCError('Input values for tilt must be nmeric')
 
-        self._tilt = tl
+#     #     self._tilt = tl
 
-    @xaxis.setter
-    def zone(self, xv):
-        if not isinstance(xv, tuple) or len(xv) != 3 or \
-           list(map(type, xv)) != [int, int, int]:
-           raise EMCError("Zone axis must be tuple of three intergers")
+#     @xaxis.setter
+#     def zone(self, xv):
+#         if not isinstance(xv, tuple) or len(xv) != 3 or \
+#            list(map(type, xv)) != [int, int, int]:
+#            raise EMCError("Zone axis must be tuple of three intergers")
         
-        if xv == (0,0,0):
-           raise EMCError("Zone axis must not be (0,0,0)")
+#         if xv == (0,0,0):
+#            raise EMCError("Zone axis must not be (0,0,0)")
 
-        self._xaxis = xv 
+#         self._xaxis = xv 
 
-    @thickness.setter
-    def thicknes(self, tv):
-        if not isinstance(tv, (int, float)):
-           raise EMCError("Tilt must be tuple of two numbers")
+#     @thickness.setter
+#     def thicknes(self, tv):
+#         if not isinstance(tv, (int, float)):
+#            raise EMCError("Tilt must be tuple of two numbers")
 
-        self._thickness = tv
+#         self._thickness = tv
 
-    def __eq__(self, other):
-        if not isinstance(other, SAMControl):
-           raise EMCError("Comparison must be done with EMControl object")
+#     def __eq__(self, other):
+#         if not isinstance(other, SAMControl):
+#            raise EMCError("Comparison must be done with EMControl object")
         
-        if other.zone != self._zone:
-            return False 
+#         # if other.zone != self._zone:
+#         #     return False 
 
-        if other.tilt != self._tilt:
-            return False 
+#         # if other.tilt != self._tilt:
+#         #     return False 
 
-        if other.xaxis != self._xaxis:
-            return False 
+#         if other.xaxis != self._xaxis:
+#             return False 
 
-        if other.thickness != self._thickness:
-            return False 
+#         if other.thickness != self._thickness:
+#             return False 
 
-        return True
+#         return True
 
 
-    def __str__(self):
+#     def __str__(self):
 
-        cstr = ['Sample Control Parameters:']
+#         cstr = ['Sample Control Parameters:']
 
-        cstr.append('Zone: ' + str(self._zone))
-        cstr.append('Tilt: ' + str(self._tilt))
-        cstr.append('xaxis: ' + str(self._xaxis))
-        cstr.append('Thickness: ' + str(self._thickness))
+#         # cstr.append('Zone: ' + str(self._zone))
+#         # cstr.append('Tilt: ' + str(self._tilt))
+#         cstr.append('xaxis: ' + str(self._xaxis))
+#         cstr.append('Thickness: ' + str(self._thickness))
         
-        return '\n'.join(cstr)
+#         return '\n'.join(cstr)
     
 class EM:
     '''
