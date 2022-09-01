@@ -198,7 +198,8 @@ from pyemaps import DEF_EXCITATION, \
                     DEF_BMIN, \
                     DEF_INTENCITY, \
                     DEF_GCTL, \
-                    DEF_ZCTL              
+                    DEF_ZCTL, \
+                    DEF_XAXIS              
 
 class SIMControl:
     '''
@@ -218,6 +219,7 @@ class SIMControl:
                        gmax = DEF_GMAX, \
                        bmin = DEF_BMIN, \
                        intencity = DEF_INTENCITY, \
+                       xaxis = DEF_XAXIS, \
                        gctl = DEF_GCTL, \
                        zctl = DEF_ZCTL
                        ):
@@ -228,6 +230,7 @@ class SIMControl:
         setattr(self, 'intencity', intencity)       
         setattr(self, 'gctl', gctl)
         setattr(self, 'zctl', zctl)
+        setattr(self, 'xaxis', xaxis)
 
     @property
     def excitation(self):
@@ -253,8 +256,13 @@ class SIMControl:
     def zctl(self):
        return self._zctl
 
+    @property
+    def xaxis(self):
+       return self._xaxis
+
     @excitation.setter
     def excitation(self, excit):
+        
        if not excit or \
           not isinstance(excit, tuple) or \
           len(excit) != 2 or \
@@ -266,6 +274,7 @@ class SIMControl:
 
     @gmax.setter
     def gmax(self, gm):
+
        if not isinstance(gm, (int, float)):
             raise EMSIMError('gmax values must be a tuple of tow numbers')
        
@@ -273,6 +282,7 @@ class SIMControl:
 
     @bmin.setter
     def bmin(self, bm):
+
        if not isinstance(bm, (int, float)):
             raise EMSIMError('bmin values must be a tuple of tow numbers')
        
@@ -280,7 +290,10 @@ class SIMControl:
 
     @intencity.setter
     def intencity(self, intv):
-       if not intv or \
+
+       if intv is None or \
+          not isinstance(intv, tuple) or \
+          len(intv) != 2 or \
           not isinstance(intv[0], int) or \
           not isinstance(intv[1], (int, float)):
             raise EMSIMError('kinematic intensity values must be numberal')
@@ -289,6 +302,7 @@ class SIMControl:
 
     @gctl.setter
     def gctl(self, gv):
+
        if not isinstance(gv, (int, float)):
             raise EMSIMError('gctl values must be an integer')
        
@@ -296,10 +310,24 @@ class SIMControl:
 
     @zctl.setter
     def zctl(self, zv):
+
        if not isinstance(zv, (int, float)):
             raise EMSIMError('zctl values must be an integer')
-       
+        
        self._zctl = zv
+
+    @xaxis.setter
+    def xaxis(self, xv):
+
+       if xv is None or \
+          not isinstance(xv, tuple) or \
+          len(xv) != 3 or \
+          not isinstance(xv[0], int) or \
+          not isinstance(xv[1], int) or \
+          not isinstance(xv[2], int):
+            raise EMSIMError('zctl values must be an integer')
+       
+       self._xaxis = xv
            
     def __eq__(self, other):
 
@@ -318,6 +346,9 @@ class SIMControl:
        if self._intencity != other.intencity: 
               return False
 
+       if self._xaxis != other.xaxis: 
+              return False
+
        if self._gctl != other.gctl:
               return False
 
@@ -334,6 +365,7 @@ class SIMControl:
        simulation.append('gmax??: ' + str(self._gmax))
        simulation.append('bmin??: ' + str(self._bmin))
        simulation.append('intencity: ' + str(self._intencity))
+       simulation.append('x-axis: ' + str(self._xaxis))
        simulation.append('gctl??: ' + str(self._gctl))
        simulation.append('zctl??: ' + str(self._zctl))
 
@@ -350,6 +382,9 @@ class SIMControl:
 
     def isDefIntencity(self):
         return self._intencity == DEF_INTENCITY
+
+    def isDefXaxis(self):
+        return self._xaxis == DEF_XAXIS
 
     def isDefGctl(self):
         return self._gctl == DEF_GCTL
