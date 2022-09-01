@@ -131,7 +131,7 @@ class EMCError(Exception):
 
 class EMSIMError(Exception):
     def __init__(self, message=''):
-        self.message = str(f'Error creating Simulation object: {message}')
+        self.message = str(f'Error creating simulation control object: {message}')
         super().__init__(self.message)
 
 

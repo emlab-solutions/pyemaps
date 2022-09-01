@@ -31,15 +31,23 @@ from functools import wraps
 import os
 import json
 
+# from pyemaps.em import DEF_INTCTL
+
 from . import dif
 from . import sct
 from . import spgseek as spgra
     
 from .errors import *
 
-from . import DEF_CBED_DSIZE
-from . import EMC
+# from . import DEF_CBED_DSIZE
+from . import EMC, SIMC
 import re
+
+# Defaults from backend 
+from pyemaps import DEF_MODE, \
+                    DEF_CBED_DSIZE, \
+                    DEF_NORM_DSIZE, \
+                    DEF_DSIZE_LIMITS
 
 # pyemaps scattering data 
 SCT_SYM_LEN = sct.elmn #6
@@ -850,15 +858,29 @@ def add_bloch(target):
     '''
     bloch module interfaces
     '''
+    from pyemaps import DEF_APERTURE, \
+                        DEF_THICKNESS, \
+                        DEF_SAMPLING, \
+                        DEF_PIXSIZE, \
+                        DEF_DETSIZE, \
+                        MAX_DEPTH, \
+                        DEF_OMEGA, \
+                        DEF_CBED_DSIZE, \
+                        DEF_KV, \
+                        DEF_DSIZE_LIMITS
 
-    def generateBlochImgs(self, *, aperture = 1.0, 
-                            omega = 10,  
-                            sampling = 8,
+    def generateBlochImgs(self, *, aperture = DEF_APERTURE, 
+                            omega = DEF_OMEGA,  
+                            sampling = DEF_SAMPLING,
                             pix_size = 25,
-                            det_size = 512,
-                            disk_size = 0.16,
+                            det_size = DEF_DETSIZE,
+                            disk_size = DEF_CBED_DSIZE,
                             sample_thickness = (200, 1000, 100),
-                            em_controls = EMC(cl=200)):
+                            em_controls = EMC(cl=DEF_KV),
+                            sim_controls = SIMC(gmax=1.0, 
+                                                excitation=(0.3,1.0),
+                                                )
+                          ):
         try:
             from . import bloch
 
@@ -871,12 +893,17 @@ def add_bloch(target):
         if th_start > th_end or th_step <= 0:
             raise BlochListError('Sample thickness parameter invalid')               
 
+        dep = (th_end-th_start) // th_step + 1
+        if dep > MAX_DEPTH:
+            raise BlochListError('Too many sample slices')
+
         dif.initcontrols()
         dif.setmode(2) # alway in CBED mode
 
-        dif.setglen(1.0)
-        dif.setgcutoff(0.1)
-        dif.setexcitation(0.3,1.0)
+        
+        # setting default simulation controls
+        self.set_sim_controls(sim_controls)
+
         dif.setdisksize(disk_size)
 
         cell, atoms, atn, spg = self.prepareDif()
@@ -934,14 +961,18 @@ def add_bloch(target):
         return myBlochImgs
 
         
-    def generateBloch(self, *, aperture = 1.0, 
-                            omega = 10,  
-                            sampling = 8,
+    def generateBloch(self, *, aperture = DEF_APERTURE, 
+                            omega = DEF_OMEGA,  
+                            sampling = DEF_SAMPLING,
                             pix_size = 25,
-                            det_size = 512,
-                            disk_size = 0.16,
+                            det_size = DEF_DETSIZE,
+                            disk_size = DEF_CBED_DSIZE,
                             thickness = 200,
-                            em_controls = EMC(cl=200)):
+                            em_controls = EMC(cl=200),
+                            sim_controls = SIMC(gmax=1.0,
+                                                excitation=(0.3,1.0),
+                            )
+                      ):
         try:
             from . import bloch
 
@@ -950,18 +981,19 @@ def add_bloch(target):
                          
         dif.initcontrols()
         dif.setmode(2) # alway in CBED mode
-        
-#       
-        dif.setglen(1.0)
-        dif.setgcutoff(0.1) 
-        dif.setexcitation(0.3,1.0)
+
         dif.setdisksize(disk_size)
+        
+        # print(f'disk size 1: {aperture},{omega}, {sampling},{pix_size},{det_size},{thickness}')
+        # print(f'disk size 1: {em_controls},{omega}, \n{sim_controls}')
+        # setting default simulation controls
+        self.set_sim_controls(sim_controls)
 
         cell, atoms, atn, spg = self.prepareDif()
         dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
   
-        tx, ty = em_controls.tilt[0], em_controls.tilt[1]
-        dx, dy = em_controls.defl[0], em_controls.defl[1]
+        tx, ty = em_controls.tilt
+        dx, dy = em_controls.defl
         z = em_controls.zone
         vt, cl = em_controls.vt,  em_controls.cl
         
@@ -1000,112 +1032,112 @@ def add_bloch(target):
 
         return em_controls, raw_image
         
-    def generateDDP(self, *, microscope_ctrl = None,
-                             simulation_ctrl = None,
-                             sample_ctrl = None):
-        try:
-            from . import bloch
+    # def generateDDP(self, *, microscope_ctrl = None,
+    #                          simulation_ctrl = None,
+    #                          sample_ctrl = None):
+    #     try:
+    #         from . import bloch
 
-        except ImportError as e:               
-            raise CrystalClassError('Failed to import bloch - dynamic diffraction simulation module')
+    #     except ImportError as e:               
+    #         raise CrystalClassError('Failed to import bloch - dynamic diffraction simulation module')
         
-        from . import MICControl, SIMControl, SAMControl
+    #     from . import MICControl, SIMControl, SAMControl
         
-        if not microscope_ctrl:
-            microscope_ctrl = MICControl()
+    #     if not microscope_ctrl:
+    #         microscope_ctrl = MICControl()
 
-        if not simulation_ctrl:
-            simulation_ctrl = SIMControl()
+    #     if not simulation_ctrl:
+    #         simulation_ctrl = SIMControl()
 
-        if not sample_ctrl:
-            sample_ctrl = SAMControl()
+    #     if not sample_ctrl:
+    #         sample_ctrl = SAMControl()
 
-        dif.initcontrols()
+    #     dif.initcontrols()
 
-        dif.setglen(simulation_ctrl.gmax)
-        dif.setgcutoff(simulation_ctrl.bmin)
+    #     dif.setglen(simulation_ctrl.gmax)
+    #     dif.setgcutoff(simulation_ctrl.bmin)
 
-        # excitation settings
-        sgmax, sgmin = simulation_ctrl.excitation
-        dif.setexcitation(sgmin, sgmax)
+    #     # excitation settings
+    #     sgmax, sgmin = simulation_ctrl.excitation
+    #     dif.setexcitation(sgmin, sgmax)
 
-        # intensity control
-        intensity, intencity0 = simulation_ctrl.intctl, simulation_ctrl.intz0
-        dif.setintensities(intensity, intencity0)
+    #     # intensity control
+    #     intensity, intencity0 = simulation_ctrl.intctl, simulation_ctrl.intz0
+    #     dif.setintensities(intensity, intencity0)
 
-        mode = 2
-        dif.setmode(mode) # alway in CBED mode
+    #     mode = 2
+    #     dif.setmode(mode) # alway in CBED mode
         
-        #setting other simulation controls
-        #such as excitation, ...
-        gmax, bmin = simulation_ctrl.gmax, simulation_ctrl.bmin
-        dif.setglen(gmax)
-        dif.setgcutoff(bmin) 
+    #     #setting other simulation controls
+    #     #such as excitation, ...
+    #     gmax, bmin = simulation_ctrl.gmax, simulation_ctrl.bmin
+    #     dif.setglen(gmax)
+    #     dif.setgcutoff(bmin) 
 
-        sgmin, sgmax = simulation_ctrl.excitation
-        dif.setexcitation(sgmin, sgmax)
+    #     sgmin, sgmax = simulation_ctrl.excitation
+    #     dif.setexcitation(sgmin, sgmax)
 
-        dsize = microscope_ctrl.ds
-        dif.setdisksize(dsize)
+    #     dsize = microscope_ctrl.ds
+    #     dif.setdisksize(dsize)
 
-        cell, atoms, atn, spg = self.prepareDif()
-        dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+    #     cell, atoms, atn, spg = self.prepareDif()
+    #     dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
         
-         # load sample comtrols
-        tx, ty = sample_ctrl.tilt
-        z = sample_ctrl.zone
+    #      # load sample comtrols
+    #     tx, ty = sample_ctrl.tilt
+    #     z = sample_ctrl.zone
         
-        # load microscope controls
-        dx, dy = microscope_ctrl.defl
-        cl, vt = microscope_ctrl.cl, microscope_ctrl.vt
+    #     # load microscope controls
+    #     dx, dy = microscope_ctrl.defl
+    #     cl, vt = microscope_ctrl.cl, microscope_ctrl.vt
 
-        dif.setsamplecontrols(tx, ty, dx, dy)
-        dif.setemcontrols(cl, vt)        
-        dif.setzone(z[0], z[1], z[2])
+    #     dif.setsamplecontrols(tx, ty, dx, dy)
+    #     dif.setemcontrols(cl, vt)        
+    #     dif.setzone(z[0], z[1], z[2])
         
-        ret = dif.diffract(1)
-        if ret == 0:
-            raise BlochError('Error bloch runtime1')
+    #     ret = dif.diffract(1)
+    #     if ret == 0:
+    #         raise BlochError('Error bloch runtime1')
         
-        dif.diff_internaldelete(1)
+    #     dif.diff_internaldelete(1)
 
-        thickness = sample_ctrl.thickness
-        bloch.setsamplethickness(thickness, thickness, 100)
+    #     thickness = sample_ctrl.thickness
+    #     bloch.setsamplethickness(thickness, thickness, 100)
 
-        aperture =microscope_ctrl.aper
-        omega = simulation_ctrl.omega
-        sampling =simulation_ctrl.sampling
+    #     aperture =microscope_ctrl.aper
+    #     omega = simulation_ctrl.omega
+    #     sampling =simulation_ctrl.sampling
 
-        ret = bloch.dobloch(aperture,omega,sampling,0.0)
+    #     ret = bloch.dobloch(aperture,omega,sampling,0.0)
         
-        if ret == 2:
-            print('Contact support@emlabsoftware.com for how to register for ' +
-            'a full and accelerated version of pyemaps')
-            raise BlochError('Bloch computation resource limit reached')
+    #     if ret == 2:
+    #         print('Contact support@emlabsoftware.com for how to register for ' +
+    #         'a full and accelerated version of pyemaps')
+    #         raise BlochError('Bloch computation resource limit reached')
 
-        if ret != 0:
-            raise BlochError('Error computing dynamic diffraction')
+    #     if ret != 0:
+    #         raise BlochError('Error computing dynamic diffraction')
 
-        #successful bloch runtime, then retreive bloch image
-        # 
-        # 
-        pix_size = simulation_ctrl.pixsize
-        det_size = simulation_ctrl.detsize    
-        ret = bloch.imagegen(thickness,0,pix_size,det_size)
+    #     #successful bloch runtime, then retreive bloch image
+    #     # 
+    #     # 
+    #     pix_size = simulation_ctrl.pixsize
+    #     det_size = simulation_ctrl.detsize    
+    #     ret = bloch.imagegen(thickness,0,pix_size,det_size)
 
-        if(ret != 0):
-            raise BlochError("bloch image generation failed!")
+    #     if(ret != 0):
+    #         raise BlochError("bloch image generation failed!")
 
-        raw_image = farray(np.zeros((det_size,det_size), dtype=np.double))
-        bloch.get_rawimagedata(raw_image)
-        bloch.imgmemdelete()
-        dif.diff_delete()
+    #     raw_image = farray(np.zeros((det_size,det_size), dtype=np.double))
+    #     bloch.get_rawimagedata(raw_image)
+    #     bloch.imgmemdelete()
+    #     dif.diff_delete()
 
-        return raw_image
+    #     return raw_image
     
     target.generateBloch = generateBloch
     target.generateBlochImgs = generateBlochImgs
-    target.generateDDP = generateDDP
+    # target.generateDDP = generateDDP
 
     return target
 
@@ -2111,74 +2143,45 @@ class Crystal:
             raise CrystalClassError('failed to generate diffraction')
 
         return myDif   
+  
+    def set_sim_controls(self, simc = None):
 
-    def generateKDP(self, simulation_ctrl = None, 
-                          sample_ctrl = None, 
-                          microscope_ctrl = None):
-        """
-        This routine returns a kinematic diffraction object.
+        # from pyemaps import 
+        if not simc:
+            # all defaults set in backend
+            return
+                    
+        if not simc.isDefExcitation():
+            sgmin, sgmax = simc.excitation
+            dif.setexcitation(sgmin, sgmax)
 
-        New DP generation based on the crystal data and Microscope control 
-        parameters. We will add more controls as we see fit.  
+        if not simc.isDefGmax():
+            dif.setglen(simc.gmax)
 
-        :param simulation_ctrl: SIMControl class object defined in em.py
-        :param sample_ctrl: SAMPControl object
-        :param microscope_ctrl: MICControl object
-        :return: a DP object
-        :rtype: diffPattern
-        """
-        from . import DP
-        from . import DPError
-        from . import SIMControl, SAMControl, MICControl
+        if not simc.isDefBmin():
+            dif.setgcutoff(simc.bmin)
 
-        if not microscope_ctrl:
-            microscope_ctrl = MICControl()
+        if not simc.isDefIntencity():
+            intctl, intz0 = simc.intencity
+            dif.setintencity(intctl, intz0)
 
-        if not simulation_ctrl:
-            simulation_ctrl = SIMControl()
+        if not simc.isDefGctl():
+            dif.setgctl(simc.gctl)
 
-        if not sample_ctrl:
-            sample_ctrl = SAMControl()
+        if not simc.isDefZctl():
+            dif.setzctl(simc.zctl)
 
-        # load sample comtrols
-        tx0, ty0 = sample_ctrl.tilt
-        zone = sample_ctrl.zone
-        
-        # load microscope controls
-        dx0, dy0 = microscope_ctrl.defl
-        cl, vt = microscope_ctrl.cl, microscope_ctrl.vt
-        dsize = microscope_ctrl.ds
+    def set_sample_controls(self, use_xaxis=False,
+                            xaxis = None):
 
-        # samulation controls
-        mode = simulation_ctrl.mode
-        
-        #setting other simulation controls
-        #such as excitation, ...
+        if use_xaxis and xaxis != DEF_XAXIS:
+            dif.set_xaxis(1, xaxis[0], xaxis[1], xaxis[2])
 
-        dif.setglen(simulation_ctrl.gmax)
-        dif.setgcutoff(simulation_ctrl.bmin)
+        # # for dynamic diffraction simulations only
+        # if thickness and thickness != DEF_THICKNESS:
+        #     bloch.setsamplethickness(thickness[0], thickness[1], thickness[2])
 
-        # excitation settings
-        sgmax, sgmin = simulation_ctrl.excitation
-        dif.setexcitation(sgmin, sgmax)
-
-        # intensity control
-        intensity, intencity0 = simulation_ctrl.intctl, simulation_ctrl.intz0
-        dif.setintensities(intensity, intencity0)
-
-        #setting xaxis ??
-        # dif.set_xaxis(1, sample_ctrl.xaxis[0], 
-        #                  sample_ctrl.xaxis[1],
-        #                  sample_ctrl.xaxis[2])
-        
-        ret, diffp = self._get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize)
-        
-        if ret != 200:
-            raise DPError('failed to generate diffraction patterns')
-
-        return DP(diffp)   
-
-    def generateDP(self, mode = None, dsize = None, em_controls = None):
+    def generateDP(self, mode = None, dsize = None, em_controls = None, sim_controls=None):
         """
         This routine returns a DP object.
 
@@ -2194,16 +2197,20 @@ class Crystal:
         from . import DP
         from . import DPError
 
-
         if not em_controls:
             em_controls =EMC()
+
+        # if not sim_controls:
+        #     em_controls =SIMC()
 
         tx0, ty0 = em_controls.tilt
         dx0, dy0 = em_controls.defl
         cl, vt = em_controls.cl, em_controls.vt
         zone = em_controls.zone
         
-        ret, diffp = self._get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize)
+        # self.set_simulation_controls()
+
+        ret, diffp = self._get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize, sim_controls)
         
         
         if ret != 200:
@@ -2219,7 +2226,8 @@ class Crystal:
                               dy0 = None,
                               cl = None,
                               vt = None,
-                              dsize = None):
+                              dsize = None,
+                              sim_controls=None):
         """
         Wrapper for get_diffraction routine for pyemaps version <= 0.3.4
         use generateDP call for pyemaps version > 0.3.4
@@ -2227,7 +2235,7 @@ class Crystal:
         from . import DP
         from . import DPError
 
-        ret, diffp = self._get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize)
+        ret, diffp = self._get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize, sim_controls)
         if ret != 200:
             raise DPError('failed to generate diffraction patterns')
 
@@ -2241,7 +2249,8 @@ class Crystal:
                               dy0 = None,
                               cl = None,
                               vt = None, 
-                              dsize = None):
+                              dsize = None,
+                              simc = None):
         """
         This routine returns raw diffraction data from emaps dif extension
 
@@ -2250,7 +2259,7 @@ class Crystal:
         backend indicated below:
             zone = (0,0,1) zone axis
             mode = normal  kinematic diffraction mode (CBED is the other)
-            (tx0,ty0) = (0.0,0.0) tilt angles
+            (tx0,ty0) = (0.0,0.0) tilt angless
             (dx0,dy0) = (0.0,0.0) deflection move
             cl = 1000 EM length
             vt = 200  voltage
@@ -2263,25 +2272,46 @@ class Crystal:
 
         """
         import copy
+
+        if not mode:
+            mode = DEF_MODE
         
+        if mode != DEF_MODE and mode != DEF_MODE + 1:
+            raise EMCError('Simulation mode is invalid: 1 = normal (default), 2 = CBED')
+
         dif.initcontrols()
         # mode defaults to DEF_MODE, in which dsize is not used
         # Electron Microscope controls defaults - DEF_CONTROLS
-        ds = DEF_CBED_DSIZE
+        ds = DEF_NORM_DSIZE
         if mode == 2:
             dif.setmode(mode)
-            if dsize:
-                ds = dsize
+            ds = DEF_CBED_DSIZE
+            
+        if dsize != ds:    
             dif.setdisksize(float(ds))
         
-        if tx0 != None and ty0 != None and dx0 != None and dy0 != None:
+        if tx0 is not None and \
+           ty0 is not None and \
+           dx0 is not None and \
+           dy0 is not None:
+            
             dif.setsamplecontrols(tx0, ty0, dx0, dy0)
+        else:
+            print(f'tilt and def values: {tx0},{ty0}, {dx0}, {dy0}')
+            raise EMCError('Control parameters invalid: tilt and deflections')
 
-        if cl != None and vt != None:
+        if cl is not None and vt is not None:
             dif.setemcontrols(cl, vt)
-        if zone != None:
+        else:
+            raise EMCError('Control parameters invalid: cl and vt')
+
+        if zone is not None:
             dif.setzone(zone[0], zone[1], zone[2])
-        
+        else:
+            raise EMCError('Control parameters invalid: zone')
+
+        # setting simulation parameters
+        self.set_sim_controls(simc)
         
         cell, atoms, atn, spg = self.prepareDif()
         dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
