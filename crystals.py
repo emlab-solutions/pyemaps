@@ -876,10 +876,8 @@ def add_bloch(target):
                             det_size = DEF_DETSIZE,
                             disk_size = DEF_CBED_DSIZE,
                             sample_thickness = (200, 1000, 100),
-                            em_controls = EMC(cl=DEF_KV),
-                            sim_controls = SIMC(gmax=1.0, 
-                                                excitation=(0.3,1.0),
-                                                )
+                            em_controls = EMC(cl=200, 
+                                              simc = SIMC(gmax=1.0, excitation=(0.3,1.0)))
                           ):
         try:
             from . import bloch
@@ -902,7 +900,7 @@ def add_bloch(target):
 
         
         # setting default simulation controls
-        self.set_sim_controls(sim_controls)
+        self.set_sim_controls(em_controls.simc)
 
         dif.setdisksize(disk_size)
 
@@ -968,11 +966,10 @@ def add_bloch(target):
                             det_size = DEF_DETSIZE,
                             disk_size = DEF_CBED_DSIZE,
                             thickness = 200,
-                            em_controls = EMC(cl=200),
-                            sim_controls = SIMC(gmax=1.0,
-                                                excitation=(0.3,1.0),
-                            )
-                      ):
+                            em_controls = EMC(cl=200, 
+                                              simc = SIMC(gmax=1.0, excitation=(0.3,1.0))
+                                              )
+                     ):
         try:
             from . import bloch
 
@@ -985,7 +982,7 @@ def add_bloch(target):
         dif.setdisksize(disk_size)
         
         # setting default simulation controls
-        self.set_sim_controls(sim_controls)
+        self.set_sim_controls(em_controls.simc)
 
         cell, atoms, atn, spg = self.prepareDif()
         dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
@@ -2056,9 +2053,9 @@ class Crystal:
         if not simc.isDefBmin():
             dif.setgcutoff(simc.bmin)
 
-        if not simc.isDefIntencity():
-            intctl, intz0 = simc.intencity
-            dif.setintencity(intctl, intz0)
+        if not simc.isDefIntensity():
+            intz0, intctl = simc.intensity
+            dif.setintensities(intctl, intz0)
 
         if not simc.isDefXaxis():
             x0,x1,x2 = simc.xaxis
@@ -2070,17 +2067,7 @@ class Crystal:
         if not simc.isDefZctl():
             dif.setzctl(simc.zctl)
 
-    def set_sample_controls(self, use_xaxis=False,
-                            xaxis = None):
-
-        if use_xaxis and xaxis != DEF_XAXIS:
-            dif.set_xaxis(1, xaxis[0], xaxis[1], xaxis[2])
-
-        # # for dynamic diffraction simulations only
-        # if thickness and thickness != DEF_THICKNESS:
-        #     bloch.setsamplethickness(thickness[0], thickness[1], thickness[2])
-
-    def generateDP(self, mode = None, dsize = None, em_controls = None, sim_controls=None):
+    def generateDP(self, mode = None, dsize = None, em_controls = None):
         """
         This routine returns a DP object.
 
@@ -2106,10 +2093,11 @@ class Crystal:
         dx0, dy0 = em_controls.defl
         cl, vt = em_controls.cl, em_controls.vt
         zone = em_controls.zone
+        sc = em_controls.simc
         
         # self.set_simulation_controls()
 
-        ret, diffp = self._get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize, sim_controls)
+        ret, diffp = self._get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize,sc)
         
         
         if ret != 200:
@@ -2117,28 +2105,28 @@ class Crystal:
 
         return em_controls, DP(diffp)
         
-    def gen_diffPattern(self, zone = None,
-                              mode = None,
-                              tx0 = None,
-                              ty0 = None,
-                              dx0 = None,
-                              dy0 = None,
-                              cl = None,
-                              vt = None,
-                              dsize = None,
-                              sim_controls=None):
-        """
-        Wrapper for get_diffraction routine for pyemaps version <= 0.3.4
-        use generateDP call for pyemaps version > 0.3.4
-        """
-        from . import DP
-        from . import DPError
+    # def gen_diffPattern(self, zone = None,
+    #                           mode = None,
+    #                           tx0 = None,
+    #                           ty0 = None,
+    #                           dx0 = None,
+    #                           dy0 = None,
+    #                           cl = None,
+    #                           vt = None,
+    #                           dsize = None,
+    #                           sim_controls=None):
+    #     """
+    #     Wrapper for get_diffraction routine for pyemaps version <= 0.3.4
+    #     use generateDP call for pyemaps version > 0.3.4
+    #     """
+    #     from . import DP
+    #     from . import DPError
 
-        ret, diffp = self._get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize, sim_controls)
-        if ret != 200:
-            raise DPError('failed to generate diffraction patterns')
+    #     ret, diffp = self._get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize, sim_controls)
+    #     if ret != 200:
+    #         raise DPError('Diffraction simulation failed')
 
-        return DP(diffp)
+    #     return DP(diffp)
 
     def _get_diffraction(self, zone = None, 
                               mode = None, 
@@ -2219,7 +2207,6 @@ class Crystal:
         
         ret = dif.diffract()
         if ret == 0:
-            print('Diffraction module failed to run')
             return 500, ({})
 
         shiftx, shifty = dif.get_shifts()

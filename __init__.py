@@ -26,7 +26,6 @@ Date:       May 07, 2022
 """
 
 
-# from pyemaps.test.sanity.em import DEF_NORM_DSIZE, DEF_OMEGA
 from . import __config__
 
 #--------------from diffraction extension module------------------------
@@ -35,14 +34,14 @@ try:
 except ImportError:
     raise Exception('No diffraction module found')
 else:
-    # defaults from the backend for simulation control parameters
-    # Default excitation from backend: DEF_EXCITATION
+#--------------defaults from the backend for simulation control parameters
+    # Default excitation from backend: DEF_EXCITATION (low, high)
     # Default gmax from backend: DEF_GMAX  
     # Default bmin from backend: DEF_BMIN  
-    # Default intencity from backend: DEF_INTENCITY
+    # Default intensity from backend: DEF_INTENSITY (low, high)
     # Default gctl from backend: DEF_GCTL  
     # Default zctl from backend: DEF_ZCTL
-    #  
+#------------------------------------------------------------------------
     (sgmn, 
      sgmx, 
      DEF_GMAX, 
@@ -54,24 +53,27 @@ else:
      DEF_MODE) = dif.get_sim_defs()
 
     DEF_EXCITATION= (sgmn, sgmx)
-    DEF_INTENCITY = (intc, intz)
+    DEF_INTENSITY = (intz, intc)
 
-    # defaults from backend for sample controls
+#-------------- defaults from backend for sample controls---------------
     # Default starting zone setting: DEF_ZONE
     # Default tilt: DEF_TILT (x, y)
     # Default xaxis: DEF_XAXIS
+#------------------------------------------------------------------------
     zn0, zn1, zn2, tlt0, xax0 = dif.get_sam_defs()
     DEF_ZONE= (zn0, zn1, zn2)
     DEF_TILT =(tlt0, tlt0)
     DEF_XAXIS = (xax0, xax0, xax0)
 
-    # defaults from backend for microscope controls
+#-------------- defaults from backend for microscope controls-----------
     # Default hight voltage setting: DEF_KV
     # Default camera length: DEF_CL (x, y)
     # Default deflection: DEF_DEFL
     # Default normal disk size: DEF_NORM_DSIZE
     # Default CBED disk size: DEF_CBED_DS
     # Default disk size: DEF_DS_LIMITS (min, max)
+#------------------------------------------------------------------------
+
     DEF_DEFL = (tlt0, tlt0)
     (DEF_CL, 
      DEF_KV, 
@@ -81,12 +83,8 @@ else:
      dmax) = dif.get_mic_defs()
 
     DEF_DSIZE_LIMITS = (dmin, dmax)
-    # print(f'cl default: {DEF_CL}')
-    # print(f'kv default: {DEF_KV}')
-    # print(f'norm dsize default: {DEF_NORM_DSIZE}')
-    # print(f'cbed dsize default: {DEF_CBED_DSIZE}')
-    # print(f'disk limit default: {DEF_DSIZE_LIMITS}')
-#CIF & XTL crystal data import dependent modules
+    
+#---------------CIF & XTL crystal data import dependent modules
 #
 #
 from .spg import spgseek
@@ -122,12 +120,13 @@ try:
 except ImportError as e:
     raise Exception('No diffraction module found')
 else:
-    # defaults sampling setting
+
+#---------- defaults sampling setting ---------------------------
     # sample thickness: DEF_THICKNESS (start, end, step)
     th_start, th_end, th_step = bloch.get_sam_defs()
     
     DEF_THICKNESS = (th_start, th_end, th_step)
-    # defaults simulation setting
+#---------- defaults simulation setting-------------------------
     # sampling: DEF_SAMPLING
     # pixsize: DEF_PIXSIZE
     # detsize: DEF_DETSIZE
@@ -138,7 +137,7 @@ else:
      DEF_DETSIZE, 
      MAX_DEPTH, 
      DEF_OMEGA) = bloch.get_sim_defs()
-    # Microoscope setting default
+#----------  Microoscope setting default------------------------
     DEF_APERTURE = bloch.get_mic_defs()
 
     

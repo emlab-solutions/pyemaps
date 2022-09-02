@@ -26,6 +26,239 @@ This class is helper for handling pyemaps microscope controls
 
 from . import  EMCError, EMSIMError
 
+from pyemaps import DEF_EXCITATION, \
+                    DEF_GMAX, \
+                    DEF_BMIN, \
+                    DEF_INTENSITY, \
+                    DEF_GCTL, \
+                    DEF_ZCTL, \
+                    DEF_XAXIS              
+
+class SIMControl:
+    '''
+       pyemaps diffraction simulation controls parameter class
+       excitation: excit = tuple(sgmax, sgmin)
+       gmax: 
+       bmin:
+       intensity:
+       mode: diffraction simulation mode - 1 == mormal; 2 == CBED
+       omega: bloch specific parameter
+       sampling: bloch specific parameter
+       pixsize: pixel size for bloch image
+       detsize: detector size for bloch image
+       xaxis: crystal horizon axis, (0, 0, 0) in reciprical space 
+    '''
+    def __init__(self, excitation = DEF_EXCITATION, \
+                       gmax = DEF_GMAX, \
+                       bmin = DEF_BMIN, \
+                       intensity = DEF_INTENSITY, \
+                       xaxis = DEF_XAXIS, \
+                       gctl = DEF_GCTL, \
+                       zctl = DEF_ZCTL
+                       ):
+
+        setattr(self, 'excitation', excitation)
+        setattr(self, 'gmax', gmax)
+        setattr(self, 'bmin', bmin)
+        setattr(self, 'intensity', intensity)       
+        setattr(self, 'gctl', gctl)
+        setattr(self, 'zctl', zctl)
+        setattr(self, 'xaxis', xaxis)
+
+    @property
+    def excitation(self):
+       return self._excitation
+
+    @property
+    def gmax(self):
+       return self._gmax
+
+    @property
+    def bmin(self):
+       return self._bmin
+
+    @property
+    def intensity(self):
+       return self._intensity
+
+    @property
+    def gctl(self):
+       return self._gctl
+
+    @property
+    def zctl(self):
+       return self._zctl
+
+    @property
+    def xaxis(self):
+       return self._xaxis
+
+    @excitation.setter
+    def excitation(self, excit):
+        
+       if not excit or \
+          not isinstance(excit, tuple) or \
+          len(excit) != 2 or \
+          not isinstance(excit[0], (int, float)) or \
+          not isinstance(excit[1], (int, float)) or \
+          excit[0] > excit[1]:
+            raise EMSIMError('Excitation values must be a tuple of two ordered numbers')
+       
+       self._excitation = excit
+
+    @gmax.setter
+    def gmax(self, gm):
+
+       if not isinstance(gm, (int, float)):
+            raise EMSIMError('gmax values must be a tuple of tow numbers')
+       
+       self._gmax = gm
+
+    @bmin.setter
+    def bmin(self, bm):
+
+       if not isinstance(bm, (int, float)):
+            raise EMSIMError('bmin values must be a tuple of tow numbers')
+       
+       self._bmin = bm
+
+    @intensity.setter
+    def intensity(self, intv):
+
+       if intv is None or \
+          not isinstance(intv, tuple) or \
+          len(intv) != 2 or \
+          not isinstance(intv[0], (int, float)) or \
+          not isinstance(intv[1], (int, float)) or \
+          intv[0] > intv[1]:
+            raise EMSIMError('kinematic intensity values must be ordered numberals')
+       
+       self._intensity = intv
+
+    @gctl.setter
+    def gctl(self, gv):
+
+       if not isinstance(gv, (int, float)):
+            raise EMSIMError('gctl values must be numberal')
+       
+       self._gctl = gv
+
+    @zctl.setter
+    def zctl(self, zv):
+       if not isinstance(zv, (int, float)):
+            raise EMSIMError('zctl values must be numberal')
+        
+       self._zctl = zv
+
+    @xaxis.setter
+    def xaxis(self, xv):
+
+       if xv is None or \
+          not isinstance(xv, tuple) or \
+          len(xv) != 3 or \
+          not isinstance(xv[0], int) or \
+          not isinstance(xv[1], int) or \
+          not isinstance(xv[2], int):
+            raise EMSIMError('Invalid crystal horizon axis')
+       
+       self._xaxis = xv
+           
+    def __eq__(self, other):
+
+       if not isinstance(other, SIMControl):
+              return False
+
+       if self._excitation != other.excitation: 
+              return False
+
+       if self._gmax != other.gmax:
+              return False
+
+       if self._bmin != other.bmin:
+              return False
+
+       if self._intensity != other.intensity: 
+              return False
+
+       if self._xaxis != other.xaxis: 
+              return False
+
+       if self._gctl != other.gctl:
+              return False
+
+       if self._zctl != other.zctl:
+              return False
+
+       return True
+    
+    def __str__(self) -> str:
+       
+       simulation = ['Simulation Controls Parameters:']
+
+       simulation.append('excitation: ' +  str(self._excitation) + ' Default: ' + str(DEF_EXCITATION))
+       simulation.append('gmax??: ' + str(self._gmax)+ ' Default: ' + str(DEF_GMAX))
+       simulation.append('bmin??: ' + str(self._bmin) + ' Default: ' + str(DEF_BMIN))
+       simulation.append('intensity: ' + str(self._intensity)+ ' Default: ' + str(DEF_INTENSITY))
+       simulation.append('x-axis: ' + str(self._xaxis))
+       simulation.append('gctl??: ' + str(self._gctl)+ ' Default: ' + str(DEF_GCTL))
+       simulation.append('zctl??: ' + str(self._zctl)+ ' Default: ' + str(DEF_ZCTL))
+
+       return "\n ".join(simulation)
+
+    def isDefExcitation(self):
+        return self._excitation == DEF_EXCITATION
+
+    def isDefGmax(self):
+        return self._gmax == DEF_GMAX
+
+    def isDefBmin(self):
+        return self._bmin == DEF_BMIN
+
+    def isDefIntensity(self):
+        return self._intensity == DEF_INTENSITY
+
+    def isDefXaxis(self):
+        return self._xaxis == DEF_XAXIS
+
+    def isDefGctl(self):
+        return self._gctl == DEF_GCTL
+
+    def isDefZctl(self):
+        return self._zctl == DEF_ZCTL
+
+    @classmethod
+    def from_random(cls):
+        import random
+        # random xaxis:
+        ax = tuple(random.sample(range(4), k = 3))
+
+        # random excitation
+        excit = (random.uniform(0.2, 0.4), random.uniform(1.0, 3.0))
+
+        # random gcuttoffs
+        bmn = random.uniform(0.05, 0.15)
+        gmx = random.uniform(2.0, 5.0)
+
+        # random intensity
+        inten = (0.0, random.randint(4,7))
+
+        # random zone and gcutoffs
+        gc = random.uniform(5.0, 7.0)
+        zc = random.uniform(4.0, 6.0)
+        try:
+            sc = cls(excitation = excit, \
+                     xaxis = ax, \
+                     intensity = inten, \
+                     gmax = gmx, \
+                     bmin = bmn, \
+                     gctl = gc, \
+                     zctl = zc)
+
+        except Exception as e:
+            raise EMCError(str(e))
+        else:
+            return sc
+
 from pyemaps import DEF_ZONE, \
                     DEF_DEFL, \
                     DEF_TILT, \
@@ -48,7 +281,8 @@ class EMControl:
                        zone = DEF_ZONE, 
                        defl = DEF_DEFL, 
                        vt = DEF_KV, 
-                       cl = DEF_CL):
+                       cl = DEF_CL,
+                       simc = SIMControl()):
 
         emc_dict = dict(tilt = tilt, 
                        zone = zone, 
@@ -58,6 +292,8 @@ class EMControl:
         
         for k, v in emc_dict.items():
             setattr(self, k, v)
+        
+        setattr(self, 'simc', simc)
 
     @classmethod
     def from_dict(cls, emc_dict):
@@ -81,10 +317,9 @@ class EMControl:
                 vt = v
             if k == 'cl':
                 c = v
+            sc = SIMControl()
 
-        return cls(tilt = t, zone = z,
-                    defl = d, vt = vt,
-                    cl = c)
+        return cls(tilt = t, zone = z, defl = d, vt = vt, cl = c, simc = sc)
         
     @property
     def zone(self):
@@ -109,6 +344,10 @@ class EMControl:
     @property
     def zone(self):
         return self._zone
+    
+    @property
+    def simc(self):
+        return self._simc
 
     @zone.setter
     def zone(self, zv):
@@ -160,6 +399,13 @@ class EMControl:
            raise EMCError("Voltage must be of integer")
         
         self._vt = kv
+    
+    @simc.setter
+    def simc(self, sc):
+        if not isinstance(sc, SIMControl):
+           raise EMCError("Simulation control invlid")
+        
+        self._simc = sc
 
     def __eq__(self, other):
         if not isinstance(other, EMControl):
@@ -180,6 +426,9 @@ class EMControl:
         if other.vt != self._vt:
             return False 
 
+        if other.simc != self._simc:
+            return False 
+
         return True
 
 
@@ -192,202 +441,3 @@ class EMControl:
         cstr.append('Voltage: ' + str(self._vt))
         return '\n'.join(cstr)
 
-
-from pyemaps import DEF_EXCITATION, \
-                    DEF_GMAX, \
-                    DEF_BMIN, \
-                    DEF_INTENCITY, \
-                    DEF_GCTL, \
-                    DEF_ZCTL, \
-                    DEF_XAXIS              
-
-class SIMControl:
-    '''
-       pyemaps diffraction simulation controls parameter class
-       excitation: excit = tuple(sgmax, sgmin)
-       gmax: 
-       bmin:
-       intctl:
-       intz0:
-       mode: diffraction simulation mode - 1 == mormal; 2 == CBED
-       omega: bloch specific parameter
-       sampling: bloch specific parameter
-       pixsize: pixel size for bloch image
-       detsize: detector size for bloch image
-    '''
-    def __init__(self, excitation = DEF_EXCITATION, \
-                       gmax = DEF_GMAX, \
-                       bmin = DEF_BMIN, \
-                       intencity = DEF_INTENCITY, \
-                       xaxis = DEF_XAXIS, \
-                       gctl = DEF_GCTL, \
-                       zctl = DEF_ZCTL
-                       ):
-
-        setattr(self, 'excitation', excitation)
-        setattr(self, 'gmax', gmax)
-        setattr(self, 'bmin', bmin)
-        setattr(self, 'intencity', intencity)       
-        setattr(self, 'gctl', gctl)
-        setattr(self, 'zctl', zctl)
-        setattr(self, 'xaxis', xaxis)
-
-    @property
-    def excitation(self):
-       return self._excitation
-
-    @property
-    def gmax(self):
-       return self._gmax
-
-    @property
-    def bmin(self):
-       return self._bmin
-
-    @property
-    def intencity(self):
-       return self._intencity
-
-    @property
-    def gctl(self):
-       return self._gctl
-
-    @property
-    def zctl(self):
-       return self._zctl
-
-    @property
-    def xaxis(self):
-       return self._xaxis
-
-    @excitation.setter
-    def excitation(self, excit):
-        
-       if not excit or \
-          not isinstance(excit, tuple) or \
-          len(excit) != 2 or \
-          not isinstance(excit[0], (int, float)) or \
-          not isinstance(excit[1], (int, float)):
-            raise EMSIMError('Excitation values must be a tuple of two numbers')
-       
-       self._excitation = excit
-
-    @gmax.setter
-    def gmax(self, gm):
-
-       if not isinstance(gm, (int, float)):
-            raise EMSIMError('gmax values must be a tuple of tow numbers')
-       
-       self._gmax = gm
-
-    @bmin.setter
-    def bmin(self, bm):
-
-       if not isinstance(bm, (int, float)):
-            raise EMSIMError('bmin values must be a tuple of tow numbers')
-       
-       self._bmin = bm
-
-    @intencity.setter
-    def intencity(self, intv):
-
-       if intv is None or \
-          not isinstance(intv, tuple) or \
-          len(intv) != 2 or \
-          not isinstance(intv[0], int) or \
-          not isinstance(intv[1], (int, float)):
-            raise EMSIMError('kinematic intensity values must be numberal')
-       
-       self._intencity = intv
-
-    @gctl.setter
-    def gctl(self, gv):
-
-       if not isinstance(gv, (int, float)):
-            raise EMSIMError('gctl values must be an integer')
-       
-       self._gctl = gv
-
-    @zctl.setter
-    def zctl(self, zv):
-
-       if not isinstance(zv, (int, float)):
-            raise EMSIMError('zctl values must be an integer')
-        
-       self._zctl = zv
-
-    @xaxis.setter
-    def xaxis(self, xv):
-
-       if xv is None or \
-          not isinstance(xv, tuple) or \
-          len(xv) != 3 or \
-          not isinstance(xv[0], int) or \
-          not isinstance(xv[1], int) or \
-          not isinstance(xv[2], int):
-            raise EMSIMError('zctl values must be an integer')
-       
-       self._xaxis = xv
-           
-    def __eq__(self, other):
-
-       if not isinstance(other, SIMControl):
-              return False
-
-       if self._excitation != other.excitation: 
-              return False
-
-       if self._gmax != other.gmax:
-              return False
-
-       if self._bmin != other.bmin:
-              return False
-
-       if self._intencity != other.intencity: 
-              return False
-
-       if self._xaxis != other.xaxis: 
-              return False
-
-       if self._gctl != other.gctl:
-              return False
-
-       if self._zctl != other.zctl:
-              return False
-
-       return True
-    
-    def __str__(self) -> str:
-       
-       simulation = ['Simulation Controls Parameters:']
-
-       simulation.append('excitation: ' +  str(self._excitation))
-       simulation.append('gmax??: ' + str(self._gmax))
-       simulation.append('bmin??: ' + str(self._bmin))
-       simulation.append('intencity: ' + str(self._intencity))
-       simulation.append('x-axis: ' + str(self._xaxis))
-       simulation.append('gctl??: ' + str(self._gctl))
-       simulation.append('zctl??: ' + str(self._zctl))
-
-       return "\n ".join(simulation)
-
-    def isDefExcitation(self):
-        return self._excitation == DEF_EXCITATION
-
-    def isDefGmax(self):
-        return self._gmax == DEF_GMAX
-
-    def isDefBmin(self):
-        return self._bmin == DEF_BMIN
-
-    def isDefIntencity(self):
-        return self._intencity == DEF_INTENCITY
-
-    def isDefXaxis(self):
-        return self._xaxis == DEF_XAXIS
-
-    def isDefGctl(self):
-        return self._gctl == DEF_GCTL
-
-    def isDefZctl(self):
-        return self._zctl == DEF_ZCTL
