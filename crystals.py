@@ -2155,7 +2155,7 @@ class Crystal:
         backend indicated below:
             zone = (0,0,1) zone axis
             mode = normal  kinematic diffraction mode (CBED is the other)
-            (tx0,ty0) = (0.0,0.0) tilt angless
+            (tx0,ty0) = (0.0,0.0) tilt angles
             (dx0,dy0) = (0.0,0.0) deflection move
             cl = 1000 EM length
             vt = 200  voltage

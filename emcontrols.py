@@ -24,7 +24,7 @@ Date:       May 09, 2022
 This class is helper for handling pyemaps microscope controls
 """
 
-from . import  EMCError, EMSIMError
+from . import  EMCError
 
 from pyemaps import DEF_EXCITATION, \
                     DEF_GMAX, \
@@ -99,7 +99,7 @@ class SIMControl:
           not isinstance(excit[0], (int, float)) or \
           not isinstance(excit[1], (int, float)) or \
           excit[0] > excit[1]:
-            raise EMSIMError('Excitation values must be a tuple of two ordered numbers')
+            raise EMCError('Excitation values must be a tuple of two ordered numbers')
        
        self._excitation = excit
 
@@ -107,7 +107,7 @@ class SIMControl:
     def gmax(self, gm):
 
        if not isinstance(gm, (int, float)):
-            raise EMSIMError('gmax values must be a tuple of tow numbers')
+            raise EMCError('gmax values must be a tuple of tow numbers')
        
        self._gmax = gm
 
@@ -115,7 +115,7 @@ class SIMControl:
     def bmin(self, bm):
 
        if not isinstance(bm, (int, float)):
-            raise EMSIMError('bmin values must be a tuple of tow numbers')
+            raise EMCError('bmin values must be a tuple of tow numbers')
        
        self._bmin = bm
 
@@ -128,7 +128,7 @@ class SIMControl:
           not isinstance(intv[0], (int, float)) or \
           not isinstance(intv[1], (int, float)) or \
           intv[0] > intv[1]:
-            raise EMSIMError('kinematic intensity values must be ordered numberals')
+            raise EMCError('kinematic intensity values must be ordered numberals')
        
        self._intensity = intv
 
@@ -136,14 +136,14 @@ class SIMControl:
     def gctl(self, gv):
 
        if not isinstance(gv, (int, float)):
-            raise EMSIMError('gctl values must be numberal')
+            raise EMCError('gctl values must be a numeral')
        
        self._gctl = gv
 
     @zctl.setter
     def zctl(self, zv):
        if not isinstance(zv, (int, float)):
-            raise EMSIMError('zctl values must be numberal')
+            raise EMCError('zctl values must be a numeral')
         
        self._zctl = zv
 
@@ -156,7 +156,7 @@ class SIMControl:
           not isinstance(xv[0], int) or \
           not isinstance(xv[1], int) or \
           not isinstance(xv[2], int):
-            raise EMSIMError('Invalid crystal horizon axis')
+            raise EMCError('Invalid crystal horizon axis')
        
        self._xaxis = xv
            
