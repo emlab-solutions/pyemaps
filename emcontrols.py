@@ -36,17 +36,14 @@ from pyemaps import DEF_EXCITATION, \
 
 class SIMControl:
     '''
-       pyemaps diffraction simulation controls parameter class
-       excitation: excit = tuple(sgmax, sgmin)
-       gmax: 
-       bmin:
-       intensity:
-       mode: diffraction simulation mode - 1 == mormal; 2 == CBED
-       omega: bloch specific parameter
-       sampling: bloch specific parameter
-       pixsize: pixel size for bloch image
-       detsize: detector size for bloch image
-       xaxis: crystal horizon axis, (0, 0, 0) in reciprical space 
+    Simulation control parameters, to be embedded in EMControl, including:
+    excitation:     excitation error range in (min, max)
+    gmax:           maximum recipricol vector length
+    bmin:           beta perturbation cutoff
+    intensity:      kinematic diffraction intensity cutoff level and scale in (level, scale)
+    xaxis:          crystal horizontal axis in reciprical space
+    gctl:           maximum index number for g-list
+    zctl:           maximum zone index number
     '''
     def __init__(self, excitation = DEF_EXCITATION, \
                        gmax = DEF_GMAX, \
@@ -269,13 +266,8 @@ DEF_CONTROLS_KEYS = ['zone','tilt','defl', 'cl', 'vt']
 
 class EMControl:
     '''
-    initializing class with a control dictionary of the format:
-    DEF_CONTROLS = dict(zone = (0,0,1),
-                    tilt = (0.0,0.0),
-                    defl = (0.0,0.0),
-                    cl = 1000,
-                    vt = 200
-                    )
+    initializing class include the following controls:
+    
     '''
     def __init__(self, *, tilt = DEF_TILT, 
                        zone = DEF_ZONE, 

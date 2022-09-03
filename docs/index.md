@@ -545,13 +545,13 @@ See _si_csf.py_ sample code for more details.
 
 * __Dynamic Diffraction Generation__: __bloch__ module is now added in __pyemaps__ which generate dynamic diffraction patterns. The sample code in the above basic usage demostrates the usage of the new addition to pyemaps' Crystal object in _generateBloch_(...). In addition to pyemaps EMC microscope control input, the method also takes many other control parameter as listed below with their default values:
 ```python
-    aperture = 1.0,                 #  Camera aperture
-    omega = 10,                     #  Camera parameter                            
+    aperture = 1.0,                 #  Objective aperture
+    omega = 10,                     #  Diagnization cutoff                            
     sampling = 8,                   #  Number of sampling points
     pix_size = 25,                  #  Detector pixel size in microns
     thickness = 200,                #  Sample thickness
     det_size = 512,                 #  Detector size (it's also resulting bloch image array dimension)
-    disk_size = 0.16,               #  Diffracted Beams Size
+    disk_size = 0.16,               #  Diffraction disk rdius in 1/A
     em_controls = EMC(cl=200)       #  Electron Microscope controls
 ```
 Additional helper classes and method are also added to assist multiple bloch calcaluation and image handling. See _si_bloch.py_ for more details of the usage.
@@ -596,9 +596,34 @@ Detailed plotting function implementations are lised in _display.py_.
 
 * __Bug Fixes__: Fixed runtime error in display functions on some system. 
 
-### __0.4.3 Alpha__ August 19th, 2022
+### __0.4. Alpha__ August 19th, 2022
 
 #### IMPROVEMENTS
 
 * __Installation Dependencies Removed__: CIF reader support for python 3.7 is now added. As result, __pyemaps__ installation no longer requires of MSVC build tool to build it from the source package and additional runtime installation requirement also removed. 
+
+### __0.4.4 Alpha__ September 2nd, 2022
+
+#### NEW
+
+* __More Control Paraameter Added__: A selection of simulation parameters are now added to user input defined in SIMControl class:
+```python
+class SIMControl:
+    def __init__(self, excitation = DEF_EXCITATION, \   #excitation error range (min, max)
+                       gmax = DEF_GMAX, \               #maximum recipricol vector length
+                       bmin = DEF_BMIN, \               #beta perturbation cutoff
+                       intensity = DEF_INTENSITY, \     #kinematic diffraction intensity cutoff level and scale (level, scale)
+                       xaxis = DEF_XAXIS, \             #crystal horizontal axis in reciprical space
+                       gctl = DEF_GCTL, \               #maximum index number for g-list
+                       zctl = DEF_ZCTL                  #maximum zone index number
+                       ):
+```
+For the sake of backward compatibility, these parameters are embedded in SIMControls class object in existing EMControl class. Default values retrieved from dif and bloch modules are assumed if not specified. See detailed definition of SIMControl class in _emcontrols.py_.
+
+Examples of how to use this control class along with previous controls are in sample code _si_dif.py_ and _si_bloch.py_.
+
+#### IMPROVEMENTS
+
+* __Runtime Libraries Installation Requirements__: MSVC and Intel runtime libraries are now extra pip installation requirements which are included in pyemaps installation. With MSVC runtime installation by pip, users with no prior Microsoft Visual Studio and its build tools can now run pyemaps out of box. 
+
 
