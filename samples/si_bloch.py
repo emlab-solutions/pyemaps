@@ -32,6 +32,15 @@ from pyemaps import EMC, EMCError, BlochError, DEF_CBED_DSIZE
 MAX_PROCWORKERS = 4
 
 def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt', sim_rand=False):
+    '''
+    This routine demonstrate how to use pyemaps bloch module to generate dynamic diffraction paterns
+    : name: crystal name from builtin database
+    : dsize: diffracted beams size
+    : ckey: emcontrol key name
+    : sim_rand: randomized simulation control which is added to EMControl class, these controls
+    :           are not changed much (default values if not set). But if changes are needed, then they 
+    :           are also set from within EMControl class
+    '''
     import concurrent.futures
     from pyemaps import Crystal as cryst
     from pyemaps import BImgList, SIMC
@@ -87,4 +96,8 @@ if __name__ == '__main__':
     em_keys = ['tilt', 'zone']
     for k in em_keys:
         imgs = generate_bloch_images(ckey=k)
+        showBloch(imgs)
+
+    for k in em_keys:
+        imgs = generate_bloch_images(ckey=k, sim_rand=True)
         showBloch(imgs)
