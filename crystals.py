@@ -970,6 +970,15 @@ def add_bloch(target):
                                               simc = SIMC(gmax=1.0, excitation=(0.3,1.0))
                                               )
                      ):
+        '''
+        aperture = 1.0,                 #  Objective aperture
+        omega = 10,                     #  Diagnization cutoff                            
+        sampling = 8,                   #  Number of sampling points
+        pix_size = 25,                  #  Detector pixel size in microns
+        thickness = 200,                #  Sample thickness
+        det_size = 512,                 #  Detector size (it's also resulting bloch image array dimension)
+        disk_size = 0.16,               #  Diffraction disk rdius in 1/A
+        '''
         try:
             from . import bloch
 
