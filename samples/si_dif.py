@@ -35,8 +35,17 @@ from pyemaps import EMC, DPError,EMCError
 
 MAX_PROCWORKERS = 4
 
-def generate_difs(name = 'Silicon', mode = DEF_MODE, ckey = 'tilt'):
-    from pyemaps import DPList
+def generate_difs(name = 'Silicon', mode = DEF_MODE, ckey = 'tilt', sim_rand=False):
+    '''
+    This routine demonstrate how to use pyemaps dif module to generate kinematic diffraction paterns
+    : name: crystal name from builtin database
+    : dsize: diffracted beams size
+    : ckey: emcontrol key name
+    : sim_rand: randomized simulation control which is added to EMControl class, these controls
+    :           are not changed much (default values if not set). But if changes are needed, then they 
+    :           are also set from within EMControl class
+    '''
+    from pyemaps import DPList, SIMC
     import concurrent.futures
     from pyemaps import Crystal as cryst
 
@@ -54,22 +63,30 @@ def generate_difs(name = 'Silicon', mode = DEF_MODE, ckey = 'tilt'):
 
     emclist =[] 
 
-    for i in range(-3,3): 
+    if sim_rand:
+        sc = SIMC.from_random()
 
+    for i in range(-3,3): 
+        emc = EMC()
         if ckey == 'tilt':
-            emclist.append(EMC(tilt=(i*0.5, 0.0)))
+            emc.tilt = (i*0.5, 0.0)
         
         if ckey == 'zone':
-            emclist.append(EMC(zone=(0, i, 1)))
+            emc.zone= (0, i, 1)
 
         if ckey == 'defl':
-            emclist.append(EMC(defl=(i*0.5, 0.0)))
+            emc.defl= (i*0.5, 0.0)
 
         if ckey == 'vt':
-            emclist.append(EMC(vt=200 + i*10))
+            emc.vt= 200 + i*10
 
         if ckey == 'cl':
-            emclist.append(EMC(cl=1000 + i*50))
+            emc.cl= 1000 + i*50
+
+        if sim_rand:
+            emc.simc = sc
+
+        emclist.append(emc)
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
 
@@ -90,7 +107,8 @@ def generate_difs(name = 'Silicon', mode = DEF_MODE, ckey = 'tilt'):
                 exit(1)
             
     return difs
-def run_dp_tests():
+
+if __name__ == '__main__':
     
     from pyemaps import showDif
 
@@ -99,6 +117,6 @@ def run_dp_tests():
         dpl = generate_difs(ckey=k)
         showDif(dpl)
 
-if __name__ == '__main__':
-    
-    run_dp_tests()
+    for k in em_keys:
+        dpl = generate_difs(ckey=k, sim_rand=True)
+        showDif(dpl)

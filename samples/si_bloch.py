@@ -27,14 +27,14 @@ Date:       July 07, 2022
 
 """
 
-from pyemaps import EMC, EMCError, BlochError
+from pyemaps import EMC, EMCError, BlochError, DEF_CBED_DSIZE
 
 MAX_PROCWORKERS = 4
 
-def generate_bloch_images(name = 'Silicon', dsize = 0.16, ckey = 'tilt'):
+def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt', sim_rand=False):
     import concurrent.futures
     from pyemaps import Crystal as cryst
-    from pyemaps import BImgList
+    from pyemaps import BImgList, SIMC
 
     cr = cryst.from_builtin(name)
     
@@ -42,13 +42,21 @@ def generate_bloch_images(name = 'Silicon', dsize = 0.16, ckey = 'tilt'):
    
     emclist =[] 
 
-    for i in range(-3,3): 
+    if sim_rand:
+        sc = SIMC.from_random()
 
+    for i in range(-3,3): 
+        emc=EMC(cl=200)
         if ckey == 'tilt':
-            emclist.append(EMC(tilt=(i*0.5, 0.0), cl = 200))
+           emc.tilt=(i*0.5, 0.0)
         
         if ckey == 'zone':
-            emclist.append(EMC(zone=(0, i, 1), cl = 200))
+            emc.zone=(0, i, 1)
+
+        if sim_rand:
+            emc.simc = sc
+
+        emclist.append(emc)
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
 
@@ -61,22 +69,22 @@ def generate_bloch_images(name = 'Silicon', dsize = 0.16, ckey = 'tilt'):
                emc, img = f.result()
 
             except (BlochError, EMCError) as e:
-                print(f'{f} generated an exception: {e.message}')
+                print(f'{f} generated an exception: {e.message}') 
+                return bimgs
             except:
-                print('failed to generate diffraction patterns')  
-            bimgs.add(emc, img) 
+                print('failed to generate diffraction patterns') 
+                return bimgs
+            else: 
+                bimgs.add(emc, img) 
             
     return bimgs
 
 from pyemaps import showBloch
 
-def run_bloch_tests():
+if __name__ == '__main__':
+    
     # from sample_base import generate_bimages
     em_keys = ['tilt', 'zone']
     for k in em_keys:
         imgs = generate_bloch_images(ckey=k)
         showBloch(imgs)
-
-if __name__ == '__main__':
-    
-    run_bloch_tests()

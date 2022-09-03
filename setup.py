@@ -358,6 +358,6 @@ setup(name                              ="pyemaps",
                                         'license.txt']),
                                         ('pyemaps/samples', get_samples()),
                                         ('pyemaps/cdata', get_cdata()),
-                                        ('pyemaps/diffract', get_intel_redist()),
+                                        # ('pyemaps/diffract', get_intel_redist()),
                                       ]
 )
