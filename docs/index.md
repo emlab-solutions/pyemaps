@@ -624,6 +624,6 @@ Examples of how to use this control class along with previous controls are in sa
 
 #### IMPROVEMENTS
 
-* __Runtime Libraries Installation Requirements__: MSVC and Intel runtime libraries are now extra pip installation requirements which are included in pyemaps installation. With MSVC runtime installation by pip, users with no prior Microsoft Visual Studio and its build tools can now run pyemaps out of box. 
+* __Runtime Libraries Installation Requirements__: Runtime libraries are now included in pyemaps installation. pyemaps should now work out of box after its installation. 
 
 
