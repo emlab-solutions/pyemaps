@@ -16,8 +16,8 @@ MAKE_LOOKUP = dict(
 
 test_pypi_url = "https://test.pypi.org"
 rel_pypi_url = "https://pypi.org"
-twine_cfg = 'pypi_twine.cfg'
-twinetest_cfg = 'testpypi_twine.cfg'
+twine_cfg = '../pypi_twine.cfg'
+twinetest_cfg = '../testpypi_twine.cfg'
 
 def clean():
     '''
