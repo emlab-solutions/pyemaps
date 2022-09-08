@@ -1,0 +1,77 @@
+#------------------------------------------------------------------------------
+#$Date: 2015-01-27 21:58:39 +0200 (Tue, 27 Jan 2015) $
+#$Revision: 130149 $
+#$URL: svn://www.crystallography.net/cod/cif/1/01/01/1010195.cif $
+#------------------------------------------------------------------------------
+#
+# This file is available in the Crystallography Open Database (COD),
+# http://www.crystallography.net/
+#
+# All data on this site have been placed in the public domain by the
+# contributors.
+#
+data_1010195
+loop_
+_publ_author_name
+'Engel, G'
+_publ_section_title
+;
+Die Kristallstrukturen einiger Hexachlorokomplexsalze.
+;
+_journal_coden_ASTM              ZEKGAX
+_journal_name_full
+;
+Zeitschrift fuer Kristallographie, Kristallgeometrie, Kristallphysik,
+Kristallchemie (-144,1977)
+;
+_journal_page_first              341
+_journal_page_last               373
+_journal_volume                  90
+_journal_year                    1935
+_chemical_formula_structural     'Rb2 Zr Cl6'
+_chemical_formula_sum            'Cl6 Rb2 Zr'
+_chemical_name_systematic        'Rubidium hexachlorozirconate'
+_space_group_IT_number           225
+_symmetry_cell_setting           cubic
+_symmetry_Int_Tables_number      225
+_symmetry_space_group_name_Hall  '-F 4 2 3'
+_symmetry_space_group_name_H-M   'F m -3 m'
+_cell_angle_alpha                90
+_cell_angle_beta                 90
+_cell_angle_gamma                90
+_cell_formula_units_Z            4
+_cell_length_a                   10.178(4)
+_cell_length_b                   10.178(4)
+_cell_length_c                   10.178(4)
+_cell_volume                     1054.4
+_cod_database_code               1010195
+loop_
+_symmetry_equiv_pos_as_xyz
+x,y,z
+-x,-y,z
+-y+1/2,x+1/2,z
+y+1/2,-x+1/2,z
+-x+1/2,y+1/2,-z
+x+1/2,-y+1/2,-z
+y,x,-z
+y,x,-z
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_symmetry_multiplicity
+_atom_site_Wyckoff_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+_atom_site_attached_hydrogens
+_atom_site_calc_flag
+Zr4+ Zr1 4 b 0. 0. 0. 1. 0 d
+Rb1+ Rb1 8 e 0.25 0.25 0.25 1. 0 d
+Cl1- Cl1 24 a 0.24(1) 0. 0. 1. 0 d
+loop_
+_atom_type_symbol
+_atom_type_oxidation_number
+Zr4+ 4.000
+Rb1+ 1.000
+Cl1- -1.000

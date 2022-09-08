@@ -1,0 +1,164 @@
+#------------------------------------------------------------------------------
+#$Date: 2016-01-26 13:49:15 +0200 (Tue, 26 Jan 2016) $
+#$Revision: 175087 $
+#$URL: svn://www.crystallography.net/cod/cif/1/01/01/1010117.cif $
+#------------------------------------------------------------------------------
+#
+# This file is available in the Crystallography Open Database (COD),
+# http://www.crystallography.net/
+#
+# All data on this site have been placed in the public domain by the
+# contributors.
+#
+data_1010117
+loop_
+_publ_author_name
+'Baroni, A.'
+_publ_section_title
+;
+ Sul polimorfismo di MnSe
+;
+_journal_coden_ASTM              ZEKGAX
+_journal_issue                   1-6
+_journal_name_full
+;
+ Zeitschrift f\"ur Kristallographie - Crystalline Materials
+;
+_journal_page_first              336
+_journal_page_last               339
+_journal_paper_doi               10.1524/zkri.1938.99.1.336
+_journal_volume                  99
+_journal_year                    1938
+_chemical_formula_structural     'Mn Se'
+_chemical_formula_sum            'Mn Se'
+_chemical_name_systematic        'Manganese selenide - $-beta'
+_space_group_IT_number           216
+_symmetry_cell_setting           cubic
+_symmetry_Int_Tables_number      216
+_symmetry_space_group_name_Hall  'F -4 2 3'
+_symmetry_space_group_name_H-M   'F -4 3 m'
+_cell_angle_alpha                90
+_cell_angle_beta                 90
+_cell_angle_gamma                90
+_cell_formula_units_Z            4
+_cell_length_a                   5.82
+_cell_length_b                   5.82
+_cell_length_c                   5.82
+_cell_volume                     197.1
+_cod_database_code               1010117
+loop_
+_symmetry_equiv_pos_as_xyz
+x,y,z
+y,z,x
+z,x,y
+x,z,y
+y,x,z
+z,y,x
+x,-y,-z
+y,-z,-x
+z,-x,-y
+x,-z,-y
+y,-x,-z
+z,-y,-x
+-x,y,-z
+-y,z,-x
+-z,x,-y
+-x,z,-y
+-y,x,-z
+-z,y,-x
+-x,-y,z
+-y,-z,x
+-z,-x,y
+-x,-z,y
+-y,-x,z
+-z,-y,x
+x,1/2+y,1/2+z
+1/2+x,y,1/2+z
+1/2+x,1/2+y,z
+y,1/2+z,1/2+x
+1/2+y,z,1/2+x
+1/2+y,1/2+z,x
+z,1/2+x,1/2+y
+1/2+z,x,1/2+y
+1/2+z,1/2+x,y
+x,1/2+z,1/2+y
+1/2+x,z,1/2+y
+1/2+x,1/2+z,y
+y,1/2+x,1/2+z
+1/2+y,x,1/2+z
+1/2+y,1/2+x,z
+z,1/2+y,1/2+x
+1/2+z,y,1/2+x
+1/2+z,1/2+y,x
+x,1/2-y,1/2-z
+1/2+x,-y,1/2-z
+1/2+x,1/2-y,-z
+y,1/2-z,1/2-x
+1/2+y,-z,1/2-x
+1/2+y,1/2-z,-x
+z,1/2-x,1/2-y
+1/2+z,-x,1/2-y
+1/2+z,1/2-x,-y
+x,1/2-z,1/2-y
+1/2+x,-z,1/2-y
+1/2+x,1/2-z,-y
+y,1/2-x,1/2-z
+1/2+y,-x,1/2-z
+1/2+y,1/2-x,-z
+z,1/2-y,1/2-x
+1/2+z,-y,1/2-x
+1/2+z,1/2-y,-x
+-x,1/2+y,1/2-z
+1/2-x,y,1/2-z
+1/2-x,1/2+y,-z
+-y,1/2+z,1/2-x
+1/2-y,z,1/2-x
+1/2-y,1/2+z,-x
+-z,1/2+x,1/2-y
+1/2-z,x,1/2-y
+1/2-z,1/2+x,-y
+-x,1/2+z,1/2-y
+1/2-x,z,1/2-y
+1/2-x,1/2+z,-y
+-y,1/2+x,1/2-z
+1/2-y,x,1/2-z
+1/2-y,1/2+x,-z
+-z,1/2+y,1/2-x
+1/2-z,y,1/2-x
+1/2-z,1/2+y,-x
+-x,1/2-y,1/2+z
+1/2-x,-y,1/2+z
+1/2-x,1/2-y,z
+-y,1/2-z,1/2+x
+1/2-y,-z,1/2+x
+1/2-y,1/2-z,x
+-z,1/2-x,1/2+y
+1/2-z,-x,1/2+y
+1/2-z,1/2-x,y
+-x,1/2-z,1/2+y
+1/2-x,-z,1/2+y
+1/2-x,1/2-z,y
+-y,1/2-x,1/2+z
+1/2-y,-x,1/2+z
+1/2-y,1/2-x,z
+-z,1/2-y,1/2+x
+1/2-z,-y,1/2+x
+1/2-z,1/2-y,x
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_symmetry_multiplicity
+_atom_site_Wyckoff_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+_atom_site_attached_hydrogens
+_atom_site_calc_flag
+Mn1 Mn2+ 4 a 0. 0. 0. 1. 0 d
+Se1 Se2- 4 c 0.25 0.25 0.25 1. 0 d
+loop_
+_atom_type_symbol
+_atom_type_oxidation_number
+Mn2+ 2.000
+Se2- -2.000

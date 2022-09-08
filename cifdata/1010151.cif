@@ -1,0 +1,76 @@
+#------------------------------------------------------------------------------
+#$Date: 2015-01-27 21:58:39 +0200 (Tue, 27 Jan 2015) $
+#$Revision: 130149 $
+#$URL: svn://www.crystallography.net/cod/cif/1/01/01/1010151.cif $
+#------------------------------------------------------------------------------
+#
+# This file is available in the Crystallography Open Database (COD),
+# http://www.crystallography.net/
+#
+# All data on this site have been placed in the public domain by the
+# contributors.
+#
+data_1010151
+loop_
+_publ_author_name
+'Braekken, H'
+_publ_section_title              'Die Kristallstruktur von Chromtribromid'
+_journal_coden_ASTM              KNSFA2
+_journal_name_full
+;
+Kongelige Norske Videnskapers Selskab, Forhandlinger
+;
+_journal_page_first              42
+_journal_page_last               42
+_journal_volume                  5
+_journal_year                    1932
+_chemical_formula_structural     'Cr Br3'
+_chemical_formula_sum            'Br3 Cr'
+_chemical_name_systematic        'Chromium bromide'
+_space_group_IT_number           143
+_symmetry_cell_setting           trigonal
+_symmetry_Int_Tables_number      143
+_symmetry_space_group_name_Hall  'P 3'
+_symmetry_space_group_name_H-M   'P 3'
+_cell_angle_alpha                90
+_cell_angle_beta                 90
+_cell_angle_gamma                120
+_cell_formula_units_Z            6
+_cell_length_a                   6.26
+_cell_length_b                   6.26
+_cell_length_c                   18.2
+_cell_volume                     617.7
+_cod_database_code               1010151
+loop_
+_symmetry_equiv_pos_as_xyz
+x,y,z
+-y,x-y,z
+y-x,-x,z
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_symmetry_multiplicity
+_atom_site_Wyckoff_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+_atom_site_attached_hydrogens
+_atom_site_calc_flag
+Cr1 Cr3+ 1 a 0. 0. 0. 1. 0 d
+Cr2 Cr3+ 1 a 0. 0. 0.6667 1. 0 d
+Cr3 Cr3+ 1 b 0.3333 0.6667 0.3333 1. 0 d
+Cr4 Cr3+ 1 b 0.3333 0.6667 0. 1. 0 d
+Cr5 Cr3+ 1 c 0.6667 0.3333 0.6667 1. 0 d
+Cr6 Cr3+ 1 c 0.6667 0.3333 0.3333 1. 0 d
+Br1 Br1- 3 d 0.3333 0.3333 -0.078 1. 0 d
+Br2 Br1- 3 d 0.6667 0.6667 0.078 1. 0 d
+Br3 Br1- 3 d 0.3333 0.3333 0.255 1. 0 d
+Br4 Br1- 3 d 0.6667 0.6667 0.411 1. 0 d
+Br5 Br1- 3 d 0.3333 0.3333 0.589 1. 0 d
+Br6 Br1- 3 d 0.6667 0.6667 0.745 1. 0 d
+loop_
+_atom_type_symbol
+_atom_type_oxidation_number
+Cr3+ 3.000
+Br1- -1.000
