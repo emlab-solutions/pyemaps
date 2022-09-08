@@ -192,16 +192,16 @@ class DifPlotter:
         else:
             pass
 
-    def is_windows():
-        import sys
-        return sys.platform == 'win32'
 
     def __call__(self, pipe, type):
+        import sys
+        
         self.pipe = pipe
-        if is_windows():
+
+        if sys.platform == 'win32':
             curr_dpi = find_dpi()
         else:
-            curr_dpi = 90
+            curr_dpi = 96
             
         self.fig, self.ax = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
                         dpi=curr_dpi) #setting image size in pixels
