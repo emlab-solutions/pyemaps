@@ -244,11 +244,30 @@ def restoreEMAPSPYFiles():
             move(fn, fn_tmpext)
             print(f'restored: ', fn_tmpext)
 
+def copy_configuration():
+    import sys
+    import shutil
+
+    dst = 'setup.cfg'
+    currdir = Path(os.path.abspath(__file__)).parent.absolute()
+    if sys.platform == 'win32':
+        src = 'setup_win.cfg'
+
+    if sys.platform == 'linux':
+        src = 'setup_lin.cfg'
+    
+    src_file = os.path.join(currdir, src)
+    dst_file = os.path.join(currdir, dst)
+    shutil.copyfile(src_file, dst_file)
+
+    return dst_file
+
 def build_package(comp = 'dif', repo_test = True):
     '''
     Build the package
     Conponent configuration via PYEMAPS_JSON env variable
     '''
+    import os
     
     clean()
     make_pyf(comp)
@@ -256,6 +275,7 @@ def build_package(comp = 'dif', repo_test = True):
     print(f"####Begin building pyemaps package for {comp}...")
 
     hideEMAPSPYFiles()
+    setupf = copy_configuration()
     #  build the source distribution
     # os.system('python -m build -s')
     os.system('python -m build -s -n')
@@ -264,10 +284,14 @@ def build_package(comp = 'dif', repo_test = True):
     # os.system('python -m build -w')
     os.system('python -m build -w -n')
     restoreEMAPSPYFiles()
+    import os
+    if os.path.exists(setupf):
+        os.remove(setupf)
+    else:
+        print("The setup.cfg file does not exist")
 
 
 def upload_package(bRelease = False, ver = None):
-
     repo_name = 'pypi' if bRelease else 'testpypi'
     cfg_fn = twine_cfg if bRelease else twinetest_cfg
     

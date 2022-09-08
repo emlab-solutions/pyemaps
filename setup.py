@@ -51,9 +51,9 @@ compile_args_lin= ['-m64',
 intel_libs = ['mkl_intel_lp64',
               'mkl_intel_thread',
               'mkl_core', 
-              'iomp5md']
+              'libiomp5md']
 
-extra_compile_args = ["-std=c11", "-stack_size 1000000"]
+c_compile_args = ["-std=c11", "-stack_size 1000000"]
 
 intel_libs_lin = ['mkl_rt', 
               'iomp5',
@@ -325,7 +325,7 @@ def get_install_requires():
         return install_reqs
     else:
         raise Exception('The OS is not supported')
-    
+ 
 pyemaps_dif = Extension("pyemaps.diffract.emaps",
         sources                = get_diffract_sources(),
         extra_f90_compile_args     = get_compiler_args(),
@@ -333,12 +333,13 @@ pyemaps_dif = Extension("pyemaps.diffract.emaps",
                                   ('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION')
                                  ],
         undef_macros           = ['WOS',],
-        # extra_compile_args     = extra_compile_args,
+        # extra_c_compile_args   = c_compile_args,
         # language               = 'c11',
         extra_link_args        =["-static", ],
         libraries              = get_libraries(),
         library_dirs           = get_library_dirs(),
-        include_dirs           = get_include_dirs()
+        include_dirs           = get_include_dirs(),
+        # f2py_options           = ["--quiet",]
 )
 
 pyemaps_scattering = Extension("pyemaps.scattering.scattering",
@@ -350,6 +351,7 @@ pyemaps_scattering = Extension("pyemaps.scattering.scattering",
         define_macros               = [('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION'),
                                 #   ('Py_LIMITED_API', '0x03070000'),
                                       ],
+        # f2py_options           = ["--quiet",]
 )
 
 pyemaps_spg = Extension("pyemaps.spg.spg",
@@ -360,6 +362,7 @@ pyemaps_spg = Extension("pyemaps.spg.spg",
         extra_link_args        =["-static", ],
         define_macros          = [('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION')
                                  ],
+        # f2py_options           = ["--quiet",]
 )
 
 
