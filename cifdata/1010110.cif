@@ -1,0 +1,263 @@
+#------------------------------------------------------------------------------
+#$Date: 2016-02-18 17:37:37 +0200 (Thu, 18 Feb 2016) $
+#$Revision: 176729 $
+#$URL: svn://www.crystallography.net/cod/cif/1/01/01/1010110.cif $
+#------------------------------------------------------------------------------
+#
+# This file is available in the Crystallography Open Database (COD),
+# http://www.crystallography.net/
+#
+# All data on this site have been placed in the public domain by the
+# contributors.
+#
+data_1010110
+loop_
+_publ_author_name
+'Barth, T F W'
+'Posnjak, E'
+_publ_section_title
+;
+Spinel structures: with and without variate atom equipoints
+;
+_journal_coden_ASTM              ZEKGAX
+_journal_name_full
+;
+Zeitschrift fuer Kristallographie, Kristallgeometrie, Kristallphysik,
+Kristallchemie (-144,1977)
+;
+_journal_page_first              325
+_journal_page_last               341
+_journal_volume                  82
+_journal_year                    1932
+_chemical_formula_structural     'Zn2 Sn O4'
+_chemical_formula_sum            'O4 Sn Zn2'
+_chemical_name_systematic        'Dizinc tin(IV) oxide'
+_space_group_IT_number           227
+_symmetry_cell_setting           cubic
+_symmetry_space_group_name_Hall  'F 4d 2 3 -1d'
+_symmetry_space_group_name_H-M   'F d -3 m :1'
+_cell_angle_alpha                90
+_cell_angle_beta                 90
+_cell_angle_gamma                90
+_cell_formula_units_Z            8
+_cell_length_a                   8.61(1)
+_cell_length_b                   8.61(1)
+_cell_length_c                   8.61(1)
+_cell_volume                     638.3
+_cod_original_sg_symbol_H-M      'F d -3 m S'
+_cod_database_code               1010110
+loop_
+_symmetry_equiv_pos_as_xyz
+x,y,z
+y,z,x
+z,x,y
+x,z,y
+y,x,z
+z,y,x
+x,-y,-z
+y,-z,-x
+z,-x,-y
+x,-z,-y
+y,-x,-z
+z,-y,-x
+-x,y,-z
+-y,z,-x
+-z,x,-y
+-x,z,-y
+-y,x,-z
+-z,y,-x
+-x,-y,z
+-y,-z,x
+-z,-x,y
+-x,-z,y
+-y,-x,z
+-z,-y,x
+1/4-x,1/4-y,1/4-z
+1/4-y,1/4-z,1/4-x
+1/4-z,1/4-x,1/4-y
+1/4-x,1/4-z,1/4-y
+1/4-y,1/4-x,1/4-z
+1/4-z,1/4-y,1/4-x
+1/4-x,1/4+y,1/4+z
+1/4-y,1/4+z,1/4+x
+1/4-z,1/4+x,1/4+y
+1/4-x,1/4+z,1/4+y
+1/4-y,1/4+x,1/4+z
+1/4-z,1/4+y,1/4+x
+1/4+x,1/4-y,1/4+z
+1/4+y,1/4-z,1/4+x
+1/4+z,1/4-x,1/4+y
+1/4+x,1/4-z,1/4+y
+1/4+y,1/4-x,1/4+z
+1/4+z,1/4-y,1/4+x
+1/4+x,1/4+y,1/4-z
+1/4+y,1/4+z,1/4-x
+1/4+z,1/4+x,1/4-y
+1/4+x,1/4+z,1/4-y
+1/4+y,1/4+x,1/4-z
+1/4+z,1/4+y,1/4-x
+x,1/2+y,1/2+z
+1/2+x,y,1/2+z
+1/2+x,1/2+y,z
+y,1/2+z,1/2+x
+1/2+y,z,1/2+x
+1/2+y,1/2+z,x
+z,1/2+x,1/2+y
+1/2+z,x,1/2+y
+1/2+z,1/2+x,y
+x,1/2+z,1/2+y
+1/2+x,z,1/2+y
+1/2+x,1/2+z,y
+y,1/2+x,1/2+z
+1/2+y,x,1/2+z
+1/2+y,1/2+x,z
+z,1/2+y,1/2+x
+1/2+z,y,1/2+x
+1/2+z,1/2+y,x
+x,1/2-y,1/2-z
+1/2+x,-y,1/2-z
+1/2+x,1/2-y,-z
+y,1/2-z,1/2-x
+1/2+y,-z,1/2-x
+1/2+y,1/2-z,-x
+z,1/2-x,1/2-y
+1/2+z,-x,1/2-y
+1/2+z,1/2-x,-y
+x,1/2-z,1/2-y
+1/2+x,-z,1/2-y
+1/2+x,1/2-z,-y
+y,1/2-x,1/2-z
+1/2+y,-x,1/2-z
+1/2+y,1/2-x,-z
+z,1/2-y,1/2-x
+1/2+z,-y,1/2-x
+1/2+z,1/2-y,-x
+-x,1/2+y,1/2-z
+1/2-x,y,1/2-z
+1/2-x,1/2+y,-z
+-y,1/2+z,1/2-x
+1/2-y,z,1/2-x
+1/2-y,1/2+z,-x
+-z,1/2+x,1/2-y
+1/2-z,x,1/2-y
+1/2-z,1/2+x,-y
+-x,1/2+z,1/2-y
+1/2-x,z,1/2-y
+1/2-x,1/2+z,-y
+-y,1/2+x,1/2-z
+1/2-y,x,1/2-z
+1/2-y,1/2+x,-z
+-z,1/2+y,1/2-x
+1/2-z,y,1/2-x
+1/2-z,1/2+y,-x
+-x,1/2-y,1/2+z
+1/2-x,-y,1/2+z
+1/2-x,1/2-y,z
+-y,1/2-z,1/2+x
+1/2-y,-z,1/2+x
+1/2-y,1/2-z,x
+-z,1/2-x,1/2+y
+1/2-z,-x,1/2+y
+1/2-z,1/2-x,y
+-x,1/2-z,1/2+y
+1/2-x,-z,1/2+y
+1/2-x,1/2-z,y
+-y,1/2-x,1/2+z
+1/2-y,-x,1/2+z
+1/2-y,1/2-x,z
+-z,1/2-y,1/2+x
+1/2-z,-y,1/2+x
+1/2-z,1/2-y,x
+1/4-x,3/4-y,3/4-z
+3/4-x,1/4-y,3/4-z
+3/4-x,3/4-y,1/4-z
+1/4-y,3/4-z,3/4-x
+3/4-y,1/4-z,3/4-x
+3/4-y,3/4-z,1/4-x
+1/4-z,3/4-x,3/4-y
+3/4-z,1/4-x,3/4-y
+3/4-z,3/4-x,1/4-y
+1/4-x,3/4-z,3/4-y
+3/4-x,1/4-z,3/4-y
+3/4-x,3/4-z,1/4-y
+1/4-y,3/4-x,3/4-z
+3/4-y,1/4-x,3/4-z
+3/4-y,3/4-x,1/4-z
+1/4-z,3/4-y,3/4-x
+3/4-z,1/4-y,3/4-x
+3/4-z,3/4-y,1/4-x
+1/4-x,3/4+y,3/4+z
+3/4-x,1/4+y,3/4+z
+3/4-x,3/4+y,1/4+z
+1/4-y,3/4+z,3/4+x
+3/4-y,1/4+z,3/4+x
+3/4-y,3/4+z,1/4+x
+1/4-z,3/4+x,3/4+y
+3/4-z,1/4+x,3/4+y
+3/4-z,3/4+x,1/4+y
+1/4-x,3/4+z,3/4+y
+3/4-x,1/4+z,3/4+y
+3/4-x,3/4+z,1/4+y
+1/4-y,3/4+x,3/4+z
+3/4-y,1/4+x,3/4+z
+3/4-y,3/4+x,1/4+z
+1/4-z,3/4+y,3/4+x
+3/4-z,1/4+y,3/4+x
+3/4-z,3/4+y,1/4+x
+1/4+x,3/4-y,3/4+z
+3/4+x,1/4-y,3/4+z
+3/4+x,3/4-y,1/4+z
+1/4+y,3/4-z,3/4+x
+3/4+y,1/4-z,3/4+x
+3/4+y,3/4-z,1/4+x
+1/4+z,3/4-x,3/4+y
+3/4+z,1/4-x,3/4+y
+3/4+z,3/4-x,1/4+y
+1/4+x,3/4-z,3/4+y
+3/4+x,1/4-z,3/4+y
+3/4+x,3/4-z,1/4+y
+1/4+y,3/4-x,3/4+z
+3/4+y,1/4-x,3/4+z
+3/4+y,3/4-x,1/4+z
+1/4+z,3/4-y,3/4+x
+3/4+z,1/4-y,3/4+x
+3/4+z,3/4-y,1/4+x
+1/4+x,3/4+y,3/4-z
+3/4+x,1/4+y,3/4-z
+3/4+x,3/4+y,1/4-z
+1/4+y,3/4+z,3/4-x
+3/4+y,1/4+z,3/4-x
+3/4+y,3/4+z,1/4-x
+1/4+z,3/4+x,3/4-y
+3/4+z,1/4+x,3/4-y
+3/4+z,3/4+x,1/4-y
+1/4+x,3/4+z,3/4-y
+3/4+x,1/4+z,3/4-y
+3/4+x,3/4+z,1/4-y
+1/4+y,3/4+x,3/4-z
+3/4+y,1/4+x,3/4-z
+3/4+y,3/4+x,1/4-z
+1/4+z,3/4+y,3/4-x
+3/4+z,1/4+y,3/4-x
+3/4+z,3/4+y,1/4-x
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_symmetry_multiplicity
+_atom_site_Wyckoff_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+_atom_site_attached_hydrogens
+_atom_site_calc_flag
+Zn1 Zn2+ 8 a 0. 0. 0. 1. 0 d
+Zn2 Zn2+ 16 d 0.625 0.625 0.625 0.5 0 d
+Sn1 Sn4+ 16 d 0.625 0.625 0.625 0.5 0 d
+O1 O2- 32 e 0.39(1) 0.39(1) 0.39(1) 1. 0 d
+loop_
+_atom_type_symbol
+_atom_type_oxidation_number
+Zn2+ 2.000
+Sn4+ 4.000
+O2- -2.000

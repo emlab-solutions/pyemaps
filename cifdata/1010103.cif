@@ -1,0 +1,98 @@
+#------------------------------------------------------------------------------
+#$Date: 2018-01-24 16:39:34 +0200 (Wed, 24 Jan 2018) $
+#$Revision: 205558 $
+#$URL: svn://www.crystallography.net/cod/cif/1/01/01/1010103.cif $
+#------------------------------------------------------------------------------
+#
+# This file is available in the Crystallography Open Database (COD),
+# http://www.crystallography.net/
+#
+# All data on this site have been placed in the public domain by the
+# contributors.
+#
+data_1010103
+loop_
+_publ_author_name
+'Hoard, J. L.'
+'Nordsieck, H. H.'
+_publ_section_title
+;
+ The Structure of Potassium Molybdocyanide Dihydrate. The Configuration
+ of the Molybdenum Octocyanide Group
+;
+_journal_coden_ASTM              JACSAT
+_journal_issue                   10
+_journal_name_full               'Journal of the American Chemical Society'
+_journal_page_first              2853
+_journal_page_last               2863
+_journal_paper_doi               10.1021/ja01265a083
+_journal_volume                  61
+_journal_year                    1939
+_chemical_formula_structural     'K4 (Mo (C N)8) (H2 O)2'
+_chemical_formula_sum            'C8 H4 K4 Mo N8 O2'
+_chemical_name_systematic        'Potassium octacyanomolybdate(IV) dihydrate'
+_space_group_IT_number           62
+_symmetry_cell_setting           orthorhombic
+_symmetry_space_group_name_Hall  '-P 2ac 2n'
+_symmetry_space_group_name_H-M   'P n m a'
+_cell_angle_alpha                90
+_cell_angle_beta                 90
+_cell_angle_gamma                90
+_cell_formula_units_Z            4
+_cell_length_a                   16.55
+_cell_length_b                   11.7
+_cell_length_c                   8.68
+_cell_volume                     1680.8
+_exptl_crystal_density_meas      1.94
+_cod_database_code               1010103
+loop_
+_symmetry_equiv_pos_as_xyz
+x,y,z
+1/2+x,1/2-y,1/2-z
+-x,1/2+y,-z
+1/2-x,-y,1/2+z
+-x,-y,-z
+1/2-x,1/2+y,1/2+z
+x,1/2-y,z
+1/2+x,y,1/2-z
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_symmetry_multiplicity
+_atom_site_Wyckoff_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+_atom_site_attached_hydrogens
+_atom_site_calc_flag
+K1 K1+ 8 d 0.147 0.042 0.69 1. 0 d
+K2 K1+ 4 c 0.363 0.25 0.53 1. 0 d
+K3 K1+ 4 c -0.037 0.25 0.477 1. 0 d
+Mo1 Mo4+ 4 c 0.135 0.25 0.094 1. 0 d
+C1 C2+ 8 d 0.036 0.15 0.18 1. 0 d
+C2 C2+ 8 d 0.168 0.07 0.072 1. 0 d
+C3 C2+ 4 c 0.059 0.25 -0.09 1. 0 d
+C4 C2+ 4 c 0.214 0.25 -0.105 1. 0 d
+C5 C2+ 4 c 0.264 0.25 0.175 1. 0 d
+C6 C2+ 4 c 0.14 0.25 0.34 1. 0 d
+N1 N3- 8 d -0.009 0.08 0.21 1. 0 d
+N2 N3- 8 d 0.181 -0.025 0.055 1. 0 d
+N3 N3- 4 c 0.015 0.25 -0.21 1. 0 d
+N4 N3- 4 c 0.256 0.25 -0.216 1. 0 d
+N5 N3- 4 c 0.325 0.25 0.214 1. 0 d
+N6 N3- 4 c 0.14 0.25 0.467 1. 0 d
+O1 O2- 8 d 0.11 -0.05 0.4 1. 2 d
+loop_
+_atom_type_symbol
+_atom_type_oxidation_number
+K1+ 1.000
+Mo4+ 4.000
+C2+ 2.000
+N3- -3.000
+O2- -2.000
+loop_
+_cod_related_entry_id
+_cod_related_entry_database
+_cod_related_entry_code
+1 AMCSD 0017036

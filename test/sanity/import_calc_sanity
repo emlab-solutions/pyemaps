@@ -1,5 +1,15 @@
 
 from pyemaps.display import showBloch
+import os
+from pathlib import Path
+
+def get_cifdata_dir():
+
+    current_path = Path(os.path.abspath(__file__))
+
+    pyemaps_path = current_path.parent.parent.parent.absolute()
+
+    return os.path.join(pyemaps_path, 'cifdata')
 
 
 def get_builtin_dir():
@@ -15,7 +25,7 @@ def run_si_difs(ty = 2):
     from pyemaps import CrystalClassError, DPList, showDif
 
     #CIF_DIR = "C:/Apps/Python37/Lib/site-packages/crystals/cifs"
-    CIF_DIR = "C:/Users/sharon/dev_space/Downloads/cod-cifs-mysql/cif/1/01/01"
+    CIF_DIR = get_cifdata_dir()
     XTL_DIR = os.path.join(get_builtin_dir(), "cdata")
     cif_ext = '.cif'
     xtl_ext = '.xtl'
@@ -31,7 +41,7 @@ def run_si_difs(ty = 2):
     failure_cases = []
     total_count = 0
     for f in os.listdir(datadir):
-        
+        # if f == 'BiMnO3.xtl': 
         if f.endswith(ext):
             cfn = os.path.join(datadir, f)
             total_count += 1
@@ -60,7 +70,7 @@ def run_si_difs(ty = 2):
                     failure_count += 1
                     failure_cases.append(f)
                     continue
-                showDif(dpl, ishow=False)
+                showDif(dpl, ishow=False, bSave = True)
                 
                 # # cf_dp.plot()
                 # # print(f"-------Loading {cfn} succeeded: \n{cf}")
@@ -95,7 +105,7 @@ def run_si_bloch(ty = 2):
     from pyemaps import CrystalClassError, DPList, showDif
 
     #CIF_DIR = "C:/Apps/Python37/Lib/site-packages/crystals/cifs"
-    CIF_DIR = "C:/Users/sharon/dev_space/Downloads/cod-cifs-mysql/cif/1/01/01"
+    CIF_DIR = get_cifdata_dir()
     XTL_DIR = os.path.join(get_builtin_dir(), "cdata")
     cif_ext = '.cif'
     xtl_ext = '.xtl'
@@ -140,7 +150,7 @@ def run_si_bloch(ty = 2):
                     failure_count += 1
                     failure_cases.append(f)
                     continue
-                showBloch(bimgs)
+                showBloch(bimgs, bSave = True)
                 
                 # # cf_dp.plot()
                 print(f"-------generating bloch for {cfn} succeeded with time: {toc - tic:0.4f}")
@@ -210,8 +220,8 @@ def run_metrics():
 
 if __name__ == '__main__':
 
-    run_si_difs() 
+    # run_si_difs() 
     run_si_difs(1)
     run_si_bloch(1)
-    run_si_bloch() 
+    # run_si_bloch() 
     run_metrics()

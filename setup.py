@@ -25,7 +25,7 @@ dpgen_cobj = 'write_dpbin.o'
 
 compile_args=['-Qm64',
               '-WB',
-              '-heap-arrays:768',
+              '-heap-arrays',
               '-Qopenmp',
               '-GS', 
               '-4R8',
@@ -35,13 +35,39 @@ compile_args=['-Qm64',
               '-libs:static',
               '-MT',
               '-c']
+              
+compile_args_lin= ['-m64',
+                   '-WB', 
+                   '-qopenmp', 
+                   '-qmkl', 
+                   '-heap-arrays', 
+	               '-r8', 
+                   '-fpp', 
+                #    '-warn nointerfaces',
+                   '-O3',
+                #    'fp-stack-check',
+                   '-c']
 
 intel_libs = ['mkl_intel_lp64',
               'mkl_intel_thread',
               'mkl_core', 
-              'libiomp5md']
+              'iomp5md']
+
+extra_compile_args = ["-std=c11", "-stack_size 1000000"]
+
+intel_libs_lin = ['mkl_rt', 
+              'iomp5',
+              'pthread',
+              'm',
+              'dl']
 
 lapack_lib = 'mkl_lapack95_lp64'
+
+install_requires_common = [
+            'numpy >= 1.21.2',
+            'matplotlib >= 3.2.1',
+            'intel-fortran-rt == 2022.1.0'
+            ]
 
 dif_source = ['diffract.f90',
             'diff_types.f90', 
@@ -229,19 +255,32 @@ def get_cdata(sdn = 'cdata'):
 
     return [os.path.join(sdn, os.path.basename(name)) for name in sfile_list] 
 
-def get_intel_redist():
-    import os, glob
-    intel_redistdir = os.path.join(os.getenv('IFORTROOT'), 'redist', 'intel64_win', 'compiler')
-    sbase_files = os.path.join(intel_redistdir, '*.dll')
-    ifile_list = glob.glob(sbase_files)
+# def get_intel_redist():
+#     import os, glob
+#     intel_redistdir = os.path.join(os.getenv('IFORTROOT'), 'redist', 'intel64_win', 'compiler')
+#     sbase_files = os.path.join(intel_redistdir, '*.dll')
+#     ifile_list = glob.glob(sbase_files)
     
-    return ifile_list
+#     return ifile_list
 
 def get_library_dirs():
     
+    import platform
+
+    lib_folder = ''
+
+    osname = platform.platform().lower()
+    print(f'OS name found: {osname}')
+    if  'windows' in osname:
+        lib_folder = 'intel64_win'
+    elif 'linux' in osname and 'ubuntu' in osname:
+        lib_folder = 'intel64'
+    else:
+        raise Exception('Unsupported OS')
+
     libdir = []
-    libdir.append(os.path.join(IFORTROOT, 'compiler', 'lib', 'intel64_win')) #intel openmp libdir
-    libdir.append(os.path.join(MKLROOT, 'lib', 'intel64_win' ))
+    libdir.append(os.path.join(IFORTROOT, 'compiler', 'lib', lib_folder)) #intel openmp libdir
+    libdir.append(os.path.join(MKLROOT, 'lib', lib_folder))
     
     return libdir
 
@@ -253,45 +292,78 @@ def get_include_dirs():
     return incl
 
 def get_libraries():
-    libs = intel_libs.copy()
-    # libs = []
+    import sys
+
+    libs = []
+    if sys.platform == 'win32': 
+        libs = intel_libs.copy()
+    elif sys.platform == 'linux':
+        libs = intel_libs_lin.copy()
+    else:
+        raise Exception('The OS is not supported')
+
     libs.insert(0, lapack_lib)
     return libs
 
+def get_compiler_args():
+    import sys
+    if sys.platform == 'win32': 
+        return compile_args
+    elif sys.platform == 'linux':
+        return compile_args_lin
+    else:
+        raise Exception('The OS is not supported')
+
+def get_install_requires():
+    import sys
+    install_reqs = install_requires_common.copy()
+
+    if sys.platform == 'win32': 
+        install_reqs += ['msvc-runtime == 14.29.30133']
+        return install_reqs
+    elif sys.platform == 'linux':
+        return install_reqs
+    else:
+        raise Exception('The OS is not supported')
+    
 pyemaps_dif = Extension("pyemaps.diffract.emaps",
         sources                = get_diffract_sources(),
-        extra_f90_compile_args     = compile_args,
+        extra_f90_compile_args     = get_compiler_args(),
         define_macros          = [('__BFREE__', 3),
                                   ('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION')
                                  ],
         undef_macros           = ['WOS',],
-        # extra_link_args        = ['-static', 
-                                #   '-static-intel'
-                                #   ],
-        # extra_link_args=["-static", "-static-libgfortran", "-static-libgcc']  (for gnu95 compiler)
+        # extra_compile_args     = extra_compile_args,
+        # language               = 'c11',
+        extra_link_args        =["-static", ],
         libraries              = get_libraries(),
         library_dirs           = get_library_dirs(),
         include_dirs           = get_include_dirs()
 )
 
 pyemaps_scattering = Extension("pyemaps.scattering.scattering",
-        sources = get_scattering_sources(),
-        extra_f90_compile_args     = compile_args,
-        define_macros          = [('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION'),
+        sources                     = get_scattering_sources(),
+        extra_f90_compile_args      = get_compiler_args(),
+        # extra_compile_args         = extra_compile_args,
+        # language               = 'c11',
+        extra_link_args             =["-static", ],
+        define_macros               = [('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION'),
                                 #   ('Py_LIMITED_API', '0x03070000'),
-                                 ],
+                                      ],
 )
 
 pyemaps_spg = Extension("pyemaps.spg.spg",
-        sources = get_spg_sources(),
-        extra_f90_compile_args     = compile_args,
+        sources                     = get_spg_sources(),
+        extra_f90_compile_args      = get_compiler_args(),
+        # extra_compile_args         = extra_compile_args,
+        # language               = 'c11',
+        extra_link_args        =["-static", ],
         define_macros          = [('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION')
                                  ],
 )
 
 
 pyemaps_cifreader = Extension("pyemaps.CifFile.StarScan",
-        # name                   = 'CifFile.StarScan',
         sources                = get_cifreader_source()
 )
 
@@ -348,6 +420,7 @@ setup(name                              ="pyemaps",
       package_dir                       = {'pyemaps':'',
                                             'pyemaps.CifFile':'CifFile/src'
                                             },
+      install_requires              = get_install_requires(),
       
       data_files                    = [('pyemaps', 
                                         ['__config__.py',
