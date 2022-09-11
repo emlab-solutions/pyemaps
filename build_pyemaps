@@ -267,7 +267,7 @@ def build_package(comp = 'dif', repo_test = True):
     Build the package
     Conponent configuration via PYEMAPS_JSON env variable
     '''
-    import os
+    import os, sys
     
     clean()
     make_pyf(comp)
@@ -278,11 +278,18 @@ def build_package(comp = 'dif', repo_test = True):
     setupf = copy_configuration()
     #  build the source distribution
     # os.system('python -m build -s')
-    os.system('python -m build -s -n')
+    if sys.platform == 'win32':
+        os.system('python -m build -s -n')
+    else:
+        os.system('python3 -m build -s -n') 
 
     #  build the wheel distribution (linrary build)
     # os.system('python -m build -w')
-    os.system('python -m build -w -n')
+    if sys.platform == 'win32':
+        os.system('python -m build -w -n')
+    else:
+        os.system('python3 -m build -w -n')
+
     restoreEMAPSPYFiles()
     import os
     if os.path.exists(setupf):
