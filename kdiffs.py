@@ -406,6 +406,13 @@ class Disk:
                "center: " + repr(self._c) + " " + \
                str("radius: {}".format(self._r))
 
+    def to_dict(self):
+        dd = {}  
+        dd['c'] = self._c
+        dd['idx'] = self._idx
+        dd['r'] = self._r
+        return dd
+
     def __lt__(self, other):
         if not isinstance(other, Disk):
             raise DiskError('comparison cannot be done with non-Disk type')
