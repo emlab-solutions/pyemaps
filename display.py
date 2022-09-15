@@ -28,7 +28,6 @@ Date:       May 07, 2022
 
 """
 import matplotlib
-matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import multiprocessing as mp
@@ -45,6 +44,7 @@ clrs = ["#2973A5", "cyan", "limegreen", "yellow", "red"]
 gclrs=plt.get_cmap('gray')
 
 def find_dpi():
+    matplotlib.use('TkAgg')
     dpi = 96 #default
     try:
         import tkinter as tk

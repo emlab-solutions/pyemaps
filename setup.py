@@ -66,7 +66,8 @@ lapack_lib = 'mkl_lapack95_lp64'
 install_requires_common = [
             'numpy >= 1.21.2',
             'matplotlib >= 3.2.1',
-            'intel-fortran-rt == 2022.1.0'
+            # 'intel-fortran-rt == 2022.1.0',
+            # 'mkl-service == 2.4.0'
             ]
 
 dif_source = ['diffract.f90',
@@ -319,7 +320,9 @@ def get_install_requires():
     install_reqs = install_requires_common.copy()
 
     if sys.platform == 'win32': 
-        install_reqs += ['msvc-runtime == 14.29.30133']
+        install_reqs += ['msvc-runtime == 14.29.30133',
+                        'intel-fortran-rt == 2022.1.0',
+                        'mkl-service == 2.4.0']
         return install_reqs
     elif sys.platform == 'linux':
         return install_reqs
