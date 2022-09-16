@@ -233,6 +233,11 @@ class Line:
         x2, y2 = self._pt2
         return iter((x1,y1,x2,y2))
 
+    def to_arr(self):
+        x1, y1 = self._pt1
+        x2, y2 = self._pt2
+        return [(x1,y1),(x2,y2)]
+
 class Index:
     def __init__(self, I0=(0,0,0)):
 
@@ -408,8 +413,8 @@ class Disk:
 
     def to_dict(self):
         dd = {}  
-        dd['c'] = self._c
-        dd['idx'] = self._idx
+        dd['c'] = self._c.__key__()
+        dd['idx'] = self._idx.__key__()
         dd['r'] = self._r
         return dd
 
@@ -718,6 +723,14 @@ class diffPattern:
                 ddiff.append(d)
         
         return (kdiff, hdiff, ddiff)
+
+    def to_dict(self):
+        retdict = {}
+        
+        retdict['klines'] = [kl.to_arr() for kl in self._klines]
+        retdict['hlines'] = [hl.to_arr() for hl in self._hlines]
+        retdict['disks'] = [d.to_dict() for d in self._disks]
+        return retdict
 
 class Diffraction:
     '''
