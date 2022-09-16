@@ -400,6 +400,10 @@ class Cell:
         
         return farray(celarr, dtype=float)
 
+    def __iter__(self):
+        for key in self.__dict__:
+            yield (key[1:], getattr(self, key))
+
 class SPG:
     def __init__(self, spg_dict):
         if not spg_dict or not isinstance(spg_dict, dict):
@@ -478,6 +482,10 @@ class SPG:
     def prepareDif(self):
          return farray([self._number, self._setting], dtype=int)
 
+    def __iter__(self):
+        for key in self.__dict__:
+            yield key[1:], getattr(self, key)
+
 class Atom:
     def __init__(self, a_dict={}):
         
@@ -535,6 +543,7 @@ class Atom:
                 
             else:
                raise UCError(str(f"unrecognized key {k}"))
+        self._data = vloc_dict
                 
     def __eq__(self, other):
         if not isinstance(other, Atom):
@@ -555,6 +564,14 @@ class Atom:
             atoms.append(str(v))
 
         return " ".join(atoms)
+
+    def __iter__(self):
+        for key in self.__dict__:
+            if key == '_symb':
+                yield 'symb', getattr(self, key)
+            else:
+                for key in self._data:
+                    yield key, self._data[key]
 
 def add_dpgen(target):
     def dp_gen(self, res =1):
@@ -1052,9 +1069,15 @@ class Crystal:
         if not data or not isinstance(data, dict):
             raise ValueError("Error constructing crytsal object")
 
+        # print(f'In crystal creating by a dict: {data.items()}')
+        if 'dw' not in data:
+            raise CrystalClassError("Debye-Waller factor or thermal data missing")
+
+        setattr(self, 'dw', data['dw'])
+
         for k, v in data.items():
-            
-           setattr(self, k, v)
+           if k != 'dw' and k != 'name':
+                setattr(self, k, v)
 
         setattr(self, 'name', name)
 
@@ -1094,24 +1117,32 @@ class Crystal:
                     raise ValueError("Error: cell constant must be numeric")
             else:
                 raise KeyError("Invaid cell constant key")
-
+        
         self._cell = Cell(cc)
 
     @dw.setter
     def dw(self, v):
-
-        if not isinstance(v, str) and not len(v) == 3:
+        if isinstance(v, str):
+            if not len(v) == 3:
+                raise ValueError("Invalid Debye-waller type")
+            else:
+                vl = v.lower()
+                if vl == 'iso' or vl == 'par':
+                    self._dw = 1
+                elif  vl.lower() == 'bij':
+                    self._dw = 2
+                elif vl == 'uij':
+                    self._dw = 3
+                else:
+                    raise ValueError("Invalid Debye-Waller value")
+        elif isinstance(v, int):
+            if v not in [1,2, 3]:
+                raise ValueError("Invalid Debye-Waller value")
+            else:
+                self._dw = v
+        else:
             raise ValueError("Invalid Debye-waller type")
 
-        vl = v.lower()
-        if vl == 'iso' or vl == 'par':
-            self._dw = 1
-        elif  vl.lower() == 'bij':
-            self._dw = 2
-        elif vl == 'uij':
-            self._dw = 3
-        else:
-            raise ValueError("Invalid Debye-Waller value")
 
     @name.setter
     def name(self, cn):
@@ -1150,7 +1181,7 @@ class Crystal:
         self._spg = SPG(v)
 
     def isISO(self):
-        return self.dw == 1
+        return self._dw == 1
 
     def __eq__(self, other):
 
@@ -1243,6 +1274,17 @@ class Crystal:
             
         diff_spg = self._spg.prepareDif()
         return diff_cell, diff_atoms, atn, diff_spg
+
+    def __iter__(self):
+        for k in self.__dict__:
+            if k == '_name' or k == '_dw':
+                yield (k[1:], getattr(self, k))
+            if k == "_cell":
+                 yield('cell', dict(self._cell))
+            if k == "_spg":
+                 yield('spg', dict(self._spg))
+            if k == "_atoms":
+                 yield('atoms', [dict(a) for a in self.atoms])
 
     @classmethod
     def from_builtin(cls, cn='Diamond'):
@@ -1998,7 +2040,7 @@ class Crystal:
             return cls()
 
     @classmethod ####TODO
-    def from_json(cls, jdata):
+    def from_dict(cls, ddict):
         if "name" in jdata:
             name = jdata["name"]
             return cls(name, jdata)
