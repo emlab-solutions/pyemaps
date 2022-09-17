@@ -140,6 +140,15 @@ else:
 #----------  Microoscope setting default------------------------
     DEF_APERTURE = bloch.get_mic_defs()
 
+
+#fall through if blch module is not found
+try:
+    from .diffract import stereo
+    
+except ImportError as e:
+    raise Exception('No stereo module found')
+else:
+    pass
     
 #--------------Wrapper classes around diffraction extensions---------------
 from .errors import *

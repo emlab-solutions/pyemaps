@@ -92,6 +92,7 @@ bloch_files = ['zg.f90',
                'bloch.f90',
                'bloch_mem.f90'
               ]
+stereo_files = ['stereo.f90']
 
 dpgen_files =['dp_types.f90',
 			  'dp_gen.f90'
@@ -183,6 +184,15 @@ def get_diffract_sources():
         src_list.extend(csf_files)
         src_list.extend(powder_files)
         src_list.extend(bloch_files)
+
+    if comp == 'stereo':
+        pyf = ".".join([mod_name+'_stereo','pyf'])
+        src_list.append(pyf)
+        src_list.extend(dif_source)
+        src_list.extend(csf_files)
+        src_list.extend(powder_files)
+        src_list.extend(bloch_files)
+        src_list.extend(stereo_files)
 
     emaps_dir = get_emaps_srcdir()
     return [os.path.join(emaps_dir, srcfn) for srcfn in src_list]
@@ -342,7 +352,7 @@ pyemaps_dif = Extension("pyemaps.diffract.emaps",
         libraries              = get_libraries(),
         library_dirs           = get_library_dirs(),
         include_dirs           = get_include_dirs(),
-        # f2py_options           = ["--quiet",]
+        f2py_options           = ["--quiet",]
 )
 
 pyemaps_scattering = Extension("pyemaps.scattering.scattering",
@@ -354,7 +364,7 @@ pyemaps_scattering = Extension("pyemaps.scattering.scattering",
         define_macros               = [('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION'),
                                 #   ('Py_LIMITED_API', '0x03070000'),
                                       ],
-        # f2py_options           = ["--quiet",]
+        f2py_options           = ["--quiet",]
 )
 
 pyemaps_spg = Extension("pyemaps.spg.spg",
@@ -365,7 +375,7 @@ pyemaps_spg = Extension("pyemaps.spg.spg",
         extra_link_args        =["-static", ],
         define_macros          = [('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION')
                                  ],
-        # f2py_options           = ["--quiet",]
+        f2py_options           = ["--quiet",]
 )
 
 

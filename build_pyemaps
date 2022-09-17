@@ -9,6 +9,7 @@ MAKE_LOOKUP = dict(
     dpgen = 'CDPOBJ DPGENPYF',
     csf = 'CSFPYF',
     powder = 'POWDERPYF',
+    stereo = 'STEREOPYF',
     spg = 'SPGSEEKPYF',
     scattering = 'SCTPYF',
     all = 'CDPOBJ ALLPYF'
@@ -85,7 +86,7 @@ def make_pyf(comp):
         pyf_fname += comp
     else:
         os.chdir(pyemapsroot)
-        raise ValueError("Error: build pyemaps build type: {comp}")
+        raise ValueError("Error: build pyemaps build type")
     
     os.system("make clean")
 
@@ -375,7 +376,26 @@ def install_local():
             if os.path.isfile(src_file):
                 print(f'destination: {sample_dest}')
                 shutil.copy(src_file, sample_dest)
+def set_benvs():
+    import sys
+    # compilers
+    curr_dir = Path(os.path.abspath(__file__)).parent.absolute() 
+    ONEAPIROOT = os.getenv('ONEAPI_ROOT')
+    if sys.platform == 'win32': 
+        cmd = os.path.join(ONEAPIROOT, 'setvars.bat')
+        sos = 'windows'
+    else:
+        cmd = os.path.join(ONEAPIROOT, 'setvars.sh')
+        sos = 'linux' 
 
+    config = os.path.join(curr_dir, 'intel.cfg')
+    os.system(cmd + ' ' + '--config = ' + config + ' --force') 
+
+    os.environ['IFORTROOT'] = os.path.join(ONEAPIROOT, 
+                            'compiler', 
+                            '2022.1.0', 
+                            sos)
+    # exit(0)
 
 if __name__ == "__main__":
     import argparse
@@ -388,7 +408,10 @@ if __name__ == "__main__":
     parser.add_argument("-nb", "--no-build", action="store_true", help="no build", required=False)
     parser.add_argument("-il", "--install-local", action="store_true", help="no build", required=False)
     parser.add_argument("-v", "--build-version", type=str, nargs="?", const="", default="", help="build version input", required=False)
-    
+
+# ########## set envs ##################
+    set_benvs()
+
     args = parser.parse_args()
     comp = args.component
 

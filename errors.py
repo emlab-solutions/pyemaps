@@ -133,3 +133,8 @@ class BlochListError(Exception):
     def __init__(self, message=''):
         self.message = str(f'Error creating blochList object: {message}')
         super().__init__(self.message)
+
+class StereodiagramError(Exception):
+    def __init__(self, message=''):
+        self.message = str(f'Error generating stereodiagram: {message}')
+        super().__init__(self.message)
