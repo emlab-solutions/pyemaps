@@ -46,3 +46,9 @@ try:
 
 except ImportError as e:
     pass
+
+try:
+    from .emaps import stereo
+
+except ImportError as e:
+    pass

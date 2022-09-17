@@ -288,3 +288,23 @@ def showBloch(bimgs, bColor = False, bSave = False):
         count += 1
 
     pl.plot(finished=True)
+
+# def showStereodiagram(slist, bSave = False):
+#     """
+#     Show bloch diffractions
+#     # """
+#     # if not bimgs or not isinstance(bimgs, BImgList):
+#     #     raise BlochListError('showBloch must have BImgList object as its first input')
+
+#     count = 1
+#     pl = NBPlot(2)
+#     for s in slist:       
+#         save = 0
+#         if bSave:
+#             save = count
+#         d = (c, name, save, (img, bColor))
+#         pl.plot(data = d)
+#         time.sleep(1.0)
+#         count += 1
+
+#     pl.plot(finished=True)

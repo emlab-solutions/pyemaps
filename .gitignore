@@ -155,3 +155,6 @@ test/sanity/output*
 
 #CifFile directory
 *CifFile/
+
+#f2py intermediate files
+*.pyf
