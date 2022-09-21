@@ -138,3 +138,9 @@ class StereodiagramError(Exception):
     def __init__(self, message=''):
         self.message = str(f'Error generating stereodiagram: {message}')
         super().__init__(self.message)
+
+class MxtalError(Exception):
+    def __init__(self, message=''):
+        self.message = str(f'Error generating mxtal: {message}')
+        super().__init__(self.message)
+

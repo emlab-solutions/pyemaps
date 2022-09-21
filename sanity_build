@@ -1,0 +1,55 @@
+import os, sys
+import argparse
+
+def write_xyz(xyzdict, fn):
+        if 'xyz' not in xyzdict:
+            return -1
+        xyzlist = xyzdict['xyz']
+
+        if 'cell' not in xyzdict:
+            return -1
+        slines = []
+        nxyz = len(xyzlist)
+        
+        try:
+            with open(fn, 'w') as f:
+                slines.append(str(nxyz))
+                c0, c1, c2, c3, c4, c5 = xyzdict['cell']
+                slines.append(str(f'{c0} {c1} {c2} {c3} {c4} {c5}'))         
+                for xyz in xyzlist:
+                    
+                    s, x, y, z = xyz['symb'], xyz['x'], xyz['y'], xyz['z']
+                    sx = '{0: < #014.10f}'. format(float(x))
+                    sy = '{0: < #014.10f}'. format(float(y))
+                    sz = '{0: < #014.10f}'. format(float(z))
+                    slines.append(str(f'{s:<10}\t{sx} {sy} {sz}'))
+                    
+                f.writelines('\n'.join(slines))
+        except (FileNotFoundError, IOError) as e:
+            print(f'Error writing xyz data file {fn}')
+            return -1
+        except Exception:
+            return -1
+        else:
+            return 0
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Build and publish script for pyeamps")
+    parser.add_argument("-nb", "--no-build", action="store_true", help="no build", required=False)
+    args = parser.parse_args()   
+    print(f'Arguement: {args.no_build}')
+   
+    if not args.no_build:    
+        os.system("python -m pip uninstall -y pyemaps")
+        os.system("python build_pyemaps -c all -t")
+
+        os.system("python -m pip install dist\pyemaps-3.1.2-cp37-cp37m-win_amd64.whl")
+
+    from pyemaps import Crystal as cr
+
+    si = cr.from_builtin('Silicon')
+    mx = si.generateMxtal()
+    ret = write_xyz(mx, "mx.xyz")
+
+    if ret != 0:
+        print(f'failed to write data: {mx} to file')

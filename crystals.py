@@ -626,6 +626,132 @@ def add_dpgen(target):
 
     return target
 
+def add_mxtal(target):
+    
+    from . import ID_MATRIX, MLEN, DEF_CELLBOX, \
+                  DEF_XZ, DEF_ORSHIFT, DEF_TRSHIFT,DEF_LOCASPACE
+    # ID_MATRIX = [[1,0,0], [0,1,0], [0,0,1]]
+    # MLEN = 46 
+    # DEF_TRSHIFT = [0,0,0]
+    # DEF_CELLBOX = [[0,0,0], [3,3,3]]
+    # DEF_XZ = [[1,0,0], [0,0,1]]
+    # DEF_ORSHIFT = [0, 0, 0] #Origin shift
+    # DEF_LOCASPACE = [0, 0, 0] #location in A Space
+
+    def printMxtal(self, mlist):
+        for sm in mlist:
+            print(sm)
+            
+    def write_xyz(self, xyzdict, fn):
+        if 'xyz' not in xyzdict:
+            return -1
+        xyzlist = xyzdict['xyz']
+
+        if 'cell' not in xyzdict:
+            return -1
+        slines = []
+        nxyz = len(xyzlist)
+
+        try:
+            with open(fn, 'w') as f:
+                slines.append(str(nxyz))
+                c0, c1, c2, c3, c4, c5 = xyzdict['cell']
+                slines.append(str(f'\t {c0} {c1} {c2} {c3} {c4} {c5}'))         
+                for xyz in xyzlist:
+                    s, x, y, z = xyz['symb'], format(xyz['x'], '10.f'), \
+                                              format(xyz['y'], '10.f'), \
+                                              format(xyz['z'], '10.f')
+                    slines.append(str(f'{s}\t{x} {y} {z}'))
+                print(f'writing data: {slines}')
+                f.writelines('\n'.join(slines))
+        except (FileNotFoundError, IOError) as e:
+            print(f'Error writing xyz data file {fn}')
+            return -1
+        except Exception:
+            return -1
+        else:
+            return 0
+
+    def generateMxtal(self, 
+                      trMatrix = ID_MATRIX, 
+                      trShift = DEF_TRSHIFT, #Transformation shift
+                      cellbox = DEF_CELLBOX,
+                      xz = DEF_XZ,
+                      orShift = DEF_ORSHIFT, #Origin shift
+                      locASpace = DEF_LOCASPACE): #location in A Space
+
+        from . import mxtal as MX
+
+        dif.initcontrols()
+        # load the crystal
+        cell, atoms, atn, spg = self.prepareDif()
+        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw, cty=1)
+        if ret != 1:
+            raise MxtalError('Failed to load cystal')
+
+        MX.init_mxtal()
+
+        tm = farray(np.array(trMatrix), dtype = float)
+        ts = farray(np.array(trShift), dtype = float)
+
+        ret = MX.transform(tm, ts)
+        if ret != 1:
+            raise MxtalError('Failed to transform cells')
+    
+    
+        MX.box(cellbox[0][0],cellbox[0][1],cellbox[0][2],
+                  cellbox[1][0],cellbox[1][1],cellbox[1][2])
+        # if n <= 0:
+        #     raise MxtalError('Failed to transform cells')
+        
+        ors = farray(np.array(orShift), dtype = float)
+        las = farray(np.array(locASpace), dtype = float)
+        
+        gg = farray(np.array(xz[0]), dtype = float)
+        gl = farray(np.array(xz[1]), dtype = float)
+        
+        ret = MX.place(gg, gl, ors, las)
+        if ret !=1:
+            raise MxtalError('Failed to place cells')
+        
+        na = MX.get_nxyz()
+        
+        if na <=0:
+            raise MxtalError('Failed to generate data')
+
+
+        sym = farray(np.empty((MLEN, na), dtype='c'))
+        xyz = farray(np.zeros((3, na)), dtype = float)
+
+        xyz, sym, ret = MX.get_xyzdata(xyz, sym)
+        
+        tsym = np.transpose(sym)
+        txyz = np.transpose(xyz)
+
+        if ret != 1:
+            raise MxtalError('Failed to retrieve data')
+
+        retxyz = []
+        for i in range(na):          
+            s = bytearray(tsym[i]).decode('utf-8').strip(" \x00")
+            # print(f'sym found: {s}')
+            x, y, z = txyz[i]
+            retxyz.append(dict(symb = s, x= x, y=y, z=z))
+
+        cell = np.array([0.0]*6)
+        cell, ret = MX.get_cellconst(cell)
+
+        if ret !=0:
+            raise MxtalError('Failed to retrieve cell constants')
+
+
+        return dict( xyz = retxyz, cell=cell)
+
+    target.generateMxtal = generateMxtal
+    target.printMxtal = printMxtal
+    target.write_xyz =write_xyz
+    return target
+
 def add_csf(target):
     '''
     #####INPUT#######
@@ -1058,7 +1184,7 @@ def add_bloch(target):
     # target.generateDDP = generateDDP
 
     return target
-
+@add_mxtal
 @add_bloch
 @add_powder
 @add_csf    
@@ -2299,7 +2425,7 @@ class Crystal:
         
         cell, atoms, atn, spg = self.prepareDif()
         dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
-
+        # dif.crystal_printall()
         ret = 1
         
         ret = dif.diffract()

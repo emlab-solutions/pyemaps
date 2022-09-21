@@ -53,7 +53,7 @@ intel_libs = ['mkl_intel_lp64',
               'mkl_core', 
               'libiomp5md']
 
-c_compile_args = ["-std=c11", "-stack_size 1000000"]
+c_compile_args = ["-std=c11", "-stack_size 2000000"]
 
 intel_libs_lin = ['mkl_rt', 
               'iomp5',
@@ -93,6 +93,7 @@ bloch_files = ['zg.f90',
                'bloch_mem.f90'
               ]
 stereo_files = ['stereo.f90']
+mxtal_files = ['mxtal.f90']
 
 dpgen_files =['dp_types.f90',
 			  'dp_gen.f90'
@@ -146,54 +147,63 @@ def get_spg_sources():
 
 def get_diffract_sources():
 
-    comp = get_comp()
-    print(f'----------building component: {comp}')
+    # comp = get_comp()
+    # print(f'----------building component: {comp}')
 
     src_list = []
-    if comp == 'dif':
-        pyf = ".".join([mod_name+'_dif','pyf'])
-        src_list.append(pyf)
-        src_list.extend(dif_source)
+    # if comp == 'dif':
+    #     pyf = ".".join([mod_name+'_dif','pyf'])
+    #     src_list.append(pyf)
+    #     src_list.extend(dif_source)
 
-    if comp == 'dpgen':
-        pyf = ".".join([mod_name+'_dpgen','pyf'])
-        src_list.append(pyf)
-        src_list.extend(dif_source)
-        src_list.extend(dpgen_files)
-        # return comp, src_list
+    # if comp == 'dpgen':
+    #     pyf = ".".join([mod_name+'_dpgen','pyf'])
+    #     src_list.append(pyf)
+    #     src_list.extend(dif_source)
+    #     src_list.extend(dpgen_files)
+    #     # return comp, src_list
 
-    if comp == 'csf':
-        pyf = ".".join([mod_name+'_csf','pyf'])
-        src_list.append(pyf)
-        src_list.extend(dif_source)
-        src_list.extend(csf_files)
-        # return comp, src_list
+    # if comp == 'csf':
+    #     pyf = ".".join([mod_name+'_csf','pyf'])
+    #     src_list.append(pyf)
+    #     src_list.extend(dif_source)
+    #     src_list.extend(csf_files)
+    #     # return comp, src_list
 
-    if comp == 'powder':
-        pyf = ".".join([mod_name+'_powder','pyf'])
-        src_list.append(pyf)
-        src_list.extend(dif_source)
-        src_list.extend(csf_files)
-        src_list.extend(powder_files)
-        # return comp, src_list
+    # if comp == 'powder':
+    #     pyf = ".".join([mod_name+'_powder','pyf'])
+    #     src_list.append(pyf)
+    #     src_list.extend(dif_source)
+    #     src_list.extend(csf_files)
+    #     src_list.extend(powder_files)
+    #     # return comp, src_list
 
-    if comp == 'bloch':
-        pyf = ".".join([mod_name+'_bloch','pyf'])
-        src_list.append(pyf)
-        src_list.extend(dif_source)
-        src_list.extend(csf_files)
-        src_list.extend(powder_files)
-        src_list.extend(bloch_files)
+    # if comp == 'bloch':
+    #     pyf = ".".join([mod_name+'_bloch','pyf'])
+    #     src_list.append(pyf)
+    #     src_list.extend(dif_source)
+    #     src_list.extend(csf_files)
+    #     src_list.extend(powder_files)
+    #     src_list.extend(bloch_files)
 
-    if comp == 'stereo':
-        pyf = ".".join([mod_name+'_stereo','pyf'])
-        src_list.append(pyf)
-        src_list.extend(dif_source)
-        src_list.extend(csf_files)
-        src_list.extend(powder_files)
-        src_list.extend(bloch_files)
-        src_list.extend(stereo_files)
+    # if comp == 'stereo':
+    #     pyf = ".".join([mod_name+'_stereo','pyf'])
+    #     src_list.append(pyf)
+    #     src_list.extend(dif_source)
+    #     src_list.extend(csf_files)
+    #     src_list.extend(powder_files)
+    #     src_list.extend(bloch_files)
+    #     src_list.extend(stereo_files)
 
+    pyf = ".".join([mod_name,'pyf'])
+    src_list.append(pyf)
+    src_list.extend(dif_source)
+    src_list.extend(csf_files)
+    src_list.extend(powder_files)
+    src_list.extend(bloch_files)
+    src_list.extend(stereo_files)
+    src_list.extend(mxtal_files)
+    print(f'source code list: {src_list}')
     emaps_dir = get_emaps_srcdir()
     return [os.path.join(emaps_dir, srcfn) for srcfn in src_list]
 

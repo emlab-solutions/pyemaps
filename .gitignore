@@ -158,3 +158,8 @@ test/sanity/output*
 
 #f2py intermediate files
 *.pyf
+
+# any accidental intermediate files
+*.obj
+*.mod
+*.xyz

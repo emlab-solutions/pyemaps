@@ -149,6 +149,21 @@ except ImportError as e:
     raise Exception('No stereo module found')
 else:
     pass
+
+try:
+    from .diffract import mxtal
+    
+except ImportError as e:
+    raise Exception('No mxtal module found')
+else:
+    ID_MATRIX = [[1,0,0], [0,1,0], [0,0,1]]
+    MLEN = 10 
+    DEF_TRSHIFT = [0,0,0]
+    DEF_CELLBOX = [[0,0,0], [3,3,3]]
+    DEF_XZ = [[1,0,0], [0,0,1]]
+    DEF_ORSHIFT = [0, 0, 0] #Origin shift
+    DEF_LOCASPACE = [0, 0, 0] #location in A Space
+
     
 #--------------Wrapper classes around diffraction extensions---------------
 from .errors import *
