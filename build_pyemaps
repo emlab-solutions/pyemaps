@@ -12,7 +12,7 @@ MAKE_LOOKUP = dict(
     stereo = 'STEREOPYF',
     spg = 'SPGSEEKPYF',
     scattering = 'SCTPYF',
-    all = 'CDPOBJ ALLPYF'
+    all = 'EMAPSPYF'
 )
 
 test_pypi_url = "https://test.pypi.org"
