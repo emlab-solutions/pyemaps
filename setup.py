@@ -93,7 +93,9 @@ bloch_files = ['zg.f90',
                'bloch_mem.f90'
               ]
 stereo_files = ['stereo.f90']
-mxtal_files = ['mxtal.f90']
+
+mxtal_files = ['mxtal_mem.f90',
+               'mxtal.f90']
 
 dpgen_files =['dp_types.f90',
 			  'dp_gen.f90'

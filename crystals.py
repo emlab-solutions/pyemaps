@@ -689,47 +689,55 @@ def add_mxtal(target):
         if ret != 1:
             raise MxtalError('Failed to load cystal')
 
-        MX.init_mxtal()
+        # MX.init_mxtal()
 
-        tm = farray(np.array(trMatrix), dtype = float)
-        ts = farray(np.array(trShift), dtype = float)
+        # tm = farray(np.array(trMatrix), dtype = float)
+        # ts = farray(np.array(trShift), dtype = float)
 
-        ret = MX.transform(tm, ts)
-        if ret != 1:
-            raise MxtalError('Failed to transform cells')
-    
-    
-        MX.box(cellbox[0][0],cellbox[0][1],cellbox[0][2],
-                  cellbox[1][0],cellbox[1][1],cellbox[1][2])
-        # if n <= 0:
+        # ret = MX.transform(tm, ts)
+        # if ret != 1:
         #     raise MxtalError('Failed to transform cells')
+    
+    
+        # MX.box(cellbox[0][0],cellbox[0][1],cellbox[0][2],
+        #           cellbox[1][0],cellbox[1][1],cellbox[1][2])
+        # # if n <= 0:
+        # #     raise MxtalError('Failed to transform cells')
         
-        ors = farray(np.array(orShift), dtype = float)
-        las = farray(np.array(locASpace), dtype = float)
+        # ors = farray(np.array(orShift), dtype = float)
+        # las = farray(np.array(locASpace), dtype = float)
         
-        gg = farray(np.array(xz[0]), dtype = float)
-        gl = farray(np.array(xz[1]), dtype = float)
+        # gg = farray(np.array(xz[0]), dtype = float)
+        # gl = farray(np.array(xz[1]), dtype = float)
         
-        ret = MX.place(gg, gl, ors, las)
-        if ret !=1:
-            raise MxtalError('Failed to place cells')
+        # ret = MX.place(gg, gl, ors, las)
+        # if ret !=1:
+        #     raise MxtalError('Failed to place cells')
+        tmat = farray(np.array(trMatrix))
+        
+        pxz = farray(np.array(xz))
+
+        ret = MX.do_mxtal(tmat, trShift, cellbox[0], cellbox[1],
+                          pxz[0], pxz[1], orShift, locASpace)
+        
+        if ret != 1:
+            raise MxtalError('Failed to starting mxtal module')
         
         na = MX.get_nxyz()
         
         if na <=0:
             raise MxtalError('Failed to generate data')
-
-
+            
         sym = farray(np.empty((MLEN, na), dtype='c'))
         xyz = farray(np.zeros((3, na)), dtype = float)
 
         xyz, sym, ret = MX.get_xyzdata(xyz, sym)
-        
-        tsym = np.transpose(sym)
-        txyz = np.transpose(xyz)
-
+    
         if ret != 1:
             raise MxtalError('Failed to retrieve data')
+
+        tsym = np.transpose(sym)
+        txyz = np.transpose(xyz)
 
         retxyz = []
         for i in range(na):          
