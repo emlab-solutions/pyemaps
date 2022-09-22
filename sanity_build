@@ -46,10 +46,19 @@ if __name__ == "__main__":
         os.system("python -m pip install dist\pyemaps-3.1.2-cp37-cp37m-win_amd64.whl")
 
     from pyemaps import Crystal as cr
+    from pyemaps import *
+    try:
+        si = cr.from_builtin('Silicon')
+        if si:
+            print(f'crytsal data to generate mxtal: {si}')
+            mx = si.generateMxtal()
+    except (CrystalClassError, MxtalError) as e:
+        print(f'error: generating mxtal data1: {e.message}')
+    except Exception as e:
+        print(f'error: generating mxtal data2: {e.message}')
+    else:
+        print(f'successfully generated mxtal: {mx}')
+        ret = write_xyz(mx, "mx.xyz")
 
-    si = cr.from_builtin('Silicon')
-    mx = si.generateMxtal()
-    ret = write_xyz(mx, "mx.xyz")
-
-    if ret != 0:
-        print(f'failed to write data: {mx} to file')
+        if ret != 0:
+            print(f'failed to write data: {mx} to file')
