@@ -630,6 +630,8 @@ def add_mxtal(target):
     
     from . import ID_MATRIX, MLEN, DEF_CELLBOX, \
                   DEF_XZ, DEF_ORSHIFT, DEF_TRSHIFT,DEF_LOCASPACE
+    DEF_DISTANCE = 0.0
+
     # ID_MATRIX = [[1,0,0], [0,1,0], [0,0,1]]
     # MLEN = 46 
     # DEF_TRSHIFT = [0,0,0]
@@ -678,7 +680,8 @@ def add_mxtal(target):
                       cellbox = DEF_CELLBOX,
                       xz = DEF_XZ,
                       orShift = DEF_ORSHIFT, #Origin shift
-                      locASpace = DEF_LOCASPACE): #location in A Space
+                      locASpace = DEF_LOCASPACE,
+                      bound = None): #location in A Space
 
         from . import mxtal as MX
 
@@ -689,36 +692,16 @@ def add_mxtal(target):
         if ret != 1:
             raise MxtalError('Failed to load cystal')
 
-        # MX.init_mxtal()
-
-        # tm = farray(np.array(trMatrix), dtype = float)
-        # ts = farray(np.array(trShift), dtype = float)
-
-        # ret = MX.transform(tm, ts)
-        # if ret != 1:
-        #     raise MxtalError('Failed to transform cells')
-    
-    
-        # MX.box(cellbox[0][0],cellbox[0][1],cellbox[0][2],
-        #           cellbox[1][0],cellbox[1][1],cellbox[1][2])
-        # # if n <= 0:
-        # #     raise MxtalError('Failed to transform cells')
-        
-        # ors = farray(np.array(orShift), dtype = float)
-        # las = farray(np.array(locASpace), dtype = float)
-        
-        # gg = farray(np.array(xz[0]), dtype = float)
-        # gl = farray(np.array(xz[1]), dtype = float)
-        
-        # ret = MX.place(gg, gl, ors, las)
-        # if ret !=1:
-        #     raise MxtalError('Failed to place cells')
         tmat = farray(np.array(trMatrix))
         
         pxz = farray(np.array(xz))
 
-        ret = MX.do_mxtal(tmat, trShift, cellbox[0], cellbox[1],
-                          pxz[0], pxz[1], orShift, locASpace)
+        if bound is not None:
+            ret = MX.do_mxtal(tmat, trShift, cellbox[0], cellbox[1],
+                            pxz[0], pxz[1], orShift, locASpace, bound)
+        else:
+            ret = MX.do_mxtal(tmat, trShift, cellbox[0], cellbox[1],
+                            pxz[0], pxz[1], orShift, locASpace)
         
         if ret != 1:
             raise MxtalError('Failed to starting mxtal module')
