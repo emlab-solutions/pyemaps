@@ -55,7 +55,7 @@ if __name__ == "__main__":
     except (CrystalClassError, MxtalError) as e:
         print(f'error: generating mxtal data1: {e.message}')
     except Exception as e:
-        print(f'error: generating mxtal data2: {e.message}')
+        print(f'error: generating mxtal data2: cause unknown')
     else:
         print(f'successfully generated mxtal: {mx}')
         ret = write_xyz(mx, "mx.xyz")
