@@ -410,7 +410,7 @@ if __name__ == "__main__":
     parser.add_argument("-v", "--build-version", type=str, nargs="?", const="", default="", help="build version input", required=False)
 
 # ########## set envs ##################
-    set_benvs()
+    # set_benvs()
 
     args = parser.parse_args()
     comp = args.component

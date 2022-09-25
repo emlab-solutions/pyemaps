@@ -296,7 +296,7 @@ def get_library_dirs():
     print(f'OS name found: {osname}')
     if  'windows' in osname:
         lib_folder = 'intel64_win'
-    elif 'linux' in osname and 'ubuntu' in osname:
+    elif 'linux' in osname:
         lib_folder = 'intel64'
     else:
         raise Exception('Unsupported OS')
@@ -364,6 +364,7 @@ pyemaps_dif = Extension("pyemaps.diffract.emaps",
         libraries              = get_libraries(),
         library_dirs           = get_library_dirs(),
         include_dirs           = get_include_dirs(),
+        extra_objects          = ['blochimgs.o',],
         f2py_options           = ["--quiet",]
 )
 
