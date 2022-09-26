@@ -163,3 +163,6 @@ test/sanity/output*
 *.obj
 *.mod
 *.xyz
+
+# bloch image output file
+*.im3

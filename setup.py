@@ -112,6 +112,8 @@ powder_files =['powder_types.f90',
 
 spgra_files =['spgra.f90']
 
+c_objs = ['blochimgs.o', 'write_dpbin.o']
+
 
 sct_files =['scattering_sct.pyf', 'scattering.f90']  
 
@@ -125,6 +127,14 @@ def get_emaps_srcdir():
 
     return os.path.join(parent_path, 'emaps')
 
+def get_extra_objects():
+    '''
+    extra objects such as those from c code
+    '''
+    import os
+    emaps_dir = get_emaps_srcdir()
+    objlist = [os.path.join(emaps_dir, o) for o in c_objs]
+    return objlist
 
 def get_scattering_sources():
 
@@ -203,6 +213,8 @@ def get_diffract_sources():
     src_list.extend(csf_files)
     src_list.extend(powder_files)
     src_list.extend(bloch_files)
+    src_list.extend(dpgen_files)
+    
     src_list.extend(stereo_files)
     src_list.extend(mxtal_files)
     print(f'source code list: {src_list}')
@@ -364,7 +376,7 @@ pyemaps_dif = Extension("pyemaps.diffract.emaps",
         libraries              = get_libraries(),
         library_dirs           = get_library_dirs(),
         include_dirs           = get_include_dirs(),
-        extra_objects          = ['blochimgs.o',],
+        extra_objects          = get_extra_objects(),
         f2py_options           = ["--quiet",]
 )
 

@@ -1003,7 +1003,50 @@ def add_bloch(target):
                         DEF_CBED_DSIZE, \
                         DEF_KV, \
                         DEF_DSIZE_LIMITS
+    BIMG_EXT = '.im3'
+    MAX_BIMGFN = 256
 
+    def getbfilename(self):
+        '''
+        The file name of intended bloch image is constructed:
+        1) if environment variavle PYEMAPS_HOME is set then
+            the file will be in $PYEMAPS_HOME/bloch folder
+        2) otherwise, the file will be save in current working directory
+        3) The file name of the image will be composed as follows:
+            <crystal_name><current_time>.im3
+        4) The generated raw image file can be viewed in Jimage and Gatan
+           Digital Micrograph (GDM)
+        '''
+        import datetime
+        from pathlib import Path
+
+        bfn_path = ''
+        if 'PYEMAPS_DATA' in os.environ:
+            pyemaps_datahome = os.getenv('PYEMAPS_DATA')
+            if not Path(pyemaps_datahome).exists():
+                raise BlochError('Pyeamps data home evironment set, but directory does not exists')
+
+            bfn_path = os.path.join(pyemaps_datahome, 'bloch')
+            if not Path(bfn_path).exists():
+                print('should be here')
+                try:
+                    os.mkdir(bfn_path)
+                except OSError:
+                    raise BlochError('Failed to create bloch directory')
+        else:
+            current_dir = os.getcwd()
+            bfn_path = os.path.join(current_dir)
+
+        curr_time  = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+
+        cfn = os.path.join(bfn_path, self.name+curr_time+BIMG_EXT)
+
+        l = len(cfn)
+        if l > MAX_BIMGFN:
+            raise BlochError('Bloch image file name too long, it cant excced 256')
+        
+        return cfn, l
+        
     def generateBlochImgs(self, *, aperture = DEF_APERTURE, 
                             omega = DEF_OMEGA,  
                             sampling = DEF_SAMPLING,
@@ -1012,7 +1055,8 @@ def add_bloch(target):
                             disk_size = DEF_CBED_DSIZE,
                             sample_thickness = (200, 1000, 100),
                             em_controls = EMC(cl=200, 
-                                              simc = SIMC(gmax=1.0, excitation=(0.3,1.0)))
+                                              simc = SIMC(gmax=1.0, excitation=(0.3,1.0))),
+                            bSave = False
                           ):
         try:
             from . import bloch
@@ -1087,6 +1131,18 @@ def add_bloch(target):
             myBlochImgs.add(em_controls, raw_image)
 
             th += slice_step
+
+        if bSave:
+            # bfn, l = self.getbfilename()
+            bfn = 'bloch.im3'
+            # bfnf = farray(np.empty((len(bfn)), dtype='c'))
+            # for i, c in bfn.enumerate:
+
+            ret = bloch.write_3dimg(pix = pix_size, detsize = det_size)
+            if ret != 1:
+                raise BlochError("Failed to save bloch image file!")
+            else:
+                print(f'Bloch image data saved successfully in {bfn}')
 
         bloch.imgmemdelete()
         dif.diff_delete()
@@ -1173,7 +1229,7 @@ def add_bloch(target):
     
     target.generateBloch = generateBloch
     target.generateBlochImgs = generateBlochImgs
-    # target.generateDDP = generateDDP
+    target.getbfilename = getbfilename
 
     return target
 @add_mxtal
