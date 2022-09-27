@@ -31,6 +31,8 @@ from functools import wraps
 import os
 import json
 
+from .fileutils import *
+
 # from pyemaps.em import DEF_INTCTL
 
 from . import dif
@@ -644,7 +646,14 @@ def add_mxtal(target):
         for sm in mlist:
             print(sm)
             
-    def write_xyz(self, xyzdict, fn):
+    def write_xyz(self, xyzdict, fn=None):
+        '''
+        Save mxtal data into a file <fn>
+        if fn is None: autogenerate file name by crystal name and time stamp
+        if fn is not None, the file will be generate placed in in the fn path if exists
+        or in pyemaps data home directory otherwise
+        
+        '''
         if 'xyz' not in xyzdict:
             return -1
         xyzlist = xyzdict['xyz']
@@ -653,26 +662,37 @@ def add_mxtal(target):
             return -1
         slines = []
         nxyz = len(xyzlist)
+        
+        print(f'input data: ', xyzlist)
+
+        xyzfn = compose_ofn(fn, self.name, ty='mxtal')
 
         try:
-            with open(fn, 'w') as f:
-                slines.append(str(nxyz))
-                c0, c1, c2, c3, c4, c5 = xyzdict['cell']
-                slines.append(str(f'\t {c0} {c1} {c2} {c3} {c4} {c5}'))         
-                for xyz in xyzlist:
-                    s, x, y, z = xyz['symb'], format(xyz['x'], '10.f'), \
-                                              format(xyz['y'], '10.f'), \
-                                              format(xyz['z'], '10.f')
-                    slines.append(str(f'{s}\t{x} {y} {z}'))
-                print(f'writing data: {slines}')
-                f.writelines('\n'.join(slines))
-        except (FileNotFoundError, IOError) as e:
-            print(f'Error writing xyz data file {fn}')
-            return -1
-        except Exception:
-            return -1
+            open(xyzfn)
+        except PermissionError:
+            raise MxtalError('file permission error')
         else:
-            return 0
+            try:
+                with open(xyzfn, 'w') as f:
+                    slines.append(str(nxyz))      
+                    c0, c1, c2, c3, c4, c5 = xyzdict['cell']
+                    slines.append(str(f'\t {c0} {c1} {c2} {c3} {c4} {c5}'))
+                    for xyz in xyzlist:
+                        s, x, y, z = xyz['symb'], xyz['x'], xyz['y'], xyz['z']
+                        sx = '{0: < #014.10f}'. format(float(x))
+                        sy = '{0: < #014.10f}'. format(float(y))
+                        sz = '{0: < #014.10f}'. format(float(z))
+                        
+                        slines.append(str(f'{s:<10}\t{sx} {sy} {sz}'))
+                    # print(f'writing data: {slines}')
+                    f.writelines('\n'.join(slines))
+            except (FileNotFoundError, IOError, PermissionError) as e:
+                print(f'Error writing xyz data file {fn}')
+                return -1
+            except Exception:
+                return -1
+            else:
+                return 0
 
     def generateMxtal(self, 
                       trMatrix = ID_MATRIX, 
@@ -1017,35 +1037,22 @@ def add_bloch(target):
         4) The generated raw image file can be viewed in Jimage and Gatan
            Digital Micrograph (GDM)
         '''
-        import datetime
-        from pathlib import Path
+        
+        bfn_path = find_pyemaps_datahome(home_type="bloch")
+        bfn = auto_fn(self.name, ty='bloch')
 
-        bfn_path = ''
-        if 'PYEMAPS_DATA' in os.environ:
-            pyemaps_datahome = os.getenv('PYEMAPS_DATA')
-            if not Path(pyemaps_datahome).exists():
-                raise BlochError('Pyeamps data home evironment set, but directory does not exists')
-
-            bfn_path = os.path.join(pyemaps_datahome, 'bloch')
-            if not Path(bfn_path).exists():
-                print('should be here')
-                try:
-                    os.mkdir(bfn_path)
-                except OSError:
-                    raise BlochError('Failed to create bloch directory')
-        else:
-            current_dir = os.getcwd()
-            bfn_path = os.path.join(current_dir)
-
-        curr_time  = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-
-        cfn = os.path.join(bfn_path, self.name+curr_time+BIMG_EXT)
+        cfn = os.path.join(bfn_path, bfn+BIMG_EXT)
 
         l = len(cfn)
         if l > MAX_BIMGFN:
             raise BlochError('Bloch image file name too long, it cant excced 256')
         
-        return cfn, l
+        # fortran string
+        ffn = farray(np.empty((256), dtype='c'))
+        for i in range(l):
+            ffn[i] = cfn[i]
+
+        return cfn, ffn, l
         
     def generateBlochImgs(self, *, aperture = DEF_APERTURE, 
                             omega = DEF_OMEGA,  
@@ -1110,40 +1117,42 @@ def add_bloch(target):
 
         if ret != 0:
             raise BlochError('Error computing dynamic diffraction')
-
-        #successful bloch runtime, then retreive bloch image
         # 
+        #successful bloch runtime, then retreive bloch image
         #     
         
         slice_step = th_step 
         slice_num = 1 + (th_end-th_start) // slice_step
         th = th_start
+
         myBlochImgs = BImgList(self._name)
+        imgfn =''
+        if bSave: 
+            imgfn, bfn, l = self.getbfilename()
+            if bloch.openimgfile(det_size, bfn, l) != 0:
+                raise BlochError('Error opening file for write')
+
         for i in range(slice_num):
-            ret = bloch.imagegen(th,0,pix_size,det_size)
+            ret = bloch.imagegen(th,0,pix_size,det_size, bSave)
             if(ret != 0):
                 raise BlochError("bloch image generation failed!")
 
             raw_image = farray(np.zeros((det_size,det_size), dtype=np.double))
-            
+        
             bloch.get_rawimagedata(raw_image)
-            
+        
             myBlochImgs.add(em_controls, raw_image)
 
             th += slice_step
 
         if bSave:
-            # bfn, l = self.getbfilename()
-            bfn = 'bloch.im3'
-            # bfnf = farray(np.empty((len(bfn)), dtype='c'))
-            # for i, c in bfn.enumerate:
+            if (bloch.closeimgfile() != 0):
+                raise BlochError('Error closing file')
 
-            ret = bloch.write_3dimg(pix = pix_size, detsize = det_size)
-            if ret != 1:
-                raise BlochError("Failed to save bloch image file!")
-            else:
-                print(f'Bloch image data saved successfully in {bfn}')
+            print(f'Raw Bloch images data has been successfully saved to: {imgfn}')
+            print(f'Import the file into ImageJ or other tools to view images: ')
 
+# ------- clean up ---------
         bloch.imgmemdelete()
         dif.diff_delete()
 
@@ -1539,20 +1548,18 @@ class Crystal:
                 after successful installation
         """
         import os
+        from . import XTLError, CellError, UCError, SPGError
 
         cfn = fn
         if not os.path.exists(fn):
-            
-            pyemaps_home = os.getenv('PYEMAPS_CRYSTALS')
-            cfn = os.path.join(pyemaps_home, fn)
+            # find it in pyemaps data home or current directory
+            pyemaps_datahome = find_pyemaps_datahome(home_type = 'crystals')
+            cfn = os.path.join(pyemaps_datahome, fn)
             
             if not os.path.exists(cfn):
-                # error
-                err_msg = str(f"Error finding the data file: {fn}")
-                raise XTLError(err_msg)
-                # return None
-        
-#       Successfully imported crystal data
+                err_msg = str(f"Error finding the data file: {cfn}")
+                raise CrystalClassError(err_msg)
+        # otherwise it is a full path file that exists
         try:
             name, data = Crystal.loadCrystalData(cfn)
             xtl = cls(name, data)
@@ -1568,18 +1575,19 @@ class Crystal:
         import crystal data from a cif file
         """
         import os
+        from . import CIFError, CellError, UCError, SPGError
 
         cfn = fn
-        if not os.path.exists(fn):
-            
-            pyemaps_home = os.getenv('PYEMAPS_CRYSTALS')
-            cfn = os.path.join(pyemaps_home, fn)
+        if not os.path.exists(fn): # exists full path or file name in current working directory
+            # find it in pyemaps data home or current directory
+            pyemaps_datahome = find_pyemaps_datahome(home_type = 'crystals')
+            cfn = os.path.join(pyemaps_datahome, fn)
             
             if not os.path.exists(cfn):
                 err_msg = str(f"Error finding the data file: {cfn}")
-                raise XTLError(err_msg)
-        
-#       Successfully imported crystal data
+                raise CrystalClassError(err_msg)
+
+        # otherwise it is a full path file that exists
         try:
             name, data = Crystal.loadCrystalCIFData(cfn)
             cif = cls(name, data)
@@ -1602,14 +1610,16 @@ class Crystal:
                            '_symmetry_IT_number',
                            '_space_group_IT_number']
 
+        # check for full path
         cfn = fn
         if not os.path.exists(fn):
             
-            pyemaps_home = os.getenv('PYEMAPS_CRYSTALS')
-            cfn = os.path.join(pyemaps_home, fn)
+            # pyemaps_home = os.getenv('PYEMAPS_CRYSTALS')
+            datahome = find_pyemaps_datahome(home_type = 'crystals')
+            cfn = os.path.join(datahome, fn)
             
             if not os.path.exists(cfn):
-                raise CIFError(cfn, 'file does not exist')
+                raise CIFError('Failed to find the crystal data file', cfn)
         
         cf = None
         try:
