@@ -662,8 +662,6 @@ def add_mxtal(target):
             return -1
         slines = []
         nxyz = len(xyzlist)
-        
-        print(f'input data: ', xyzlist)
 
         xyzfn = compose_ofn(fn, self.name, ty='mxtal')
 
@@ -692,6 +690,7 @@ def add_mxtal(target):
             except Exception:
                 return -1
             else:
+                print(f'Successfully saved mxtal data in file: {xyzfn}')
                 return 0
 
     def generateMxtal(self, 
@@ -1496,19 +1495,20 @@ class Crystal:
         """
         import os
 
-        name = cn.lower().capitalize()
+        # name = cn.lower().capitalize()
 
         base_dir = os.path.realpath(__file__)
         cbase_dir = os.path.join(os.path.dirname(base_dir), crystal_data_basedir)
-        fn = os.path.join(cbase_dir,name+'.xtl')
+        fn = os.path.join(cbase_dir, cn+'.xtl')
               
 #       Successfully imported crystal data
-       
         try:
-            _, data = Crystal.loadCrystalData(fn)
+            name, data = Crystal.loadCrystalData(fn)
             xtl = cls(name, data)
 
-        except (XTLError, AttributeError, CellError, UCError, SPGError) as e:
+        except (XTLError, CellError, UCError, SPGError) as e:
+            raise CrystalClassError(e.message)
+        except (FileNotFoundError, AttributeError) as e:
             raise CrystalClassError(e.message)
         else:
             return xtl
@@ -1564,7 +1564,9 @@ class Crystal:
             name, data = Crystal.loadCrystalData(cfn)
             xtl = cls(name, data)
 
-        except (XTLError, AttributeError, CellError, UCError, SPGError) as e:
+        except (XTLError, CellError, UCError, SPGError) as e:
+            raise CrystalClassError(e.message)
+        except (FileNotFoundError, AttributeError) as e:
             raise CrystalClassError(e.message)
         else:
             return xtl
