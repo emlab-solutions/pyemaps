@@ -34,7 +34,7 @@ def copy_samples():
 
     curr_dir = os.getcwd()
     
-    q = str(f"Copy pyemaps samples into {pyemaps_samples_dir} in current directory? ")
+    q = str(f"Copy pyemaps samples into {pyemaps_samples_dir} in current directory?\n ")
     # ans = str(raw_input(q +' [y/n]: ')).lower().strip()
     inp = input(q +"[Y/n] ")
 

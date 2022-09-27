@@ -10,43 +10,108 @@ def get_os():
         return 2
     
     return 0
-    
-    
-# def write_xyz(xyzdict, fn):
-#         if 'xyz' not in xyzdict:
-#             return -1
-#         xyzlist = xyzdict['xyz']
 
-#         if 'cell' not in xyzdict:
-#             return -1
-#         slines = []
-#         nxyz = len(xyzlist)
-        
-#         try:
-#             with open(fn, 'w') as f:
-#                 slines.append(str(nxyz))
-#                 c0, c1, c2, c3, c4, c5 = xyzdict['cell']
-#                 slines.append(str(f'{c0} {c1} {c2} {c3} {c4} {c5}'))         
-#                 for xyz in xyzlist:
-                    
-#                     s, x, y, z = xyz['symb'], xyz['x'], xyz['y'], xyz['z']
-#                     sx = '{0: < #014.10f}'. format(float(x))
-#                     sy = '{0: < #014.10f}'. format(float(y))
-#                     sz = '{0: < #014.10f}'. format(float(z))
-#                     slines.append(str(f'{s:<10}\t{sx} {sy} {sz}'))
-                    
-#                 f.writelines('\n'.join(slines))
-#         except (FileNotFoundError, IOError) as e:
-#             print(f'Error writing xyz data file {fn}')
-#             return -1
-#         except Exception:
-#             return -1
-#         else:
-#             return 0
+def test_cif():
+    from pyemaps import Crystal as cr
+    from pyemaps import CrystalClassError
+    # try crystal data that does not exist in current working directory
+    # and not in PYEMAPS_DATA directory
+    try:
+        si = cr.from_cif('Silicon.cif')
+    except CrystalClassError as e:
+        print(f'case#1 error: loading crystal data: {e.message}')
+    except Exception as e:
+        print(f'error: loading: {e}')
+    else:
+        print(f'successfully loaded: {si}')
+
+    
+    # try crystal data that does not exist in current working directory
+    # and but in PYEMAPS_DATA directory
+    try:
+        si = cr.from_cif('1010100.cif')
+    except CrystalClassError as e:
+        print(f'error: loading crystal data: {e.message}')
+    except Exception as e:
+        print(f'error: loading: {e}')
+    else:
+        print(f'case#2: successfully loaded: {si}')
+    
+    # try crystal data that exists in current working directory
+    # and not in PYEMAPS_DATA directory
+    try:
+        si = cr.from_cif('1010100.cif')
+    except CrystalClassError as e:
+        print(f'error: loading crystal data: {e.message}')
+    except Exception as e:
+        print(f'error: loading: {e}')
+    else:
+        print(f'case#5: successfully loaded: {si}')
+    
+    # try crystal data that exists in current working directory
+    # and not in PYEMAPS_DATA directory
+    try:
+        si = cr.from_cif('./test/1010100.cif')
+    except CrystalClassError as e:
+        print(f'case#6 error: loading crystal data: {e.message}')
+    except Exception as e:
+        print(f'case#6 error: loading: {e}')
+    else:
+        print(f'case#6: successfully loaded: {si}')
+    
+    # crystal data file in full and correct path
+    try:
+        si = cr.from_cif('/home/ubuntu/pyemaps_workspace/pyemaps_root/pyemaps/1010100.cif')
+    except CrystalClassError as e:
+        print(f'case#7 error: loading crystal data: {e.message}')
+    except Exception as e:
+        print(f'case#7 error: loading: {e}')
+    else:
+        print(f'case#7: successfully loaded: {si}')
+    
+    # crystal data file in relative and correct path
+    try:
+        si = cr.from_cif('./test/1010100.cif')
+    except CrystalClassError as e:
+        print(f'case#8 error: loading crystal data: {e.message}')
+    except Exception as e:
+        print(f'case#8 error: loading: {e}')
+    else:
+        print(f'case#8: successfully loaded: {si}')
+
+
+def test_xtl():
+    
+    from pyemaps import Crystal as cr
+    from pyemaps import CrystalClassError
+    # try crystal data that does not exist in current working directory
+    # and not in PYEMAPS_DATA directory
+    try:
+        si = cr.from_xtl('1010100.xtl')
+    except CrystalClassError as e:
+        print(f'case#3 error: loading crystal data: {e.message}')
+    except Exception as e:
+        print(f'error: loading: {e}')
+    else:
+        print(f'successfully loaded: {si}')
+
+    
+    # try crystal data that does not exist in current working directory
+    # and but in PYEMAPS_DATA directory
+    try:
+        si = cr.from_xtl('Copper_FCC.xtl')
+    except CrystalClassError as e:
+        print(f'error: loading crystal data: {e.message}')
+    except Exception as e:
+        print(f'error: loading: {e}')
+    else:
+        print(f'case#4 successfully loaded: {si}')
 
 def test_xyz():
+    
     from pyemaps import Crystal as cr
-    from pyemaps import CrystalClassError, MxtalError
+    from pyemaps import CrystalClassError
+    from pyemaps import MxtalError
     try:
         si = cr.from_builtin('Silicon')
         if si:
@@ -57,30 +122,32 @@ def test_xyz():
     except Exception as e:
         print(f'error: generating mxtal data2: cause unknown')
     else:
-        print(f'successfully generated mxtal: {mx}')
+        # print(f'successfully generated mxtal: {mx}')
         ret = si.write_xyz(mx, "mx.xyz")
 
         if ret != 0:
             print(f'failed to write data: {mx} to file')
 
 def test_bimgwrite():
+    
     from pyemaps import Crystal as cr
-    from pyemaps import CrystalClassError, BlochError
+    from pyemaps import CrystalClassError
+    from pyemaps import BlochError
     try:
-        si = cr.from_builtin('Silicon')
-        if si:
-            print(f'crytsal data loaded: {si}')
-            bimgs = si.generateBlochImgs(bSave=True)
+        si = cr.from_builtin('BiMnO3')
+        print(f'loaded crystal: {si}')
+        bimgs = si.generateBlochImgs(bSave=True)
 
     except (CrystalClassError, BlochError) as e:
-        print(f'error: generate and write bloch image data: {e.message}')
+        print(f'error: generate and write bloch image data1: {e.message}')
     except Exception as e:
-        print(f'error: generate and write bloch image data: {e}')
+        print(f'error: generate and write bloch image data2: {e}')
     else:
         print(f'crytsal data loaded: {si}')
         print(f'successfully generated and write bloch images')
 
 def test_dpgen():
+    
     from pyemaps import Crystal as cr
     from pyemaps import CrystalClassError
     try:
@@ -119,6 +186,8 @@ if __name__ == "__main__":
 
         os.system(mypy + " -m pip install " + mywhl)
 
+    # test_cif()
+    # test_xtl()
     test_xyz()
     # test_bimgwrite()
     # test_dpgen()
