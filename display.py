@@ -166,7 +166,7 @@ class DifPlotter:
                             fill=False, 
                             linewidth = 0.5, 
                             alpha=1.0, 
-                            fc='blue')
+                            color='blue')
         self.ax.add_patch(unitdis)
 
         for s in sdata:
