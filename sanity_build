@@ -61,7 +61,7 @@ def test_cif():
     
     # crystal data file in full and correct path
     try:
-        si = cr.from_cif('/home/ubuntu/pyemaps_workspace/pyemaps_root/pyemaps/1010100.cif')
+        si = cr.from_cif('C:\\Users\\employee1\\emaps_workspace\\pyemaps_09282022root\\pyemaps\\cifdata\\1010100.cif')
     except CrystalClassError as e:
         print(f'case#7 error: loading crystal data: {e.message}')
     except Exception as e:
@@ -123,7 +123,7 @@ def test_xyz():
         print(f'error: generating mxtal data2: cause unknown')
     else:
         # print(f'successfully generated mxtal: {mx}')
-        ret = si.write_xyz(mx, "mx.xyz")
+        ret = si.write_xyz(mx)
 
         if ret != 0:
             print(f'failed to write data: {mx} to file')
