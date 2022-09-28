@@ -16,6 +16,10 @@ __pyemaps__ package is a collection of python modules and libraries designed for
 
 >**Crystallographic Transformations and Calculations**
 
+>**Stereodiagram**
+
+>**Crystal Constructor**
+
 >**Crystal Structure Factors Calculations**
 > * X-Ray Structure Factors
 > * Electron Structure Factor in V (volts)
@@ -61,12 +65,16 @@ Linux support planned in future releases, stay tuned.
  
 where .venv is the python virtual environment
 
-*PYEMAPS_CRYSTALS* environment variable is optional. But setting it to a directory where all custom 
-crystal data files are located provides central location for organizing your own crystal data. __pyemaps__ also searches this directory for your crystal data.
+*PYEMAPS_DATA* environment variable is set to a directory where all custom crystal data and output files are located provides central location for organizing your own crystal data, as well as your results from pyemaps runs. __pyemaps__ also searches this directory for your crystal data. If these environment variable is set, all output from __pyemaps__ will be placed.
 
 ```
-    PYEMAPS_CRYSTALS=<local directory>
+    PYEMAPS_DATA=<local directory>  # pyemaps data home, must have right permisions for pyemaps
+    PYEMAPS_DATA/crystals           # hosts all custom crystal data files (.xtl, .cif)
+    PYEMAPS_DATA/bloch              # location for all bloch images output files
+    PYEMAPS_DATA/mxtal              # place for all crystal constructor output files such as *.xyz
+
 ```
+*Note: the legacy environment variable PYEMAPS_CRYSTALS is still supported if it is set.
 
 See [FAQ](https://emlab-solutions.github.io/pyemaps/#faq) for solutions to possible installation issues.
 
@@ -161,6 +169,8 @@ The following is the dynamic diffraction pattern for _Silicon_ builtin crystal w
 
 ![](https://github.com/emlab-solutions/imagepypy/raw/main/si_bloch.png?raw=True "Dynamic diffraction for silicon")
 
+![](https://github.com/emlab-solutions/imagepypy/raw/main/Stereo_Silicon1.png?raw=True "Stereodiagram")
+
 To see all crystal names with builtin data, call:
 ```python
 from pyemaps import Crystal as cr
@@ -227,7 +237,9 @@ Sample scripts designed for you to explore pyemaps features are available in pye
 
 * __si_csf.py__: _structure factors_ generation and output by __CSF__ pyemaps module. 
 
-* __powder.py__: _electron powder diffraction_ generation and intensity plot by ____ pyemaps module. 
+* __powder.py__: _electron powder diffraction_ generation and intensity plot by __Powder__ pyemaps module. 
+
+* __si_stereo.py__: _stereodiagram_ generation by ____ pyemaps __Stereo__ module. 
 
 More samples code will be added as more features and releases are available. 
 
