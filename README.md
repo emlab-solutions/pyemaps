@@ -16,9 +16,9 @@ __pyemaps__ package is a collection of python modules and libraries designed for
 
 >**Crystallographic Transformations and Calculations**
 
->**Stereodiagram**
+>_NEW!_ **Stereodiagram**
 
->**Crystal Constructor**
+>_NEW!_ **Crystal Constructor**
 
 >**Crystal Structure Factors Calculations**
 > * X-Ray Structure Factors

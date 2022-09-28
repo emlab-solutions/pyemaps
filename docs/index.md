@@ -9,6 +9,7 @@
 8. <a id="contents"></a>[Frequently Asked Questions](#faq)
 9. <a id="contents"></a>[Release Notes](#release-notes)
 
+
 ## Overview [`↩`](#contents) <a id="overview"></a>
 __pyemaps__ package is a collection of python modules and libraries designed for transmission electron diffraction simulations and related crystallographic calculations. Main features include:
 
@@ -17,6 +18,10 @@ __pyemaps__ package is a collection of python modules and libraries designed for
 >**Electron Powder Diffraction Simulations**
 
 >**Crystallographic Transformations and Calculations**
+
+>_NEW!_ **Stereodiagram**
+
+>_NEW!_ **Crystal Constructor**
 
 >**Crystal Structure Factors Calculations**
 > * X-Ray Structure Factors
@@ -63,12 +68,16 @@ Linux support planned in future releases, stay tuned.
  
 where .venv is the python virtual environment
 
-*PYEMAPS_CRYSTALS* environment variable is optional. But setting it to a directory where all custom 
-crystal data files are located provides central location for organizing your own crystal data. __pyemaps__ also searches this directory for your crystal data.
+*PYEMAPS_DATA* environment variable is set to a directory where all custom crystal data and output files are located provides central location for organizing your own crystal data, as well as your results from pyemaps runs. __pyemaps__ also searches this directory for your crystal data. If these environment variable is set, all output from __pyemaps__ will be placed.
 
 ```
-    PYEMAPS_CRYSTALS=<local directory>
+    PYEMAPS_DATA=<local directory>  # pyemaps data home, must have right permisions for pyemaps
+    PYEMAPS_DATA/crystals           # hosts all custom crystal data files (.xtl, .cif)
+    PYEMAPS_DATA/bloch              # location for all bloch images output files
+    PYEMAPS_DATA/mxtal              # place for all crystal constructor output files such as *.xyz
+
 ```
+*Note: the legacy environment variable PYEMAPS_CRYSTALS is still supported if it is set.
 
 See [FAQ](https://emlab-solutions.github.io/pyemaps/#faq) for solutions to possible installation issues.
 
@@ -163,6 +172,8 @@ The following is the dynamic diffraction pattern for _Silicon_ builtin crystal w
 
 ![](https://github.com/emlab-solutions/imagepypy/raw/main/si_bloch.png?raw=True "Dynamic diffraction for silicon")
 
+![](https://github.com/emlab-solutions/imagepypy/raw/main/Stereo_Silicon1.png?raw=True "Stereodiagram")
+
 To see all crystal names with builtin data, call:
 ```python
 from pyemaps import Crystal as cr
@@ -229,7 +240,9 @@ Sample scripts designed for you to explore pyemaps features are available in pye
 
 * __si_csf.py__: _structure factors_ generation and output by __CSF__ pyemaps module. 
 
-* __powder.py__: _electron powder diffraction_ generation and intensity plot by ____ pyemaps module. 
+* __powder.py__: _electron powder diffraction_ generation and intensity plot by __Powder__ pyemaps module. 
+
+* __si_stereo.py__: _stereodiagram_ generation by ____ pyemaps __Stereo__ module. 
 
 More samples code will be added as more features and releases are available. 
 
@@ -626,4 +639,37 @@ Examples of how to use this control class along with previous controls are in sa
 
 * __Runtime Libraries Installation Requirements__: Runtime libraries are now included in pyemaps installation. pyemaps should now work out of box after its installation. 
 
+
+### __0.4.5 Alpha__ September 30th, 2022
+
+#### NEW
+
+* __Stereodiagram__: this feature is demonstrated by the sample script __si_stereo.py__. The basic usage:
+```python
+    from pyemaps import Crystal as cr
+    si = cr.from_builtin('Silicon')
+    stereolist = si.generateStereo(xa, tilt, zone)
+    showStereo(stereolist, iShow=True, zLimit = 1, bSave=True)
+    # zLimit for filtering for hkl index
+    # iShow for weather to display hkl index
+    # bSave for saving images to .png files
+``` 
+* __Crystal Constructor__: will allow users to transform and manipulate crystal structure. Users will be able to generate .xyz formatted files for visualization in Jmol or other atomic structure visualization tools:
+```python
+    from pyemaps import Crystal as cr
+    si = cr.from_builtin('Silicon')
+    mx = si.generateMxtal(**kargs)
+    write_xyz(mx, fn)  
+    
+    # fn is the output .xyz file to be placed in PYEMAPS_DATA/mxtal fodler
+``` 
+More to come for this module.
+
+* __Bloch Raw Image Output__: Multi-slices and raw images of bloch image generate from generateBlochImgs can now be saved into .im3 files that can be imported to ImageJ, Gatan's Digital Micrograph for viewing.
+```python
+    si.generateBlochImgs(..., bSave=True)
+```
+If successful, the file will be located in PYEMAPS_DATA/bloch folder if PYEMAPS_DATA is set, or in current working directory, with auto generated file name of the format:
+
+    <crystal_name>bloch<yyyymmddhhmmss>.ims
 
