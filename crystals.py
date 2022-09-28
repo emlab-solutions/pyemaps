@@ -2452,14 +2452,14 @@ class Crystal:
         dif.initcontrols()
         # mode defaults to DEF_MODE, in which dsize is not used
         # Electron Microscope controls defaults - DEF_CONTROLS
-        ds = DEF_NORM_DSIZE
+        
         if mode == 2:
             dif.setmode(mode)
-            ds = DEF_CBED_DSIZE
+            if dsize and isinstance(dsize, (int,float)) and dsize != DEF_CBED_DSIZE:
+                dif.setdisksize(float(dsize))
+            else:
+                dif.setdisksize(DEF_CBED_DSIZE)
 
-        if dsize != ds:    
-            dif.setdisksize(float(ds))
-        
         if tx0 is not None and \
            ty0 is not None and \
            dx0 is not None and \
