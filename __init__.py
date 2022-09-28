@@ -185,4 +185,5 @@ try:
 except ImportError as e:
     print(f'Error importing kinematic constants: {e}')
     
-from .display import showDif, showBloch
+# display functions
+from .display import showDif, showBloch, showStereo

@@ -1,31 +1,23 @@
-
 """
 This file is part of pyemaps
 ___________________________
-
 pyemaps is free software for non-comercial use: you can 
 redistribute it and/or modify it under the terms of the GNU General 
 Public License as published by the Free Software Foundation, either 
 version 3 of the License, or (at your option) any later version.
-
 pyemaps is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
-
 You should have received a copy of the GNU General Public License
 along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
-
 Contact supprort@emlabsoftware.com for any questions and comments.
 ___________________________
-
 This sample code is to demostrate using pyemaps to generate and render
 kinematic diffraction patterns while changing with sample tilt in 
 x direction 
-
 Author:     EMLab Solutions, Inc.
 Date:       May 07, 2022    
-
 """
 import matplotlib
 import matplotlib.pyplot as plt
@@ -149,9 +141,58 @@ class DifPlotter:
         x0, _ = plt.xlim()
         y0, _ = plt.ylim()
 
-        plt.text(x0 + 10, y0 - 10, controls_text,
-                {'color': 'grey', 'fontsize': 6}
-        )
+        if self.type != 3:
+            plt.text(x0 + 10, y0 - 10, controls_text,
+                    {'color': 'grey', 'fontsize': 6}
+            )
+            return
+
+        plt.text(x0 + 0.05, y0 - 0.05, controls_text,
+                    {'color': 'grey', 'fontsize': 6}
+            )
+
+    def plotStereo(self):
+        STEREO_MULTIPLIER = 55
+        sdata, ishow, zl = self.difData  
+        
+        self.ax.clear()
+        
+        self.ax.set_axis_off()
+        self.ax.set_title(self.name)
+
+        # adding a unit disk
+        unitdis = patches.Circle((0.0, 0.0), 
+                            1.0, 
+                            fill=False, 
+                            linewidth = 0.5, 
+                            alpha=1.0, 
+                            fc='blue')
+        self.ax.add_patch(unitdis)
+
+        for s in sdata:
+            c, r, idx = s['c'], s['r'], s['idx']
+            radius =float(r)
+            index = (int(idx[0]), int(idx[1]), int(idx[2]))
+            centre = (float(c[0]), float(c[1]))
+            dis = patches.Circle(centre, 
+                                radius, 
+                                fill=True, 
+                                linewidth = 0.5, 
+                                alpha=1.0, 
+                                fc='blue')
+            self.ax.add_patch(dis)
+        
+            if ishow:
+                if abs(index[0]) <= zl and abs(index[1]) <= zl and abs(index[2]) <= zl:
+                    plt.text(centre[0],centre[1], 
+                            str(index),
+                            {'color': 'red', 'fontsize': 8},
+                            horizontalalignment='center',
+                            verticalalignment='bottom')
+
+            # set the limits
+        self.ax.set_xlim([-1.0, 1.0])
+        self.ax.set_ylim([-1.0, 1.0])
 
     def call_back(self):
         while self.pipe.poll():
@@ -164,11 +205,19 @@ class DifPlotter:
                 save_prefix = 'DDif_'
                 self.emc, self.name, self.save, self.difData = command
 
-                if isinstance(self.difData[0], DP):
+                if self.type == 1: #diffraction plot type
                     self.plotKDif()
                     save_prefix = 'KDif_'
-                else:
+
+                elif self.type == 2: #bloch type plot
                     self.plotDDif()
+
+                elif self.type == 3: #stereo type plot
+                    self.plotStereo()
+                    save_prefix = 'Stereo_'
+
+                else:
+                    raise ValueError("No data to plot")
                 
                 self.plotControls()
                 self.fig.canvas.draw_idle()
@@ -202,15 +251,28 @@ class DifPlotter:
             curr_dpi = find_dpi()
         else:
             curr_dpi = 96
-            
-        self.fig, self.ax = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
+        if type == 3:
+            self.fig, self.ax = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
+                        dpi=curr_dpi, facecolor=(0,0,0)) #setting image size in pixels 
+        else:   
+            self.fig, self.ax = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
                         dpi=curr_dpi) #setting image size in pixels
         self.position_fig(20, 20)
         self.ax.set_axis_off()
-
-
-        pyemaps_title = 'PYEMAPS - Kinematic Diffraction' if type == 1 else 'PYEMAPS - Dynamic Diffraction'
         
+        if type == 1:
+            pyemaps_title = 'PYEMAPS - Kinematic Diffraction' 
+
+        elif type == 2:
+            pyemaps_title = 'PYEMAPS - Dynamic Diffraction'
+
+        elif type == 3:
+            pyemaps_title = 'PYEMAPS -Stereodiagram'
+        else:
+            raise ValueError("Unsupported data type")
+        
+        self.type = type
+
         if self.fig.canvas.manager is not None:
             self.fig.canvas.manager.set_window_title(pyemaps_title)
         else:
@@ -289,22 +351,19 @@ def showBloch(bimgs, bColor = False, bSave = False):
 
     pl.plot(finished=True)
 
-# def showStereodiagram(slist, bSave = False):
-#     """
-#     Show bloch diffractions
-#     # """
-#     # if not bimgs or not isinstance(bimgs, BImgList):
-#     #     raise BlochListError('showBloch must have BImgList object as its first input')
+def showStereo(slist, name, iShow = False, bSave=False, zLimit = 2):
+    """
+    Show Stereodiagram
+    """
+    count = 1
+    pl = NBPlot(3)
+    for c, s in slist:       
+        save = 0
+        if bSave:
+            save = count
+        d = (c, name, save, (s, iShow, zLimit))
+        pl.plot(data = d)
+        time.sleep(1.0)
+        count += 1
 
-#     count = 1
-#     pl = NBPlot(2)
-#     for s in slist:       
-#         save = 0
-#         if bSave:
-#             save = count
-#         d = (c, name, save, (img, bColor))
-#         pl.plot(data = d)
-#         time.sleep(1.0)
-#         count += 1
-
-#     pl.plot(finished=True)
+    pl.plot(finished=True)
