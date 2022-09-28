@@ -1,4 +1,5 @@
-'''
+
+"""
 This file is part of pyemaps
 ___________________________
 
@@ -18,13 +19,11 @@ along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
 Contact supprort@emlabsoftware.com for any questions and comments.
 ___________________________
 
+```
+
 Author:     EMLab Solutions, Inc.
-Date:       May 11, 2022    
-
-
-This sample code is to render kinematic diffraction patterns generated
-by pyemaps by changing zone axis
-'''
+Date:       September 26th, 2022    
+"""
 # try:
 #     from pyemaps import DEF_CBED_DSIZE, DEF_MODE
 # except ImportError as e:
