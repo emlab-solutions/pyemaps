@@ -65,7 +65,7 @@ def find_pyemaps_datahome(home_type='crystals'):
 
     # but find pyeamsp home if exists
     if env_name in os.environ:
-        pyemaps_home = os.getenv('PYEMAPS_DATA')
+        pyemaps_home = os.getenv(env_name)
 
         if Path(pyemaps_home).exists(): 
             pyemaps_datahome = pyemaps_home
@@ -112,7 +112,7 @@ def compose_ofn(fn, name, ty='diffraction'):
     pyemaps_datahome=find_pyemaps_datahome(home_type=ty)
 
     if fn is None:
-        fn = auto_fn(self.name, ty=ty)
+        fn = auto_fn(name, ty=ty)
         return os.path.join(pyemaps_datahome, fn)
     
     # valid input fn
@@ -124,7 +124,7 @@ def compose_ofn(fn, name, ty='diffraction'):
 
     if not fpath: # if no path compose fn 
         if not fname:
-            fn = auto_fn(self.name, ty=ty)
+            fn = auto_fn(name, ty=ty)
         else:
             fn = fname
         return os.path.join(pyemaps_datahome, fn)

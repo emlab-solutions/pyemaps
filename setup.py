@@ -112,7 +112,9 @@ powder_files =['powder_types.f90',
 
 spgra_files =['spgra.f90']
 
-c_objs = ['blochimgs.o', 'write_dpbin.o']
+# c_objs = ['blochimgs.o', 'write_dpbin.o']
+c_objs_win = ['blochimgs.obj']
+c_objs_lin = ['blochimgs.o']
 
 
 sct_files =['scattering_sct.pyf', 'scattering.f90']  
@@ -131,9 +133,21 @@ def get_extra_objects():
     '''
     extra objects such as those from c code
     '''
-    import os
+    import platform, os
+
+    objs = []
+
+    osname = platform.platform().lower()
+    print(f'OS name found: {osname}')
+    if  'windows' in osname:
+        objs = c_objs_win
+    elif 'linux' in osname:
+        objs = c_objs_lin
+    else:
+        raise Exception('Unsupported OS')
+
     emaps_dir = get_emaps_srcdir()
-    objlist = [os.path.join(emaps_dir, o) for o in c_objs]
+    objlist = [os.path.join(emaps_dir, o) for o in objs]
     return objlist
 
 def get_scattering_sources():
