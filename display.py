@@ -158,7 +158,7 @@ class DifPlotter:
         self.ax.clear()
         
         self.ax.set_axis_off()
-        self.ax.set_title(self.name)
+        self.ax.set_title(self.name, color='blue')
 
         # adding a unit disk
         unitdis = patches.Circle((0.0, 0.0), 
@@ -186,7 +186,7 @@ class DifPlotter:
                 if abs(index[0]) <= zl and abs(index[1]) <= zl and abs(index[2]) <= zl:
                     plt.text(centre[0],centre[1], 
                             str(index),
-                            {'color': 'red', 'fontsize': 8},
+                            {'color': 'white', 'fontsize': 8},
                             horizontalalignment='center',
                             verticalalignment='bottom')
 
