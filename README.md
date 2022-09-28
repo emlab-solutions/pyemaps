@@ -74,9 +74,10 @@ where .venv is the python virtual environment
     PYEMAPS_DATA/mxtal              # place for all crystal constructor output files such as *.xyz
 
 ```
-*Note: the legacy environment variable PYEMAPS_CRYSTALS is still supported if it is set.
+Note: the legacy environment variable PYEMAPS_CRYSTALS is still supported if it is set.
 
 See [FAQ](https://emlab-solutions.github.io/pyemaps/#faq) for solutions to possible installation issues.
+
 
 ## Basic Usage [`↩`](#contents) <a id="basic-usage"></a>
 
@@ -161,15 +162,22 @@ sample tilt: (0.0,0.0)
 sample offset: (0.0,0.0)
 spot size: 0.05 Å
 ```
+__Kinematic Diffraction Pattern__ for _Silicon_ crystal:
+|  |  |
+| - | - |
+|![](https://github.com/emlab-solutions/imagepypy/raw/main/si_dif1.png) |![](https://github.com/emlab-solutions/imagepypy/raw/main/si_dif2.png) |
 
-![](https://github.com/emlab-solutions/imagepypy/raw/main/kdiff_si.png?raw=True "Kinematic diffraction for silicon")
 
-The following is the dynamic diffraction pattern for _Silicon_ builtin crystal with sampling set at 20. The left is the image in gray scale and the righ in a predefined color map
+__Dynamic Diffraction Pattern__ for _Silicon_ crystal with sampling set at 20: 
 
+|  |  |
+| - | - |
+|![](https://github.com/emlab-solutions/imagepypy/raw/main/si_bloch1.png) |![](https://github.com/emlab-solutions/imagepypy/raw/main/si_bloch2.png) |
 
-![](https://github.com/emlab-solutions/imagepypy/raw/main/si_bloch.png?raw=True "Dynamic diffraction for silicon")
-
-![](https://github.com/emlab-solutions/imagepypy/raw/main/Stereo_Silicon1.png?raw=True "Stereodiagram")
+__Stereodiagram__ for _Silicon_ crystal
+|  |  |
+| - | - |
+|![](https://github.com/emlab-solutions/imagepypy/raw/main/Stereo_Silicon4.png) |![](https://github.com/emlab-solutions/imagepypy/raw/main/Stereo_Silicon1.png) |
 
 To see all crystal names with builtin data, call:
 ```python
@@ -180,11 +188,6 @@ cr.list_all_builtin_crystals()
 To use a crystal data not in built-in database in above format (as xtl format), replace the code in _sample.py_:
 ```python
 from pyemaps import Crystal as cr
-si = cr.from_builtin('Silicon')
-```
-with:
-```python
-from pyemaps import Crystal as cr
 si = cr.from_xtl(fn)
 ```
 CIF format has recently been added to crystal data sources where __pyemaps__ can import:
@@ -192,9 +195,9 @@ CIF format has recently been added to crystal data sources where __pyemaps__ can
 from pyemaps import Crystal as cr
 si = cr.from_cif(fn)
 ```
-where _fn_ is a crystal data file name. See release notes for details how pyemaps imports .cif data
+where _fn_ is a crystal data file name. See release notes for details how pyemaps imports cif data
 
-Note: __pyemaps__ searches for _fn_ if the full path is provided. Otherwise, it will look up the file in current working directory or in the directory set by *PYEMAPS_CRYSTALS* environment variable. In latter cases, _fn_ is the file name without path.
+Note: __pyemaps__ searches for _fn_ if the full path is provided. Otherwise, it will look up the file in current working directory or in the directory set by *PYEMAPS_DATA* environment variable. In latter cases, _fn_ is the file name without path.
 
 Checking __pyemaps__ version and displaying copyright information:
 ```
