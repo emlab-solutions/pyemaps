@@ -213,7 +213,7 @@ def get_diffract_sources():
     src_list.extend(csf_files)
     src_list.extend(powder_files)
     src_list.extend(bloch_files)
-    src_list.extend(dpgen_files)
+    # src_list.extend(dpgen_files)
     
     src_list.extend(stereo_files)
     src_list.extend(mxtal_files)
