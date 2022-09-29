@@ -189,5 +189,5 @@ if __name__ == "__main__":
     # test_cif()
     # test_xtl()
     test_xyz()
-    # test_bimgwrite()
+    test_bimgwrite()
     # test_dpgen()

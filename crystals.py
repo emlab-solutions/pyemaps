@@ -704,7 +704,7 @@ def add_mxtal(target):
         # load the crystal
         cell, atoms, atn, spg = self.prepareDif()
         ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw, cty=1)
-        if ret != 1:
+        if ret != 0:
             raise MxtalError('Failed to load cystal')
 
         tmat = farray(np.array(trMatrix))
@@ -869,8 +869,11 @@ def add_csf(target):
         sfs = [dict(kv = kv, smax = smax, sftype = sftype, aptype = aptype)]
 
         cell, atoms, atn, spg = self.prepareDif()
-        dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
-        
+        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        if ret !=0:
+            print(f'Failed to load {self.name} into pyemaps module')
+            return []
+
         nb, ret = csf.generate_sf(kv, smax, sftype, aptype)
 
         if ret != 0 and nb <= 0:
@@ -985,7 +988,10 @@ def add_powder(target):
             return []
 
         cell, atoms, atn, spg = self.prepareDif()
-        dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        if ret !=0:
+            print(f"Error: failed to load crystal {self.name} into pyemaps")
+            return []
 
         rawP = farray(np.zeros((2,1000), dtype=np.double))
        
@@ -1086,8 +1092,9 @@ def add_bloch(target):
         dif.setdisksize(disk_size)
 
         cell, atoms, atn, spg = self.prepareDif()
-        dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
-  
+        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        if ret != 0:
+            raise BlochListError('Failed to load crystal')
   
         tx, ty = em_controls.tilt[0], em_controls.tilt[1]
         dx, dy = em_controls.defl[0], em_controls.defl[1]
@@ -1189,7 +1196,10 @@ def add_bloch(target):
         self.set_sim_controls(em_controls.simc)
 
         cell, atoms, atn, spg = self.prepareDif()
-        dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        
+        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        if ret != 0:
+            raise BlochListError('Failed to load crystal')
   
         tx, ty = em_controls.tilt
         dx, dy = em_controls.defl
@@ -2319,7 +2329,11 @@ class Crystal:
 
         # load the crystal
         cell, atoms, atn, spg = self.prepareDif()
-        dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        
+        if ret != 0:
+            print(f'crystal name: {self.name}')
+            raise StereodiagramError('Stereodiagram generation failed to load crystal')
 
         ret = dif.diffract(3)
         if ret != 1:
@@ -2480,9 +2494,11 @@ class Crystal:
         self.set_sim_controls(simc)
         
         cell, atoms, atn, spg = self.prepareDif()
-        dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
-        # dif.crystal_printall()
-        ret = 1
+        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        
+        if ret != 0:
+            print(f'failed to load crystal')
+            return 500, ({})
         
         ret = dif.diffract()
         if ret == 0:
