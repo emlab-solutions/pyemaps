@@ -65,7 +65,11 @@ Linux support planned in future releases, stay tuned.
  
 where .venv is the python virtual environment
 
-*PYEMAPS_DATA* environment variable is set to a directory where all custom crystal data and output files are located provides central location for organizing your own crystal data, as well as your results from pyemaps runs. __pyemaps__ also searches this directory for your crystal data. If these environment variable is set, all output from __pyemaps__ will be placed.
+*PYEMAPS_DATA* environment variable is set to a directory where all custom crystal data and output files are located. This pyemaps data home provides central location for organizing your own crystal data, as well as your results. 
+
+__pyemaps__ first searches this data home directory for your crystal data, if this environment variable is set. Otherwise, it looks at your current directory next. 
+
+All output from __pyemaps__ will be placed in this order.
 
 ```
     PYEMAPS_DATA=<local directory>  # pyemaps data home, must have right permisions for pyemaps
