@@ -176,10 +176,16 @@ __Dynamic Diffraction Pattern__ for _Silicon_ crystal with sampling set at 20:
 | - | - |
 |![](https://github.com/emlab-solutions/imagepypy/raw/main/si_bloch1.png) |![](https://github.com/emlab-solutions/imagepypy/raw/main/si_bloch2.png) |
 
-__Stereodiagram__ for _Silicon_ crystal
+_NEW!_ __Stereodiagram__ for _Silicon_ crystal
 |  |  |
 | - | - |
 |![](https://github.com/emlab-solutions/imagepypy/raw/main/Stereo_Silicon4.png) |![](https://github.com/emlab-solutions/imagepypy/raw/main/Stereo_Silicon1.png) |
+
+_NEW!_ __Crystal Constructor__ output (.xyz) visualized by cloudEMAPS 2.0 with Jmol
+|  |  |
+| - | - |
+|![](https://github.com/emlab-solutions/imagepypy/raw/main/mxtal01.png) |![](https://github.com/emlab-solutions/imagepypy/raw/main/mxtal02.png) |
+
 
 To see all crystal names with builtin data, call:
 ```python
