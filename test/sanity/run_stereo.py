@@ -57,58 +57,31 @@ def getStereo(cn, emc = EMC(), ckey='tilt'):
     else:
         return None
 
+def stereo_run_thru_builtin():
+    from pyemaps import Crystal as cr
+    from pyemaps import showStereo
 
-def generate_stereo(name = 'Silicon', ckey = 'tilt'):
-    '''
-    This routine demonstrate how to use pyemaps dif module to generate kinematic diffraction paterns
-    : name: crystal name from builtin database
-    : dsize: diffracted beams size
-    : ckey: emcontrol key name
-    : sim_rand: randomized simulation control which is added to EMControl class, these controls
-    :           are not changed much (default values if not set). But if changes are needed, then they 
-    :           are also set from within EMControl class
-    '''
-    # from pyemaps import DPList, SIMC
-    # from pyemaps import Crystal as cryst
+    lcrystals = cr.list_all_builtin_crystals()
 
-    # cr = cryst.from_builtin(name)
-
-    # create an EM control object based on the key input "ckey"
-    emclist = []
-    for i in range(-3,3): 
-        
-        if ckey == 'tilt':
-            emclist.append(EMC(tilt=(i*0.5, 0.0)))
-  
-        if ckey == 'zone':
-            emclist.append(EMC(zone=(i,-i,1)))
-
-    
     fs = []
-    slist=[]
+    
     with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
         
-        for ec in emclist:
-            fs.append(e.submit(getStereo, cn = name, emc = ec, ckey = ckey))
+        for c in lcrystals:
+            fs.append(e.submit(getStereo, cn = c, emc = EMC(), ckey = None))
 
         for f in concurrent.futures.as_completed(fs):
             try:
-                _, emc, stereo = f.result()               
+                name, ec, stereo = f.result()               
             except Exception as e:
                 msg = str(f'message: {e}')
                 print('failed to generate stereodiagram with '+msg)
-                exit(1)
             else:
-                slist.append((emc, stereo))
-                # print(f' successfully generated stereodiagram')        
-    
-    return slist
+                showStereo([(ec,stereo)], name=name, iShow=True, zLimit = 1)
+         
 
 if __name__ == '__main__':
     from pyemaps import showStereo
 
-    em_keys = ['tilt', 'zone']
-    for k in em_keys:
-        stereoList = generate_stereo(ckey=k)
-        showStereo(stereoList, name='Silicon', iShow=True, zLimit = 1, bSave=True)
-        
+    stereo_run_thru_builtin()
+    

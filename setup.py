@@ -381,6 +381,7 @@ pyemaps_dif = Extension("pyemaps.diffract.emaps",
         sources                = get_diffract_sources(),
         extra_f90_compile_args     = get_compiler_args(),
         define_macros          = [('__BFREE__', 3),
+                                  ('__CFREE__', 10),
                                   ('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION')
                                  ],
         undef_macros           = ['WOS',],
