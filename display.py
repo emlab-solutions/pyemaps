@@ -282,7 +282,7 @@ class DifPlotter:
         timer.add_callback(self.call_back)
         timer.start()
 
-        # plt.show()
+        plt.show()
 
 class NBPlot:
     '''
