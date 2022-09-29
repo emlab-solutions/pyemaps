@@ -665,33 +665,29 @@ def add_mxtal(target):
 
         xyzfn = compose_ofn(fn, self.name, ty='mxtal')
 
+    
         try:
-            open(xyzfn)
-        except PermissionError:
-            raise MxtalError('file permission error')
+            with open(xyzfn, 'w') as f:
+                slines.append(str(nxyz))      
+                c0, c1, c2, c3, c4, c5 = xyzdict['cell']
+                slines.append(str(f'\t {c0} {c1} {c2} {c3} {c4} {c5}'))
+                for xyz in xyzlist:
+                    s, x, y, z = xyz['symb'], xyz['x'], xyz['y'], xyz['z']
+                    sx = '{0: < #014.10f}'. format(float(x))
+                    sy = '{0: < #014.10f}'. format(float(y))
+                    sz = '{0: < #014.10f}'. format(float(z))
+                    
+                    slines.append(str(f'{s:<10}\t{sx} {sy} {sz}'))
+                # print(f'writing data: {slines}')
+                f.writelines('\n'.join(slines))
+        except (FileNotFoundError, IOError, PermissionError) as e:
+            print(f'Error writing xyz data file {fn}')
+            return -1
+        except Exception:
+            return -1
         else:
-            try:
-                with open(xyzfn, 'w') as f:
-                    slines.append(str(nxyz))      
-                    c0, c1, c2, c3, c4, c5 = xyzdict['cell']
-                    slines.append(str(f'\t {c0} {c1} {c2} {c3} {c4} {c5}'))
-                    for xyz in xyzlist:
-                        s, x, y, z = xyz['symb'], xyz['x'], xyz['y'], xyz['z']
-                        sx = '{0: < #014.10f}'. format(float(x))
-                        sy = '{0: < #014.10f}'. format(float(y))
-                        sz = '{0: < #014.10f}'. format(float(z))
-                        
-                        slines.append(str(f'{s:<10}\t{sx} {sy} {sz}'))
-                    # print(f'writing data: {slines}')
-                    f.writelines('\n'.join(slines))
-            except (FileNotFoundError, IOError, PermissionError) as e:
-                print(f'Error writing xyz data file {fn}')
-                return -1
-            except Exception:
-                return -1
-            else:
-                print(f'Successfully saved mxtal data in file: {xyzfn}')
-                return 0
+            print(f'Successfully saved mxtal data in file: {xyzfn}')
+            return 0
 
     def generateMxtal(self, 
                       trMatrix = ID_MATRIX, 
