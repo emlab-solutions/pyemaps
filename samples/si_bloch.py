@@ -78,7 +78,7 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
                emc, img = f.result()
 
             except (BlochError, EMCError) as e:
-                print(f'{f} generated an exception: {e.message}') 
+                print(f'{f} generated an exception: {e.message}, {emc}') 
                 return bimgs
             except:
                 print('failed to generate diffraction patterns') 

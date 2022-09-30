@@ -1,0 +1,118 @@
+#------------------------------------------------------------------------------
+#$Date: 2015-01-27 21:58:39 +0200 (Tue, 27 Jan 2015) $
+#$Revision: 130149 $
+#$URL: svn://www.crystallography.net/cod/cif/1/01/01/1010172.cif $
+#------------------------------------------------------------------------------
+#
+# This file is available in the Crystallography Open Database (COD),
+# http://www.crystallography.net/
+#
+# All data on this site have been placed in the public domain by the
+# contributors.
+#
+data_1010172
+loop_
+_publ_author_name
+'Helms, A'
+'Klemm, W'
+_publ_section_title
+;
+Ueber die Kristallstrukturen der Rubidium- und Caesiumsesquioxyde
+;
+_journal_coden_ASTM              ZAACAB
+_journal_name_full
+;
+Zeitschrift fuer Anorganische und Allgemeine Chemie
+;
+_journal_page_first              201
+_journal_page_last               214
+_journal_paper_doi               10.1002/zaac.19392420210
+_journal_volume                  242
+_journal_year                    1939
+_chemical_formula_structural     'Cs4 (O2)3'
+_chemical_formula_sum            'Cs4 O6'
+_chemical_name_systematic        'Caesium oxide (4/6)'
+_space_group_IT_number           220
+_symmetry_cell_setting           cubic
+_symmetry_Int_Tables_number      220
+_symmetry_space_group_name_Hall  'I -4bd 2c 3'
+_symmetry_space_group_name_H-M   'I -4 3 d'
+_cell_angle_alpha                90
+_cell_angle_beta                 90
+_cell_angle_gamma                90
+_cell_formula_units_Z            4
+_cell_length_a                   9.86
+_cell_length_b                   9.86
+_cell_length_c                   9.86
+_cell_volume                     958.6
+_exptl_crystal_density_meas      4.25
+_cod_database_code               1010172
+loop_
+_symmetry_equiv_pos_as_xyz
+x,y,z
+1/2+x,1/2-y,-z
+-x,1/2+y,1/2-z
+1/2-x,-y,1/2+z
+1/4+x,1/4+z,1/4+y
+3/4+x,1/4-z,3/4-y
+1/4-x,3/4-z,3/4+y
+3/4-x,3/4+z,1/4-y
+y,z,x
+1/2-y,-z,1/2+x
+1/2+y,1/2-z,-x
+-y,1/2+z,1/2-x
+1/4+z,1/4+y,1/4+x
+1/4-z,3/4-y,3/4+x
+3/4-z,3/4+y,1/4-x
+3/4+z,1/4-y,3/4-x
+z,x,y
+-z,1/2+x,1/2-y
+1/2-z,-x,1/2+y
+1/2+z,1/2-x,-y
+1/4+y,1/4+x,1/4+z
+3/4-y,3/4+x,1/4-z
+3/4+y,1/4-x,3/4-z
+1/4-y,3/4-x,3/4+z
+1/2+x,1/2+y,1/2+z
+x,-y,1/2-z
+1/2-x,y,-z
+-x,1/2-y,z
+3/4+x,3/4+z,3/4+y
+1/4+x,3/4-z,1/4-y
+3/4-x,1/4-z,1/4+y
+1/4-x,1/4+z,3/4-y
+1/2+y,1/2+z,1/2+x
+-y,1/2-z,x
+y,-z,1/2-x
+1/2-y,z,-x
+3/4+z,3/4+y,3/4+x
+3/4-z,1/4-y,1/4+x
+1/4-z,1/4+y,3/4-x
+1/4+z,3/4-y,1/4-x
+1/2+z,1/2+x,1/2+y
+1/2-z,x,-y
+-z,1/2-x,y
+z,-x,1/2-y
+3/4+y,3/4+x,3/4+z
+1/4-y,1/4+x,3/4-z
+1/4+y,3/4-x,1/4-z
+3/4-y,1/4-x,1/4+z
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_symmetry_multiplicity
+_atom_site_Wyckoff_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+_atom_site_attached_hydrogens
+_atom_site_calc_flag
+O1 O1- 12 a 0.375 0. 0.25 1. 0 d
+O2 O1- 12 a -1. -1. -1. 1. 0 dum
+Cs1 Cs1+ 16 c 0.054 0.054 0.054 1. 0 d
+loop_
+_atom_type_symbol
+_atom_type_oxidation_number
+O1- -0.667
+Cs1+ 1.000

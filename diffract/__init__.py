@@ -46,3 +46,17 @@ try:
 
 except ImportError as e:
     pass
+
+try:
+    from .emaps import stereo
+
+except ImportError as e:
+    pass
+
+
+try:
+    from .emaps import mxtal
+
+except ImportError as e:
+    print(f'no mxtal module found in emaps')
+    # pass

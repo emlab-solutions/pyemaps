@@ -1,0 +1,121 @@
+#------------------------------------------------------------------------------
+#$Date: 2018-07-16 17:00:25 +0300 (Mon, 16 Jul 2018) $
+#$Revision: 209054 $
+#$URL: svn://www.crystallography.net/cod/cif/1/01/01/1010134.cif $
+#------------------------------------------------------------------------------
+#
+# This file is available in the Crystallography Open Database (COD),
+# http://www.crystallography.net/
+#
+# All data on this site have been placed in the public domain by the
+# contributors.
+#
+data_1010134
+loop_
+_publ_author_name
+'Natta, G.'
+_publ_section_title              'Struttura del tetrafluoruro de Silicio'
+_journal_coden_ASTM              GCITA9
+_journal_name_full               'Gazzetta Chimica Italiana'
+_journal_page_first              911
+_journal_page_last               922
+_journal_volume                  60
+_journal_year                    1930
+_chemical_formula_structural     'Si F4'
+_chemical_formula_sum            'F4 Si'
+_chemical_name_systematic        'Silicon fluoride'
+_space_group_crystal_system      cubic
+_space_group_IT_number           217
+_space_group_name_Hall           'I -4 2 3'
+_space_group_name_H-M_alt        'I -4 3 m'
+_cell_angle_alpha                90
+_cell_angle_beta                 90
+_cell_angle_gamma                90
+_cell_formula_units_Z            2
+_cell_length_a                   5.41(1)
+_cell_length_b                   5.41(1)
+_cell_length_c                   5.41(1)
+_cell_volume                     158.3
+_cod_depositor_comments
+;
+ Changing the space group from "P 42 3 2" to "I -4 3 m" after consulting the
+ original publication.
+
+ Antanas Vaitkus,
+ 2018-07-16
+;
+_cod_original_sg_symbol_Hall     'P 42 3 2'
+_cod_database_code               1010134
+loop_
+_space_group_symop_id
+_space_group_symop_operation_xyz
+1 x,y,z
+2 y,-x,-z
+3 -x,-y,z
+4 -y,x,-z
+5 x,-y,-z
+6 -y,-x,z
+7 -x,y,-z
+8 y,x,z
+9 z,x,y
+10 x,-z,-y
+11 -z,-x,y
+12 -x,z,-y
+13 z,-x,-y
+14 -x,-z,y
+15 -z,x,-y
+16 x,z,y
+17 y,z,x
+18 y,-z,-x
+19 -z,-y,x
+20 -y,z,-x
+21 z,y,x
+22 -y,-z,x
+23 -z,y,-x
+24 z,-y,-x
+25 x+1/2,y+1/2,z+1/2
+26 y+1/2,-x+1/2,-z+1/2
+27 -x+1/2,-y+1/2,z+1/2
+28 -y+1/2,x+1/2,-z+1/2
+29 x+1/2,-y+1/2,-z+1/2
+30 -y+1/2,-x+1/2,z+1/2
+31 -x+1/2,y+1/2,-z+1/2
+32 y+1/2,x+1/2,z+1/2
+33 z+1/2,x+1/2,y+1/2
+34 x+1/2,-z+1/2,-y+1/2
+35 -z+1/2,-x+1/2,y+1/2
+36 -x+1/2,z+1/2,-y+1/2
+37 z+1/2,-x+1/2,-y+1/2
+38 -x+1/2,-z+1/2,y+1/2
+39 -z+1/2,x+1/2,-y+1/2
+40 x+1/2,z+1/2,y+1/2
+41 y+1/2,z+1/2,x+1/2
+42 y+1/2,-z+1/2,-x+1/2
+43 -z+1/2,-y+1/2,x+1/2
+44 -y+1/2,z+1/2,-x+1/2
+45 z+1/2,y+1/2,x+1/2
+46 -y+1/2,-z+1/2,x+1/2
+47 -z+1/2,y+1/2,-x+1/2
+48 z+1/2,-y+1/2,-x+1/2
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_symmetry_multiplicity
+_atom_site_Wyckoff_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_occupancy
+_atom_site_calc_flag
+Si1 Si4+ 2 a 0 0 0 1 d
+F1 F1- 8 c 0.172(2) 0.172(2) 0.172(2) 1 d
+loop_
+_atom_type_symbol
+_atom_type_oxidation_number
+Si4+ 4
+F1- -1
+loop_
+_cod_related_entry_id
+_cod_related_entry_database
+_cod_related_entry_code
+1 AMCSD 0017064

@@ -25,7 +25,7 @@ dpgen_cobj = 'write_dpbin.o'
 
 compile_args=['-Qm64',
               '-WB',
-              '-heap-arrays:768',
+              '-heap-arrays',
               '-Qopenmp',
               '-GS', 
               '-4R8',
@@ -35,13 +35,40 @@ compile_args=['-Qm64',
               '-libs:static',
               '-MT',
               '-c']
+              
+compile_args_lin= ['-m64',
+                   '-WB', 
+                   '-qopenmp', 
+                   '-qmkl', 
+                   '-heap-arrays', 
+	               '-r8', 
+                   '-fpp', 
+                #    '-warn nointerfaces',
+                   '-O3',
+                #    'fp-stack-check',
+                   '-c']
 
 intel_libs = ['mkl_intel_lp64',
               'mkl_intel_thread',
               'mkl_core', 
               'libiomp5md']
 
+c_compile_args = ["-std=c11", "-stack_size 2000000"]
+
+intel_libs_lin = ['mkl_rt', 
+              'iomp5',
+              'pthread',
+              'm',
+              'dl']
+
 lapack_lib = 'mkl_lapack95_lp64'
+
+install_requires_common = [
+            'numpy >= 1.21.2',
+            'matplotlib >= 3.2.1',
+            # 'intel-fortran-rt == 2022.1.0',
+            # 'mkl-service == 2.4.0'
+            ]
 
 dif_source = ['diffract.f90',
             'diff_types.f90', 
@@ -65,6 +92,10 @@ bloch_files = ['zg.f90',
                'bloch.f90',
                'bloch_mem.f90'
               ]
+stereo_files = ['stereo.f90']
+
+mxtal_files = ['mxtal_mem.f90',
+               'mxtal.f90']
 
 dpgen_files =['dp_types.f90',
 			  'dp_gen.f90'
@@ -81,6 +112,10 @@ powder_files =['powder_types.f90',
 
 spgra_files =['spgra.f90']
 
+# c_objs = ['blochimgs.o', 'write_dpbin.o']
+c_objs_win = ['blochimgs.obj']
+c_objs_lin = ['blochimgs.o']
+
 
 sct_files =['scattering_sct.pyf', 'scattering.f90']  
 
@@ -94,6 +129,26 @@ def get_emaps_srcdir():
 
     return os.path.join(parent_path, 'emaps')
 
+def get_extra_objects():
+    '''
+    extra objects such as those from c code
+    '''
+    import platform, os
+
+    objs = []
+
+    osname = platform.platform().lower()
+    print(f'OS name found: {osname}')
+    if  'windows' in osname:
+        objs = c_objs_win
+    elif 'linux' in osname:
+        objs = c_objs_lin
+    else:
+        raise Exception('Unsupported OS')
+
+    emaps_dir = get_emaps_srcdir()
+    objlist = [os.path.join(emaps_dir, o) for o in objs]
+    return objlist
 
 def get_scattering_sources():
 
@@ -118,45 +173,65 @@ def get_spg_sources():
 
 def get_diffract_sources():
 
-    comp = get_comp()
-    print(f'----------building component: {comp}')
+    # comp = get_comp()
+    # print(f'----------building component: {comp}')
 
     src_list = []
-    if comp == 'dif':
-        pyf = ".".join([mod_name+'_dif','pyf'])
-        src_list.append(pyf)
-        src_list.extend(dif_source)
+    # if comp == 'dif':
+    #     pyf = ".".join([mod_name+'_dif','pyf'])
+    #     src_list.append(pyf)
+    #     src_list.extend(dif_source)
 
-    if comp == 'dpgen':
-        pyf = ".".join([mod_name+'_dpgen','pyf'])
-        src_list.append(pyf)
-        src_list.extend(dif_source)
-        src_list.extend(dpgen_files)
-        # return comp, src_list
+    # if comp == 'dpgen':
+    #     pyf = ".".join([mod_name+'_dpgen','pyf'])
+    #     src_list.append(pyf)
+    #     src_list.extend(dif_source)
+    #     src_list.extend(dpgen_files)
+    #     # return comp, src_list
 
-    if comp == 'csf':
-        pyf = ".".join([mod_name+'_csf','pyf'])
-        src_list.append(pyf)
-        src_list.extend(dif_source)
-        src_list.extend(csf_files)
-        # return comp, src_list
+    # if comp == 'csf':
+    #     pyf = ".".join([mod_name+'_csf','pyf'])
+    #     src_list.append(pyf)
+    #     src_list.extend(dif_source)
+    #     src_list.extend(csf_files)
+    #     # return comp, src_list
 
-    if comp == 'powder':
-        pyf = ".".join([mod_name+'_powder','pyf'])
-        src_list.append(pyf)
-        src_list.extend(dif_source)
-        src_list.extend(csf_files)
-        src_list.extend(powder_files)
-        # return comp, src_list
+    # if comp == 'powder':
+    #     pyf = ".".join([mod_name+'_powder','pyf'])
+    #     src_list.append(pyf)
+    #     src_list.extend(dif_source)
+    #     src_list.extend(csf_files)
+    #     src_list.extend(powder_files)
+    #     # return comp, src_list
 
-    if comp == 'bloch':
-        pyf = ".".join([mod_name+'_bloch','pyf'])
-        src_list.append(pyf)
-        src_list.extend(dif_source)
-        src_list.extend(csf_files)
-        src_list.extend(powder_files)
-        src_list.extend(bloch_files)
+    # if comp == 'bloch':
+    #     pyf = ".".join([mod_name+'_bloch','pyf'])
+    #     src_list.append(pyf)
+    #     src_list.extend(dif_source)
+    #     src_list.extend(csf_files)
+    #     src_list.extend(powder_files)
+    #     src_list.extend(bloch_files)
 
+    # if comp == 'stereo':
+    #     pyf = ".".join([mod_name+'_stereo','pyf'])
+    #     src_list.append(pyf)
+    #     src_list.extend(dif_source)
+    #     src_list.extend(csf_files)
+    #     src_list.extend(powder_files)
+    #     src_list.extend(bloch_files)
+    #     src_list.extend(stereo_files)
+
+    pyf = ".".join([mod_name,'pyf'])
+    src_list.append(pyf)
+    src_list.extend(dif_source)
+    src_list.extend(csf_files)
+    src_list.extend(powder_files)
+    src_list.extend(bloch_files)
+    # src_list.extend(dpgen_files)
+    
+    src_list.extend(stereo_files)
+    src_list.extend(mxtal_files)
+    print(f'source code list: {src_list}')
     emaps_dir = get_emaps_srcdir()
     return [os.path.join(emaps_dir, srcfn) for srcfn in src_list]
 
@@ -229,19 +304,32 @@ def get_cdata(sdn = 'cdata'):
 
     return [os.path.join(sdn, os.path.basename(name)) for name in sfile_list] 
 
-def get_intel_redist():
-    import os, glob
-    intel_redistdir = os.path.join(os.getenv('IFORTROOT'), 'redist', 'intel64_win', 'compiler')
-    sbase_files = os.path.join(intel_redistdir, '*.dll')
-    ifile_list = glob.glob(sbase_files)
+# def get_intel_redist():
+#     import os, glob
+#     intel_redistdir = os.path.join(os.getenv('IFORTROOT'), 'redist', 'intel64_win', 'compiler')
+#     sbase_files = os.path.join(intel_redistdir, '*.dll')
+#     ifile_list = glob.glob(sbase_files)
     
-    return ifile_list
+#     return ifile_list
 
 def get_library_dirs():
     
+    import platform
+
+    lib_folder = ''
+
+    osname = platform.platform().lower()
+    print(f'OS name found: {osname}')
+    if  'windows' in osname:
+        lib_folder = 'intel64_win'
+    elif 'linux' in osname:
+        lib_folder = 'intel64'
+    else:
+        raise Exception('Unsupported OS')
+
     libdir = []
-    libdir.append(os.path.join(IFORTROOT, 'compiler', 'lib', 'intel64_win')) #intel openmp libdir
-    libdir.append(os.path.join(MKLROOT, 'lib', 'intel64_win' ))
+    libdir.append(os.path.join(IFORTROOT, 'compiler', 'lib', lib_folder)) #intel openmp libdir
+    libdir.append(os.path.join(MKLROOT, 'lib', lib_folder))
     
     return libdir
 
@@ -253,45 +341,85 @@ def get_include_dirs():
     return incl
 
 def get_libraries():
-    libs = intel_libs.copy()
-    # libs = []
+    import sys
+
+    libs = []
+    if sys.platform == 'win32': 
+        libs = intel_libs.copy()
+    elif sys.platform == 'linux':
+        libs = intel_libs_lin.copy()
+    else:
+        raise Exception('The OS is not supported')
+
     libs.insert(0, lapack_lib)
     return libs
 
+def get_compiler_args():
+    import sys
+    if sys.platform == 'win32': 
+        return compile_args
+    elif sys.platform == 'linux':
+        return compile_args_lin
+    else:
+        raise Exception('The OS is not supported')
+
+def get_install_requires():
+    import sys
+    install_reqs = install_requires_common.copy()
+
+    if sys.platform == 'win32': 
+        install_reqs += ['msvc-runtime == 14.29.30133',
+                        'intel-fortran-rt == 2022.1.0',
+                        'mkl-service == 2.4.0']
+        return install_reqs
+    elif sys.platform == 'linux':
+        return install_reqs
+    else:
+        raise Exception('The OS is not supported')
+ 
 pyemaps_dif = Extension("pyemaps.diffract.emaps",
         sources                = get_diffract_sources(),
-        extra_f90_compile_args     = compile_args,
+        extra_f90_compile_args     = get_compiler_args(),
         define_macros          = [('__BFREE__', 3),
+                                  ('__CFREE__', 5.67),
                                   ('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION')
                                  ],
         undef_macros           = ['WOS',],
-        # extra_link_args        = ['-static', 
-                                #   '-static-intel'
-                                #   ],
-        # extra_link_args=["-static", "-static-libgfortran", "-static-libgcc']  (for gnu95 compiler)
+        # extra_c_compile_args   = c_compile_args,
+        # language               = 'c11',
+        extra_link_args        =["-static", ],
         libraries              = get_libraries(),
         library_dirs           = get_library_dirs(),
-        include_dirs           = get_include_dirs()
+        include_dirs           = get_include_dirs(),
+        extra_objects          = get_extra_objects(),
+        f2py_options           = ["--quiet",]
 )
 
 pyemaps_scattering = Extension("pyemaps.scattering.scattering",
-        sources = get_scattering_sources(),
-        extra_f90_compile_args     = compile_args,
-        define_macros          = [('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION'),
+        sources                     = get_scattering_sources(),
+        extra_f90_compile_args      = get_compiler_args(),
+        # extra_compile_args         = extra_compile_args,
+        # language               = 'c11',
+        extra_link_args             =["-static", ],
+        define_macros               = [('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION'),
                                 #   ('Py_LIMITED_API', '0x03070000'),
-                                 ],
+                                      ],
+        f2py_options           = ["--quiet",]
 )
 
 pyemaps_spg = Extension("pyemaps.spg.spg",
-        sources = get_spg_sources(),
-        extra_f90_compile_args     = compile_args,
+        sources                     = get_spg_sources(),
+        extra_f90_compile_args      = get_compiler_args(),
+        # extra_compile_args         = extra_compile_args,
+        # language               = 'c11',
+        extra_link_args        =["-static", ],
         define_macros          = [('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION')
                                  ],
+        f2py_options           = ["--quiet",]
 )
 
 
 pyemaps_cifreader = Extension("pyemaps.CifFile.StarScan",
-        # name                   = 'CifFile.StarScan',
         sources                = get_cifreader_source()
 )
 
@@ -323,6 +451,7 @@ setup(name                              ="pyemaps",
                                            'pyemaps.ddiffs',
                                            'pyemaps.display',
                                            'pyemaps.errors',
+                                           'pyemaps.fileutils',
                                            'pyemaps.emcontrols',
                                            'pyemaps.CifFile.CifFile_module',
                                            'pyemaps.CifFile.yapps3_compiled_rt',
@@ -348,6 +477,7 @@ setup(name                              ="pyemaps",
       package_dir                       = {'pyemaps':'',
                                             'pyemaps.CifFile':'CifFile/src'
                                             },
+      install_requires              = get_install_requires(),
       
       data_files                    = [('pyemaps', 
                                         ['__config__.py',
