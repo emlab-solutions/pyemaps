@@ -74,8 +74,7 @@ def stereo_run_thru_builtin():
             try:
                 name, ec, stereo = f.result()               
             except Exception as e:
-                msg = str(f'message: {e}')
-                print('failed to generate stereodiagram with '+msg)
+                print('failed to generate stereodiagram with ' + str(e))
             else:
                 showStereo([(ec,stereo)], name=name, iShow=True, zLimit = 1)
          

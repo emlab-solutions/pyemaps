@@ -1511,8 +1511,8 @@ class Crystal:
 
         except (XTLError, CellError, UCError, SPGError) as e:
             raise CrystalClassError(e.message)
-        except (FileNotFoundError, AttributeError) as e:
-            raise CrystalClassError(e.message)
+        except (FileNotFoundError, IOError) as e:
+            raise CrystalClassError('Error creating crystal: ' + str(e))
         else:
             return xtl
 
@@ -2203,8 +2203,8 @@ class Crystal:
                     if key not in data:
                         raise XTLError(fn, str(f'missing data for {key}'))
 
-        except IOError as e:
-            raise XTLError(fn, e.message)
+        except (FileNotFoundError,IOError) as e:
+            raise XTLError(fn, str(e))
 
         return name, data
     

@@ -95,8 +95,7 @@ def generate_stereo(name = 'Silicon', ckey = 'tilt'):
             try:
                 _, emc, stereo = f.result()               
             except Exception as e:
-                msg = str(f'message: {e}')
-                print('failed to generate stereodiagram with '+msg)
+                print('failed to generate stereodiagram with ' + str(e))
                 exit(1)
             else:
                 slist.append((emc, stereo))
