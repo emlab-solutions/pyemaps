@@ -664,9 +664,8 @@ def add_mxtal(target):
         slines = []
         nxyz = len(xyzlist)
 
-        xyzfn = compose_ofn(fn, self.name, ty='mxtal')
-
-    
+        xyzfn = compose_ofn(fn, self.name, ty='mxtal') +'.xyz'
+        
         try:
             with open(xyzfn, 'w') as f:
                 slines.append(str(nxyz))      
@@ -1040,10 +1039,7 @@ def add_bloch(target):
            Digital Micrograph (GDM)
         '''
         
-        bfn_path = find_pyemaps_datahome(home_type="bloch")
-        bfn = auto_fn(self.name, ty='bloch')
-
-        cfn = os.path.join(bfn_path, bfn+BIMG_EXT)
+        cfn = compose_ofn(None, self.name, ty='bloch')+BIMG_EXT
 
         l = len(cfn)
         if l > MAX_BIMGFN:
