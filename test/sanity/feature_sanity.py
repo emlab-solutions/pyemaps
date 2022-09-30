@@ -1,5 +1,5 @@
 
-from pyemaps.display import showBloch
+from pyemaps import showBloch
 import os
 from pathlib import Path
 
