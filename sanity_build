@@ -21,7 +21,7 @@ def test_cif():
     except CrystalClassError as e:
         print(f'case#1 error: loading crystal data: {e.message}')
     except Exception as e:
-        print(f'error: loading: {e}')
+        print(f'error: loading: ' + str(e))
     else:
         print(f'successfully loaded: {si}')
 
@@ -33,7 +33,7 @@ def test_cif():
     except CrystalClassError as e:
         print(f'error: loading crystal data: {e.message}')
     except Exception as e:
-        print(f'error: loading: {e}')
+        print(f'error: loading: ' + str(e))
     else:
         print(f'case#2: successfully loaded: {si}')
     
@@ -44,7 +44,7 @@ def test_cif():
     except CrystalClassError as e:
         print(f'error: loading crystal data: {e.message}')
     except Exception as e:
-        print(f'error: loading: {e}')
+        print(f'error: loading: ' + str(e))
     else:
         print(f'case#5: successfully loaded: {si}')
     
@@ -55,7 +55,7 @@ def test_cif():
     except CrystalClassError as e:
         print(f'case#6 error: loading crystal data: {e.message}')
     except Exception as e:
-        print(f'case#6 error: loading: {e}')
+        print(f'case#6 error: loading: ' + str(e))
     else:
         print(f'case#6: successfully loaded: {si}')
     
@@ -65,7 +65,7 @@ def test_cif():
     except CrystalClassError as e:
         print(f'case#7 error: loading crystal data: {e.message}')
     except Exception as e:
-        print(f'case#7 error: loading: {e}')
+        print(f'case#7 error: loading: ' + str(e))
     else:
         print(f'case#7: successfully loaded: {si}')
     
@@ -75,7 +75,7 @@ def test_cif():
     except CrystalClassError as e:
         print(f'case#8 error: loading crystal data: {e.message}')
     except Exception as e:
-        print(f'case#8 error: loading: {e}')
+        print(f'case#8 error: loading: ' + str(e))
     else:
         print(f'case#8: successfully loaded: {si}')
 
@@ -91,7 +91,7 @@ def test_xtl():
     except CrystalClassError as e:
         print(f'case#3 error: loading crystal data: {e.message}')
     except Exception as e:
-        print(f'error: loading: {e}')
+        print(f'error: loading: ' + str(e))
     else:
         print(f'successfully loaded: {si}')
 
@@ -103,7 +103,7 @@ def test_xtl():
     except CrystalClassError as e:
         print(f'error: loading crystal data: {e.message}')
     except Exception as e:
-        print(f'error: loading: {e}')
+        print(f'error: loading: ' + str(e))
     else:
         print(f'case#4 successfully loaded: {si}')
 
@@ -141,7 +141,7 @@ def test_bimgwrite():
     except (CrystalClassError, BlochError) as e:
         print(f'error: generate and write bloch image data1: {e.message}')
     except Exception as e:
-        print(f'error: generate and write bloch image data2: {e}')
+        print(f'error: generate and write bloch image data2: ' + str(e))
     else:
         print(f'crytsal data loaded: {si}')
         print(f'successfully generated and write bloch images')
@@ -159,7 +159,7 @@ def test_dpgen():
     except (CrystalClassError) as e:
         print(f'error: generate and write bloch image data: {e.message}')
     except Exception as e:
-        print(f'error: generate and write bloch image data: cause unknown')
+        print(f'error: generate and write bloch image data:  ' + str(e))
     else:
         print(f'success!')
 
