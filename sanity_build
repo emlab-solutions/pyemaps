@@ -134,7 +134,7 @@ def test_bimgwrite():
     from pyemaps import CrystalClassError
     from pyemaps import BlochError
     try:
-        si = cr.from_builtin('BiMnO3')
+        si = cr.from_builtin('ErbiumPyrogermanate')
         print(f'loaded crystal: {si}')
         bimgs = si.generateBlochImgs(bSave=True)
 
