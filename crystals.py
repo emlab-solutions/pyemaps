@@ -25,6 +25,7 @@ Date Created:       May 07, 2022
 '''
 
 # from turtle import title
+
 import numpy as np
 from numpy import asfortranarray as farray
 from functools import wraps
@@ -2221,23 +2222,26 @@ class Crystal:
         
         return -1 #error
 
-    @classmethod ####TODO
-    def from_json_file(cls, jfn):
-        with open(jfn) as jf:
-            data=json.load(jf)
-            if "name" in data:
-                name = data["name"]
-                return cls(name, data)
-            
-            return cls()
+    @classmethod 
+    def from_jsonfile(cls, jfn):
+        try:
+            with open(jfn) as jf:
+                data=json.load(jf)
+        except:
+            raise CrystalClassError('Failed to open the json file')
+        else:
+            if 'name' not in data:
+                raise CrystalClassError('Failed to create crystal object with input dictionary')
 
-    @classmethod ####TODO
-    def from_dict(cls, ddict):
-        if "name" in jdata:
-            name = jdata["name"]
-            return cls(name, jdata)
+            return cls(data['name'], data)
 
-        return cls()            
+    @classmethod
+    def from_dict(cls, cdict):
+        if 'name' not in cdict:
+            raise CrystalClassError('Failed to create crystal object with input dictionary')
+        
+        name = cdict["name"]
+        return cls(name, cdict)           
 
     @staticmethod
     def list_all_builtin_crystals():
