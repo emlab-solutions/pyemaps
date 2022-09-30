@@ -102,8 +102,7 @@ def generate_difs(name = 'Silicon', mode = DEF_MODE, ckey = 'tilt', sim_rand=Fal
                 print(f'{f} generated an exception: {e.message}')
                 exit(1)
             except Exception as e:
-                msg = str(f'message: {e}')
-                print('failed to generate diffraction patterns with '+msg)
+                print('failed to generate diffraction patterns with  ' + str(e))
                 exit(1)
             
     return difs

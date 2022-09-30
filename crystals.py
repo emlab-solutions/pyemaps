@@ -24,12 +24,15 @@ Date Created:       May 07, 2022
 
 '''
 
-from turtle import title
+# from turtle import title
+
 import numpy as np
 from numpy import asfortranarray as farray
 from functools import wraps
 import os
 import json
+
+from .fileutils import *
 
 # from pyemaps.em import DEF_INTCTL
 
@@ -400,6 +403,10 @@ class Cell:
         
         return farray(celarr, dtype=float)
 
+    def __iter__(self):
+        for key in self.__dict__:
+            yield (key[1:], getattr(self, key))
+
 class SPG:
     def __init__(self, spg_dict):
         if not spg_dict or not isinstance(spg_dict, dict):
@@ -478,6 +485,10 @@ class SPG:
     def prepareDif(self):
          return farray([self._number, self._setting], dtype=int)
 
+    def __iter__(self):
+        for key in self.__dict__:
+            yield key[1:], getattr(self, key)
+
 class Atom:
     def __init__(self, a_dict={}):
         
@@ -535,6 +546,7 @@ class Atom:
                 
             else:
                raise UCError(str(f"unrecognized key {k}"))
+        self._data = vloc_dict
                 
     def __eq__(self, other):
         if not isinstance(other, Atom):
@@ -555,6 +567,14 @@ class Atom:
             atoms.append(str(v))
 
         return " ".join(atoms)
+
+    def __iter__(self):
+        for key in self.__dict__:
+            if key == '_symb':
+                yield 'symb', getattr(self, key)
+            else:
+                for key in self._data:
+                    yield key, self._data[key]
 
 def add_dpgen(target):
     def dp_gen(self, res =1):
@@ -607,6 +627,136 @@ def add_dpgen(target):
     
     target.dp_gen = dp_gen
 
+    return target
+
+def add_mxtal(target):
+    
+    from . import ID_MATRIX, MLEN, DEF_CELLBOX, \
+                  DEF_XZ, DEF_ORSHIFT, DEF_TRSHIFT,DEF_LOCASPACE
+    DEF_DISTANCE = 0.0
+
+    # ID_MATRIX = [[1,0,0], [0,1,0], [0,0,1]]
+    # MLEN = 46 
+    # DEF_TRSHIFT = [0,0,0]
+    # DEF_CELLBOX = [[0,0,0], [3,3,3]]
+    # DEF_XZ = [[1,0,0], [0,0,1]]
+    # DEF_ORSHIFT = [0, 0, 0] #Origin shift
+    # DEF_LOCASPACE = [0, 0, 0] #location in A Space
+
+    def printMxtal(self, mlist):
+        for sm in mlist:
+            print(sm)
+            
+    def write_xyz(self, xyzdict, fn=None):
+        '''
+        Save mxtal data into a file <fn>
+        if fn is None: autogenerate file name by crystal name and time stamp
+        if fn is not None, the file will be generate placed in in the fn path if exists
+        or in pyemaps data home directory otherwise
+        
+        '''
+        if 'xyz' not in xyzdict:
+            return -1
+        xyzlist = xyzdict['xyz']
+
+        if 'cell' not in xyzdict:
+            return -1
+        slines = []
+        nxyz = len(xyzlist)
+
+        xyzfn = compose_ofn(fn, self.name, ty='mxtal') +'.xyz'
+        
+        try:
+            with open(xyzfn, 'w') as f:
+                slines.append(str(nxyz))      
+                c0, c1, c2, c3, c4, c5 = xyzdict['cell']
+                slines.append(str(f'\t {c0} {c1} {c2} {c3} {c4} {c5}'))
+                for xyz in xyzlist:
+                    s, x, y, z = xyz['symb'], xyz['x'], xyz['y'], xyz['z']
+                    sx = '{0: < #014.10f}'. format(float(x))
+                    sy = '{0: < #014.10f}'. format(float(y))
+                    sz = '{0: < #014.10f}'. format(float(z))
+                    
+                    slines.append(str(f'{s:<10}\t{sx} {sy} {sz}'))
+                # print(f'writing data: {slines}')
+                f.writelines('\n'.join(slines))
+        except (FileNotFoundError, IOError, PermissionError) as e:
+            print(f'Error writing xyz data file {fn}')
+            return -1
+        except Exception:
+            return -1
+        else:
+            print(f'Successfully saved mxtal data in file: {xyzfn}')
+            return 0
+
+    def generateMxtal(self, 
+                      trMatrix = ID_MATRIX, 
+                      trShift = DEF_TRSHIFT, #Transformation shift
+                      cellbox = DEF_CELLBOX,
+                      xz = DEF_XZ,
+                      orShift = DEF_ORSHIFT, #Origin shift
+                      locASpace = DEF_LOCASPACE,
+                      bound = None): #location in A Space
+
+        from . import mxtal as MX
+
+        dif.initcontrols()
+        # load the crystal
+        cell, atoms, atn, spg = self.prepareDif()
+        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw, cty=1)
+        if ret != 0:
+            raise MxtalError('Failed to load cystal')
+
+        tmat = farray(np.array(trMatrix))
+        
+        pxz = farray(np.array(xz))
+
+        if bound is not None:
+            ret = MX.do_mxtal(tmat, trShift, cellbox[0], cellbox[1],
+                            pxz[0], pxz[1], orShift, locASpace, bound)
+        else:
+            ret = MX.do_mxtal(tmat, trShift, cellbox[0], cellbox[1],
+                            pxz[0], pxz[1], orShift, locASpace)
+        
+        if ret != 1:
+            raise MxtalError('Failed to starting mxtal module')
+        
+        na = MX.get_nxyz()
+        
+        if na <=0:
+            raise MxtalError('Failed to generate data')
+            
+        sym = farray(np.empty((MLEN, na), dtype='c'))
+        xyz = farray(np.zeros((3, na)), dtype = float)
+
+        xyz, sym, ret = MX.get_xyzdata(xyz, sym)
+    
+        if ret != 1:
+            raise MxtalError('Failed to retrieve data')
+
+        tsym = np.transpose(sym)
+        txyz = np.transpose(xyz)
+
+        retxyz = []
+        for i in range(na):          
+            s = bytearray(tsym[i]).decode('utf-8').strip(" \x00")
+            # print(f'sym found: {s}')
+            x, y, z = txyz[i]
+            retxyz.append(dict(symb = s, x= x, y=y, z=z))
+
+        cell = np.array([0.0]*6)
+        cell, ret = MX.get_cellconst(cell)
+
+        if ret !=0:
+            raise MxtalError('Failed to retrieve cell constants')
+
+        # clean up
+        MX.mxtal_cleanup()
+        return dict( xyz = retxyz, cell=cell)
+
+    target.generateMxtal = generateMxtal
+    target.printMxtal = printMxtal
+    target.write_xyz =write_xyz
     return target
 
 def add_csf(target):
@@ -719,8 +869,11 @@ def add_csf(target):
         sfs = [dict(kv = kv, smax = smax, sftype = sftype, aptype = aptype)]
 
         cell, atoms, atn, spg = self.prepareDif()
-        dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
-        
+        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        if ret !=0:
+            print(f'Failed to load {self.name} into pyemaps module')
+            return []
+
         nb, ret = csf.generate_sf(kv, smax, sftype, aptype)
 
         if ret != 0 and nb <= 0:
@@ -835,7 +988,10 @@ def add_powder(target):
             return []
 
         cell, atoms, atn, spg = self.prepareDif()
-        dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        if ret !=0:
+            print(f"Error: failed to load crystal {self.name} into pyemaps")
+            return []
 
         rawP = farray(np.zeros((2,1000), dtype=np.double))
        
@@ -868,7 +1024,34 @@ def add_bloch(target):
                         DEF_CBED_DSIZE, \
                         DEF_KV, \
                         DEF_DSIZE_LIMITS
+    BIMG_EXT = '.im3'
+    MAX_BIMGFN = 256
 
+    def getbfilename(self):
+        '''
+        The file name of intended bloch image is constructed:
+        1) if environment variavle PYEMAPS_HOME is set then
+            the file will be in $PYEMAPS_HOME/bloch folder
+        2) otherwise, the file will be save in current working directory
+        3) The file name of the image will be composed as follows:
+            <crystal_name><current_time>.im3
+        4) The generated raw image file can be viewed in Jimage and Gatan
+           Digital Micrograph (GDM)
+        '''
+        
+        cfn = compose_ofn(None, self.name, ty='bloch')+BIMG_EXT
+
+        l = len(cfn)
+        if l > MAX_BIMGFN:
+            raise BlochError('Bloch image file name too long, it cant excced 256')
+        
+        # fortran string
+        ffn = farray(np.empty((256), dtype='c'))
+        for i in range(l):
+            ffn[i] = cfn[i]
+
+        return cfn, ffn, l
+        
     def generateBlochImgs(self, *, aperture = DEF_APERTURE, 
                             omega = DEF_OMEGA,  
                             sampling = DEF_SAMPLING,
@@ -877,7 +1060,8 @@ def add_bloch(target):
                             disk_size = DEF_CBED_DSIZE,
                             sample_thickness = (200, 1000, 100),
                             em_controls = EMC(cl=200, 
-                                              simc = SIMC(gmax=1.0, excitation=(0.3,1.0)))
+                                              simc = SIMC(gmax=1.0, excitation=(0.3,1.0))),
+                            bSave = False
                           ):
         try:
             from . import bloch
@@ -905,8 +1089,9 @@ def add_bloch(target):
         dif.setdisksize(disk_size)
 
         cell, atoms, atn, spg = self.prepareDif()
-        dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
-  
+        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        if ret != 0:
+            raise BlochListError('Failed to load crystal')
   
         tx, ty = em_controls.tilt[0], em_controls.tilt[1]
         dx, dy = em_controls.defl[0], em_controls.defl[1]
@@ -931,28 +1116,42 @@ def add_bloch(target):
 
         if ret != 0:
             raise BlochError('Error computing dynamic diffraction')
-
-        #successful bloch runtime, then retreive bloch image
         # 
+        #successful bloch runtime, then retreive bloch image
         #     
         
         slice_step = th_step 
         slice_num = 1 + (th_end-th_start) // slice_step
         th = th_start
+
         myBlochImgs = BImgList(self._name)
+        imgfn =''
+        if bSave: 
+            imgfn, bfn, l = self.getbfilename()
+            if bloch.openimgfile(det_size, bfn, l) != 0:
+                raise BlochError('Error opening file for write')
+
         for i in range(slice_num):
-            ret = bloch.imagegen(th,0,pix_size,det_size)
+            ret = bloch.imagegen(th,0,pix_size,det_size, bSave)
             if(ret != 0):
                 raise BlochError("bloch image generation failed!")
 
             raw_image = farray(np.zeros((det_size,det_size), dtype=np.double))
-            
+        
             bloch.get_rawimagedata(raw_image)
-            
+        
             myBlochImgs.add(em_controls, raw_image)
 
             th += slice_step
 
+        if bSave:
+            if (bloch.closeimgfile() != 0):
+                raise BlochError('Error closing file')
+
+            print(f'Raw Bloch images data has been successfully saved to: {imgfn}')
+            print(f'Import the file into ImageJ or other tools to view images: ')
+
+# ------- clean up ---------
         bloch.imgmemdelete()
         dif.diff_delete()
 
@@ -994,7 +1193,10 @@ def add_bloch(target):
         self.set_sim_controls(em_controls.simc)
 
         cell, atoms, atn, spg = self.prepareDif()
-        dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        
+        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        if ret != 0:
+            raise BlochListError('Failed to load crystal')
   
         tx, ty = em_controls.tilt
         dx, dy = em_controls.defl
@@ -1038,10 +1240,10 @@ def add_bloch(target):
     
     target.generateBloch = generateBloch
     target.generateBlochImgs = generateBlochImgs
-    # target.generateDDP = generateDDP
+    target.getbfilename = getbfilename
 
     return target
-
+@add_mxtal
 @add_bloch
 @add_powder
 @add_csf    
@@ -1052,9 +1254,15 @@ class Crystal:
         if not data or not isinstance(data, dict):
             raise ValueError("Error constructing crytsal object")
 
+        # print(f'In crystal creating by a dict: {data.items()}')
+        if 'dw' not in data:
+            raise CrystalClassError("Debye-Waller factor or thermal data missing")
+
+        setattr(self, 'dw', data['dw'])
+
         for k, v in data.items():
-            
-           setattr(self, k, v)
+           if k != 'dw' and k != 'name':
+                setattr(self, k, v)
 
         setattr(self, 'name', name)
 
@@ -1094,24 +1302,32 @@ class Crystal:
                     raise ValueError("Error: cell constant must be numeric")
             else:
                 raise KeyError("Invaid cell constant key")
-
+        
         self._cell = Cell(cc)
 
     @dw.setter
     def dw(self, v):
-
-        if not isinstance(v, str) and not len(v) == 3:
+        if isinstance(v, str):
+            if not len(v) == 3:
+                raise ValueError("Invalid Debye-waller type")
+            else:
+                vl = v.lower()
+                if vl == 'iso' or vl == 'par':
+                    self._dw = 1
+                elif  vl.lower() == 'bij':
+                    self._dw = 2
+                elif vl == 'uij':
+                    self._dw = 3
+                else:
+                    raise ValueError("Invalid Debye-Waller value")
+        elif isinstance(v, int):
+            if v not in [1,2, 3]:
+                raise ValueError("Invalid Debye-Waller value")
+            else:
+                self._dw = v
+        else:
             raise ValueError("Invalid Debye-waller type")
 
-        vl = v.lower()
-        if vl == 'iso' or vl == 'par':
-            self._dw = 1
-        elif  vl.lower() == 'bij':
-            self._dw = 2
-        elif vl == 'uij':
-            self._dw = 3
-        else:
-            raise ValueError("Invalid Debye-Waller value")
 
     @name.setter
     def name(self, cn):
@@ -1150,7 +1366,7 @@ class Crystal:
         self._spg = SPG(v)
 
     def isISO(self):
-        return self.dw == 1
+        return self._dw == 1
 
     def __eq__(self, other):
 
@@ -1244,6 +1460,17 @@ class Crystal:
         diff_spg = self._spg.prepareDif()
         return diff_cell, diff_atoms, atn, diff_spg
 
+    def __iter__(self):
+        for k in self.__dict__:
+            if k == '_name' or k == '_dw':
+                yield (k[1:], getattr(self, k))
+            if k == "_cell":
+                 yield('cell', dict(self._cell))
+            if k == "_spg":
+                 yield('spg', dict(self._spg))
+            if k == "_atoms":
+                 yield('atoms', [dict(a) for a in self.atoms])
+
     @classmethod
     def from_builtin(cls, cn='Diamond'):
         """
@@ -1271,20 +1498,21 @@ class Crystal:
         """
         import os
 
-        name = cn.lower().capitalize()
+        # name = cn.lower().capitalize()
 
         base_dir = os.path.realpath(__file__)
         cbase_dir = os.path.join(os.path.dirname(base_dir), crystal_data_basedir)
-        fn = os.path.join(cbase_dir,name+'.xtl')
+        fn = os.path.join(cbase_dir, cn+'.xtl')
               
 #       Successfully imported crystal data
-       
         try:
-            _, data = Crystal.loadCrystalData(fn)
+            name, data = Crystal.loadCrystalData(fn)
             xtl = cls(name, data)
 
-        except (XTLError, AttributeError, CellError, UCError, SPGError) as e:
+        except (XTLError, CellError, UCError, SPGError) as e:
             raise CrystalClassError(e.message)
+        except (FileNotFoundError, IOError) as e:
+            raise CrystalClassError('Error creating crystal: ' + str(e))
         else:
             return xtl
 
@@ -1323,25 +1551,25 @@ class Crystal:
                 after successful installation
         """
         import os
+        from . import XTLError, CellError, UCError, SPGError
 
         cfn = fn
         if not os.path.exists(fn):
-            
-            pyemaps_home = os.getenv('PYEMAPS_CRYSTALS')
-            cfn = os.path.join(pyemaps_home, fn)
+            # find it in pyemaps data home or current directory
+            pyemaps_datahome = find_pyemaps_datahome(home_type = 'crystals')
+            cfn = os.path.join(pyemaps_datahome, fn)
             
             if not os.path.exists(cfn):
-                # error
-                err_msg = str(f"Error finding the data file: {fn}")
-                raise XTLError(err_msg)
-                # return None
-        
-#       Successfully imported crystal data
+                err_msg = str(f"Error finding the data file: {cfn}")
+                raise CrystalClassError(err_msg)
+        # otherwise it is a full path file that exists
         try:
             name, data = Crystal.loadCrystalData(cfn)
             xtl = cls(name, data)
 
-        except (XTLError, AttributeError, CellError, UCError, SPGError) as e:
+        except (XTLError, CellError, UCError, SPGError) as e:
+            raise CrystalClassError(e.message)
+        except (FileNotFoundError, AttributeError) as e:
             raise CrystalClassError(e.message)
         else:
             return xtl
@@ -1352,18 +1580,19 @@ class Crystal:
         import crystal data from a cif file
         """
         import os
+        from . import CIFError, CellError, UCError, SPGError
 
         cfn = fn
-        if not os.path.exists(fn):
-            
-            pyemaps_home = os.getenv('PYEMAPS_CRYSTALS')
-            cfn = os.path.join(pyemaps_home, fn)
+        if not os.path.exists(fn): # exists full path or file name in current working directory
+            # find it in pyemaps data home or current directory
+            pyemaps_datahome = find_pyemaps_datahome(home_type = 'crystals')
+            cfn = os.path.join(pyemaps_datahome, fn)
             
             if not os.path.exists(cfn):
                 err_msg = str(f"Error finding the data file: {cfn}")
-                raise XTLError(err_msg)
-        
-#       Successfully imported crystal data
+                raise CrystalClassError(err_msg)
+
+        # otherwise it is a full path file that exists
         try:
             name, data = Crystal.loadCrystalCIFData(cfn)
             cif = cls(name, data)
@@ -1386,14 +1615,16 @@ class Crystal:
                            '_symmetry_IT_number',
                            '_space_group_IT_number']
 
+        # check for full path
         cfn = fn
         if not os.path.exists(fn):
             
-            pyemaps_home = os.getenv('PYEMAPS_CRYSTALS')
-            cfn = os.path.join(pyemaps_home, fn)
+            # pyemaps_home = os.getenv('PYEMAPS_CRYSTALS')
+            datahome = find_pyemaps_datahome(home_type = 'crystals')
+            cfn = os.path.join(datahome, fn)
             
             if not os.path.exists(cfn):
-                raise CIFError(cfn, 'file does not exist')
+                raise CIFError('Failed to find the crystal data file', cfn)
         
         cf = None
         try:
@@ -1972,8 +2203,8 @@ class Crystal:
                     if key not in data:
                         raise XTLError(fn, str(f'missing data for {key}'))
 
-        except IOError as e:
-            raise XTLError(fn, e.message)
+        except (FileNotFoundError,IOError) as e:
+            raise XTLError(fn, str(e))
 
         return name, data
     
@@ -1987,23 +2218,26 @@ class Crystal:
         
         return -1 #error
 
-    @classmethod ####TODO
-    def from_json_file(cls, jfn):
-        with open(jfn) as jf:
-            data=json.load(jf)
-            if "name" in data:
-                name = data["name"]
-                return cls(name, data)
-            
-            return cls()
+    @classmethod 
+    def from_jsonfile(cls, jfn):
+        try:
+            with open(jfn) as jf:
+                data=json.load(jf)
+        except:
+            raise CrystalClassError('Failed to open the json file')
+        else:
+            if 'name' not in data:
+                raise CrystalClassError('Failed to create crystal object with input dictionary')
 
-    @classmethod ####TODO
-    def from_json(cls, jdata):
-        if "name" in jdata:
-            name = jdata["name"]
-            return cls(name, jdata)
+            return cls(data['name'], data)
 
-        return cls()            
+    @classmethod
+    def from_dict(cls, cdict):
+        if 'name' not in cdict:
+            raise CrystalClassError('Failed to create crystal object with input dictionary')
+        
+        name = cdict["name"]
+        return cls(name, cdict)           
 
     @staticmethod
     def list_all_builtin_crystals():
@@ -2075,6 +2309,56 @@ class Crystal:
 
         if not simc.isDefZctl():
             dif.setzctl(simc.zctl)
+
+    def generateStereo(self, xa = (0,2,0), 
+                            tilt=(0.0,0.0),
+                            zone = (0, 0, 1)):
+        """
+        This routine returns a Stereodiagram.
+
+        :param em_control: only tilt and zone in emc affect output
+        :param xa: xaxis set by user or default to the above value
+        
+        """
+        from pyemaps import stereo, StereodiagramError
+
+        dif.initcontrols()
+        dif.setzone(zone[0], zone[1], zone[2])
+        dif.set_xaxis(1, xa[0], xa[1], xa[2])
+        dif.setsamplecontrols(tilt[0], tilt[1], 0.0, 0.0)
+
+        # load the crystal
+        cell, atoms, atn, spg = self.prepareDif()
+        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        
+        if ret != 0:
+            print(f'crystal name: {self.name}')
+            raise StereodiagramError('Stereodiagram generation failed to load crystal')
+
+        ret = dif.diffract(3)
+        if ret != 1:
+            raise StereodiagramError('Stereodiagram generation failed')
+
+        sl = stereo.get_stereolimit()
+
+        sdata = farray(np.zeros((6, sl)), dtype=float)
+      
+        sdata, ns, ret = stereo.dostereogram(sdata)
+
+        if ret != 1:
+            raise StereodiagramError('Stereodiagram generation failed')
+
+        # print(f'number of spots: {ns}')
+        stereo_list = []
+        for i in range(ns):
+            item = {}
+            s = sdata[0:, i]
+            item['c'] = (s[0], s[1])
+            item['r'] = s[2]
+            item['idx'] = (s[3], s[4],s[5])
+            stereo_list.append(item)
+
+        return stereo_list
 
     def generateDP(self, mode = None, dsize = None, em_controls = None):
         """
@@ -2178,14 +2462,14 @@ class Crystal:
         dif.initcontrols()
         # mode defaults to DEF_MODE, in which dsize is not used
         # Electron Microscope controls defaults - DEF_CONTROLS
-        ds = DEF_NORM_DSIZE
+        
         if mode == 2:
             dif.setmode(mode)
-            ds = DEF_CBED_DSIZE
+            if dsize and isinstance(dsize, (int,float)) and dsize != DEF_CBED_DSIZE:
+                dif.setdisksize(float(dsize))
+            else:
+                dif.setdisksize(DEF_CBED_DSIZE)
 
-        if dsize != ds:    
-            dif.setdisksize(float(ds))
-        
         if tx0 is not None and \
            ty0 is not None and \
            dx0 is not None and \
@@ -2210,9 +2494,11 @@ class Crystal:
         self.set_sim_controls(simc)
         
         cell, atoms, atn, spg = self.prepareDif()
-        dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
-
-        ret = 1
+        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        
+        if ret != 0:
+            print(f'failed to load crystal')
+            return 500, ({})
         
         ret = dif.diffract()
         if ret == 0:

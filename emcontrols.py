@@ -192,13 +192,13 @@ class SIMControl:
        
        simulation = ['Simulation Controls Parameters:']
 
-       simulation.append('excitation: ' +  str(self._excitation) + ' Default: ' + str(DEF_EXCITATION))
-       simulation.append('gmax??: ' + str(self._gmax)+ ' Default: ' + str(DEF_GMAX))
-       simulation.append('bmin??: ' + str(self._bmin) + ' Default: ' + str(DEF_BMIN))
-       simulation.append('intensity: ' + str(self._intensity)+ ' Default: ' + str(DEF_INTENSITY))
-       simulation.append('x-axis: ' + str(self._xaxis))
-       simulation.append('gctl??: ' + str(self._gctl)+ ' Default: ' + str(DEF_GCTL))
-       simulation.append('zctl??: ' + str(self._zctl)+ ' Default: ' + str(DEF_ZCTL))
+       simulation.append('excitation error range: ' +  str(self._excitation))
+       simulation.append('maximum recipricol vector length: ' + str(self._gmax))
+       simulation.append('beta perturbation cutoff: ' + str(self._bmin))
+       simulation.append('kinematic diffraction intensity cutoff level and scale: ')
+       simulation.append('crystal horizontal axis in reciprical space: ' + str(self._xaxis))
+       simulation.append('maximum index number for g-list: ' + str(self._gctl))
+       simulation.append('maximum zone index number: ' + str(self._zctl))
 
        return "\n ".join(simulation)
 

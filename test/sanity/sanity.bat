@@ -16,6 +16,7 @@ if "%1"=="local" (
     call python .\pyemaps_samples\powder.py
     call python .\pyemaps_samples\si_dif.py
     call python .\pyemaps_samples\si_bloch.py
-    python test\sanity\import_calc_sanity
+    call python .\pyemaps_samples\si_setreo.py
+    python test\sanity\feature_sanity.py
     rm -rf pyemaps_samples
 )
