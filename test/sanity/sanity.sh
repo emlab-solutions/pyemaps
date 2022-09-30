@@ -9,13 +9,14 @@ if [ $1 = "local"] ; then
     python3 ./powder.py ;
     python3 ./si_dif.py ;
     python3 ./si_bloch.py ;
-    python3 ./import_calc_sanity ; 
+    python3 ./feature_sanity.py ; 
 else 
     echo y | python3 -m pyemaps -cp ;
     python3 ./pyemaps_samples/si_csf.py ;
     python3 ./pyemaps_samples/powder.py ;
     python3 ./pyemaps_samples/si_dif.py ;
     python3 ./pyemaps_samples/si_bloch.py ;
-    python3 test/sanity/import_calc_sanity ;
+    python3 ./pyemaps_samples/si_stereo.py ;
+    python3 ./test/sanity/feature_sanity.py
     rm -rf pyemaps_samples ;
 fi
