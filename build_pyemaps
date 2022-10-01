@@ -408,6 +408,8 @@ if __name__ == "__main__":
     parser.add_argument("-nb", "--no-build", action="store_true", help="no build", required=False)
     parser.add_argument("-il", "--install-local", action="store_true", help="no build", required=False)
     parser.add_argument("-v", "--build-version", type=str, nargs="?", const="", default="", help="build version input", required=False)
+    parser.add_argument("-bt", "--build-type", type=str, nargs="?", const="free", default="free", help="build free pyemaps package, defaults to free", required=False)
+    
 
 # ########## set envs ##################
     # set_benvs()
@@ -428,6 +430,7 @@ if __name__ == "__main__":
         vf.write('__version__ = \"' + ver + '\"')
 
     if not args.no_build:
+        os.environ['EMAPS_BTYPE'] = args.build_type
         build_package(comp)
 
     if args.install_local:

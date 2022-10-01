@@ -5,7 +5,6 @@ from nturl2path import url2pathname
 from random import sample
 from ssl import Options
 
-
 import setuptools
 from numpy.distutils.core import Extension, setup
 
@@ -14,11 +13,12 @@ from numpy.distutils.command.build_ext import build_ext as numpy_build_ext
 import os
 from pathlib import Path
 
+build_type = os.getenv('EMAPS_BTYPE')
 mod_name = "emaps"
 
 MKLROOT = os.getenv('MKLROOT')
 IFORTROOT = os.getenv('IFORTROOT')
-
+# BUILT_TYPE=None #default build type - free, 'uiuc' for uiuc, None, full version
 
 dpgen_cobj = 'write_dpbin.o'
 
@@ -295,14 +295,31 @@ def get_cdata(sdn = 'cdata'):
     '''
     input: sdn = sample directory name under pyemaps
     '''
+    import glob
 
-    import os, glob
+    free_xtl_remove = ['BiMnO3.xtl', 
+                       'CoSb3_Skutterudite.xtl', 
+                       'Pentacene.xtl', 
+                       'SiAlONa.xtl']
+
     base_dir = os.path.realpath(__file__)
     samples_base_dir = os.path.join(os.path.dirname(base_dir), sdn)
     sbase_files = os.path.join(samples_base_dir, '*.xtl')
     sfile_list = glob.glob(sbase_files)
+    res = [os.path.join(sdn, os.path.basename(name)) for name in sfile_list]
+    print(f'******build type {build_type}')
+    if build_type != 'free':
+        return res
 
-    return [os.path.join(sdn, os.path.basename(name)) for name in sfile_list] 
+    # if it is free package remove some crystals
+    out =[]
+    
+    for rf in res:
+        _, rfn = os.path.split(rf)
+        if rfn not in free_xtl_remove:
+            out.append(rf)
+        
+    return out
 
 # def get_intel_redist():
 #     import os, glob
@@ -376,15 +393,44 @@ def get_install_requires():
         return install_reqs
     else:
         raise Exception('The OS is not supported')
- 
+
+def get_emaps_macros():
+
+    if build_type == 'full':
+        # full version
+        return ([('NPY_NO_DEPRECATED_API', 
+                    'NPY_1_7_API_VERSION')
+                ], 
+                ['__BFREE__', '__BUIUC__' ])
+
+    if build_type == 'free':
+        # limited free version
+        return ([('__BFREE__', 1),
+                ('NPY_NO_DEPRECATED_API', 
+                'NPY_1_7_API_VERSION')
+                ], 
+                ['__BUIUC__'])
+
+    if build_type == 'uiuc':
+        # less limited free version
+        return ([('__BUIUC__', 1),
+                ('NPY_NO_DEPRECATED_API', 
+                'NPY_1_7_API_VERSION')
+                ], 
+                ['__BFREE__'])
+    
+    raise ValueError("Error: build type not specified")
+
+# ------------------- must set this before build -------------------
+pyemaps_build_defs, pyemaps_build_undefs= get_emaps_macros()
+# print(f'Defines for the build: {pyemaps_build_defs}')
+# print(f'Undefines for the build: {pyemaps_build_undefs}')
+
 pyemaps_dif = Extension("pyemaps.diffract.emaps",
         sources                = get_diffract_sources(),
         extra_f90_compile_args     = get_compiler_args(),
-        define_macros          = [('__BFREE__', 3),
-                                  ('__CFREE__', 5.67),
-                                  ('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION')
-                                 ],
-        undef_macros           = ['WOS',],
+        define_macros          = pyemaps_build_defs,
+        undef_macros           = pyemaps_build_undefs,
         # extra_c_compile_args   = c_compile_args,
         # language               = 'c11',
         extra_link_args        =["-static", ],
