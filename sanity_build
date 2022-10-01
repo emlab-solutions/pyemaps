@@ -166,6 +166,8 @@ def test_dpgen():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Build and publish script for pyeamps")
     parser.add_argument("-nb", "--no-build", action="store_true", help="no build", required=False)
+    parser.add_argument("-bt", "--build-type", type=str, nargs="?", const="free", default="free", help="build free pyemaps package, defaults to free", required=False)
+    
     args = parser.parse_args()   
     print(f'Arguement: {args.no_build}')
 
@@ -180,9 +182,10 @@ if __name__ == "__main__":
         print(f'OS unsupported')
         raise BlochError('Unsupported OS')
 
-    if not args.no_build:    
+    if not args.no_build: 
+        bt = args.build_type
         os.system(mypy + " -m pip uninstall -y pyemaps")
-        os.system(mypy +" build_pyemaps -c all -t")
+        os.system(mypy +" build_pyemaps -c all -t " + '-bt ' + args.build_type)
 
         os.system(mypy + " -m pip install " + mywhl)
 

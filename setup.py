@@ -5,7 +5,6 @@ from nturl2path import url2pathname
 from random import sample
 from ssl import Options
 
-
 import setuptools
 from numpy.distutils.core import Extension, setup
 
@@ -14,11 +13,12 @@ from numpy.distutils.command.build_ext import build_ext as numpy_build_ext
 import os
 from pathlib import Path
 
+build_type = os.getenv('EMAPS_BTYPE')
 mod_name = "emaps"
 
 MKLROOT = os.getenv('MKLROOT')
 IFORTROOT = os.getenv('IFORTROOT')
-BUILT_TYPE='free' #default build type - free
+# BUILT_TYPE=None #default build type - free, 'uiuc' for uiuc, None, full version
 
 dpgen_cobj = 'write_dpbin.o'
 
@@ -295,7 +295,7 @@ def get_cdata(sdn = 'cdata'):
     '''
     input: sdn = sample directory name under pyemaps
     '''
-    import os, glob
+    import glob
 
     free_xtl_remove = ['BiMnO3.xtl', 
                        'CoSb3_Skutterudite.xtl', 
@@ -307,15 +307,19 @@ def get_cdata(sdn = 'cdata'):
     sbase_files = os.path.join(samples_base_dir, '*.xtl')
     sfile_list = glob.glob(sbase_files)
     res = [os.path.join(sdn, os.path.basename(name)) for name in sfile_list]
+    print(f'******build type {build_type}')
+    if build_type != 'free':
+        return res
 
-    if BUILT_TYPE == 'free':
-        # remove the four files above
-        for rf in res:
-            _, rfn = os.path.split(rf)
-            if rfn in free_xtl_remove:
-                res.remove(rf)
+    # if it is free package remove some crystals
+    out =[]
     
-    return res
+    for rf in res:
+        _, rfn = os.path.split(rf)
+        if rfn not in free_xtl_remove:
+            out.append(rf)
+        
+    return out
 
 # def get_intel_redist():
 #     import os, glob
@@ -390,9 +394,9 @@ def get_install_requires():
     else:
         raise Exception('The OS is not supported')
 
-def get_emaps_macros(build_type='free'):
+def get_emaps_macros():
 
-    if build_type is None:
+    if build_type == 'full':
         # full version
         return ([('NPY_NO_DEPRECATED_API', 
                     'NPY_1_7_API_VERSION')
@@ -418,7 +422,7 @@ def get_emaps_macros(build_type='free'):
     raise ValueError("Error: build type not specified")
 
 # ------------------- must set this before build -------------------
-pyemaps_build_defs, pyemaps_build_undefs= get_emaps_macros(build_type = BUILT_TYPE)
+pyemaps_build_defs, pyemaps_build_undefs= get_emaps_macros()
 # print(f'Defines for the build: {pyemaps_build_defs}')
 # print(f'Undefines for the build: {pyemaps_build_undefs}')
 
