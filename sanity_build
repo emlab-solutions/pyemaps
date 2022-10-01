@@ -183,7 +183,7 @@ if __name__ == "__main__":
         raise BlochError('Unsupported OS')
 
     if not args.no_build: 
-        bt = args.build_type
+        
         os.system(mypy + " -m pip uninstall -y pyemaps")
         os.system(mypy +" build_pyemaps -c all -t " + '-bt ' + args.build_type)
 
