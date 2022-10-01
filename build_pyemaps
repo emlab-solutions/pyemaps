@@ -20,8 +20,6 @@ rel_pypi_url = "https://pypi.org"
 twine_cfg = '../pypi_twine.cfg'
 twinetest_cfg = '../testpypi_twine.cfg'
 
-build_type ='free'
-
 def clean():
     '''
     remove build and dist directory in the pyemaps root directory
