@@ -19,11 +19,11 @@ x direction
 Author:     EMLab Solutions, Inc.
 Date:       May 07, 2022    
 """
-import matplotlib, sys
+import matplotlib, sys, os
 hasDisplay = True
-
 if 'linux' in sys.platform and "DISPLAY" not in os.environ:
     hasDisplay = False
+    print(f'has display?: {hasDisplay}')
     matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
