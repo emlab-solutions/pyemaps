@@ -387,9 +387,11 @@ def get_install_requires():
     if sys.platform == 'win32': 
         install_reqs += ['msvc-runtime == 14.29.30133',
                         'intel-fortran-rt == 2022.1.0',
-                        'mkl-service == 2.4.0']
+                        'mkl == 2022.1.0']
         return install_reqs
     elif sys.platform == 'linux':
+        install_reqs += ['intel-fortran-rt == 2022.1.0',
+                         'mkl == 2022.1.0']
         return install_reqs
     else:
         raise Exception('The OS is not supported')

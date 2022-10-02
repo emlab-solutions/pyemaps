@@ -19,13 +19,21 @@ x direction
 Author:     EMLab Solutions, Inc.
 Date:       May 07, 2022    
 """
-import matplotlib
+import matplotlib, sys, os
+hasDisplay = True
+if 'linux' in sys.platform and "DISPLAY" not in os.environ:
+    hasDisplay = False
+    print(f'has display?: {hasDisplay}')
+    matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import multiprocessing as mp
 
 from pyemaps import BlochListError
 from pyemaps import DP
+
+from .fileutils import *
 
 import time
 
@@ -34,6 +42,20 @@ PLOT_MULTIPLIER = 6
 
 clrs = ["#2973A5", "cyan", "limegreen", "yellow", "red"]
 gclrs=plt.get_cmap('gray')
+
+TY_DIF = 1
+TY_BLOCH = 2
+TY_STEREO = 3
+
+feat_lookup={'dif': TY_DIF,
+             'bloch': TY_BLOCH,
+             'stereo':TY_STEREO}
+
+def get_feature(ty):
+    if ty < TY_DIF or ty > TY_STEREO:
+        raise ValueError("Feature lookup failed")
+
+    return list(feat_lookup.keys())[list(feat_lookup.values()).index(ty)]
 
 def find_dpi():
     matplotlib.use('TkAgg')
@@ -62,6 +84,14 @@ def find_dpi():
     dpi = w*96/width_px
     return dpi
 
+def isLinux():
+    import sys
+    return ('linux' in sys.platform)
+
+def isWin():
+    import sys
+    return (sys.platform == 'win32')
+
 class DifPlotter:
     '''
     diffraction data plotter that receives data from the pipe and
@@ -72,10 +102,11 @@ class DifPlotter:
         self.save = 0
         self.difData = None
         self.emc = None
+        self.save_to = None
 
     def terminate(self):
         plt.close(self.fig) #just close the current figure
-
+            
     def plotKDif(self):
         dp, mode, kshow, ishow = self.difData
         
@@ -202,19 +233,20 @@ class DifPlotter:
                 self.terminate()
                 return False
             else:
-                save_prefix = 'DDif_'
                 self.emc, self.name, self.save, self.difData = command
 
                 if self.type == 1: #diffraction plot type
                     self.plotKDif()
-                    save_prefix = 'KDif_'
-
+            
                 elif self.type == 2: #bloch type plot
                     self.plotDDif()
+                    if self.save:
+                        save_type = 'bloch'
 
                 elif self.type == 3: #stereo type plot
                     self.plotStereo()
-                    save_prefix = 'Stereo_'
+                    if self.save:
+                        save_type = 'stereo'
 
                 else:
                     raise ValueError("No data to plot")
@@ -225,11 +257,20 @@ class DifPlotter:
                 self.plotControls()
 
                 if self.save:
-                    plt.savefig(save_prefix + self.name + str(self.save) + '.png')
+                    save_type = get_feature(self.type)
+                    self.save_to = compose_ofn(None, self.name, ty=save_type)
+                    plt.savefig(self.save_to + '.png')
+                    print(f'image saved to: {self.save_to}.png')
                 plt.pause(1.0)
 
         return True
-    
+
+    def showImage(self):
+        if isLinux() and not hasDisplay:
+            return
+        plt.show()
+        
+
     def position_fig(self, x, y):
         backend = matplotlib.get_backend()
         if backend == 'TkAgg':
@@ -237,7 +278,6 @@ class DifPlotter:
 
         elif backend == 'WXAgg':
             self.fig.canvas.manager.window.SetPosition((x, y))
-
         else:
             pass
 
@@ -257,7 +297,9 @@ class DifPlotter:
         else:   
             self.fig, self.ax = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
                         dpi=curr_dpi) #setting image size in pixels
-        self.position_fig(20, 20)
+        if hasDisplay:
+            self.position_fig(20, 20)
+
         self.ax.set_axis_off()
         
         if type == 1:
@@ -282,7 +324,7 @@ class DifPlotter:
         timer.add_callback(self.call_back)
         timer.start()
 
-        plt.show()
+        self.showImage()
 
 class NBPlot:
     '''
@@ -303,10 +345,20 @@ class NBPlot:
         else:
             send(data)
 
-
 def showDif(dpl=None, kshow=True, ishow=True, bSave = False):
+   
     """
-    Show kinematic diffractions
+    Show Stereodiagram using matplotlib
+    -------------------------------------------------------
+    dpl:      list of diffraction patterns 
+
+    name:       name of the crystal
+
+    ishow:      showing hkl indeces or not
+    kshow:      showing Kikuchi lines or not
+
+    bSave:      save the image as a file in pyemaps data home directory
+    
     """
     from pyemaps import DPList
 
@@ -315,22 +367,27 @@ def showDif(dpl=None, kshow=True, ishow=True, bSave = False):
     
     mode = dpl.mode
     name = dpl.name
-    count = 1
-    pl = NBPlot(1)
-    for c, dp in dpl:       
-        save = 0
-        if bSave:
-            save = count
-        d = (c, name, save, (dp, mode, kshow, ishow))
+    if isLinux() and not hasDisplay: bSave = True 
+    #always save to file on linux as it may just the commandline
+    pl = NBPlot(TY_DIF)
+    for c, dp in dpl:  
+        d = (c, name, bSave, (dp, mode, kshow, ishow))
         pl.plot(data = d)
         time.sleep(1.0)
-        count += 1
 
     pl.plot(finished=True)
 
 def showBloch(bimgs, bColor = False, bSave = False):
     """
-    Show bloch diffractions
+    Show dynamic diffraction using matplotlib
+    -------------------------------------------------------
+    bimgs:      list of bloch images with asoociated emcontrols
+
+    name:       name of the crystal
+
+    bColor:      showing images in predefined color map, otherwise in grey scale
+
+    bSave:      save the image as a file in pyemaps data home directory
     """
     from pyemaps import BImgList
 
@@ -338,32 +395,39 @@ def showBloch(bimgs, bColor = False, bSave = False):
         raise BlochListError('showBloch must have BImgList object as its first input')
 
     name = bimgs.name
-    count = 1
-    pl = NBPlot(2)
-    for c, img in bimgs:       
-        save = 0
-        if bSave:
-            save = count
-        d = (c, name, save, (img, bColor))
+   
+    if isLinux() and not hasDisplay: bSave = True 
+    #always save to file on linux as it may just the commandline
+
+    pl = NBPlot(TY_BLOCH)
+    for c, img in bimgs: 
+        d = (c, name, bSave, (img, bColor))
         pl.plot(data = d)
         time.sleep(1.0)
-        count += 1
 
     pl.plot(finished=True)
 
 def showStereo(slist, name, iShow = False, bSave=False, zLimit = 2):
     """
-    Show Stereodiagram
+    Show Stereodiagram using matplotlib
+    -------------------------------------------------------
+    slist:      list of stereodiagrams (controls, stereo_dict)
+
+    name:       name of the crystal
+
+    iShow:      showing hkl indeces
+
+    bSave:      save the image as a file in pyemaps data home directory
+
+    zlimit:     hkl index filter, resulting image will not disply any hlk > zlimit
     """
-    count = 1
-    pl = NBPlot(3)
-    for c, s in slist:       
-        save = 0
-        if bSave:
-            save = count
-        d = (c, name, save, (s, iShow, zLimit))
+    if isLinux() and not hasDisplay: bSave = True 
+    #always save to file on linux as it may just the commandline
+    
+    pl = NBPlot(TY_STEREO)
+    for c, s in slist:  
+        d = (c, name, bSave, (s, iShow, zLimit))
         pl.plot(data = d)
         time.sleep(1.0)
-        count += 1
 
     pl.plot(finished=True)

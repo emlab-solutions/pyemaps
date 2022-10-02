@@ -31,7 +31,7 @@ import os
 #             set by PYEMAPS_DATAHOME 
 #             -- location to retrieve data and put darta
 # 
-def auto_fn(cn, ty='diffraction'):
+def auto_fn(cn, ty='dif'):
     '''
     Auto-generate file name based on crystal name and time stamp
     '''
@@ -39,7 +39,7 @@ def auto_fn(cn, ty='diffraction'):
 
     curr_time  = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 
-    return cn + ty + curr_time
+    return cn + '-' + curr_time
 
 def find_pyemaps_datahome(home_type='crystals'):
     '''
