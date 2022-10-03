@@ -23,7 +23,6 @@ import matplotlib, sys, os
 hasDisplay = True
 if 'linux' in sys.platform and "DISPLAY" not in os.environ:
     hasDisplay = False
-    print(f'has display?: {hasDisplay}')
     matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
@@ -240,13 +239,9 @@ class DifPlotter:
             
                 elif self.type == 2: #bloch type plot
                     self.plotDDif()
-                    if self.save:
-                        save_type = 'bloch'
 
                 elif self.type == 3: #stereo type plot
                     self.plotStereo()
-                    if self.save:
-                        save_type = 'stereo'
 
                 else:
                     raise ValueError("No data to plot")
