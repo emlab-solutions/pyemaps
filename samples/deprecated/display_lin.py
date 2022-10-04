@@ -24,6 +24,7 @@ hasDisplay = True
 if 'linux' in sys.platform and "DISPLAY" not in os.environ:
     hasDisplay = False
     matplotlib.use('Agg')
+    from matplotlib.backends.backend_agg import FigureCanvasAgg #canvas
 
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -182,6 +183,7 @@ class DifPlotter:
             )
 
     def plotStereo(self):
+        STEREO_MULTIPLIER = 55
         sdata, ishow, zl = self.difData  
         
         self.ax.clear()
@@ -224,9 +226,10 @@ class DifPlotter:
         self.ax.set_ylim([-1.0, 1.0])
 
     def call_back(self):
+        # print(f'got inside call_back')
         while self.pipe.poll():
             command = self.pipe.recv()
-            
+            # print(f'data rceived: {command}')
             if command is None:
                 self.terminate()
                 return False
@@ -246,7 +249,7 @@ class DifPlotter:
                     raise ValueError("No data to plot")
                 
                 self.plotControls()
-                self.fig.canvas.draw_idle()
+                self.canvas.draw_idle()
                 
                 self.plotControls()
 
@@ -260,18 +263,22 @@ class DifPlotter:
         return True
 
     def showImage(self):
+        
+        # print(f'got inside call showImage: {hasDisplay}')
         if isLinux() and not hasDisplay:
             return
         plt.show()
+        # self.canvas.draw()
+        # self.canvas.show()
         
 
     def position_fig(self, x, y):
         backend = matplotlib.get_backend()
         if backend == 'TkAgg':
-            self.fig.canvas.manager.window.wm_geometry("+%d+%d" % (x, y))
+            self.canvas.manager.window.wm_geometry("+%d+%d" % (x, y))
 
         elif backend == 'WXAgg':
-            self.fig.canvas.manager.window.SetPosition((x, y))
+            self.canvas.manager.window.SetPosition((x, y))
         else:
             pass
 
@@ -285,14 +292,18 @@ class DifPlotter:
             curr_dpi = find_dpi()
         else:
             curr_dpi = 96
-        if type == TY_STEREO:
+        if type == 3:
             self.fig, self.ax = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
                         dpi=curr_dpi, facecolor=(0,0,0)) #setting image size in pixels 
         else:   
             self.fig, self.ax = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
                         dpi=curr_dpi) #setting image size in pixels
         if hasDisplay:
+            self.canvas = self.fig.canvas
             self.position_fig(20, 20)
+        else:
+            self.canvas = FigureCanvasAgg(self.fig) #create the canvas
+    
 
         self.ax.set_axis_off()
         
@@ -310,13 +321,17 @@ class DifPlotter:
         self.type = type
 
         if hasDisplay:
-            if self.fig.canvas.manager is not None:
-                self.fig.canvas.manager.set_window_title(pyemaps_title)
+            if self.canvas.manager is not None:
+                self.canvas.manager.set_window_title(pyemaps_title)
             else:
-                self.fig.canvas.set_window_title(pyemaps_title)
+                self.canvas.set_window_title(pyemaps_title)
 
-        timer = self.fig.canvas.new_timer(interval=1500)
+        timer = self.canvas.new_timer(interval=100)
+        
+        # print(f'got inside call after before canvas new timer call: {hasDisplay}')
         timer.add_callback(self.call_back)
+        
+        # print(f'got inside call after after canvas new timer call: {hasDisplay}')
         timer.start()
 
         self.showImage()
@@ -330,7 +345,7 @@ class NBPlot:
         self.plot_pipe, plotter_pipe = mp.Pipe()
         self.plotter = DifPlotter()
         self.plot_process = mp.Process(
-            target=self.plotter, args=(plotter_pipe, type), daemon=True)
+            target=self.plotter, args=(plotter_pipe, type), daemon=False)
         self.plot_process.start()
 
     def plot(self, data = (), finished=False):
