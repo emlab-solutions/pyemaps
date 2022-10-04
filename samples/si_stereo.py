@@ -24,11 +24,6 @@ ___________________________
 Author:     EMLab Solutions, Inc.
 Date:       September 26th, 2022    
 """
-# try:
-#     from pyemaps import DEF_CBED_DSIZE, DEF_MODE
-# except ImportError as e:
-#     print(f'Importing error: {e}')
-#     exit(1)
 
 import concurrent.futures
 from re import S
@@ -60,20 +55,14 @@ def getStereo(cn, emc = EMC(), ckey='tilt'):
 
 def generate_stereo(name = 'Silicon', ckey = 'tilt'):
     '''
-    This routine demonstrate how to use pyemaps dif module to generate kinematic diffraction paterns
+    This routine demonstrate how to use pyemaps stereo module 
+    to generate stereodiagram
+    
     : name: crystal name from builtin database
-    : dsize: diffracted beams size
-    : ckey: emcontrol key name
-    : sim_rand: randomized simulation control which is added to EMControl class, these controls
-    :           are not changed much (default values if not set). But if changes are needed, then they 
-    :           are also set from within EMControl class
+    : ckey: emcontrol key name to change
+    
     '''
-    # from pyemaps import DPList, SIMC
-    # from pyemaps import Crystal as cryst
-
-    # cr = cryst.from_builtin(name)
-
-    # create an EM control object based on the key input "ckey"
+    
     emclist = []
     for i in range(-3,3): 
         
