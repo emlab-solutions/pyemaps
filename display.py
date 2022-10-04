@@ -226,7 +226,7 @@ class DifPlotter:
     def call_back(self):
         while self.pipe.poll():
             command = self.pipe.recv()
-            # print(f'data rceived: {command}')
+            
             if command is None:
                 self.terminate()
                 return False
