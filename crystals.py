@@ -1035,7 +1035,7 @@ def add_bloch(target):
         2) otherwise, the file will be save in current working directory
         3) The file name of the image will be composed as follows:
             <crystal_name>-<current_time>.im3
-        4) The generated raw image file can be imported viewed in 
+        4) The generated raw image file can be imported and viewed in 
             ImageJ and Gatan Digital Micrograph (GDM)
         '''
         
