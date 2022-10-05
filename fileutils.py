@@ -31,7 +31,7 @@ import os
 #             set by PYEMAPS_DATAHOME 
 #             -- location to retrieve data and put darta
 # 
-def auto_fn(cn, ty='dif'):
+def auto_fn(cn):
     '''
     Auto-generate file name based on crystal name and time stamp
     '''
@@ -66,12 +66,13 @@ def find_pyemaps_datahome(home_type='crystals'):
     # but find pyeamsp home if exists
     if env_name in os.environ:
         pyemaps_home = os.getenv(env_name)
-
+        
         if Path(pyemaps_home).exists(): 
             pyemaps_datahome = pyemaps_home
         else:
             try:
                 os.mkdir(pyemaps_home)
+
             except OSError:
                 # can't create the directory, fall back to current directory
                 pass
@@ -82,8 +83,8 @@ def find_pyemaps_datahome(home_type='crystals'):
         return pyemaps_datahome # done when legacy
 
     # if the environment home folder does extists
-    pyemaps_home = pyemaps_datahome
-    pyemaps_home = os.path.join(pyemaps_home, home_type)
+    
+    pyemaps_home = os.path.join(pyemaps_datahome, home_type)
 
     if Path(pyemaps_home).exists():
         return pyemaps_home
@@ -91,11 +92,12 @@ def find_pyemaps_datahome(home_type='crystals'):
     try:
         os.mkdir(pyemaps_home)
     except OSError:
-        raise CrystalClassError('Failed to find data home for pyemaps')
-    else:    
-        pyemaps_home
+        print(f'failed to create {home_type} folder in pyemaps data home directory {pyemaps_datahome}')
+        print(f'{pyemaps_datahome} will be used to host {home_type} data instead')
+        return pyemaps_datahome
+    else: 
+        return pyemaps_home
 
-    return pyemaps_datahome
 
 def fn_path_exists(fn):
     fn_dir = os.path.dirname(fn)
@@ -112,7 +114,7 @@ def compose_ofn(fn, name, ty='diffraction'):
     pyemaps_datahome=find_pyemaps_datahome(home_type=ty)
 
     if fn is None:
-        fn = auto_fn(name, ty=ty)
+        fn = auto_fn(name)
         return os.path.join(pyemaps_datahome, fn)
     
     # valid input fn
@@ -120,7 +122,7 @@ def compose_ofn(fn, name, ty='diffraction'):
     
     # can't write any file to a path that does not exist  
     if fpath and not Path(fpath).exists():
-        raise MxtalError('Error: file path not found')
+        raise FileNotFoundError('Error: file path not found')
 
     if not fpath: # if no path compose fn 
         if not fname:
