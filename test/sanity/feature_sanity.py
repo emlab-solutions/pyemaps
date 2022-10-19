@@ -21,86 +21,6 @@ def get_builtin_dir():
 
     return(Path(pyemaps.__file__).parent.absolute())
 
-# def run_si_difs(ty = 2):
-#     from pyemaps import Crystal as cr
-#     import os
-#     import time
-#     from pyemaps import CrystalClassError, DPList, showDif
-
-#     #CIF_DIR = "C:/Apps/Python37/Lib/site-packages/crystals/cifs"
-#     CIF_DIR = get_cifdata_dir()
-#     XTL_DIR = os.path.join(get_builtin_dir(), "cdata")
-#     cif_ext = '.cif'
-#     xtl_ext = '.xtl'
-
-#     failure_count = 0
-#     if ty == 1:
-#         ext = xtl_ext
-#         datadir = XTL_DIR
-#     else:
-#         ext = cif_ext
-#         datadir = CIF_DIR
-    
-#     failure_cases = []
-#     total_count = 0
-#     for f in os.listdir(datadir):
-#         # if f == 'BiMnO3.xtl': 
-#         if f.endswith(ext):
-#             cfn = os.path.join(datadir, f)
-#             total_count += 1
-#             print(f'\n+++++++\nLoading {cfn}...')
-#             cf = None
-#             try:    
-#                 if ty == 1:                    
-#                     cf = cr.from_xtl(cfn) 
-#                 else:        
-#                     tic = time.perf_counter()
-#                     cf = cr.from_cif(cfn)
-#                     toc = time.perf_counter()
-#                     print(f"Time it takes for loading {f} in {toc - tic:0.4f} seconds")
-#             except CrystalClassError as v:
-#                 print(f'%%%%%%%Loading {cfn} failed with message: {v}')
-#                 failure_count += 1
-#                 failure_cases.append(f)
-#                 continue
-#             else:
-#                 print(cf)
-#                 try:
-#                     emc, cf_dp = cf.generateDP()
-#                     dpl = DPList(cf.name)
-#                     dpl.add(emc, cf_dp)
-#                 except:
-#                     failure_count += 1
-#                     failure_cases.append(f)
-#                     continue
-#                 # showDif(dpl, ishow=False, bSave = True)
-#                 showDif(dpl, ishow=False)
-                
-#                 # # cf_dp.plot()
-#                 # # print(f"-------Loading {cfn} succeeded: \n{cf}")
-
-#     if failure_count == 0:
-#         print(f'***********Test Summary: All tests succeeded')
-#     else:
-#         print(f'Summary: total failure runs: {failure_count} out of {total_count} runs')
-#         print(f'Failure cases list: {failure_cases}')
-        # for f in failure_cases:
-        #     cfn = os.path.join(datadir, f)
-        #     print(f'\n+++++++\Loading failure cases {cfn}...')
-        #     try:    
-        #         if ty == 1:
-        #             cf = cr.from_xtl(cfn) 
-        #         else:        
-        #             # tic = time.perf_counter()
-        #             cf = cr.from_cif(cfn)
-        #             # toc = time.perf_counter()
-        #             # print(f"Time it takes for loading {f} in {toc - tic:0.4f} seconds")
-        #     except CrystalClassError as v:
-        #         print(f'********Loading {cfn} failed with message: {v}')
-    
-    # _, eu_dp = eu.generateDP()
-    # #plot and show the diffraction pattern using pyemaps built-in plot function
-    # eu_dp.plot()
 def run_feat_list(cnflist, ty=1, bShow=True, bSave=False, feat_type='dif'):
     from pyemaps import Crystal as cr
     import time
@@ -156,27 +76,12 @@ def run_features_test(data_ty=1, bShow=True, bSave=False, feat_type = 'dif'):
         data_ext = '.cif'
  
     test_cases = []
-    
-    # print(f'got here1 with crystal dir: {data_dir}, {data_ext}')
-    
+        
     for f in os.listdir(data_dir):
         if f.endswith(data_ext):
             test_cases.append(os.path.join(data_dir, f))
 
-    # print(f'got here1 with crystal list: {test_cases}')
-
     return run_feat_list(test_cases, ty=data_ty, bShow = bShow, bSave=bSave, feat_type=feat_type)
-
-    # if feat_type == 'dif':
-    #     return run_dif_list(test_cases, ty=data_ty, bShow = bShow, bSave=bSave)
-    
-    # if feat_type == 'stereo':
-    #     return run_stereo_list(test_cases, ty=data_ty, bShow = bShow, bSave=bSave)
-
-    # if feat_type == 'mxtal':
-    #     return run_mxtal_list(test_cases, ty=data_ty, bShow = bShow, bSave=bSave)
-
-    # return None
 
 def run_metrics():
     from pyemaps import Crystal as cr
@@ -238,25 +143,8 @@ if __name__ == '__main__':
             fc, fl = run_features_test(data_ty=dt, bShow = False, feat_type = f)
             res[f].append((fc, fl))
 
-    # dfc1, dfl1 = run_features_test(bShow = False, feat_type = f) 
-    # dfc2, dfl2 = run_dif_test(ty = 2, bShow = False) 
-
-    # bfc1, bfl1 = run_bloch_test(bShow = False) 
-    # bfc2, bfl2 = run_bloch_test(ty = 2, bShow = False) 
-        
-    # run_metrics()
-
-    # if bfc1 != 0:
-    #     run_feat_list(bfl1)
-
-    # if bfc2 != 0:
-    #     run_bloch_list(bfl2, ty = 2)
-
-    
-
     print(f'\n\n\n<<<<<<<<<<<<<Summary of pyemaps Feature Sanity Runs>>>>>>>>>>>>>>>\n\n\n')
 
-    # print(f'Raw summary results: {res}')
     for f in feat_list:
         fres = res[f]
         print(f"\n\n{f} Feature Test Results:")  
