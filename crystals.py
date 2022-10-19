@@ -391,7 +391,7 @@ class Cell:
         return str(f"cell: {self._a} {self._b} {self._c} ") + \
                str(f"{self._alpha} {self._beta} {self._gamma}") 
 
-    def prepareDif(self):
+    def prepare(self):
         cell0 = self.__dict__
         celarr = np.zeros((6,))
         for i, key in enumerate(cell_keys):
@@ -482,7 +482,7 @@ class SPG:
     def __repr__(self):
         return str(f"spg: number: {self._number} setting: {self._setting}")
 
-    def prepareDif(self):
+    def prepare(self):
          return farray([self._number, self._setting], dtype=int)
 
     def __iter__(self):
@@ -592,9 +592,7 @@ def add_dpgen(target):
 
         dif.initcontrols()
         
-        cell, atoms, atn, spg = self.prepareDif()
-        dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
-
+        self.load()
         dif.set_xaxis(1, 2, 0, 0)
         ret = dif.diffract(2)
         
@@ -701,12 +699,7 @@ def add_mxtal(target):
         from . import mxtal as MX
 
         dif.initcontrols()
-        # load the crystal
-        cell, atoms, atn, spg = self.prepareDif()
-        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw, cty=1)
-        if ret != 0:
-            raise MxtalError('Failed to load cystal')
-
+        self.load()
         tmat = farray(np.array(trMatrix))
         
         pxz = farray(np.array(xz))
@@ -868,11 +861,7 @@ def add_csf(target):
         
         sfs = [dict(kv = kv, smax = smax, sftype = sftype, aptype = aptype)]
 
-        cell, atoms, atn, spg = self.prepareDif()
-        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
-        if ret !=0:
-            print(f'Failed to load {self.name} into pyemaps module')
-            return []
+        self.load()
 
         nb, ret = csf.generate_sf(kv, smax, sftype, aptype)
 
@@ -987,12 +976,7 @@ def add_powder(target):
             print(f"Error: required module pyemaps.powder not found")
             return []
 
-        cell, atoms, atn, spg = self.prepareDif()
-        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
-        if ret !=0:
-            print(f"Error: failed to load crystal {self.name} into pyemaps")
-            return []
-
+        self.load()
         rawP = farray(np.zeros((2,1000), dtype=np.double))
        
         ret = powder.generate_powder(rawP, kv=kv, t2max=t2max, 
@@ -1088,11 +1072,7 @@ def add_bloch(target):
 
         dif.setdisksize(disk_size)
 
-        cell, atoms, atn, spg = self.prepareDif()
-        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
-        if ret != 0:
-            raise BlochListError('Failed to load crystal')
-  
+        self.load()
         tx, ty = em_controls.tilt[0], em_controls.tilt[1]
         dx, dy = em_controls.defl[0], em_controls.defl[1]
         z = em_controls.zone
@@ -1192,11 +1172,12 @@ def add_bloch(target):
         # setting default simulation controls
         self.set_sim_controls(em_controls.simc)
 
-        cell, atoms, atn, spg = self.prepareDif()
+        # cell, atoms, atn, spg = self.prepare()
         
-        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
-        if ret != 0:
-            raise BlochListError('Failed to load crystal')
+        # ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
+        # if ret != 0:
+        #     raise BlochListError('Failed to load crystal')
+        self.load()
   
         tx, ty = em_controls.tilt
         dx, dy = em_controls.defl
@@ -1436,15 +1417,17 @@ class Crystal:
         cstr.append( str(self._spg))
         
         return '\n'.join(cstr)
-    
-    def prepareDif(self):
+
+    def load(self):
         '''
-        prepare crystal data to be loaded into dif module
+        prepare crystal data to be loaded into backend module
         This routine is designed to fit python crystal structure
         into the ones accepted by Fortran backend modules
-        
+        10/19/2022:
+        Combining Crystal.prepareDif() and load the crystal to 
+        backend module memory  
         '''
-        diff_cell = self._cell.prepareDif() #cell constant
+        diff_cell = self._cell.prepare() #cell constant
         
         num_atoms = len(self._atoms)
         atn = farray(np.empty((num_atoms, 10), dtype='c'))
@@ -1452,14 +1435,24 @@ class Crystal:
         atnarr = [at.symb for at in self._atoms]
         for i, an in enumerate(atnarr):
             if len(an) > 10:
-                raise ValueError(f"Atomic symbol too long: {an}")
+                raise CrystalClassError(f"Atomic symbol {an} length cannot exceed 10")
             atn[i] = an.ljust(10)
 
         diff_atoms = farray([at.loc for at in self._atoms], dtype = float)
             
-        diff_spg = self._spg.prepareDif()
-        return diff_cell, diff_atoms, atn, diff_spg
+        diff_spg = self._spg.prepare()
 
+        ret = dif.loadcrystal(diff_cell, diff_atoms, atn, diff_spg, ndw=self._dw)
+        if ret != 0:
+            self.unload() #remove any memory from backend module
+            raise CrystalClassError('Failed to load cystal to backend module')
+        
+    def unload():
+        '''
+        Remove crystal from backend emaps modules memory
+        '''
+        dif.crystaldelete()
+    
     def __iter__(self):
         for k in self.__dict__:
             if k == '_name' or k == '_dw':
@@ -2328,13 +2321,8 @@ class Crystal:
         dif.setsamplecontrols(tilt[0], tilt[1], 0.0, 0.0)
 
         # load the crystal
-        cell, atoms, atn, spg = self.prepareDif()
-        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
         
-        if ret != 0:
-            print(f'crystal name: {self.name}')
-            raise StereodiagramError('Stereodiagram generation failed to load crystal')
-
+        self.load()
         ret = dif.diffract(3)
         if ret != 1:
             raise StereodiagramError('Stereodiagram generation failed')
@@ -2493,12 +2481,7 @@ class Crystal:
         # setting simulation parameters
         self.set_sim_controls(simc)
         
-        cell, atoms, atn, spg = self.prepareDif()
-        ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
-        
-        if ret != 0:
-            print(f'failed to load crystal')
-            return 500, ({})
+        self.load()
         
         ret = dif.diffract()
         if ret == 0:
@@ -2575,10 +2558,7 @@ class Crystal:
         Transform from real to recriprocal space
         '''           
 
-        cell, atoms, atn, spg = self.prepareDif()
-        
-        dif.loadcrystal(cell, atoms, atn, spg, ndw=self.dw)
-
+        self.load()
         x, y, z = v
         rx, ry, rz = dif.drtrans(x, y, z, 0)
 
@@ -2590,10 +2570,7 @@ class Crystal:
         Transform from recriprocal to real space
         '''          
 
-        cell, atoms, atn, spg = self.prepareDif()
-        
-        dif.loadcrystal(cell, atoms, atn, spg, ndw=self.dw)
-
+        self.load()
         x, y, z = v
         dx, dy, dz = dif.drtrans(x, y, z, 1)
 
@@ -2615,9 +2592,7 @@ class Crystal:
         if x2 == 0.0 and y2 == 0.0 and z2 == 0.0:
             raise ValueError("Error: input vector can't be zero")           
 
-        cell, atoms, atn, spg = self.prepareDif()
-        
-        dif.loadcrystal(cell, atoms, atn, spg, ndw=self.dw)
+        self.load()
 
         a = dif.ang(x1, y1, z1, x2, y2, z2, type)
 
@@ -2631,9 +2606,7 @@ class Crystal:
 	    Type = 1: Calculate length of a reciprocal space vector
         '''        
            
-        cell, atoms, atn, spg = self.prepareDif()
-        
-        dif.loadcrystal(cell, atoms, atn, spg, ndw=self.dw)
+        self.load()
 
         x, y, z = v
         ln = dif.vlen(x, y, z, type)
