@@ -1075,9 +1075,9 @@ def add_bloch(target):
         if th_start > th_end or th_step <= 0:
             raise BlochListError('Sample thickness parameter invalid')               
 
-        dep = (th_end-th_start) // th_step + 1
-        if dep > MAX_DEPTH:
-            raise BlochListError('Too many sample slices')
+        # dep = ((th_end-th_start) // th_step) + 1
+        # if dep > MAX_DEPTH:
+        #     raise BlochListError('Too many sample slices')
 
         dif.initcontrols()
         dif.setmode(2) # alway in CBED mode
