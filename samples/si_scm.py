@@ -45,14 +45,14 @@ def runSCMTests():
         ds = 0.25
         si_scm = si.generateSCMatrix(em_controls = ec, 
                                     disk_size = ds,
-                                    ib_coords = (-6,3))
+                                    ib_coords = (0,0))
 
     except BlochError as e:
         print(f'Failed to generate scattering matrix {e.message}')
     else:
         print('Scattering matrix generated successfully!')
         print(si_scm)
-        print('more possible beams coordinate input as follows...')
+        print('Other beams info...')
         cr.printIBDetails()
 
 if __name__ == "__main__":
