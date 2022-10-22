@@ -576,6 +576,22 @@ class Atom:
                 for key in self._data:
                     yield key, self._data[key]
 
+    def prepare(self, rvec = None):
+       if rvec is None:
+              return self._loc
+
+       if len(rvec) != 3 and not all(isinstance(v, [int,float]) for v in rvec):
+              raise UCError('R vector must be three integers tuple')
+
+       tloc=[float(l) for l in self._loc]
+       
+       for i in range(3):
+         tloc[i] += rvec[i]
+            
+       return tloc   
+
+
+       pass
 def add_dpgen(target):
     def dp_gen(self, res =1):
 
@@ -633,17 +649,33 @@ def add_mxtal(target):
                   DEF_XZ, DEF_ORSHIFT, DEF_TRSHIFT,DEF_LOCASPACE
     DEF_DISTANCE = 0.0
 
-    # ID_MATRIX = [[1,0,0], [0,1,0], [0,0,1]]
-    # MLEN = 46 
-    # DEF_TRSHIFT = [0,0,0]
-    # DEF_CELLBOX = [[0,0,0], [3,3,3]]
-    # DEF_XZ = [[1,0,0], [0,0,1]]
-    # DEF_ORSHIFT = [0, 0, 0] #Origin shift
-    # DEF_LOCASPACE = [0, 0, 0] #location in A Space
+    def print_xyz(self, xyzdict):
+        '''
+        Save mxtal data in .xyz format
+        '''
+        if xyzdict is None or 'xyz' not in xyzdict:
+            raise MxtalError("Invalid mxtal data")
 
-    def printMxtal(self, mlist):
-        for sm in mlist:
-            print(sm)
+        xyzlist = xyzdict['xyz']
+
+        if 'cell' not in xyzdict:
+            raise MxtalError("Invalid mxtal data, must have cell constant data")
+        
+        slines = []
+        nxyz = len(xyzlist)
+
+        slines.append(str(nxyz))      
+        c0, c1, c2, c3, c4, c5 = xyzdict['cell']
+        slines.append(str(f'\t {c0} {c1} {c2} {c3} {c4} {c5}'))
+        for xyz in xyzlist:
+            s, x, y, z = xyz['symb'], xyz['x'], xyz['y'], xyz['z']
+            sx = '{0: < #014.10f}'. format(float(x))
+            sy = '{0: < #014.10f}'. format(float(y))
+            sz = '{0: < #014.10f}'. format(float(z))
+            
+            slines.append(str(f'{s:<10}\t{sx} {sy} {sz}'))
+        print('\n'.join(slines))
+
             
     def write_xyz(self, xyzdict, fn=None):
         '''
@@ -699,7 +731,8 @@ def add_mxtal(target):
         from . import mxtal as MX
 
         dif.initcontrols()
-        self.load()
+        
+        self.load(cty=1)
         tmat = farray(np.array(trMatrix))
         
         pxz = farray(np.array(xz))
@@ -718,37 +751,41 @@ def add_mxtal(target):
         
         if na <=0:
             raise MxtalError('Failed to generate data')
-            
-        sym = farray(np.empty((MLEN, na), dtype='c'))
-        xyz = farray(np.zeros((3, na)), dtype = float)
 
-        xyz, sym, ret = MX.get_xyzdata(xyz, sym)
+        xyz, ret = MX.get_xyzdata(na)
+    
+        if ret != 1:
+            raise MxtalError('Failed to retrieve data')
+
+        sym = farray(np.empty((MLEN, na), dtype='c'))
+        sym, ret = MX.get_symdata(sym)
     
         if ret != 1:
             raise MxtalError('Failed to retrieve data')
 
         tsym = np.transpose(sym)
         txyz = np.transpose(xyz)
-
+        
         retxyz = []
         for i in range(na):          
             s = bytearray(tsym[i]).decode('utf-8').strip(" \x00")
-            # print(f'sym found: {s}')
+            
             x, y, z = txyz[i]
             retxyz.append(dict(symb = s, x= x, y=y, z=z))
 
-        cell = np.array([0.0]*6)
-        cell, ret = MX.get_cellconst(cell)
+        # cell = np.array([0.0]*6)
+        nc = 6
+        cell, ret = MX.get_cellconst(nc)
 
         if ret !=0:
-            raise MxtalError('Failed to retrieve cell constants')
+            raise MxtalError(f'Failed to retrieve cell constants: {ret}')
 
         # clean up
         MX.mxtal_cleanup()
         return dict( xyz = retxyz, cell=cell)
 
     target.generateMxtal = generateMxtal
-    target.printMxtal = printMxtal
+    target.print_xyz = print_xyz
     target.write_xyz =write_xyz
     return target
 
@@ -1008,6 +1045,13 @@ def add_bloch(target):
                         DEF_CBED_DSIZE, \
                         DEF_KV, \
                         DEF_DSIZE_LIMITS
+    try:
+        from . import bloch
+
+    except ImportError as e:               
+        raise CrystalClassError('Failed to import bloch - dynamic diffraction simulation module')
+    from pyemaps import BImgList
+
     BIMG_EXT = '.im3'
     MAX_BIMGFN = 256
 
@@ -1047,13 +1091,7 @@ def add_bloch(target):
                                               simc = SIMC(gmax=1.0, excitation=(0.3,1.0))),
                             bSave = False
                           ):
-        try:
-            from . import bloch
-
-        except ImportError as e:               
-            raise CrystalClassError('Failed to import bloch - dynamic diffraction simulation module')
-        from pyemaps import BImgList
-
+        
         th_start, th_end, th_step = sample_thickness
 
         if th_start > th_end or th_step <= 0:
@@ -1136,8 +1174,125 @@ def add_bloch(target):
         dif.diff_delete()
 
         return myBlochImgs
+    # @staticmethod
+    # def getIBNum():
+    #     '''
+    #     get number of incidental beams from last bloch scattering matrix run
+    #     '''
+    #     nib = bloch.get_incidentalbeams()
+    #     if nib <=0:
+    #         raise BlochError("Failed to retrieve number of incidental beams")
+    #     return nib
 
+    @staticmethod
+    def printIBDetails():
+        '''
+        print incidental beams details after bloch scattering matrix run
+        Useful before retrieving the scattering matrix with incidental 
+        beam details as parameters
+        '''
+        nib = bloch.get_incidentbeams()
+        if nib <=0:
+            raise BlochError("Failed to retrieve number of incidental beams")
+
+        if nib == 0:
+            raise BlochError("No incidental beams found")
         
+        net, tilt, dimscm, ret = bloch.getibinfo(nib)
+        if ret != 0:
+            raise BlochError("failed to retrieve incidental beams info")
+        
+        print(f'Total Number of Beams: {nib}\n')
+
+        smp = "Sampling"
+        stilt = "Tilts"
+        sscdim = "Scattering Matrix Dimensions"
+        print(f"{smp:^11}{stilt:^48}{sscdim:^4}")
+        print(f"{'Coordinates':^11}\n")
+        
+        ibnet = np.transpose(net)
+        ibtilt = np.transpose(tilt)
+        ibnscm = np.transpose(dimscm)
+
+        for i in range(1, nib+1, 1):
+            net1, net2 = ibnet[i-1]
+            t1,t2,t3 = ibtilt[i-1]
+            d=ibnscm[i-1]
+        
+            sn1 = '{0: < #06d}'. format(int(net1))
+            sn2 = '{0: < #06d}'. format(int(net2))
+            st1 = '{0: < #016.10f}'. format(float(t1))
+            st2 = '{0: < #016.10f}'. format(float(t2))
+            st3 = '{0: < #016.7g}'. format(float(t3))
+
+            sd = '{0: < #04d}'. format(int(d))
+
+            print(f"{sn1}{sn2}{st1}{st2}{st3}{sd}")   
+
+    def generateSCMatrix(self, *, 
+                        aperture = DEF_APERTURE, 
+                        omega = DEF_OMEGA,  
+                        sampling = DEF_SAMPLING,
+                        disk_size = DEF_CBED_DSIZE,
+                        thickness = 200,
+                        ib_coords = (0,0),
+                        rvec = (0,0,0),
+                        em_controls = EMC(cl=200, 
+                                          simc = SIMC(gmax=1.0, excitation=(0.3,1.0))
+                                          )
+                     ):
+        '''
+        This function retieves scattering matrix 
+        with incidental beam coordinates and sample thickness
+        To get valid parameters above, one can run 
+        '''
+                   
+        dif.initcontrols()
+        dif.setmode(2) # alway in CBED mode
+
+        dif.setdisksize(disk_size)
+        
+        # setting default simulation controls
+        self.set_sim_controls(em_controls.simc)
+        # Load crystal data to backend modules 
+        self.load(rvec=rvec)
+  
+        tx, ty = em_controls.tilt
+        dx, dy = em_controls.defl
+        z = em_controls.zone
+        vt, cl = em_controls.vt,  em_controls.cl
+        
+        dif.setsamplecontrols(tx, ty, dx, dy)
+        dif.setemcontrols(cl, vt)        
+        dif.setzone(z[0], z[1], z[2])
+        
+        ret = dif.diffract(1)
+        if ret == 0:
+            raise BlochError('Error bloch runtime1')
+        
+        dif.diff_internaldelete(1)
+        bloch.setsamplethickness(thickness, thickness, 100)
+
+        ret = bloch.dobloch(aperture,omega,sampling,0.0,scm=1)
+        if ret == 2:
+            print('Contact support@emlabsoftware.com for how to register for ' +
+            'a full and accelerated version of pyemaps')
+            raise BlochError('Bloch computation resource limit reached')
+
+        if ret != 0:
+            raise BlochError('Error computing dynamic diffraction')
+        
+        # get the dimension of the scm
+        scmdim = bloch.get_scmdim(ib_coords)
+        
+        if scmdim <= 0:
+            raise BlochError("Error finding corresponding scattering matrix, use printIBDetails to find potential input for ib_coords")
+
+        scm, ret = bloch.getscm(ib_coords, thickness, scmdim)
+        if ret <= 0:
+            raise BlochError('Error retieving scattering matrix, input matrix dimention too small, use printIBDetails to find extact dimentsion')
+        return np.transpose(scm)
+
     def generateBloch(self, *, aperture = DEF_APERTURE, 
                             omega = DEF_OMEGA,  
                             sampling = DEF_SAMPLING,
@@ -1158,12 +1313,7 @@ def add_bloch(target):
         det_size = 512,                 #  Detector size (it's also resulting bloch image array dimension)
         disk_size = 0.16,               #  Diffraction disk rdius in 1/A
         '''
-        try:
-            from . import bloch
-
-        except ImportError as e:               
-            raise CrystalClassError('Failed to import bloch - dynamic diffraction simulation module')
-                         
+                   
         dif.initcontrols()
         dif.setmode(2) # alway in CBED mode
 
@@ -1171,12 +1321,7 @@ def add_bloch(target):
         
         # setting default simulation controls
         self.set_sim_controls(em_controls.simc)
-
-        # cell, atoms, atn, spg = self.prepare()
-        
-        # ret = dif.loadcrystal(cell, atoms, atn, spg, ndw=self._dw)
-        # if ret != 0:
-        #     raise BlochListError('Failed to load crystal')
+        # Load crystal data to backend modules 
         self.load()
   
         tx, ty = em_controls.tilt
@@ -1222,6 +1367,8 @@ def add_bloch(target):
     target.generateBloch = generateBloch
     target.generateBlochImgs = generateBlochImgs
     target.getbfilename = getbfilename
+    target.printIBDetails = printIBDetails
+    target.generateSCMatrix = generateSCMatrix
 
     return target
 @add_mxtal
@@ -1418,7 +1565,7 @@ class Crystal:
         
         return '\n'.join(cstr)
 
-    def load(self):
+    def load(self, rvec=None, cty=0):
         '''
         prepare crystal data to be loaded into backend module
         This routine is designed to fit python crystal structure
@@ -1438,11 +1585,12 @@ class Crystal:
                 raise CrystalClassError(f"Atomic symbol {an} length cannot exceed 10")
             atn[i] = an.ljust(10)
 
-        diff_atoms = farray([at.loc for at in self._atoms], dtype = float)
-            
+        diff_atoms = farray([at.prepare(rvec=rvec) for at in self._atoms], dtype=float)
+        
         diff_spg = self._spg.prepare()
 
-        ret = dif.loadcrystal(diff_cell, diff_atoms, atn, diff_spg, ndw=self._dw)
+        ret = dif.loadcrystal(diff_cell, diff_atoms, atn, diff_spg, ndw=self._dw, cty=cty)
+
         if ret != 0:
             self.unload() #remove any memory from backend module
             raise CrystalClassError('Failed to load cystal to backend module')

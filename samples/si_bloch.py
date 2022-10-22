@@ -19,8 +19,7 @@ Contact supprort@emlabsoftware.com for any questions and comments.
 ___________________________
 
 This sample code is to demostrate using pyemaps to generate and render
-kinematic diffraction patterns while changing with sample tilt in 
-x direction 
+dynamic diffraction patterns while controls. 
 
 Author:     EMLab Solutions, Inc.
 Date:       July 07, 2022    
