@@ -133,9 +133,6 @@ def print_filelist(fpl):
     
 if __name__ == '__main__':
 
-    # run_si_difs() 
-    # fc, fl = run_si_difs(1)
-    
     res = {}
     for f in feat_list:
         res[f]=[]

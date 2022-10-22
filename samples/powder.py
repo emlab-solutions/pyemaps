@@ -22,8 +22,7 @@ Author:     EMLab Solutions, Inc.
 Date:       May 31, 2022    
 
 
-This sample code is to render kinematic diffraction patterns generated
-by pyemaps by changing zone axis
+This sample code is to demonstrate how to generate powder diffraction.
 '''
 
 def plot2Powder(pw1, pw2):
