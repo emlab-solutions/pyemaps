@@ -328,7 +328,7 @@ You can find all alpha release notes [archived here](./alpha_rn_archive.md).
 
 #### NEW
 
-* __Scattering Matrix__: Calculation of scattering matrix is similar to that of dynamic diffraction with exception of two additional parameters. The feature is demonstrated by the sample script __si_scm.py__. Basic usage is ad follows:
+* __Scattering Matrix__: Calculation of scattering matrix is similar to that of dynamic diffraction with exception of two additional parameters. The feature is demonstrated by the sample script __si_scm.py__. Basic usage is as follows:
 ```python
     from pyemaps import Crystal as cr
     si = cr.from_builtin('Silicon')
