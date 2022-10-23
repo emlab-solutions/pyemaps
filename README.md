@@ -16,9 +16,11 @@ __pyemaps__ package is a collection of python modules and libraries designed for
 
 >**Crystallographic Transformations and Calculations**
 
->_NEW!_ **Stereodiagram**
+>**Stereodiagram**
 
->_NEW!_ **Crystal Constructor**
+>**Crystal Constructor**
+
+>_NEW!_ **Scattering Matrix**
 
 >**Crystal Structure Factors Calculations**
 > * X-Ray Structure Factors
@@ -179,13 +181,13 @@ __Dynamic Diffraction Pattern__ for _Silicon_ crystal with sampling set at 20:
 | - | - |
 |![](https://github.com/emlab-solutions/imagepypy/raw/main/si_bloch1.png) |![](https://github.com/emlab-solutions/imagepypy/raw/main/si_bloch2.png) |
 
-_NEW!_ __Stereodiagram__ for _Silicon_ crystal
+__Stereodiagram__ for _Silicon_ crystal
 
 |  |  |
 | - | - |
 |![](https://github.com/emlab-solutions/imagepypy/raw/main/Stereo_Silicon4.png) |![](https://github.com/emlab-solutions/imagepypy/raw/main/Stereo_Silicon1.png) |
 
-_NEW!_ __Crystal Constructor__ output (.xyz) visualized by cloudEMAPS 2.0 with Jmol
+__Crystal Constructor__ output (.xyz) visualized by cloudEMAPS 2.0 with Jmol
 
 |  |  |
 | - | - |

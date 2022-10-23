@@ -19,28 +19,28 @@ Contact supprort@emlabsoftware.com for any questions and comments.
 ___________________________
 
 Author:     EMLab Solutions, Inc.
-Date:       May 24, 2022    
+Date:       October 21, 2022    
 
 
-This sample code is to demonstrate how to generate crystal structure 
-factors. 
+This sample code is to demonstrate how to generate .xyz crystal 
+construction data that can be visualized by Jmol and cloudEMAPS 2.0. 
 '''
-c_name = 'Silicon'
-
-def runCSFTests():
-    from pyemaps import Crystal as cr
-    si = cr.from_builtin(c_name)
+def test_mxtal():
     
-    print(si)
-    # generate diffraction on the crystal instance with all default controls
-    # parameters, default controls returned as the first output ignored
-    v = 100
-    sm = 1.0
-
-    for i in [1,2,3,4]:
-        for j in [1, 0]:
-            sfs = si.generateCSF(kv = v, smax = sm, sftype = i, aptype = j)
-            si.printCSF(sfs)
-
+    from pyemaps import Crystal as cr
+    from pyemaps import CrystalClassError
+    from pyemaps import MxtalError
+    try:
+        si = cr.from_builtin('Silicon')
+        if si:
+            print(f'crytsal data to generate mxtal: {si}')
+            mx = si.generateMxtal(bound=0.1)
+    except (CrystalClassError, MxtalError) as e:
+        print(f'error: generating mxtal data: {e.message}')
+    except Exception as e:
+        print(f'error: generating mxtal data: {e}')
+    else:
+        print(f'\nCrystal Structure Data Generated for {si.name}:')
+        si.print_xyz(mx)
 if __name__ == "__main__":
-    runCSFTests()
+    test_mxtal()
