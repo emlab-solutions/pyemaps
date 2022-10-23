@@ -694,7 +694,7 @@ If successful, the file will be located in PYEMAPS_DATA/bloch folder if PYEMAPS_
 
 #### NEW
 
-* __Scattering Matrix__: this feature is demonstrated by the sample script __si_scm.py__. The basic usage:
+* __Scattering Matrix__: Calculation of scattering matrix is similar to that of dynamic diffraction with exception od two additional parameters  this feature is demonstrated by the sample script __si_scm.py__. The basic usage:
 ```python
     from pyemaps import Crystal as cr
     si = cr.from_builtin('Silicon')
@@ -704,7 +704,7 @@ If successful, the file will be located in PYEMAPS_DATA/bloch folder if PYEMAPS_
                         sampling = DEF_SAMPLING,
                         disk_size = DEF_CBED_DSIZE,
                         thickness = 200,               
-                        ib_coords = (0,0),             #icident beam coordinates
+                        ib_coords = (0,0),             #incident beam coordinates
                         rvec = (0,0,0),                #R-vector
                         em_controls = EMC(cl=200, 
                                           simc = SIMC(gmax=1.0, excitation=(0.3,1.0))
