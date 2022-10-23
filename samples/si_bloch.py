@@ -19,8 +19,7 @@ Contact supprort@emlabsoftware.com for any questions and comments.
 ___________________________
 
 This sample code is to demostrate using pyemaps to generate and render
-kinematic diffraction patterns while changing with sample tilt in 
-x direction 
+dynamic diffraction patterns while controls. 
 
 Author:     EMLab Solutions, Inc.
 Date:       July 07, 2022    
@@ -80,8 +79,8 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
             except (BlochError, EMCError) as e:
                 print(f'{f} generated an exception: {e.message}, {emc}') 
                 return bimgs
-            except:
-                print('failed to generate diffraction patterns') 
+            except Exception as e:
+                print(f'failed to generate diffraction patterns: {e}') 
                 return bimgs
             else: 
                 bimgs.add(emc, img) 
