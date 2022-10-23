@@ -18,9 +18,11 @@ __pyemaps__ package is a collection of python modules and libraries designed for
 
 >**Crystallographic Transformations and Calculations**
 
->_NEW!_ **Stereodiagram**
+>**Stereodiagram**
 
->_NEW!_ **Crystal Constructor**
+>**Crystal Constructor**
+
+>_NEW!_ **Scattering Matrix**
 
 >**Crystal Structure Factors Calculations**
 > * X-Ray Structure Factors
@@ -181,18 +183,17 @@ __Dynamic Diffraction Pattern__ for _Silicon_ crystal with sampling set at 20:
 | - | - |
 |![](https://github.com/emlab-solutions/imagepypy/raw/main/si_bloch1.png) |![](https://github.com/emlab-solutions/imagepypy/raw/main/si_bloch2.png) |
 
-_NEW!_ __Stereodiagram__ for _Silicon_ crystal
+__Stereodiagram__ for _Silicon_ crystal
 
 |  |  |
 | - | - |
 |![](https://github.com/emlab-solutions/imagepypy/raw/main/Stereo_Silicon4.png) |![](https://github.com/emlab-solutions/imagepypy/raw/main/Stereo_Silicon1.png) |
 
-_NEW!_ __Crystal Constructor__ output (.xyz) visualized by cloudEMAPS 2.0 with Jmol
+__Crystal Constructor__ output (.xyz) visualized by cloudEMAPS 2.0 with Jmol
 
 |  |  |
 | - | - |
 |![](https://github.com/emlab-solutions/imagepypy/raw/main/mxtal01.png) |![](https://github.com/emlab-solutions/imagepypy/raw/main/mxtal02.png) |
-
 
 To see all crystal names with builtin data, call:
 ```python
@@ -686,5 +687,36 @@ More to come for this module.
 ```
 If successful, the file will be located in PYEMAPS_DATA/bloch folder if PYEMAPS_DATA is set, or in current working directory, with auto generated file name of the format:
 
-    <crystal_name>bloch<yyyymmddhhmmss>.ims
+    <crystal_name>bloch<yyyymmddhhmmss>.im3
 
+
+### __0.4.6 Beta__ September 30th, 2022
+
+#### NEW
+
+* __Scattering Matrix__: this feature is demonstrated by the sample script __si_scm.py__. The basic usage:
+```python
+    from pyemaps import Crystal as cr
+    si = cr.from_builtin('Silicon')
+    si_scm = si.generateSCMatrix(self, *, 
+                        aperture = DEF_APERTURE,   
+                        omega = DEF_OMEGA,  
+                        sampling = DEF_SAMPLING,
+                        disk_size = DEF_CBED_DSIZE,
+                        thickness = 200,               
+                        ib_coords = (0,0),             #icident beam coordinates
+                        rvec = (0,0,0),                #R-vector
+                        em_controls = EMC(cl=200, 
+                                          simc = SIMC(gmax=1.0, excitation=(0.3,1.0))
+                                          )
+                        ):
+    print(si_scm) #print the scatering matrix in complex numbers                
+```
+A list of _ib_coords_ values as input for the above function can be found by running cr.printIBDetails().
+
+#### IMPROVEMENTS
+
+* __More Sample Code Added__: Crystal constructor sample code _si_constructor.py_ and sample code demonstrating multi-slice raw dynamic diffraction generationis _si_rawblochimg.py_ are now in _samples_ directory and can be copied into your local folder by:
+```python
+    python -m pyemaps -cp
+```

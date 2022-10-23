@@ -781,7 +781,7 @@ def add_mxtal(target):
             raise MxtalError(f'Failed to retrieve cell constants: {ret}')
 
         # clean up
-        MX.mxtal_cleanup()
+        MX.cleanup()
         return dict( xyz = retxyz, cell=cell)
 
     target.generateMxtal = generateMxtal

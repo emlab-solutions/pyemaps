@@ -21,7 +21,7 @@
 
 from copy import copy
 
-rel_stage = 'Alpha'
+rel_stage = 'Beta'
 pyemaps_samples_dir = 'pyemaps_samples'
 
 def copy_samples():

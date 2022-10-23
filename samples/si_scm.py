@@ -41,7 +41,7 @@ def runSCMTests():
     try:
         ec =EMC(cl=200, zone=(1,1,2),
                             simc = SIMC(gmax=1.0, excitation=(0.3,1.0))
-                           )
+                )
         ds = 0.25
         si_scm = si.generateSCMatrix(em_controls = ec, 
                                     disk_size = ds,
