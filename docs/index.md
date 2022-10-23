@@ -350,7 +350,7 @@ A list of _ib_coords_ values as input for the above function can be found by run
 
 #### IMPROVEMENTS
 
-* __More Sample Code Added__: Crystal constructor sample code _si_constructor.py_ and sample code demonstrating multi-slice raw dynamic diffraction generationis _si_rawblochimgs.py_ are now in _samples_ directory and can be copied into your local folder by running:
+* __More Sample Code Added__: Crystal constructor sample code _si_constructor.py_ and sample code demonstrating multi-slice raw dynamic diffraction image generation _si_rawblochimgs.py_ are now in _samples_ directory and can be copied into your local folder by running:
 ```python
     python -m pyemaps -cp
 ```
