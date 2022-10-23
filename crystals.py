@@ -1187,8 +1187,8 @@ def add_bloch(target):
     @staticmethod
     def printIBDetails():
         '''
-        print incidental beams details after bloch scattering matrix run
-        Useful before retrieving the scattering matrix with incidental 
+        print beams details after bloch scattering matrix run
+        Useful before retrieving the scattering matrix with incident 
         beam details as parameters
         '''
         nib = bloch.get_incidentbeams()
@@ -1229,6 +1229,68 @@ def add_bloch(target):
 
             print(f"{sn1}{sn2}{st1}{st2}{st3}{sd}")   
 
+    @staticmethod
+    def printBeams(ib_coords=(0,0)):
+        '''
+        print eigen values for input incident beam and sample thickness 
+        after bloch scattering matrix run.
+
+        '''
+        nib = bloch.get_incidentbeams()
+        if nib <=0:
+            raise BlochError("Failed to retrieve number of incidental beams")
+
+        if nib == 0:
+            raise BlochError("No incidental beams found")
+        
+        scmdim = bloch.get_scmdim(ib_coords)
+        if scmdim <= 0:
+            raise BlochError("Error finding corresponding scattering matrix, use printIBDetails to find potential input for ib_coords")
+        
+        ev, ret = bloch.getbeams(ib_coords, scmdim)
+        if ret < 0 or ret != scmdim:
+            raise BlochError("failed to retrieve incidental beams info")
+        
+        print(f'Total Diffracted Beams: {scmdim}\n')
+
+        shkl = "h   K   l"
+        print(f"{shkl:^12}")
+
+        evv = np.transpose(ev)
+        for e in evv:
+            h,k,l = e
+            sh = '{0: < #04d}'. format(int(h))
+            sk = '{0: < #04d}'. format(int(k))
+            sl = '{0: < #04d}'. format(int(l))
+
+            print(f"{sh}{sk}{sl}") 
+      
+
+    @staticmethod
+    def printEigenValues(ib_coords=(0,0)):
+        '''
+        print eigen values for input incident beam and sample thickness 
+        after bloch scattering matrix run.
+
+        '''
+        nib = bloch.get_incidentbeams()
+        if nib <=0:
+            raise BlochError("Failed to retrieve number of incidental beams")
+
+        if nib == 0:
+            raise BlochError("No incidental beams found")
+        
+        scmdim = bloch.get_scmdim(ib_coords)
+        if scmdim <= 0:
+            raise BlochError("Error finding corresponding scattering matrix, use printIBDetails to find potential input for ib_coords")
+        
+        ev, ret = bloch.geteigenvalues(ib_coords, scmdim)
+        if ret < 0 or ret != scmdim:
+            raise BlochError("failed to retrieve incidental beams info")
+        
+        print(f'Eigen Values At: {ib_coords}\n')
+        print(ev)
+            
     def generateSCMatrix(self, *, 
                         aperture = DEF_APERTURE, 
                         omega = DEF_OMEGA,  
@@ -1369,8 +1431,10 @@ def add_bloch(target):
     target.getbfilename = getbfilename
     target.printIBDetails = printIBDetails
     target.generateSCMatrix = generateSCMatrix
-
+    target.printEigenValues = printEigenValues
+    target.printBeams = printBeams
     return target
+    
 @add_mxtal
 @add_bloch
 @add_powder
