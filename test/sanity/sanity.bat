@@ -17,7 +17,7 @@ if "%1"=="local" (
     call python .\pyemaps_samples\si_dif.py
     call python .\pyemaps_samples\si_bloch.py
     call python .\pyemaps_samples\si_rawblochimgs.py
-    call python .\pyemaps_samples\si_constuctor.py
+    call python .\pyemaps_samples\si_constructor.py
     call python .\pyemaps_samples\si_stereo.py
     call python .\pyemaps_samples\si_scm.py
     python test\sanity\feature_sanity.py
