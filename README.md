@@ -1,11 +1,13 @@
 # Introducing __pyemaps__
+
 1. <a id="contents"></a>[Overview](#overview)
-2. <a id="contents"></a>[Requirements](#requirements)
-3. <a id="contents"></a>[Installation](#installation)
-4. <a id="contents"></a>[Basic Usage](#basic-usage)
-5. <a id="contents"></a>[Getting Started](#getting-started)
-6. <a id="contents"></a>[Visualisation](#visualisation)
-7. <a id="contents"></a>[Licence](#licence)
+2. <a id="contents"></a>[What's New](#news)
+3. <a id="contents"></a>[Requirements](#requirements)
+4. <a id="contents"></a>[Installation](#installation)
+5. <a id="contents"></a>[Basic Usage](#basic-usage)
+6. <a id="contents"></a>[Getting Started](#getting-started)
+7. <a id="contents"></a>[Visualisation](#visualisation)
+8. <a id="contents"></a>[Licence](#licence)
 
 ## Overview [`↩`](#contents) <a id="overview"></a>
 __pyemaps__ package is a collection of python modules and libraries designed for transmission electron diffraction simulations and related crystallographic calculations. Main features include:
@@ -44,9 +46,16 @@ __pyemaps__ comes with a set of helper classes with the intent of making accesse
 
 __pyemaps__ is based on the proprietary Fortran applications released as backend of [cloudEMAPS2.0](https://emaps.emlabsolutions.com). 
 
-Check [pyemaps release notes](https://emlab-solutions.github.io/pyemaps/#release-notes) for updates and releases. We welcome comments and suggestions from our user community. For reporting any issues and requesting pyemaps improvements, or sharing scripts using __pyemaps__, please go to [our support page](https://www.emlabsolutions.com/contact/). 
+Check [latest pyemaps release notes](https://emlab-solutions.github.io/pyemaps/#release-notes) for updates and releases. We welcome comments and suggestions from our user community. For reporting any issues and requesting pyemaps improvements, or sharing scripts using __pyemaps__, please go to [our support page](https://www.emlabsolutions.com/contact/). 
 
 If you benefit from __pyemaps__ in your microscopy and crystallography research and education and would like to donate, go to [PayPal](https://www.paypal.com/paypalme/pyemaps22). Your generous donations are greatly appreciated and will keep us in the business of providing free software to the communities.   
+
+## What's New [`↩`](#contents) <a id="news"></a>
+__pyemaps__ is now in Beta program! We sincerely thank those who gave us precious time and feedback during our Alpha phase.
+All release notes before last Alpha release version 0.4.5 are now [archived](https://emlab-solutions.github.io/pyemaps/#release-notes). 
+
+We'd like to invite you and your colleagues to continue to participate this free program in its Beta phase. Our goal is to turn this
+package into a stable and free product in about one month.
 
 ## Requirements [`↩`](#contents) <a id="requirements"></a>
 
