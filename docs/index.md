@@ -690,22 +690,22 @@ If successful, the file will be located in PYEMAPS_DATA/bloch folder if PYEMAPS_
     <crystal_name>bloch<yyyymmddhhmmss>.im3
 
 
-### __0.4.6 Beta__ September 30th, 2022
+### __0.4.6 Beta__ October 22, 2022
 
 #### NEW
 
-* __Scattering Matrix__: Calculation of scattering matrix is similar to that of dynamic diffraction with exception od two additional parameters  this feature is demonstrated by the sample script __si_scm.py__. The basic usage:
+* __Scattering Matrix__: Calculation of scattering matrix is similar to that of dynamic diffraction with exception of two additional parameters. The feature is demonstrated by the sample script __si_scm.py__. Basic usage is ad follows:
 ```python
     from pyemaps import Crystal as cr
     si = cr.from_builtin('Silicon')
     si_scm = si.generateSCMatrix(self, *, 
-                        aperture = DEF_APERTURE,   
+                        aperture = DEF_APERTURE,        
                         omega = DEF_OMEGA,  
                         sampling = DEF_SAMPLING,
                         disk_size = DEF_CBED_DSIZE,
                         thickness = 200,               
                         ib_coords = (0,0),             #incident beam coordinates
-                        rvec = (0,0,0),                #R-vector
+                        rvec = (0,0,0),                #R-vector, each components should be less than 1.0
                         em_controls = EMC(cl=200, 
                                           simc = SIMC(gmax=1.0, excitation=(0.3,1.0))
                                           )
