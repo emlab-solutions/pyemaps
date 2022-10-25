@@ -24,7 +24,7 @@ Date:       October 19th, 2022
 
 This sample code is to demonstrate how to generated scattering matrix
 '''
-c_name = 'Silicon'
+c_name = 'Germanium'
 
 def runSCMTests():
 
@@ -39,20 +39,27 @@ def runSCMTests():
     # -----For a list beams coordinates 
     #      to generate more scattering matrix, run cr.printIBDetails()
     try:
-        ec =EMC(cl=200, zone=(1,1,2),
-                            simc = SIMC(gmax=1.0, excitation=(0.3,1.0))
+        ec =EMC(cl=200,
+                tilt=(0.0, 0.0),
+                simc = SIMC(gmax=2.0, excitation=(1.0,2.0))
                 )
         ds = 0.25
+        ib_coords = ( 0,0)
         si_scm = si.generateSCMatrix(em_controls = ec, 
                                     disk_size = ds,
-                                    ib_coords = (0,0))
+                                    ib_coords = ib_coords)
 
     except BlochError as e:
         print(f'Failed to generate scattering matrix {e.message}')
     else:
-        print('Scattering matrix generated successfully!')
+        print('\n---Scattering matrix generated successfully!')
         print(si_scm)
-        print('Other beams info...')
+        print('\n---Other info...')
+        # output eigen values at ib_coords
+        cr.printEigenValues(ib_coords = ib_coords)
+        # outputMiller Indices at ib_coords
+        cr.printBeams(ib_coords = ib_coords)
+        # output list if ib_coords and tilts and etc... 
         cr.printIBDetails()
 
 if __name__ == "__main__":

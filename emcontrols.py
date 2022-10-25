@@ -100,9 +100,8 @@ class SIMControl:
           not isinstance(excit[1], (int, float)) or \
           excit[0] > excit[1]:
             raise EMCError('Excitation values must be a tuple of two ordered numbers')
-       
        self._excitation = excit
-
+       
     @gmax.setter
     def gmax(self, gm):
 
@@ -195,7 +194,7 @@ class SIMControl:
        simulation.append('excitation error range: ' +  str(self._excitation))
        simulation.append('maximum recipricol vector length: ' + str(self._gmax))
        simulation.append('beta perturbation cutoff: ' + str(self._bmin))
-       simulation.append('kinematic diffraction intensity cutoff level and scale: ')
+       simulation.append('kinematic diffraction intensity cutoff level and scale: '+ str(self._intensity))
        simulation.append('crystal horizontal axis in reciprical space: ' + str(self._xaxis))
        simulation.append('maximum index number for g-list: ' + str(self._gctl))
        simulation.append('maximum zone index number: ' + str(self._zctl))
@@ -269,7 +268,7 @@ class EMControl:
     initializing class include the following controls:
     
     '''
-    def __init__(self, *, tilt = DEF_TILT, 
+    def __init__(self, tilt = DEF_TILT, 
                        zone = DEF_ZONE, 
                        defl = DEF_DEFL, 
                        vt = DEF_KV, 
@@ -280,8 +279,7 @@ class EMControl:
                        zone = zone, 
                        defl = defl,
                        vt = vt,
-                       cl = cl)
-        
+                       cl = cl)     
         for k, v in emc_dict.items():
             setattr(self, k, v)
         
@@ -349,7 +347,7 @@ class EMControl:
         
         if zv == (0,0,0):
            raise EMCError("Zone axis must not be (0,0,0)")
-
+  
         self._zone = zv 
 
     @tilt.setter
