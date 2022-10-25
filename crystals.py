@@ -590,8 +590,6 @@ class Atom:
             
        return tloc   
 
-
-       pass
 def add_dpgen(target):
     def dp_gen(self, res =1):
 
@@ -1232,7 +1230,7 @@ def add_bloch(target):
     @staticmethod
     def printBeams(ib_coords=(0,0)):
         '''
-        print eigen values for input incident beam and sample thickness 
+        print diffracted beams for input incident beam coordinates 
         after bloch scattering matrix run.
 
         '''
@@ -1251,7 +1249,7 @@ def add_bloch(target):
         if ret < 0 or ret != scmdim:
             raise BlochError("failed to retrieve incidental beams info")
         
-        print(f'Total Diffracted Beams: {scmdim}\n')
+        print(f'Total Diffracted Beams In Diagonalization: {scmdim}\n')
 
         shkl = "h   K   l"
         print(f"{shkl:^12}")
@@ -1288,7 +1286,7 @@ def add_bloch(target):
         if ret < 0 or ret != scmdim:
             raise BlochError("failed to retrieve incidental beams info")
         
-        print(f'Eigen Values At: {ib_coords}\n')
+        print(f'Eigen Values At Sampling Point: {ib_coords}\n')
         print(ev)
             
     def generateSCMatrix(self, *, 
@@ -1296,12 +1294,13 @@ def add_bloch(target):
                         omega = DEF_OMEGA,  
                         sampling = DEF_SAMPLING,
                         disk_size = DEF_CBED_DSIZE,
-                        thickness = 200,
                         ib_coords = (0,0),
                         rvec = (0,0,0),
+                        thickness = 200,
                         em_controls = EMC(cl=200, 
-                                          simc = SIMC(gmax=1.0, excitation=(0.3,1.0))
-                                          )
+                                          simc = SIMC(gmax=1.0, 
+                                          excitation=(0.3,1.0))
+                        )
                      ):
         '''
         This function retieves scattering matrix 
@@ -1315,13 +1314,16 @@ def add_bloch(target):
         dif.setdisksize(disk_size)
         
         # setting default simulation controls
+        # print(f'simulation parameters: {em_controls.simc}')
         self.set_sim_controls(em_controls.simc)
+
         # Load crystal data to backend modules 
         self.load(rvec=rvec)
   
         tx, ty = em_controls.tilt
         dx, dy = em_controls.defl
         z = em_controls.zone
+        # print(f'zone input from generateSCMatrix: {z}:{em_controls.zone}')
         vt, cl = em_controls.vt,  em_controls.cl
         
         dif.setsamplecontrols(tx, ty, dx, dy)
@@ -1331,7 +1333,7 @@ def add_bloch(target):
         ret = dif.diffract(1)
         if ret == 0:
             raise BlochError('Error bloch runtime1')
-        
+            
         dif.diff_internaldelete(1)
         bloch.setsamplethickness(thickness, thickness, 100)
 
@@ -1654,7 +1656,7 @@ class Crystal:
         diff_spg = self._spg.prepare()
 
         ret = dif.loadcrystal(diff_cell, diff_atoms, atn, diff_spg, ndw=self._dw, cty=cty)
-
+        
         if ret != 0:
             self.unload() #remove any memory from backend module
             raise CrystalClassError('Failed to load cystal to backend module')
@@ -2701,7 +2703,8 @@ class Crystal:
 
         shiftx, shifty = dif.get_shifts()
         bounds = (shiftx, shifty)
-
+        
+        # dif.diff_printall()
         #remove module internal global memory
         dif.diff_internaldelete(0)
 
