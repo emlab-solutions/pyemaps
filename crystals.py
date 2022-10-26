@@ -1172,15 +1172,6 @@ def add_bloch(target):
         dif.diff_delete()
 
         return myBlochImgs
-    # @staticmethod
-    # def getIBNum():
-    #     '''
-    #     get number of incidental beams from last bloch scattering matrix run
-    #     '''
-    #     nib = bloch.get_incidentalbeams()
-    #     if nib <=0:
-    #         raise BlochError("Failed to retrieve number of incidental beams")
-    #     return nib
 
     @staticmethod
     def printIBDetails():
@@ -1189,7 +1180,7 @@ def add_bloch(target):
         Useful before retrieving the scattering matrix with incident 
         beam details as parameters
         '''
-        nib = bloch.get_incidentbeams()
+        nib = bloch.get_nsampling()
         if nib <=0:
             raise BlochError("Failed to retrieve number of incidental beams")
 
@@ -1203,10 +1194,10 @@ def add_bloch(target):
         print(f'Total Number of Beams: {nib}\n')
 
         smp = "Sampling"
-        stilt = "Tilts"
+        stilt = "Beam Tilts In Reciprical Space"
         sscdim = "Scattering Matrix Dimensions"
         print(f"{smp:^11}{stilt:^48}{sscdim:^4}")
-        print(f"{'Coordinates':^11}\n")
+        print(f"{'Points':^11}\n")
         
         ibnet = np.transpose(net)
         ibtilt = np.transpose(tilt)
@@ -1228,56 +1219,44 @@ def add_bloch(target):
             print(f"{sn1}{sn2}{st1}{st2}{st3}{sd}")   
 
     @staticmethod
-    def printBeams(ib_coords=(0,0)):
+    def getBeams(ib_coords=(0,0), bPrint=False):
         '''
-        print diffracted beams for input incident beam coordinates 
-        after bloch scattering matrix run.
+        print diffracted beams for given sample coordinates 
+        must follow scattering matrix run: generateSCMatrix().
 
         '''
-        nib = bloch.get_incidentbeams()
-        if nib <=0:
-            raise BlochError("Failed to retrieve number of incidental beams")
-
-        if nib == 0:
-            raise BlochError("No incidental beams found")
         
         scmdim = bloch.get_scmdim(ib_coords)
         if scmdim <= 0:
             raise BlochError("Error finding corresponding scattering matrix, use printIBDetails to find potential input for ib_coords")
         
         ev, ret = bloch.getbeams(ib_coords, scmdim)
+
         if ret < 0 or ret != scmdim:
             raise BlochError("failed to retrieve incidental beams info")
-        
-        print(f'Total Diffracted Beams In Diagonalization: {scmdim}\n')
+        evv = np.transpose(ev) 
+        if bPrint:
+            print(f'Total Diffracted Beams In Diagonalization: {scmdim}\n')
 
-        shkl = "h   K   l"
-        print(f"{shkl:^12}")
+            shkl = "h   K   l"
+            print(f"{shkl:^12}")
 
-        evv = np.transpose(ev)
-        for e in evv:
-            h,k,l = e
-            sh = '{0: < #04d}'. format(int(h))
-            sk = '{0: < #04d}'. format(int(k))
-            sl = '{0: < #04d}'. format(int(l))
+            for e in evv:
+                h,k,l = e
+                sh = '{0: < #04d}'. format(int(h))
+                sk = '{0: < #04d}'. format(int(k))
+                sl = '{0: < #04d}'. format(int(l))
 
-            print(f"{sh}{sk}{sl}") 
-      
+                print(f"{sh}{sk}{sl}") 
+        return evv   
 
     @staticmethod
-    def printEigenValues(ib_coords=(0,0)):
+    def getEigen(ib_coords=(0,0)):
         '''
-        print eigen values for input incident beam and sample thickness 
-        after bloch scattering matrix run.
+        This method returns eigen values for given sample point.
+        must be called between beginSCMatrix(...) and endSCMatrix().
 
         '''
-        nib = bloch.get_incidentbeams()
-        if nib <=0:
-            raise BlochError("Failed to retrieve number of incidental beams")
-
-        if nib == 0:
-            raise BlochError("No incidental beams found")
-        
         scmdim = bloch.get_scmdim(ib_coords)
         if scmdim <= 0:
             raise BlochError("Error finding corresponding scattering matrix, use printIBDetails to find potential input for ib_coords")
@@ -1286,16 +1265,14 @@ def add_bloch(target):
         if ret < 0 or ret != scmdim:
             raise BlochError("failed to retrieve incidental beams info")
         
-        print(f'Eigen Values At Sampling Point: {ib_coords}\n')
-        print(ev)
-            
-    def generateSCMatrix(self, *, 
+        return ev
+
+    def beginSCMatrix(self, *, 
                         aperture = DEF_APERTURE, 
                         omega = DEF_OMEGA,  
                         sampling = DEF_SAMPLING,
                         disk_size = DEF_CBED_DSIZE,
-                        ib_coords = (0,0),
-                        rvec = (0,0,0),
+                        rvec = (0.0,0.0,0.0),
                         thickness = 200,
                         em_controls = EMC(cl=200, 
                                           simc = SIMC(gmax=1.0, 
@@ -1303,11 +1280,25 @@ def add_bloch(target):
                         )
                      ):
         '''
-        This function retieves scattering matrix 
-        with incidental beam coordinates and sample thickness
-        To get valid parameters above, one can run 
+        This function begins to run dynamic diffraction simulation and prepare to retieve scattering matrix 
+        with sampling point coordinates and sample thickness
+        
+
+        aperture = 1.0,                 #  Objective aperture
+        omega = 10,                     #  Diagnization cutoff                            
+        sampling = 8,                   #  Number of sampling points
+        pix_size = 25,                  #  Detector pixel size in microns
+        thickness = 200,                #  Sample thickness
+        det_size = 512,                 #  Detector size (it's also resulting bloch image array dimension)
+        disk_size = 0.16,               #  Diffraction disk rdius in 1/A\
+        rvec = (0.0,0.0,0.0)            #  R vector shifting atom coordinates in crystal, 
+                                        #  all components of R vector are floating numbers between 0.0 and 1.0
+        Returns:                         
+        A tuple (ns, s)                 #  ns = number of sampling points
+                                           s = a list of sampling points in (x,y) coordiantes
         '''
-                   
+        
+
         dif.initcontrols()
         dif.setmode(2) # alway in CBED mode
 
@@ -1345,14 +1336,47 @@ def add_bloch(target):
 
         if ret != 0:
             raise BlochError('Error computing dynamic diffraction')
+
+        print(f'---Scattering matrix data now available for the following sampling points---')
+        print(f'call getSCMartix to retrive the scattering matrix at any of the following samplign points')
+        # Crystal.printIBDetails()
+        nsampling = bloch.get_nsampling()
+        sampling_points, ret = bloch.get_samplingpoints(nsampling)
+
+        if ret != 0:
+            raise BlochError('Failed to retrive sampling points used in scattering matrix run')
+        
+        print(f'# of sampling points: {nsampling}')
+        
+        spoints = np.transpose(sampling_points)
+
+        sp = [tuple(p) for p in spoints]
+        print(f'List of sampling points: {sp}')
+        return nsampling, sp
+
+
+    @staticmethod
+    def endSCMatrix():
+        # freeing backend bloch module memory 
+        bloch.cleanup()
+
+    @staticmethod
+    def getSCMatrix(ib_coords = (0,0)):
+        '''
+        This function retieves scattering matrix by sampling point coordinates,
+        this call must be between:
+        1) beginSCMatrix(...), and
+        2) endSCMatrix() 
+        All available input for ib_coords are output from beginSCMatrix call
+        '''
         
         # get the dimension of the scm
         scmdim = bloch.get_scmdim(ib_coords)
         
         if scmdim <= 0:
-            raise BlochError("Error finding corresponding scattering matrix, use printIBDetails to find potential input for ib_coords")
+            raise BlochError("Error finding corresponding scattering matrix,  to find potential input for ib_coords")
 
-        scm, ret = bloch.getscm(ib_coords, thickness, scmdim)
+        scm, ret = bloch.getscm(ib_coords, scmdim)
         if ret <= 0:
             raise BlochError('Error retieving scattering matrix, input matrix dimention too small, use printIBDetails to find extact dimentsion')
         return np.transpose(scm)
@@ -1431,10 +1455,16 @@ def add_bloch(target):
     target.generateBloch = generateBloch
     target.generateBlochImgs = generateBlochImgs
     target.getbfilename = getbfilename
+
+    target.beginSCMatrix = beginSCMatrix
+    # These calls must be between the above and endSCMartix calls
     target.printIBDetails = printIBDetails
-    target.generateSCMatrix = generateSCMatrix
-    target.printEigenValues = printEigenValues
-    target.printBeams = printBeams
+    target.getSCMatrix = getSCMatrix
+    target.getEigen = getEigen
+    target.getBeams = getBeams
+    # These calls must be between the above and endSCMartix calls
+    target.endSCMatrix = endSCMatrix
+
     return target
     
 @add_mxtal

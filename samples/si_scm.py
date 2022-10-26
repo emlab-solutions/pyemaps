@@ -24,7 +24,8 @@ Date:       October 19th, 2022
 
 This sample code is to demonstrate how to generated scattering matrix
 '''
-c_name = 'Germanium'
+# c_name = 'Germanium'
+c_name = 'silicon'
 
 def runSCMTests():
 
@@ -38,29 +39,49 @@ def runSCMTests():
 
     # -----For a list beams coordinates 
     #      to generate more scattering matrix, run cr.printIBDetails()
+    ec =EMC(cl=200,
+            tilt=(0.0, 0.0),
+            simc = SIMC(gmax=2.0, excitation=(1.0,2.0))
+            )
+    ds = 0.25
+    ib_coords = ( 0,0)
     try:
-        ec =EMC(cl=200,
-                tilt=(0.0, 0.0),
-                simc = SIMC(gmax=2.0, excitation=(1.0,2.0))
-                )
-        ds = 0.25
-        ib_coords = ( 0,0)
-        si_scm = si.generateSCMatrix(em_controls = ec, 
-                                    disk_size = ds,
-                                    ib_coords = ib_coords)
+        
+        # s  = list of sampling points (x,y)
+        _, s = si.beginSCMatrix(em_controls = ec, 
+                        disk_size = ds)
 
     except BlochError as e:
         print(f'Failed to generate scattering matrix {e.message}')
     else:
-        print('\n---Scattering matrix generated successfully!')
-        print(si_scm)
-        print('\n---Other info...')
-        # output eigen values at ib_coords
-        cr.printEigenValues(ib_coords = ib_coords)
-        # outputMiller Indices at ib_coords
-        cr.printBeams(ib_coords = ib_coords)
-        # output list if ib_coords and tilts and etc... 
-        cr.printIBDetails()
+        # get the scattering matrix now
+        try:
+            si_scm = cr.getSCMatrix(ib_coords = ib_coords)
+        except BlochError as e:
+            print(f'Failed to generate scattering matrix {e.message}')
+        else:
+            print(f'Sacattering matrix at sampling point {ib_coords}:\n{si_scm}')
+            # output eigen values at ib_coords
+            print(f'\nEigen values at: {ib_coords}: ')
+            print(cr.getEigen(ib_coords = ib_coords))
+            # outputMiller Indices at ib_coords
+            print(f'\nDiffracted Beams at: {ib_coords}: ')
+            cr.getBeams(ib_coords = ib_coords, bPrint=True)
+            # output list if ib_coords and tilts and etc...
+            print(f'\nBeam Tilts In Reciprical Space and Misc') 
+            cr.printIBDetails()
+            
+            # ------enable below to step through all sampling points 
+            #       and print all scattering matrix
+
+            # for sc in s:
+            #     scm = cr.getSCMatrix(ib_coords = sc)
+            #     print(f'--Sacattering matrix at sampling point {sc}:\n{scm}--')
+            #     print(scm)
+
+    
+    # cleanup backend module memory
+    cr.endSCMatrix()
 
 if __name__ == "__main__":
     runSCMTests()
