@@ -23,27 +23,42 @@ Author:             EMLab Solutions, Inc.
 Date Created:       May 07, 2022  
 
 '''
-
-import numpy as np
-from numpy import asfortranarray as farray
-
 import os
 import json
     
+import numpy as np
+from numpy import asfortranarray as farray
+
 from .errors import *
 from .fileutils import *
-from . import XTLError, CellError, UCError, SPGError
-from .diffract.bloch_dec import add_bloch
-from .diffract.csf_dec import add_csf
-from .diffract.mxtal_dec import add_mxtal
-from .diffract.powder_dec import add_powder
-from .diffract.dpgen_dec import add_dpgen
-from .diffract.stereo_dec import add_stereo
-from .diffract.dif_dec import add_dif
 
 class Cell:
+    """
+    Cell constant data class.
 
+    Data will be validated and prepared to be loaded
+    into backend simulation modules.
+    """
     def __init__(self, cell_dict=dict.fromkeys(cell_keys,0.0)):
+        """
+        :prama cell_dict: Optional cell constant dictionary, default to all zero values for all keys
+        :type cell_dict: dict
+        :raise CellValueError: if cell data validations fail.
+
+        Example of the cell constant input:
+
+        ::
+
+        {
+            'a': '5.4307',
+            'b': '5.4307',
+            'c': '5.4307',
+            'alpha': '90.0',
+            'beta': '90.0',
+            'gamam': '90.0'
+        }
+        
+        """
 
         if not cell_dict or not isinstance(cell_dict, dict) or len(cell_dict) != len(cell_keys):
             raise CellDataError()
@@ -148,6 +163,10 @@ class Cell:
                str(f"{self._alpha} {self._beta} {self._gamma}") 
 
     def prepare(self):
+        """
+        Prepare cell constant data in Crystal class before loading
+        into backend modules
+        """
         cell0 = self.__dict__
         celarr = np.zeros((6,))
         for i, key in enumerate(cell_keys):
@@ -164,7 +183,21 @@ class Cell:
             yield (key[1:], getattr(self, key))
 
 class SPG:
+    """
+    Space group class.
+    """
     def __init__(self, spg_dict):
+        """
+        :prama spg_dict: required space group data input.
+        :type spg_dict: dict
+        :raise SPGInvalidDataInputError: if cell data validations fail.
+
+        Example of space group input:
+        {
+            'number': '227',
+            'setting': '2'
+        } 
+        """
         if not spg_dict or not isinstance(spg_dict, dict):
             raise SPGInvalidDataInputError()
 
@@ -188,7 +221,13 @@ class SPG:
 
     @number.setter
     def number(self, num):
-        
+        """
+        Symmetry IT number data. 
+        Validation against backend Space Group module data
+        :param num: required integer number that is in the range of spg backend data module
+        :type num: int
+        :raise SPGInvalidDataInputError: if the input is not in the range in spg data module.
+        """
         number = 0
         try:
             number = int(num)
@@ -202,7 +241,12 @@ class SPG:
 
     @setting.setter
     def setting(self, s):
-
+        """
+        Symmetry setting data., provided IT number is set first
+        :param s: required integer number that is in the range of spg backend data module
+        :type s: int
+        :raise SPGInvalidDataInputError: if the input is not in the range in spg data module.
+        """
         iset = 0
         try:
             iset = int(s)
@@ -247,6 +291,28 @@ class SPG:
 
 class Atom:
     def __init__(self, a_dict={}):
+        """
+        Single atom data internal representation and validation 
+        implemented in this class with attributes:
+            symb:   atomic sybom
+            loc:    atomic location
+
+        :prama a_dict: Optional atoms data input.
+        :type a_dict: dict
+        :raise UCError: Unit cell errors if validations fail.
+
+        Example of atoms data input:
+    
+        [
+            {'symb': 'si', ----------------------------atom symbol
+            'x': '0.125',  ----------------------------atom coordinates
+            'y': '0.125',  
+            'z': '0.125',
+            'd-w': '0.4668', ---------------------------Debye-waller factor
+            'occ': 1.00}, -------------------------------Occupancy
+            ...
+        ]
+        """
         
         if not a_dict or not isinstance(a_dict, dict) or len(a_dict) == 0:
             raise UCError()
@@ -346,23 +412,110 @@ class Atom:
             
        return tloc   
        
-# ---------------adding these features to Crystal class when correspoding
-#                backend extension module is available
-# ------------------------------------------------------------------------  
-@add_mxtal
-@add_stereo
-@add_bloch
+# -------------------------PYEMAPS EXTENSIONS--------------------------
+#       add new features and methods to Crystal class when 
+#       correspoding backend extension module becomes available. 
+# 
+#       These new methods extend the existing Crystal class
+#       methods by wrapping the extension's backend module 
+#       (e.g. csf - crystal structure factor module) that provide 
+#       interfaces with the new extension to extract module data 
+#       such as x-ray structure factor in the above example.  
+# --------------------------------------------------------------------- 
+
+#---Crystal structure factors---
+#   1) X-Ray Structure Factors
+#   2) Electron Structure Factor in V (volts)
+#   3) Electron Structure Factor in 1/Angstron^2
+#   4) Electron Absorption Structure Factor in 1/Angstron^2 
+from .diffract.csf_dec import add_csf
+
+#---Crystal constructor---
+#   building atomic structure based on crystal data
+from .diffract.mxtal_dec import add_mxtal
+
+#---Powder diffraction Calculation---
+#   TODO
+from .diffract.powder_dec import add_powder
+
+#---Kinematic diffraction patterns database generation (upcoming) 
+from .diffract.dpgen_dec import add_dpgen
+
+#---Stereodiagram---
+#   generates and plots stereographic projections
+from .diffract.stereo_dec import add_stereo
+
+#---Kinematic Diffraction Simulations---
+from .diffract.dif_dec import add_dif
+
+#---Dynamic Diffraction Simulations---
+from .diffract.bloch_dec import add_bloch
+
+@add_mxtal              
+@add_stereo              
+@add_bloch              
 @add_powder
 @add_csf    
 @add_dpgen      
 @add_dif   
 class Crystal:
-    def __init__(self, name="Diamond", data={}):
+    """
+    A python class encapsulates validated crystal data to be loaded into
+    diffractions simulations and crystallogrphic calculations.
+
+    Crytsal class constructors include:
+    1) Crystal(name, data_dict) --------------------dictionary object
+    2) Crystal.from_builtin(name)-------------------from builtin crystal database
+    3) Crystal.from_xtl(xtl_filename)---------------from a proprietory crystal data file
+    4) Crystal.from_cif(cif_filename)---------------from Crystallographic Information File
+    
+    In addition to standard methods for getting and setting each components of 
+    the crystal class, interfaces to backend simulation modules are added as
+    the modules become available.
+
+    """
+    def __init__(self, name="Diamond", data=dict(dw='iso')):
+        """
+        Default constructor taking a python dictionary of the followign format    
+        
+        The dictionary object example for Silicon:
+
+        {'cell': ----------------------------------------Cell constants
+            {'a': '5.4307',
+            'b': '5.4307',
+            'c': '5.4307',
+            'alpha': '90.0',
+            'beta': '90.0',
+            'gamam': '90.0'},
+        'atoms':-----------------------------------------Atomic info.
+            [
+                {'symb': 'si', ----------------------------atom symbol
+                'x': '0.125',  ----------------------------atom coordinates
+                'y': '0.125',  
+                'z': '0.125',
+                'd-w': '0.4668', ---------------------------Debye-waller factor
+                'occ': 1.00}, -------------------------------Occupancy
+            ],
+        'spg':--------------------------------------------Space group info
+            {'number': '227' -------------------------------symmetry international table(IT) number
+            'setting': '2' ---------------------------------symmetry space group setting
+            },
+        'dw': 'iso' ------------------------------------Debye-waller factor
+                                                             isotropic = 'iso'
+                                                             non-iso(TODO)
+
+        }
+
+        :param name: Optional name of the crystal or default to 'Diamond'
+        :type name: string
+        :param data: Optional data of the crystal. Default to dictionary with just dw value of 'iso'
+        :type data: dict
+        :raise CrystalClassError: If data validations fail.
+        """
 
         if not data or not isinstance(data, dict):
-            raise ValueError("Error constructing crytsal object")
+            raise CrystalClassError("Error constructing crytsal object")
 
-        # print(f'In crystal creating by a dict: {data.items()}')
         if 'dw' not in data:
             raise CrystalClassError("Debye-Waller factor or thermal data missing")
 
@@ -568,7 +721,7 @@ class Crystal:
         spg 225 1
 
         required fields:
-        1) Dw = iso by default, other values: uij, bij
+        1) Dw = iso by default, other values: uij, bij (TODO)
         2) Crystal name
         3) Cell constants: 6 floating point values following "cell"
         4) Atoms: one or two lines of atoms positions along with element symbol
@@ -578,7 +731,15 @@ class Crystal:
                 b) if dw == uij,bij, atoms line must have at least 9 floating points
                 in (x,y,z,b11,b22,b33,b12,b13,b23,occ)
 
-        5) Spg: space group data. Two positive digits: [number, setting]
+        5) Spg: space group data. Two positive digits: (number, setting)
+
+        For a list of existing crystal names in pyemaps' builtin database,
+        call Crystal.list_all_builtin_crystals() crystal static method.
+
+        :param cn: Optional name of the crystal in pyemaps's builtin database.
+        :type cn: string
+        :raise CrystalClassError: If reading database fails or any of its components 
+                                  (cell, atoms, spg) fail to validate.
 
         """
 
@@ -604,7 +765,7 @@ class Crystal:
     def from_xtl(cls, fn):
         """
         Loading crystal instance data from a user supplied xtl formtted data:
-         The example format:
+        The example format:
 
         crystal Aluminium: dw = iso [occ = 1.0]
         cell 4.0493 4.0493 4.0493 90.0000 90.0000 90.0000
@@ -623,16 +784,22 @@ class Crystal:
                 in (x,y,z,b11,b22,b33,b12,b13,b23,occ)
 
         5) Spg: space group data. Two positive digits: [number, setting]
-
-        input:
+        
+        input file name:
         fn - crystal data file name in above XTL format
-            1) If fn is gigen in full path and exists, it will congest it and import the data in fn 
+            1) If fn is gigen in full path and exists, it will ingest it and import the data in fn 
             into the crystal instance
-            2) if fn exists in current dictory where python is run
-            3) otherwise, it is expect to exist in PYEMAPSHOME directory
-            where:
+            2) if fn exists in current directory where python is run
+            3) otherwise it is just a filed base name (without exentsion), 
+            it is expect to exist in PYEMAPSHOME/crystals directory, where:
                 PYEMAPSHOME is an environment variable defined by user 
                 after successful installation
+
+        :param fn: required crystal data file name in pyemaps propietory format.
+        :type fn: string
+        :raise CrystalClassError: If reading database fails or any of its components 
+                                  (cell, atoms, spg) fail to validate.
+
         """
 
         cfn = fn
@@ -659,9 +826,13 @@ class Crystal:
     @classmethod
     def from_cif(cls, fn):
         """
-        import crystal data from a cif file
+        import crystal data from a cif (Crystallographic Information File).
+
+        :param fn: required crystal data file name in JSON format.
+        :type fn: string
+        :raise CrystalClassError: If file reading fails or any of its components 
+                                  (cell, atoms, spg) fail to validate.
         """
-        from . import CIFError, CellError, UCError, SPGError
 
         cfn = fn
         if not os.path.exists(fn): # exists full path or file name in current working directory
@@ -685,6 +856,42 @@ class Crystal:
 
     @classmethod 
     def from_jsonfile(cls, jfn):
+        """
+        Import crystal data from a .json file.
+        An example of a json file content:
+
+        {'cell': ----------------------------------------Cell constants
+            {'a': '5.4307',
+            'b': '5.4307',
+            'c': '5.4307',
+            'alpha': '90.0',
+            'beta': '90.0',
+            'gamam': '90.0'},
+        'atoms':-----------------------------------------Atomic info.
+            [
+                {'symb': 'si', ----------------------------atom symbol
+                'x': '0.125',  ----------------------------atom coordinates
+                'y': '0.125',  
+                'z': '0.125',
+                'd-w': '0.4668', ---------------------------Debye-waller factor
+                'occ': 1.00}, -------------------------------Occupancy
+            ],
+        'spg':--------------------------------------------Space group info
+            {'number': '227' -------------------------------symmetry international table(IT) number
+            'setting': '2' ---------------------------------symmetry space group setting
+            },
+        'dw': 'iso' ------------------------------------Debye-waller factor
+                                                             isotropic = 'iso'
+                                                             non-iso(TODO)
+
+        }
+
+        :param jfn: required crystal data file name in JSON format.
+        :type jfn: string
+        :raise CrystalClassError: If file reading fails or any of its components 
+                                  (cell, atoms, spg) fail to validate.
+
+        """
         try:
             with open(jfn) as jf:
                 data=json.load(jf)
@@ -698,6 +905,15 @@ class Crystal:
 
     @classmethod
     def from_dict(cls, cdict):
+        """
+        Import crystal data from a python dictionary object.
+        Reference the above for the dictionary contents and format.
+        
+        :param cdict: required crystal data file name in as a python dictionary object.
+        :type cdict: dict
+        :raise CrystalClassError: If any of its components import fails.
+        """
+
         if 'name' not in cdict:
             raise CrystalClassError('Failed to create crystal object with input dictionary')
         
@@ -707,9 +923,10 @@ class Crystal:
     @staticmethod
     def list_all_builtin_crystals():
         """
-        
         List of all builtin crystals provided by pyemaps
         use this routine to determine which crystal to load
+
+        :param None
         """
         import glob
         base_dir = os.path.realpath(__file__)
