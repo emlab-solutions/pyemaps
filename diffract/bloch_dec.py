@@ -26,13 +26,13 @@ def add_bloch(target):
     def getbfilename(self):
         '''
         The file name of intended bloch image is constructed:
-        1) if environment variavle PYEMAPS_HOME is set then
-            the file will be in $PYEMAPS_HOME/bloch folder
-        2) otherwise, the file will be save in current working directory
-        3) The file name of the image will be composed as follows:
-            <crystal_name>-<current_time>.im3
-        4) The generated raw image file can be imported and viewed in 
-            ImageJ and Gatan Digital Micrograph (GDM)
+        1. if environment variavle PYEMAPS_HOME is set then
+           the file will be in $PYEMAPS_HOME/bloch folder
+        2. otherwise, the file will be save in current working directory
+        3. The file name of the image will be composed as follows:
+           <crystal_name>-<current_time>.im3
+        4. The generated raw image file can be imported and viewed in 
+           ImageJ and Gatan Digital Micrograph (GDM)
         '''
         
         cfn = compose_ofn(None, self.name, ty='bloch')+BIMG_EXT
