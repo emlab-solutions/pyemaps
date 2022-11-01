@@ -1,30 +1,32 @@
-'''
+# '''
 # This file is part of pyemaps
 # ___________________________
-#
+
 # pyemaps is free software for non-comercial use: you can 
 # redistribute it and/or modify it under the terms of the GNU General 
 # Public License as published by the Free Software Foundation, either 
 # version 3 of the License, or (at your option) any later version.
-#
+
 # pyemaps is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-#
+
 # You should have received a copy of the GNU General Public License
 # along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
-#
+
 # Contact supprort@emlabsoftware.com for any questions and comments.
 # ___________________________
 
 
-Author:             EMLab Solutions, Inc.
-Date Created:       May 07, 2022  
+# Author:             EMLab Solutions, Inc.
+# Date Created:       May 07, 2022  
 
-'''
+# '''
 import os
 import json
+import pstats
+from tkinter import N
     
 import numpy as np
 from numpy import asfortranarray as farray
@@ -34,42 +36,66 @@ from .fileutils import *
 
 class Cell:
     """
-    Cell constant data class.
 
-    Data will be validated and prepared to be loaded
-    into backend simulation modules.
+    Cell constant data class. 
+
     """
-    def __init__(self, cell_dict=dict.fromkeys(cell_keys,0.0)):
+    def __init__(self, cell_data=None):
         """
-        :prama cell_dict: Optional cell constant dictionary, default to all zero values for all keys
-        :type cell_dict: dict
+        :param cell_data: Optional cell constant python dictionary or list
+        :type cell_data: dict or list
         :raise CellValueError: if cell data validations fail.
 
-        Example of the cell constant input:
+        Example of the cell constant input in dictionary:
 
-        ::
+        .. code-block:: json
 
-        {
-            'a': '5.4307',
-            'b': '5.4307',
-            'c': '5.4307',
-            'alpha': '90.0',
-            'beta': '90.0',
-            'gamam': '90.0'
-        }
+            {
+                "a": "5.4307",
+                "b": "5.4307",
+                "c": "5.4307",
+                "alpha": "90.0",
+                "beta": "90.0",
+                "gamma": "90.0"
+            }
         
+        Example of the cell constant input in python list:
+
+        .. code-block:: python
+
+            ["5.4307", "5.4307", "5.4307", "90.0", "90.0", "90.0"]
+            # or
+            [5.4307, 5.4307, 5.4307, 90.0, 90.0, 90.0]
+
         """
+        if cell_data is None:
+            setattr(self, 'a', 0.0)
+            setattr(self, 'b', 0.0)
+            setattr(self, 'c', 0.0)
+            setattr(self, 'alpha', 0.0)
+            setattr(self, 'beta', 0.0)
+            setattr(self, 'gamma', 0.0)
+            return
 
-        if not cell_dict or not isinstance(cell_dict, dict) or len(cell_dict) != len(cell_keys):
-            raise CellDataError()
+        if len(cell_data) != len(cell_keys):
+            raise CellDataError("Cell constant data length must be 6")
 
-        for k in cell_keys:
-            if k not in cell_dict:
-                dataerr = str(f'Missing cell key {k} from input cell data')
-                raise CellDataError(dataerr)
+        if type(cell_data) is list:
 
-        for k, v in cell_dict.items():
-            setattr(self, k, v)
+            c_dict = dict(zip(cell_keys, cell_data))
+            for k, v in c_dict.items():
+                setattr(self, k, v)
+            return
+
+        if type(cell_data) is dict:
+
+            for k, v in cell_data.items():
+                if k not in cell_keys:
+                    raise CellDataError("Unrecognized cell constant key")
+                setattr(self, k, v)
+            return
+
+        raise CellDataError('Cell data validation failed')
 
     @property
     def a(self):
@@ -97,51 +123,95 @@ class Cell:
         return self._gamma
 
     @a.setter
-    def a(self, v):  
-        try:
-            self._a = float(v)
-        except ValueError as e:
-            raise CellValueError(1, "a")
+    def a(self, v=None): 
+        '''
+        Sets b cell length.
 
-    @b.setter
-    def b(self, v):
+        :param v: required, must be a numeral or numberal string
         
+        ''' 
+        av = 0.0 if v is None else v
+
         try:
-            self._b = float(v)
+            self._a = float(av)
+
         except ValueError as e:
             raise CellValueError(1, "b")
 
+    @b.setter
+    def b(self, v=None):
+        '''
+        Sets b cell length.
+
+        :param v: required, must be a numeral or numberal string
+        
+        ''' 
+        bv = 0.0 if v is None else v
+
+        try:
+            self._b = float(bv)
+
+        except ValueError as e:
+            raise CellValueError(1, "b")
 
     @c.setter
-    def c(self, v):
+    def c(self, v=None):
+        '''
+        Sets c cell length.
+
+        :param v: required, must be a numeral or numberal string
         
+        ''' 
+        cv = 0.0 if v is None else v
         try:
-            self._c = float(v)
+            self._c = float(cv)
+
         except ValueError as e:
             raise CellValueError(1, "c")
 
 
     @alpha.setter
-    def alpha(self, v):
+    def alpha(self, v=None):
+        '''
+        Sets cell alpha angle.
+
+        :param v: required, must be a numeral or numberal string
         
+        ''' 
+        av = 0.0 if v is None else v
         try:
-            self._alpha = float(v)
+            self._alpha = float(av)
+
         except ValueError as e:
             raise CellValueError("alpha")
 
     @beta.setter
-    def beta(self, v):
+    def beta(self, v=0.0):
+        '''
+        Sets cell beta angle.
+
+        :param v: required, must be a numeral or numberal string
         
+        ''' 
+        bv = 0.0 if v is None else v
         try:
-            self._beta = float(v)
+            self._beta = float(bv)
+
         except ValueError as e:
             raise CellValueError("beta")
 
     @gamma.setter
-    def gamma(self, v):
+    def gamma(self, v=0.0):
+        '''
+        Sets cell gamma angle.
+
+        :param v: required, must be a numeral or numberal string
         
+        ''' 
+        gv = 0.0 if v is None else v
         try:
-            self._gamma = float(v)
+            self._gamma = float(gv)
+
         except ValueError as e:
             raise CellValueError("gamma")
 
@@ -164,8 +234,8 @@ class Cell:
 
     def prepare(self):
         """
-        Prepare cell constant data in Crystal class before loading
-        into backend modules
+        Prepare cell constant data for loading into backend modules
+        
         """
         cell0 = self.__dict__
         celarr = np.zeros((6,))
@@ -182,196 +252,183 @@ class Cell:
         for key in self.__dict__:
             yield (key[1:], getattr(self, key))
 
-class SPG:
-    """
-    Space group class.
-    """
-    def __init__(self, spg_dict):
-        """
-        :prama spg_dict: required space group data input.
-        :type spg_dict: dict
-        :raise SPGInvalidDataInputError: if cell data validations fail.
-
-        Example of space group input:
-        {
-            'number': '227',
-            'setting': '2'
-        } 
-        """
-        if not spg_dict or not isinstance(spg_dict, dict):
-            raise SPGInvalidDataInputError()
-
-        if len(spg_dict) != 2 or 'number' not in spg_dict or 'setting' not in spg_dict:
-            raise SPGInvalidDataInputError()
-
-        # make sure that 'number' attribute is set first
-        setattr(self, 'number', spg_dict['number'])
-        
-        setattr(self, 'setting', spg_dict['setting'])  
-
-    @property
-    def number(self):
-        ''' The first number in Space Group lookup'''
-        return self._number
-
-    @property
-    def setting(self):
-        ''' The second number in Space Group lookup'''
-        return self._setting
-
-    @number.setter
-    def number(self, num):
-        """
-        Symmetry IT number data. 
-        Validation against backend Space Group module data
-        :param num: required integer number that is in the range of spg backend data module
-        :type num: int
-        :raise SPGInvalidDataInputError: if the input is not in the range in spg data module.
-        """
-        number = 0
-        try:
-            number = int(num)
-        except ValueError as e:
-            raise SPGInvalidDataInputError()
-        
-        if number < 1 or number > SPG_ITNUM_MAX:
-            raise SPGITMumberNotInRangeError(SPG_ITNUM_MAX)
-
-        self._number = number
-
-    @setting.setter
-    def setting(self, s):
-        """
-        Symmetry setting data., provided IT number is set first
-        :param s: required integer number that is in the range of spg backend data module
-        :type s: int
-        :raise SPGInvalidDataInputError: if the input is not in the range in spg data module.
-        """
-        iset = 0
-        try:
-            iset = int(s)
-        except ValueError:
-            raise SPGInvalidDataInputError()
-
-        if iset < 1 or iset > SPG_SETTING_MAX:
-            raise SPGSettingNotInRangeError(SPG_SETTING_MAX)   
-
-        inum = 0
-        try:
-            inum = self._number #already validated
-        except AttributeError:
-            raise SPGError("Space group number missing in creation of SPG object")
-            
-        set_max = get_setmaxbynumber(inum)
-        if iset > set_max:    
-            raise SPGSettingNotInRangeError(set_max)
-
-
-        self._setting = iset
-        
-
-    def __eq__(self, spgo):
-         if not isinstance(spgo, SPG):
-            return False
-
-         return (self._number == spgo.number) and (self._setting == spgo.setting)
-
-    def __str__(self):
-        return str(f"spg: {self._number} {self._setting}")
-    
-    def __repr__(self):
-        return str(f"spg: number: {self._number} setting: {self._setting}")
-
-    def prepare(self):
-         return farray([self._number, self._setting], dtype=int)
-
-    def __iter__(self):
-        for key in self.__dict__:
-            yield key[1:], getattr(self, key)
-
 class Atom:
-    def __init__(self, a_dict={}):
+    """
+    Crystal atom descriptor class. 
+
+    """
+    def __init__(self, a_type=0, sym = '', loc_data=None):
         """
-        Single atom data internal representation and validation 
-        implemented in this class with attributes:
-            symb:   atomic sybom
-            loc:    atomic location
+        Internal representation of single atom in a crystal.
+        a_type: atom thermal type
+        symb:   atomic sybom
+        loc:    atomic position, thermal properties and occupacy information
 
-        :prama a_dict: Optional atoms data input.
-        :type a_dict: dict
-        :raise UCError: Unit cell errors if validations fail.
+        :param a_type: Optional atom thermal factor type - 0 for isotropic and 1 for anisotropic.
+        :type a_type: int
+        :param loc_data: Optional atoms data input. Default None
+        :type loc_data: dict or list
+        :raise UCError: if data validation fails.
 
-        Example of atoms data input:
-    
-        [
-            {'symb': 'si', ----------------------------atom symbol
-            'x': '0.125',  ----------------------------atom coordinates
-            'y': '0.125',  
-            'z': '0.125',
-            'd-w': '0.4668', ---------------------------Debye-waller factor
-            'occ': 1.00}, -------------------------------Occupancy
-            ...
-        ]
+        Example of isotropic crystal atom data input for loc_dict:
+
+        .. code-block:: json 
+            
+            {
+                "symb": "Si",
+                "x": "0.125",
+                "y": "0.125",
+                "z": "0.125",
+                "d-w": "0.4668",
+                "occ": "1.00" 
+            }
+
+        Example of isotropic crystal atom data input loc_dict in list object :
+
+        .. code-block:: python 
+            
+            ["0.125", "0.125", "0.125", "0.4668", "1.00"]
+            # or
+            [0.125, 0.125, 0.125, 0.4668, 1.00]
+
+        .. warning:: 
+
+            When atom positional data loc_data is entered as a python list object
+            the order of the elements must match their corresponding keys:
+
+        .. code-block:: python 
+
+            ['x','y','z','d-w','occ']       # for isotropic atom type
+            ['x','y','z','b11','b22','b33','b12','b13','b23','occ']   #for anisotropic atome types
+
+        .. note:: 
+        
+            The list input for atom positional data can have 'occ' data missing. In which case
+            pyemaps will default its occupancy data to 1.0
+
         """
+        setattr(self, 'atype', a_type)
+        setattr(self, 'symb', sym)
+
+        if loc_data is None or type(loc_data) is list:
+            setattr(self, 'loc', loc_data)
+            return
         
-        if not a_dict or not isinstance(a_dict, dict) or len(a_dict) == 0:
-            raise UCError()
+        if type(loc_data) is not dict:
+            raise UCError("Atom position property input must be a dictionary or a list")
 
-        if 'symb' not in a_dict:
-            raise UCError("missing symbol")
+        akey = at_iso_keys if a_type == 1 else at_noniso_keys
+        klen = len(akey)
 
-        setattr(self, 'symb', a_dict["symb"])
+        vloc = [0.0]*(klen-1)
+        vloc[-1] = 1.0
 
-        acopy = a_dict.copy()
-        acopy.pop("symb")
+        if len(loc_data) > klen-1 or len(loc_data) < klen-2:
+            raise UCError("Atom position property input invalid")
+
+        # check to see if required keys are present
+        for i, k in enumerate(akey[1:klen-1]):
+            if k not in loc_data:
+                raise UCError(f"Required key {k} missing from {akey[1:klen]}")
         
-        setattr(self, 'loc', acopy)
+            vloc[i] = loc_data[k]
+        
+        if 'occ' in loc_data:
+            vloc[-1] = loc_data['occ']
 
+        setattr(self, 'loc', vloc)   
+        
     @property
     def symb(self):
+        """
+        Atom symbol
+
+        """
         return self._symb
 
     @property
+    def atype(self):
+        """
+        Atom dw type - isotropic or not
+
+        """
+        return self._atype
+
+    @property
     def loc(self):
+        """
+        atomic position, thermal properties and occupacy information
+
+        """
         return self._loc
 
     @symb.setter
-    def symb(self, sb):
-        if not isinstance(sb, str):
-            raise UCError("symbol must be string")
+    def atype(self, a_type=0):
+        '''
+        setting atomic thermal property
+        1 - isotropic
+        >1 - all other types (corresponding to anisotropic types, uij, bij)
+
+        '''
+        if type(a_type) is not int or \
+        (a_type < 1 or a_type > 3):
+            raise UCError("Atom thermal property type must be 0 for isotropic or 1 for other types")
         
+        self._atype = a_type
+
+    @symb.setter
+    def symb(self, sb=''):
+        MAX_ATOM_SYMBOL_LEN = 10
+        if len(sb) == 0:
+            sb='          '
+        
+        if len(sb) > MAX_ATOM_SYMBOL_LEN or len(sb) < 1:
+            raise UCError("Invalid atom symbol length")
+
         self._symb = sb
     
     @loc.setter
-    def loc(self, vloc_dict):
-        if not vloc_dict:
-            raise UCError("unit cell coordinates missing")
+    def loc(self, locdata=None):
+        '''
+        Atom position attribute.
+        
+        Must be a list of floats or None. In later case, this attribute
+        will default to all 0.0.
 
-        ln = len(vloc_dict)
-        if ln != 4 and ln != 5 and \
-           ln != 9 and ln != 10:
-            raise UCError("invalid unit cell coordinates length")
+        '''
+        akeys = at_iso_keys if self.isISO() else at_noniso_keys
+        keylen = len(akeys)
 
-        akeys = at_iso_keys
-        if ln == 9 or ln == 10:
-            akeys = at_noniso_keys
-            
-        klen = len(akeys)
-        self._loc = [0.0]*(klen-1)
-        for i in range(klen):
-            k = akeys[i]
-            if k == 'symb':
-                continue
+        if locdata is None or len(locdata) == 0:
+            locdata = [0.0]*keylen
+            locdata[-1] = 1.0
+            self._loc = locdata
+            # defaults if location data is not provided
+            return
 
-            if k in vloc_dict:
-                self._loc[i-1] = vloc_dict[k]
-                
-            else:
-               raise UCError(str(f"unrecognized key {k}"))
-        self._data = vloc_dict
+
+        if type(locdata) is not list:
+            raise UCError("Invalid data type for atomic position entered!")
+
+        inputlen = len(locdata)
+        # akeys = at_iso_keys if self.isISO() else at_noniso_keys
+
+        if inputlen < keylen-2 or inputlen > keylen-1:
+            raise UCError(f"Input atom position data must have length of {keylen-1} or {keylen}")
+
+        self._loc=[0.0]*(keylen-1)
+        self._loc[-1] = 1.0 
+
+        for i in range(len(locdata)):
+            self._loc[i] = locdata[i]
+
+        self._data = dict(zip(akeys, self._loc))
                 
     def __eq__(self, other):
         if not isinstance(other, Atom):
+            return False
+
+        if self._atype != other.atype: 
             return False
 
         if self._symb.lower() != other._symb.lowder(): 
@@ -383,7 +440,7 @@ class Atom:
         return True
     
     def __str__(self) -> str:
-        atoms=[str(f"{self._symb}")]
+        atoms=[f"{self._symb}"]
         
         for v in self._loc:
             atoms.append(str(v))
@@ -398,11 +455,14 @@ class Atom:
                 for key in self._data:
                     yield key, self._data[key]
 
+    def isISO(self):
+        return self._atype == 1
+
     def prepare(self, rvec = None):
        if rvec is None:
               return self._loc
 
-       if len(rvec) != 3 and not all(isinstance(v, [int,float]) for v in rvec):
+       if len(rvec) != 3 and not all(isinstance(v, (int,float)) for v in rvec):
               raise UCError('R vector must be three integers tuple')
 
        tloc=[float(l) for l in self._loc]
@@ -411,7 +471,141 @@ class Atom:
          tloc[i] += rvec[i]
             
        return tloc   
-       
+
+
+class SPG:
+    """
+    Space Group class. This class includes: 
+    
+    1. Symmetry International Tables Number, and
+    2. Symmetry Space Group Setting
+
+    required by Crystal class
+
+    """
+    def __init__(self, spgdata=None):
+        """
+        :param spgi: optional space group data input.
+        :type spgi: dict or list
+        :raise SPGInvalidDataInputError: if cell data validations fail.
+
+        Example of space group input:
+        
+        .. code-block:: json
+
+            {
+                "number": "227", // <---Symmetry International Tables Number
+                "setting": "2"   // <---Symmetry Space Group Setting  
+            } 
+        
+        .. code-block:: python
+
+            ["227", "2"] 
+            # or
+            [227, 2]
+
+        """
+        if spgdata is None:
+            setattr(self, 'number', 0)
+            setattr(self, 'setting', 0)
+            return
+        
+        if type(spgdata) is list:
+            if len(spgdata) != 2:
+                raise SPGInvalidDataInputError()
+            setattr(self, 'number', spgdata[0])
+            setattr(self, 'setting', spgdata[1])
+            return
+
+        if type(spgdata) is dict:
+            if len(spgdata) != 2:
+                raise SPGInvalidDataInputError()
+
+            if 'number' not in spgdata or 'setting' not in spgdata:
+                raise SPGInvalidDataInputError()
+
+            setattr(self, 'number', spgdata['number'])
+            setattr(self, 'setting', spgdata['setting'])
+            return
+
+        raise SPGInvalidDataInputError()
+            
+    @property
+    def number(self):
+        ''' Symmetry International Tables Number'''
+        return self._number
+
+    @property
+    def setting(self):
+        ''' Symmetry Space Group Setting'''
+        return self._setting
+
+    @number.setter
+    def number(self, n = None):
+        """
+        Setting Symmetry Space Group Setting Number
+        
+        :param num: required integer number that is in the range of spg backend data module
+        :type num: int
+        :raise SPGInvalidDataInputError: if the input is not in the range in spg data module.
+
+        """
+        num = 0 if n is None else n
+
+        try:
+           self._number = int(num)
+        except ValueError as e:
+            raise SPGInvalidDataInputError()
+        
+    @setting.setter
+    def setting(self, s=None):
+        """
+        Symmetry setting data., provided IT number is set first
+        :param s: required integer number that is in the range of spg backend data module
+        :type s: int or string
+        :raise SPGInvalidDataInputError: if the input is not in the range in spg data module.
+
+        """
+        if s is None:
+            sn = 0
+        else:
+            sn = s
+
+        try:
+            self._setting = int(sn)
+        except ValueError:
+            raise SPGInvalidDataInputError()
+
+
+    def __eq__(self, spgo):
+         if not isinstance(spgo, SPG):
+            return False
+
+         return (self._number == spgo.number) and (self._setting == spgo.setting)
+
+    def __str__(self):
+        return str(f"spg: {self._number} {self._setting}")
+    
+    def __repr__(self):
+        return str(f"spg: number: {self._number} setting: {self._setting}")
+
+    def prepare(self):
+        
+        # validaing here
+        if self._number < 1 or self._number > SPG_ITNUM_MAX:
+            raise SPGITMumberNotInRangeError(SPG_ITNUM_MAX)
+        
+        setting_max = get_setmaxbynumber(self._number)
+
+        if self._setting > setting_max:    
+            raise SPGSettingNotInRangeError(setting_max)
+
+        return farray([self._number, self._setting], dtype=int)
+
+    def __iter__(self):
+        for key in self.__dict__:
+            yield key[1:], getattr(self, key)     
+
 # -------------------------PYEMAPS EXTENSIONS--------------------------
 #       add new features and methods to Crystal class when 
 #       correspoding backend extension module becomes available. 
@@ -460,72 +654,105 @@ from .diffract.bloch_dec import add_bloch
 @add_dif   
 class Crystal:
     """
-    A python class encapsulates validated crystal data to be loaded into
-    diffractions simulations and crystallogrphic calculations.
+    This class is defined to capture and to validate crystal data. It is composed of
+    the following data:
+    
+    * **Cell**: cell constants object
+    * **A list of Atoms**: list of Atom objects
+    * **spg**: Space Group object
+    * **dw**: Debye-waller factor type - isotropic or not 
+    * **name**: Crystal name
 
-    Crytsal class constructors include:
-    1) Crystal(name, data_dict) --------------------dictionary object
-    2) Crystal.from_builtin(name)-------------------from builtin crystal database
-    3) Crystal.from_xtl(xtl_filename)---------------from a proprietory crystal data file
-    4) Crystal.from_cif(cif_filename)---------------from Crystallographic Information File
+    Crystal class constructors include:
+
+    1. Crystal(name, data)                          //python dictionary object (default)
+    2. Crystal.from_builtin(name)                   //from pyemaps' own built-in crystal database
+    3. Crystal.from_xtl(xtl_filename)               //from a proprietory crystal data file
+    4. Crystal.from_cif(cif_filename)               //from Crystallographic Information File
     
     In addition to standard methods for getting and setting each components of 
-    the crystal class, interfaces to backend simulation modules are added as
-    the modules become available.
+    the crystal class, interfaces and methods to generate simulation data using the crystal
+    data attributes from backend modules are added as the corresponding modules become available.
 
     """
-    def __init__(self, name="Diamond", data=dict(dw='iso')):
+    def __init__(self, name="Diamond", data=None):
         """
         Default constructor taking a python dictionary of the followign format    
         
-        The dictionary object example for Silicon:
-
-        {'cell': ----------------------------------------Cell constants
-            {'a': '5.4307',
-            'b': '5.4307',
-            'c': '5.4307',
-            'alpha': '90.0',
-            'beta': '90.0',
-            'gamam': '90.0'},
-        'atoms':-----------------------------------------Atomic info.
-            [
-                {'symb': 'si', ----------------------------atom symbol
-                'x': '0.125',  ----------------------------atom coordinates
-                'y': '0.125',  
-                'z': '0.125',
-                'd-w': '0.4668', ---------------------------Debye-waller factor
-                'occ': 1.00}, -------------------------------Occupancy
-            ],
-        'spg':--------------------------------------------Space group info
-            {'number': '227' -------------------------------symmetry international table(IT) number
-            'setting': '2' ---------------------------------symmetry space group setting
-            },
-        'dw': 'iso' ------------------------------------Debye-waller factor
-                                                             isotropic = 'iso'
-                                                             non-iso(TODO)
-
-        }
-
         :param name: Optional name of the crystal or default to 'Diamond'
         :type name: string
         :param data: Optional data of the crystal. Default to dictionary with just dw value of 'iso'
         :type data: dict
         :raise CrystalClassError: If data validations fail.
-        """
 
-        if not data or not isinstance(data, dict):
+        
+        The dictionary object example for Silicon:
+
+        .. code-block:: json
+
+            {'cell':                                       //Cell constants
+                {'a': '5.4307',
+                'b': '5.4307',
+                'c': '5.4307',
+                'alpha': '90.0',
+                'beta': '90.0',
+                'gamma': '90.0'},
+            'atoms':                                        //atomic info.
+                [
+                    {'symb': 'si',                          //atom symbol
+                    'x': '0.125',                           //atom coordinates
+                    'y': '0.125',  
+                    'z': '0.125',
+                    'd-w': '0.4668',                        //Debye-waller factor
+                    'occ': 1.00},                           //occupancy
+                ],
+            'spg':                                          //space group info
+                {'number': '227'                            //symmetry international table(IT) number
+                'setting': '2'                              //symmetry space group setting
+                },
+            'dw': 'iso'                                     //Debye-waller factor
+
+            }
+
+        """
+         
+        setattr(self, 'name', name)
+
+        if data is None:
+
+            setattr(self, 'dw', 1)     
+            setattr(self, 'cell', Cell())
+            setattr(self, 'atoms', [])
+            setattr(self, 'spg', SPG())
+            return
+        
+        if not isinstance(data, dict):
             raise CrystalClassError("Error constructing crytsal object")
 
-        if 'dw' not in data:
-            raise CrystalClassError("Debye-Waller factor or thermal data missing")
+        for k in required_keys:
+            if k not in data:
+                raise CrystalClassError(f"Required key {k} missing")
 
         setattr(self, 'dw', data['dw'])
+        c = Cell(cell_data = data['cell'])
+        setattr(self, 'cell', c)
+        
+        ats = data['atoms']
+        catoms = []
+        for at in ats:
+            
+            if 'symb' not in at:
+                raise CrystalClassError("Atom data input must have symbol")
+            sym = sym=at['symb']
+            del at['symb']
 
-        for k, v in data.items():
-           if k != 'dw' and k != 'name':
-                setattr(self, k, v)
+            att = Atom(a_type = self._dw, sym=sym, loc_data = at)
+            catoms.append(att)
+        
+        setattr(self, 'atoms', catoms)
 
-        setattr(self, 'name', name)
+        spg = SPG(spgdata = data['spg'])
+        setattr(self, 'spg', spg)
 
     @property
     def cell(self):
@@ -534,7 +761,7 @@ class Crystal:
 
     @property
     def dw(self):
-        ''' Debye-Waller factor or thermal '''
+        ''' Debye-Waller factor or thermal factor'''
         return self._dw
 
     @property
@@ -553,18 +780,12 @@ class Crystal:
         return self._name
 
     @cell.setter
-    def cell(self, cc):
-
-        for i, key in enumerate(cell_keys):
-            if key in cc:
-                try:
-                    c = float(cc[key])
-                except ValueError:
-                    raise ValueError("Error: cell constant must be numeric")
-            else:
-                raise KeyError("Invaid cell constant key")
+    def cell(self, c):
         
-        self._cell = Cell(cc)
+        if c is None or not isinstance(c, Cell):
+            raise CrystalClassError("Error: cell constant invalid")
+        
+        self._cell = c
 
     @dw.setter
     def dw(self, v):
@@ -600,31 +821,25 @@ class Crystal:
 
     @atoms.setter
     def atoms(self, ats):
+        if ats is None:
+            raise CrystalClassError('Atoms positional data missing')
 
-       if not hasattr(ats, "__len__"):
-            raise ValueError("atom list invalid")
-       
-       akeys = at_iso_keys if self.isISO() else at_noniso_keys
+        if type(ats) is not list:
+            raise CrystalClassError('Atoms positional data invalid')
 
-       self._atoms = []
-       for a in ats:          
-           for k in akeys:
-               if k not in a:
-                   raise ValueError(str(f"Invalid atom keys {k}"))
-           try:
-                at = Atom(a)
-           except ValueError as ve:
-                raise ValueError('Invalid atom data')
-            
-           self._atoms.append(at)
+        for at in ats:
+            if not isinstance(at, Atom):
+                raise CrystalClassError("Atoms positional data invalid")
+
+        self._atoms = ats
 
     @spg.setter
-    def spg(self, v):
+    def spg(self, vspg):
         
-        if not 'number' in v or not 'setting' in v or len(v) != 2:
-            raise ValueError("Invalid Space Group data input") 
+        if vspg is None or not isinstance(vspg, SPG):
+            raise CrystalClassError('Invalid space group data')
 
-        self._spg = SPG(v)
+        self._spg = vspg
 
     def isISO(self):
         return self._dw == 1
@@ -636,39 +851,18 @@ class Crystal:
         
         if self._name != other._name:
             return False
-        
-        if not isinstance(other.data, dict) or len(self.data) != len(other.data):
-            return False
 
-        cell = Cell(self.data["cell"])
-        other_cell = Cell(other.data["cell"])
-
-        if not cell == other_cell:
+        if not self._cell == other.cell:
             return False
         
-        if self.data["dw"] != other.data["dw"]:
+        if self._dw != other.dw:
             return False
 
-        spg = SPG(self.data["spg"])
-        other_spg = SPG(other.data["spg"])
-        if not spg == other_spg:
+        if not self.spg == other.spg:
             return False
 
-        atoms = []
-        for at in self.data["atoms"]:
-            atom = Atom(at)
-            atoms.append(atom)
-
-        other_atoms = []
-        for at in other.data["atoms"]:
-            atom = Atom(at)
-            other_atoms.append(atom)
-        
-        if len(atoms) != len(other_atoms):
-            return False
-        
-        for at in atoms:
-            if at not in other_atoms:
+        for a in self._atoms:
+            if a not in other.atoms:
                 return False
 
         return True
@@ -711,39 +905,18 @@ class Crystal:
 
     @classmethod
     def from_builtin(cls, cn='Diamond'):
-        """
-        import crystal data from .XLT or .DAT file
-        The example format:
-
-        crystal Aluminium: dw = iso
-        cell 4.0493 4.0493 4.0493 90.0000 90.0000 90.0000
-        atom al 0.000000 0.000000 0.000000 0.7806 1.000000
-        spg 225 1
-
-        required fields:
-        1) Dw = iso by default, other values: uij, bij (TODO)
-        2) Crystal name
-        3) Cell constants: 6 floating point values following "cell"
-        4) Atoms: one or two lines of atoms positions along with element symbol
-            validation:
-                a) if dw == iso, atoms line must have at least 4 floating numbers
-                in (x,y,x,d-w,occ) where occ defaults to 1.00 if not provided
-                b) if dw == uij,bij, atoms line must have at least 9 floating points
-                in (x,y,z,b11,b22,b33,b12,b13,b23,occ)
-
-        5) Spg: space group data. Two positive digits: (number, setting)
-
-        For a list of existing crystal names in pyemaps' builtin database,
-        call Crystal.list_all_builtin_crystals() crystal static method.
-
-        :param cn: Optional name of the crystal in pyemaps's builtin database.
+        """        
+        creates imports crystal data from pyemaps build-in crystal database
+        
+        :param cn: Optional. Name of the crystal in pyemaps's builtin database.
         :type cn: string
         :raise CrystalClassError: If reading database fails or any of its components 
                                   (cell, atoms, spg) fail to validate.
 
+        For a list of pyemaps builtin crystal names, call:
+        Crystal.list_all_builtin_crystals() method
+        
         """
-
-        # name = cn.lower().capitalize()
 
         base_dir = os.path.realpath(__file__)
         cbase_dir = os.path.join(os.path.dirname(base_dir), crystal_data_basedir)
@@ -752,7 +925,7 @@ class Crystal:
 #       Successfully imported crystal data
         try:
             name, data = loadCrystalData(fn)
-            xtl = cls(name, data)
+            xtl = cls(name=name, data=data)
 
         except (XTLError, CellError, UCError, SPGError) as e:
             raise CrystalClassError(e.message)
@@ -764,41 +937,42 @@ class Crystal:
     @classmethod
     def from_xtl(cls, fn):
         """
-        Loading crystal instance data from a user supplied xtl formtted data:
-        The example format:
+        To create a crystal object by importing data from xtl formtted file.
 
-        crystal Aluminium: dw = iso [occ = 1.0]
-        cell 4.0493 4.0493 4.0493 90.0000 90.0000 90.0000
-        atom al 0.000000 0.000000 0.000000 0.7806 1.000000
-        spg 225 1
-
-        required fields:
-        1) Dw = iso by default, other values: uij, bij
-        2) Crystal name
-        3) Cell constants: 6 floating point values following "cell"
-        4) Atoms: one or two lines of atoms positions along with element symbol
-            validation:
-                a) if dw == iso, atoms line must have at least 4 floating numbers
-                in (x,y,x,d-w,occ) where occ defaults to 1.00 if not provided
-                b) if dw == uij,bij, atoms line must have at least 9 floating points
-                in (x,y,z,b11,b22,b33,b12,b13,b23,occ)
-
-        5) Spg: space group data. Two positive digits: [number, setting]
-        
-        input file name:
-        fn - crystal data file name in above XTL format
-            1) If fn is gigen in full path and exists, it will ingest it and import the data in fn 
-            into the crystal instance
-            2) if fn exists in current directory where python is run
-            3) otherwise it is just a filed base name (without exentsion), 
-            it is expect to exist in PYEMAPSHOME/crystals directory, where:
-                PYEMAPSHOME is an environment variable defined by user 
-                after successful installation
-
-        :param fn: required crystal data file name in pyemaps propietory format.
+        :param fn: Required. Crystal data file name in pyemaps propietory format.
         :type fn: string
-        :raise CrystalClassError: If reading database fails or any of its components 
-                                  (cell, atoms, spg) fail to validate.
+        :raise CrystalClassError: file reading fails or any of its components fail to validate.
+
+        **XTL Format Example:**
+
+        :: 
+
+            crystal Aluminium: dw = iso
+            cell 4.0493 4.0493 4.0493 90.0000 90.0000 90.0000
+            atom al 0.000000 0.000000 0.000000 0.7806 1.000000
+            spg 225 1
+
+        **Required Fields:**
+
+        1. dw = iso by default, other values: uij, bij
+        2. name: crystal name.
+        3. cell constants: six floating point values defining crystal cell.
+        4. atoms: one or two lines of atoms positions along with element symbol
+        5. spg: space group data. Two positive digits: [number, setting]
+            
+        **Validation**:
+
+        - if dw == iso, atoms line must have at least 4 floating numbers in 
+          (x,y,x,d-w,occ) where occ defaults to 1.00 if not provided.
+        - if dw == uij,bij, atoms line must have at least 9 floating points in 
+          (x,y,z,b11,b22,b33,b12,b13,b23,occ)
+        
+        **Input File Name Search**:
+
+        - Full path and exists.
+        - Current working directory.
+        - *PYEMAPSHOME*/crystals directory, where
+          *PYEMAPSHOME* is an environment variable pointing to pyemaps data home directory.
 
         """
 
@@ -814,7 +988,7 @@ class Crystal:
         # otherwise it is a full path file that exists
         try:
             name, data = loadCrystalData(cfn)
-            xtl = cls(name, data)
+            xtl = cls(name=name, data=data)
 
         except (XTLError, CellError, UCError, SPGError) as e:
             raise CrystalClassError(e.message)
@@ -847,7 +1021,7 @@ class Crystal:
         # otherwise it is a full path file that exists
         try:
             name, data = loadCrystalCIFData(cfn)
-            cif = cls(name, data)
+            cif = cls(name=name, data=data)
 
         except (CIFError, AttributeError, CellError, UCError, SPGError) as e:
             raise CrystalClassError(e.message) from None
@@ -855,78 +1029,121 @@ class Crystal:
             return cif
 
     @classmethod 
-    def from_jsonfile(cls, jfn):
+    def from_json(cls, jfn):
         """
         Import crystal data from a .json file.
-        An example of a json file content:
-
-        {'cell': ----------------------------------------Cell constants
-            {'a': '5.4307',
-            'b': '5.4307',
-            'c': '5.4307',
-            'alpha': '90.0',
-            'beta': '90.0',
-            'gamam': '90.0'},
-        'atoms':-----------------------------------------Atomic info.
-            [
-                {'symb': 'si', ----------------------------atom symbol
-                'x': '0.125',  ----------------------------atom coordinates
-                'y': '0.125',  
-                'z': '0.125',
-                'd-w': '0.4668', ---------------------------Debye-waller factor
-                'occ': 1.00}, -------------------------------Occupancy
-            ],
-        'spg':--------------------------------------------Space group info
-            {'number': '227' -------------------------------symmetry international table(IT) number
-            'setting': '2' ---------------------------------symmetry space group setting
-            },
-        'dw': 'iso' ------------------------------------Debye-waller factor
-                                                             isotropic = 'iso'
-                                                             non-iso(TODO)
-
-        }
 
         :param jfn: required crystal data file name in JSON format.
         :type jfn: string
-        :raise CrystalClassError: If file reading fails or any of its components 
-                                  (cell, atoms, spg) fail to validate.
+        :raise CrystalClassError: If file reading fails or any of its components fail to validate.
 
+        An example of a json file content:
+
+        .. code-block:: json
+
+            {
+                "cell": 
+                    {"a": "5.4307",
+                    "b": "5.4307",
+                    "c": "5.4307",
+                    "alpha": "90.0",
+                    "beta": "90.0",
+                    "gamma": "90.0"
+                    },
+                "atoms":
+                    [
+                        {"symb": "si",
+                        "x": "0.125",  
+                        "y": "0.125", 
+                        "z": "0.125",
+                        "d-w": "0.4668", 
+                        "occ": "1.00"
+                        } 
+                    ],
+                "spg":
+                    {"number": "227",
+                    "setting": "2" 
+                    },
+                "dw": "iso",
+                "name": "Silicon"
+            }
+        
         """
+        cfn = jfn
+        if not os.path.exists(cfn):
+            # find it in pyemaps data home or current directory
+            pyemaps_datahome = find_pyemaps_datahome(home_type = 'crystals')
+            cfn = os.path.join(pyemaps_datahome, cfn)
+            
+            if not os.path.exists(cfn):
+                err_msg = str(f"Error finding the data file: {cfn}")
+                raise CrystalClassError(err_msg)
+
         try:
-            with open(jfn) as jf:
+            with open(cfn) as jf:
                 data=json.load(jf)
         except:
             raise CrystalClassError('Failed to open the json file')
         else:
             if 'name' not in data:
-                raise CrystalClassError('Failed to create crystal object with input dictionary')
+                raise CrystalClassError('Json data must have name field')
 
-            return cls(data['name'], data)
+            return cls(name = data['name'], data = data)
 
     @classmethod
     def from_dict(cls, cdict):
         """
         Import crystal data from a python dictionary object.
-        Reference the above for the dictionary contents and format.
         
         :param cdict: required crystal data file name in as a python dictionary object.
         :type cdict: dict
         :raise CrystalClassError: If any of its components import fails.
+
+        An example of a json file content:
+
+        .. code-block:: python
+
+            {
+                "cell": 
+                    {"a": "5.4307",
+                    "b": "5.4307",
+                    "c": "5.4307",
+                    "alpha": "90.0",
+                    "beta": "90.0",
+                    "gamma": "90.0"
+                    },
+                "atoms":
+                    [
+                        {"symb": "si",
+                        "x": "0.125",  
+                        "y": "0.125", 
+                        "z": "0.125",
+                        "d-w": "0.4668", 
+                        "occ": "1.00"
+                        } 
+                    ],
+                "spg":
+                    {"number": "227",
+                    "setting": "2" 
+                    },
+                "dw": "iso",
+                "name": "Silicon"
+            }
+
         """
 
         if 'name' not in cdict:
             raise CrystalClassError('Failed to create crystal object with input dictionary')
         
         name = cdict["name"]
-        return cls(name, cdict)           
+        return cls(name=name, data = cdict)           
 
     @staticmethod
     def list_all_builtin_crystals():
         """
-        List of all builtin crystals provided by pyemaps
-        use this routine to determine which crystal to load
+        To list all builtin crystals available in pyemaps built-in crystal database,
+        use this routine to determine the name of the crystal to load using from_builtin().
 
-        :param None
         """
         import glob
         base_dir = os.path.realpath(__file__)
