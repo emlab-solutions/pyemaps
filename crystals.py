@@ -40,10 +40,10 @@ class Cell:
     Cell constant data class. 
 
     """
-    def __init__(self, cell_data=None):
+    def __init__(self, data=None):
         """
-        :param cell_data: Optional cell constant python dictionary or list
-        :type cell_data: dict or list
+        :param data: Optional cell constant python dictionary or list
+        :type data: dict or list
         :raise CellValueError: if cell data validations fail.
 
         Example of the cell constant input in dictionary:
@@ -68,7 +68,7 @@ class Cell:
             [5.4307, 5.4307, 5.4307, 90.0, 90.0, 90.0]
 
         """
-        if cell_data is None:
+        if data is None:
             setattr(self, 'a', 0.0)
             setattr(self, 'b', 0.0)
             setattr(self, 'c', 0.0)
@@ -77,19 +77,19 @@ class Cell:
             setattr(self, 'gamma', 0.0)
             return
 
-        if len(cell_data) != len(cell_keys):
+        if len(data) != len(cell_keys):
             raise CellDataError("Cell constant data length must be 6")
 
-        if type(cell_data) is list:
+        if type(data) is list:
 
-            c_dict = dict(zip(cell_keys, cell_data))
+            c_dict = dict(zip(cell_keys, data))
             for k, v in c_dict.items():
                 setattr(self, k, v)
             return
 
-        if type(cell_data) is dict:
+        if type(data) is dict:
 
-            for k, v in cell_data.items():
+            for k, v in data.items():
                 if k not in cell_keys:
                     raise CellDataError("Unrecognized cell constant key")
                 setattr(self, k, v)
@@ -257,7 +257,7 @@ class Atom:
     Crystal atom descriptor class. 
 
     """
-    def __init__(self, a_type=0, sym = '', loc_data=None):
+    def __init__(self, a_type=0, sym = '', data=None):
         """
         Internal representation of single atom in a crystal.
         a_type: atom thermal type
@@ -266,8 +266,8 @@ class Atom:
 
         :param a_type: Optional atom thermal factor type - 0 for isotropic and 1 for anisotropic.
         :type a_type: int
-        :param loc_data: Optional atoms data input. Default None
-        :type loc_data: dict or list
+        :param data: Optional atoms data input. Default None
+        :type data: dict or list
         :raise UCError: if data validation fails.
 
         Example of isotropic crystal atom data input for loc_dict:
@@ -293,7 +293,7 @@ class Atom:
 
         .. warning:: 
 
-            When atom positional data loc_data is entered as a python list object
+            When atom positional data is entered as a python list object
             the order of the elements must match their corresponding keys:
 
         .. code-block:: python 
@@ -310,11 +310,11 @@ class Atom:
         setattr(self, 'atype', a_type)
         setattr(self, 'symb', sym)
 
-        if loc_data is None or type(loc_data) is list:
-            setattr(self, 'loc', loc_data)
+        if data is None or type(data) is list:
+            setattr(self, 'loc', data)
             return
         
-        if type(loc_data) is not dict:
+        if type(data) is not dict:
             raise UCError("Atom position property input must be a dictionary or a list")
 
         akey = at_iso_keys if a_type == 1 else at_noniso_keys
@@ -323,18 +323,18 @@ class Atom:
         vloc = [0.0]*(klen-1)
         vloc[-1] = 1.0
 
-        if len(loc_data) > klen-1 or len(loc_data) < klen-2:
+        if len(data) > klen-1 or len(data) < klen-2:
             raise UCError("Atom position property input invalid")
 
         # check to see if required keys are present
         for i, k in enumerate(akey[1:klen-1]):
-            if k not in loc_data:
+            if k not in data:
                 raise UCError(f"Required key {k} missing from {akey[1:klen]}")
         
-            vloc[i] = loc_data[k]
+            vloc[i] = data[k]
         
-        if 'occ' in loc_data:
-            vloc[-1] = loc_data['occ']
+        if 'occ' in data:
+            vloc[-1] = data['occ']
 
         setattr(self, 'loc', vloc)   
         
@@ -483,10 +483,10 @@ class SPG:
     required by Crystal class
 
     """
-    def __init__(self, spgdata=None):
+    def __init__(self, data=None):
         """
-        :param spgi: optional space group data input.
-        :type spgi: dict or list
+        :param data: optional space group data input.
+        :type data: dict or list
         :raise SPGInvalidDataInputError: if cell data validations fail.
 
         Example of space group input:
@@ -505,27 +505,27 @@ class SPG:
             [227, 2]
 
         """
-        if spgdata is None:
+        if data is None:
             setattr(self, 'number', 0)
             setattr(self, 'setting', 0)
             return
         
-        if type(spgdata) is list:
-            if len(spgdata) != 2:
+        if type(data) is list:
+            if len(data) != 2:
                 raise SPGInvalidDataInputError()
-            setattr(self, 'number', spgdata[0])
-            setattr(self, 'setting', spgdata[1])
+            setattr(self, 'number', data[0])
+            setattr(self, 'setting', data[1])
             return
 
-        if type(spgdata) is dict:
-            if len(spgdata) != 2:
+        if type(data) is dict:
+            if len(data) != 2:
                 raise SPGInvalidDataInputError()
 
-            if 'number' not in spgdata or 'setting' not in spgdata:
+            if 'number' not in data or 'setting' not in data:
                 raise SPGInvalidDataInputError()
 
-            setattr(self, 'number', spgdata['number'])
-            setattr(self, 'setting', spgdata['setting'])
+            setattr(self, 'number', data['number'])
+            setattr(self, 'setting', data['setting'])
             return
 
         raise SPGInvalidDataInputError()
@@ -591,7 +591,7 @@ class SPG:
 
     def prepare(self):
         
-        # validaing here
+        # validating here
         if self._number < 1 or self._number > SPG_ITNUM_MAX:
             raise SPGITMumberNotInRangeError(SPG_ITNUM_MAX)
         
@@ -659,7 +659,7 @@ class Crystal:
     
     * **Cell**: cell constants object
     * **A list of Atoms**: list of Atom objects
-    * **spg**: Space Group object
+    * **spg**: Space Group SPG object
     * **dw**: Debye-waller factor type - isotropic or not 
     * **name**: Crystal name
 
@@ -734,7 +734,7 @@ class Crystal:
                 raise CrystalClassError(f"Required key {k} missing")
 
         setattr(self, 'dw', data['dw'])
-        c = Cell(cell_data = data['cell'])
+        c = Cell(data = data['cell'])
         setattr(self, 'cell', c)
         
         ats = data['atoms']
@@ -746,12 +746,12 @@ class Crystal:
             sym = sym=at['symb']
             del at['symb']
 
-            att = Atom(a_type = self._dw, sym=sym, loc_data = at)
+            att = Atom(a_type = self._dw, sym=sym, data = at)
             catoms.append(att)
         
         setattr(self, 'atoms', catoms)
 
-        spg = SPG(spgdata = data['spg'])
+        spg = SPG(data = data['spg'])
         setattr(self, 'spg', spg)
 
     @property
