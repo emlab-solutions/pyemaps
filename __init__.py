@@ -179,7 +179,7 @@ from .kdiffs import diffPattern as DP
 from .kdiffs import Diffraction as DPList
 from .ddiffs import BlochImgs as BImgList
 
-from .crystals import Crystal
+from .crystals import Cell, Atom, SPG, Crystal
 try:
     from .kdiffs import XMAX, YMAX
 except ImportError as e:
