@@ -23,16 +23,12 @@ def add_bloch(target):
     BIMG_EXT = '.im3'
     MAX_BIMGFN = 256
 
-    def getbfilename(self):
+    def getBlochFN(self):
         '''
-        The file name of intended bloch image is constructed:
-        1. if environment variavle PYEMAPS_HOME is set then
-           the file will be in $PYEMAPS_HOME/bloch folder
-        2. otherwise, the file will be save in current working directory
-        3. The file name of the image will be composed as follows:
-           <crystal_name>-<current_time>.im3
-        4. The generated raw image file can be imported and viewed in 
-           ImageJ and Gatan Digital Micrograph (GDM)
+        Construct a bloch image output file name.
+        
+        (TODO: ref to environment variable for construction of the file name)
+
         '''
         
         cfn = compose_ofn(None, self.name, ty='bloch')+BIMG_EXT
@@ -48,17 +44,54 @@ def add_bloch(target):
 
         return cfn, ffn, l
         
-    def generateBlochImgs(self, *, aperture = DEF_APERTURE, 
+    def generateBloch(self, aperture = DEF_APERTURE, 
                             omega = DEF_OMEGA,  
                             sampling = DEF_SAMPLING,
                             pix_size = 25,
                             det_size = DEF_DETSIZE,
                             disk_size = DEF_CBED_DSIZE,
-                            sample_thickness = (200, 1000, 100),
+                            sample_thickness = (200, 200, 100),
                             em_controls = EMC(cl=200, 
                                               simc = SIMC(gmax=1.0, excitation=(0.3,1.0))),
-                            bSave = False
-                          ):
+                            bSave = False):
+        """
+        Generate dynamic diffraction (Bloch) image(s).
+
+        :param aperture: Optional, Objective aperture
+        :type aperture: float
+
+        :param omega: Optional, Diagnization cutoff value
+        :type omega: float
+
+        :param sampling: Optional, Number of sampling points
+        :type sampling: int
+
+        :param pix_size: Optional, Detector pixel size in microns
+        :type pix_size: int
+
+        :param det_size: Optional, Detector size or output image size
+        :type det_size: int
+
+        :param thickness: Optional, sample thickness
+        :type thickness: int
+
+        :param em_controls: Optional, electron microscope control object. (TODO, ref to the class)
+        :type em_controls: pyemaps.EMC
+
+        :param bSave: Optional, True - save the output to a raw image file (ext: im3)
+        :type bSave: bool
+
+        .. note::
+
+            There will be one slice of image generated for each sample
+            thickness specified by sample_thickness = (start, end, step) arguement:
+
+            start, start+step ... start+N*step
+
+            when start is not the same as end, end will not have image
+            generated.
+
+        """
         
         th_start, th_end, th_step = sample_thickness
 
@@ -67,7 +100,7 @@ def add_bloch(target):
 
         dep = (th_end-th_start) // th_step + 1
         if dep > MAX_DEPTH:
-            raise BlochListError('Too many sample slices')
+            raise BlochListError(f'Number of sample thickness cannot exceed {MAX_DEPTH}')
 
         dif.initcontrols()
         dif.setmode(2) # alway in CBED mode
@@ -77,8 +110,9 @@ def add_bloch(target):
         self.set_sim_controls(em_controls.simc)
 
         dif.setdisksize(disk_size)
-
+   
         self.load()
+
         tx, ty = em_controls.tilt[0], em_controls.tilt[1]
         dx, dy = em_controls.defl[0], em_controls.defl[1]
         z = em_controls.zone
@@ -113,7 +147,7 @@ def add_bloch(target):
         myBlochImgs = BImgList(self._name)
         imgfn =''
         if bSave: 
-            imgfn, bfn, l = self.getbfilename()
+            imgfn, bfn, l = self.getBlochFN()
             if bloch.openimgfile(det_size, bfn, l) != 0:
                 raise BlochError('Error opening file for write')
 
@@ -135,7 +169,7 @@ def add_bloch(target):
                 raise BlochError('Error closing file')
 
             print(f'Raw Bloch images data has been successfully saved to: {imgfn}')
-            print(f'Import the file into ImageJ or other tools to view images: ')
+            print(f'To view, import the file into ImageJ or other tools')
 
 # ------- clean up ---------
         bloch.imgmemdelete()
@@ -146,9 +180,11 @@ def add_bloch(target):
     @staticmethod
     def printIBDetails():
         '''
-        print beams details after bloch scattering matrix run
+        Print beams details after bloch scattering matrix run
+
         Useful before retrieving the scattering matrix with incident 
         beam details as parameters
+
         '''
         nib = bloch.get_nsampling()
         if nib <=0:
@@ -192,7 +228,7 @@ def add_bloch(target):
     def getBeams(ib_coords=(0,0), bPrint=False):
         '''
         print diffracted beams for given sample coordinates 
-        must follow scattering matrix run: generateSCMatrix().
+        must be called between beginSCMatrix(...) and endSCMatrix().
 
         '''
         
@@ -223,7 +259,7 @@ def add_bloch(target):
     @staticmethod
     def getEigen(ib_coords=(0,0)):
         '''
-        This method returns eigen values for given sample point.
+        This method returns eigen values for given sampling point.
         must be called between beginSCMatrix(...) and endSCMatrix().
 
         '''
@@ -253,19 +289,33 @@ def add_bloch(target):
         This function begins to run dynamic diffraction simulation and prepare to retieve scattering matrix 
         with sampling point coordinates and sample thickness
         
+        
 
-        aperture = 1.0,                 #  Objective aperture
-        omega = 10,                     #  Diagnization cutoff                            
-        sampling = 8,                   #  Number of sampling points
-        pix_size = 25,                  #  Detector pixel size in microns
-        thickness = 200,                #  Sample thickness
-        det_size = 512,                 #  Detector size (it's also resulting bloch image array dimension)
-        disk_size = 0.16,               #  Diffraction disk rdius in 1/A\
-        rvec = (0.0,0.0,0.0)            #  R vector shifting atom coordinates in crystal, 
-                                        #  all components of R vector are floating numbers between 0.0 and 1.0
-        Returns:                         
-        A tuple (ns, s)                 #  ns = number of sampling points
-                                           s = a list of sampling points in (x,y) coordiantes
+        :param aperture: Optional, Objective aperture
+        :type aperture: float
+
+        :param omega: Optional, Diagnization cutoff value
+        :type omega: float
+
+        :param sampling: Optional, Number of sampling points
+        :type sampling: int
+
+        :param pix_size: Optional, Detector pixel size in microns
+        :type pix_size: int
+
+        :param det_size: Optional, Detector size or output image size
+        :type det_size: int
+
+        :param thickness: Optional, sample thickness
+        :type thickness: int
+
+        :param rvec: Optional, R vector shifting atom coordinates in crystal, value between 0.0 and 1.0
+        :type rvec: tuple
+
+        :return (ns, s): ns = number of sampling points; s - a list of sampling points in (x,y) coordiantes
+        :rtype: tuple
+
+
         '''
         
 
@@ -279,6 +329,7 @@ def add_bloch(target):
         self.set_sim_controls(em_controls.simc)
 
         # Load crystal data to backend modules 
+           
         self.load(rvec=rvec)
   
         tx, ty = em_controls.tilt
@@ -335,9 +386,10 @@ def add_bloch(target):
         '''
         This function retieves scattering matrix by sampling point coordinates,
         this call must be between:
-        1) beginSCMatrix(...), and
-        2) endSCMatrix() 
-        All available input for ib_coords are output from beginSCMatrix call
+        1. beginSCMatrix(...), and
+        2. endSCMatrix() 
+        All available input for ib_coords are captured in standard output from beginSCMatrix()
+
         '''
         
         # get the dimension of the scm
@@ -351,80 +403,81 @@ def add_bloch(target):
             raise BlochError('Error retieving scattering matrix, input matrix dimention too small, use printIBDetails to find extact dimentsion')
         return np.transpose(scm)
 
-    def generateBloch(self, *, aperture = DEF_APERTURE, 
-                            omega = DEF_OMEGA,  
-                            sampling = DEF_SAMPLING,
-                            pix_size = 25,
-                            det_size = DEF_DETSIZE,
-                            disk_size = DEF_CBED_DSIZE,
-                            thickness = 200,
-                            em_controls = EMC(cl=200, 
-                                              simc = SIMC(gmax=1.0, excitation=(0.3,1.0))
-                                              )
-                     ):
-        '''
-        aperture = 1.0,                 #  Objective aperture
-        omega = 10,                     #  Diagnization cutoff                            
-        sampling = 8,                   #  Number of sampling points
-        pix_size = 25,                  #  Detector pixel size in microns
-        thickness = 200,                #  Sample thickness
-        det_size = 512,                 #  Detector size (it's also resulting bloch image array dimension)
-        disk_size = 0.16,               #  Diffraction disk rdius in 1/A
-        '''
+    # def generateBloch(self, *, aperture = DEF_APERTURE, 
+    #                         omega = DEF_OMEGA,  
+    #                         sampling = DEF_SAMPLING,
+    #                         pix_size = 25,
+    #                         det_size = DEF_DETSIZE,
+    #                         disk_size = DEF_CBED_DSIZE,
+    #                         thickness = 200,
+    #                         em_controls = EMC(cl=200, 
+    #                                           simc = SIMC(gmax=1.0, excitation=(0.3,1.0))
+    #                                           )
+    #                  ):
+    #     '''
+    #     aperture = 1.0,                 #  Objective aperture
+    #     omega = 10,                     #  Diagnization cutoff                            
+    #     sampling = 8,                   #  Number of sampling points
+    #     pix_size = 25,                  #  Detector pixel size in microns
+    #     thickness = 200,                #  Sample thickness
+    #     det_size = 512,                 #  Detector size (it's also resulting bloch image array dimension)
+    #     disk_size = 0.16,               #  Diffraction disk rdius in 1/A
+    #     '''
                    
-        dif.initcontrols()
-        dif.setmode(2) # alway in CBED mode
+    #     dif.initcontrols()
+    #     dif.setmode(2) # alway in CBED mode
 
-        dif.setdisksize(disk_size)
+    #     dif.setdisksize(disk_size)
         
-        # setting default simulation controls
-        self.set_sim_controls(em_controls.simc)
-        # Load crystal data to backend modules 
-        self.load()
+    #     # setting default simulation controls
+    #     self.set_sim_controls(em_controls.simc)
+    #     # Load crystal data to backend modules 
+        
+    #     self.load()
   
-        tx, ty = em_controls.tilt
-        dx, dy = em_controls.defl
-        z = em_controls.zone
-        vt, cl = em_controls.vt,  em_controls.cl
+    #     tx, ty = em_controls.tilt
+    #     dx, dy = em_controls.defl
+    #     z = em_controls.zone
+    #     vt, cl = em_controls.vt,  em_controls.cl
         
-        dif.setsamplecontrols(tx, ty, dx, dy)
-        dif.setemcontrols(cl, vt)        
-        dif.setzone(z[0], z[1], z[2])
+    #     dif.setsamplecontrols(tx, ty, dx, dy)
+    #     dif.setemcontrols(cl, vt)        
+    #     dif.setzone(z[0], z[1], z[2])
         
-        ret = dif.diffract(1)
-        if ret == 0:
-            raise BlochError('Error bloch runtime1')
+    #     ret = dif.diffract(1)
+    #     if ret == 0:
+    #         raise BlochError('Error bloch runtime1')
         
-        dif.diff_internaldelete(1)
-        bloch.setsamplethickness(thickness, thickness, 100)
+    #     dif.diff_internaldelete(1)
+    #     bloch.setsamplethickness(thickness, thickness, 100)
 
-        ret = bloch.dobloch(aperture,omega,sampling,0.0)
+    #     ret = bloch.dobloch(aperture,omega,sampling,0.0)
         
-        if ret == 2:
-            print('Contact support@emlabsoftware.com for how to register for ' +
-            'a full and accelerated version of pyemaps')
-            raise BlochError('Bloch computation resource limit reached')
+    #     if ret == 2:
+    #         print('Contact support@emlabsoftware.com for how to register for ' +
+    #         'a full and accelerated version of pyemaps')
+    #         raise BlochError('Bloch computation resource limit reached')
 
-        if ret != 0:
-            raise BlochError('Error computing dynamic diffraction')
+    #     if ret != 0:
+    #         raise BlochError('Error computing dynamic diffraction')
 
-        #successful bloch runtime, then retreive bloch image
-        # 
-        #     
-        ret = bloch.imagegen(thickness,0,pix_size,det_size)
-        if(ret != 0):
-            raise BlochError("bloch image generation failed!")
+    #     #successful bloch runtime, then retreive bloch image
+    #     # 
+    #     #     
+    #     ret = bloch.imagegen(thickness,0,pix_size,det_size)
+    #     if(ret != 0):
+    #         raise BlochError("bloch image generation failed!")
 
-        raw_image = farray(np.zeros((det_size,det_size), dtype=np.double))
-        bloch.get_rawimagedata(raw_image)
-        bloch.imgmemdelete()
-        dif.diff_delete()
+    #     raw_image = farray(np.zeros((det_size,det_size), dtype=np.double))
+    #     bloch.get_rawimagedata(raw_image)
+    #     bloch.imgmemdelete()
+    #     dif.diff_delete()
 
-        return em_controls, raw_image
+    #     return em_controls, raw_image
     
     target.generateBloch = generateBloch
-    target.generateBlochImgs = generateBlochImgs
-    target.getbfilename = getbfilename
+    # target.generateBlochImgs = generateBlochImgs
+    target.getBlochFN = getBlochFN
 
     target.beginSCMatrix = beginSCMatrix
     # These calls must be between the above and endSCMartix calls
