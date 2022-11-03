@@ -104,6 +104,7 @@ class DifPlotter:
         self.save_to = None
 
     def terminate(self):
+        
         plt.close(self.fig) #just close the current figure
             
     def plotKDif(self):

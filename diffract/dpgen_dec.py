@@ -18,6 +18,7 @@ def add_dpgen(target):
         dif.initcontrols()
         
         self.load()
+            
         dif.set_xaxis(1, 2, 0, 0)
         ret = dif.diffract(2)
         

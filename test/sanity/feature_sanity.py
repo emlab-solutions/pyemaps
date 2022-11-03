@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 
 
+# feat_list=['bloch']
 feat_list=['dif', 'bloch', 'stereo', 'mxtal']
 
 def get_cifdata_dir():
@@ -35,8 +36,7 @@ def run_feat_list(cnflist, ty=1, bShow=True, bSave=False, feat_type='dif'):
         try:    
             cf = cr.from_xtl(cfn) if ty==1 else cr.from_cif(cfn)                  
             if feat_type == 'bloch':
-                bimgs = cf.generateBlochImgs(disk_size = 0.1, 
-                        sample_thickness = (200, 200, 100))
+                bimgs = cf.generateBloch(disk_size = 0.1)
 
             if feat_type == 'dif':
                 emc, cf_dp = cf.generateDP()

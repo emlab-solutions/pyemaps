@@ -9,15 +9,40 @@ def add_dif(target):
     from .. import DEF_MODE, DEF_CBED_DSIZE
     from .. import EMCError,DPListError,CrystalClassError,DPError
 
-    def load(self, rvec=None, cty=0):
+    def load(self, rvec=(0.0,0.0,0.0), cty=0):
         '''
-        prepare crystal data to be loaded into backend module
-        This routine is designed to fit python crystal structure
-        into the ones accepted by Fortran backend modules
-        10/19/2022:
-        Combining Crystal.prepareDif() and load the crystal to 
-        backend module memory  
+        Prepare and load crystal data into backend simulation module.
+
+        Once loaded into simulation modules, the crystal data will be
+        in backend module's memory until unload() method is called or 
+        another crystal object calls this method. 
+        
+        Since all crystal objects use this method to load its data into
+        the shared silmulation modules, data races need to be avoided. 
+
+        One way to prevent data races is to guard all simulations for 
+        one crystal object between its load() and unload() methods.
+
+        :param rvec: Optional, r vector of three floats
+        :type rvec: tuple
+        :param cty: Optional, 0 - normal crystal loading, 1 - loading for crystal constructor 
+        :type cty: int
+
+        .. note::
+
+            * When loading for crystal constructor module (mxtal), different type
+            of calculation is needed from the normal crystal loading for other
+            simulations. cty = 1 is set to indicate the difference.
+
+            * *pyemaps* tried to optimize its performance by minimizing trips to the
+            backend simulation module. So if the crystal data has been loaded
+            before in the same way as the current call (rvec, cty are the same as 
+            previous load), this call will be skipped.
+
         '''
+        if self.loaded() and rvec == self._rvec and cty == self._ltype:
+            return
+
         diff_cell = self._cell.prepare() #cell constant
         
         num_atoms = len(self._atoms)
@@ -38,25 +63,29 @@ def add_dif(target):
         if ret != 0:
             self.unload() #remove any memory from backend module
             raise CrystalClassError('Failed to load cystal to backend module')
-        
-    def unload():
+
+        self._loaded = True
+        self._rvec = rvec
+        self._ltype = cty
+
+    def unload(self):
         '''
-        Remove crystal from backend emaps modules memory
+        Remove crystal from the memory of backend simulation modules.
+        
         '''
         dif.crystaldelete()
+        self._loaded = False
 
     def generateDP(self, mode = None, dsize = None, em_controls = None):
         """
-        This routine returns a DP object.
+        Kinematic diffraction simulation method.
 
-        New DP generation based on the crystal data and Microscope control 
-        parameters. We will add more controls as we see fit.  
-
-        :param mode: Optional mode of diffraction mode - normal(1) or CBED(2)
-        :param dsize: Optional of CBED circle size - defaults to dif.DEF_DSIZE = 0.16
-        :param: Optional em_controls of electron microscope controls dictionary - defaults to DEF_CONTROLS
-        :return: a DP object
-        :rtype: diffPattern
+        :param mode: Optional, mode of kinemetic diffraction - normal(1) or CBED(2).
+        :param dsize: Optional, diffractted beam size, only applied to CBED mode.
+        :param: Optional, electron microscope controls object.
+        :return: (emc, dp).
+        :rtype: tuple.
+ 
         """
 
         if not em_controls:
@@ -228,16 +257,15 @@ def add_dif(target):
 
     def generateDif(self, mode = None, dsize = None, em_controls = None):
         """
-        This routine returns a DPList object.
+         Kinematic diffraction simulation method. 
+         Replaced by generateDP and to be depricated at stable production
 
-        New DP generation based on the crystal data and Microscope control 
-        parameters. We will add more controls as we see fit.  
+        :param mode: Optional, mode of kinemetic diffraction - normal(1) or CBED(2).
+        :param dsize: Optional, diffractted beam size, only applied to CBED mode.
+        :param: Optional, electron microscope controls object.
+        :return: myDif.
+        :rtype: DPList.
 
-        :param mode: Optional mode of diffraction mode - normal(1) or CBED(2)
-        :param dsize: Optional of CBED circle size - defaults to dif.DEF_DSIZE = 0.16
-        :param: Optional em_controls of electron microscope controls dictionary - defaults to DEF_CONTROLS
-        :return: a DP object
-        :rtype: diffPattern
         """
         from . import DPList
         
@@ -250,24 +278,39 @@ def add_dif(target):
             raise CrystalClassError('failed to generate diffraction')
 
         return myDif   
+
     def d2r(self, v = (0.0, 0.0, 0.0)):
         '''
-        Transform from real to recriprocal space
-        '''           
+        Transform vector from real to recriprocal space
+        
+        :param v: Optional, a vector of float coordinates
+        :type v: tuple
+        :return: rx, ry, rz
+        :rtype: tuple
 
+        '''           
+        
         self.load()
+
         x, y, z = v
         rx, ry, rz = dif.drtrans(x, y, z, 0)
 
         dif.crystaldelete()
         return rx, ry, rz
 
-    def r2d(self,  v = (0.0, 0.0, 0.0)):
+    def r2d(self, v = (0.0, 0.0, 0.0)):
         '''
-        Transform from recriprocal to real space
+        Transform vector from recriprocal to real space
+        
+        :param v: Optional, a vector of float coordinates
+        :type v: tuple
+        :return: dx, dy, dz
+        :rtype: tuple of floats
+        
         '''          
-
+   
         self.load()
+
         x, y, z = v
         dx, dy, dz = dif.drtrans(x, y, z, 1)
 
@@ -276,10 +319,21 @@ def add_dif(target):
 
     def angle(self, v1 =(1.0, 0.0, 0.0), \
                      v2 = (0.0, 0.0, 1.0),
-                     type = 0):
+                     ty = 0):
         '''
-        Type = 0: Calculate angle between two real space vectors
-	    Type = 1: Calculate angle between two reciprocal space vectors
+        Calculates angle between two real space vectors or 
+        two reciprocal space vectors
+        
+        :param v1: Optional, a vector of float coordinates
+        :type v1: tuple
+        :param v2: Optional, a vector of float coordinates
+        :type v2: tuple
+        :param ty: Optional, 0 real space, 1 reciprocal space
+        :type ty: int
+        :return: a
+        :rtype: float
+
+
         '''
         x1, y1, z1 = v1
         if x1 == 0.0 and y1 == 0.0 and z1 == 0.0:
@@ -288,45 +342,73 @@ def add_dif(target):
         x2, y2, z2 = v2
         if x2 == 0.0 and y2 == 0.0 and z2 == 0.0:
             raise ValueError("Error: input vector can't be zero")           
-
+   
         self.load()
 
-        a = dif.ang(x1, y1, z1, x2, y2, z2, type)
+        a = dif.ang(x1, y1, z1, x2, y2, z2, ty)
 
         dif.crystaldelete()
         return a
 
-    def vlen(self, v = (1.0, 0.0, 0.0), type = 0):
+    def vlen(self, v = (1.0, 0.0, 0.0), ty = 0):
         
         '''
-        Type = 0: Calculate length of a real space vector
-	    Type = 1: Calculate length of a reciprocal space vector
+        Calculates vector length real space vectors or in reciprocal 
+        space vectors
+        
+        :param v: Optional, a vector of float coordinates
+        :type v: tuple
+        :param ty: Optional, 0 real space, 1 reciprocal space
+        :type ty: int
+        :return: ln
+        :rtype: float
+
         '''        
-           
+              
         self.load()
 
         x, y, z = v
-        ln = dif.vlen(x, y, z, type)
+        ln = dif.vlen(x, y, z, ty)
 
         dif.crystaldelete()
         return ln
 
-    def wavelength(self, kv = 100):
+    @staticmethod
+    def wavelength(kv = 100):
         '''
-        Calculate electron wavelength
+        Calculates electron wavelength.
+
+        :param kv: Optional, high voltage
+        :type kv: float or int
+        return: wlen
+        rtype: float
+
         '''
         import math
 
         if kv <= 0.0:
             raise ValueError("Error: input kv must be positive number")
 
-        return 0.3878314/math.sqrt(kv*(1.0+0.97846707e-03*kv))
+        wlen = 0.3878314/math.sqrt(kv*(1.0+0.97846707e-03*kv))
+        return wlen
 	
     def set_sim_controls(self, simc = None):
+        '''
+        Sets simulation controls in the bachend. 
 
+        This method also tries to minimize the trip to the backend 
+        simulation module by check if sefaults are provided. If so,
+        skip the call to the backend.
+
+        .. note::
+
+            *pyemaps" assumes that attributes in sim_control class are
+            rarely changed. 
+
+        '''
         # from pyemaps import 
         if not simc:
-            # all defaults set in backend
+            # all defaults set in backend set by dif.initcontrols()
             return
                     
         if not simc.isDefExcitation():

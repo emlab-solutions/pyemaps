@@ -38,12 +38,9 @@ class DW(Enum):
     '''
     Enumerated thermal property of crystal supported by **pyemaps**
 
-    iso: s
-        Isotropic Debye-Waller Factor B (short for Isotropic)
-    bij:
-        Anisotropic Temperature Factor
-    uij:
-        Anisotropic Displacement Factor
+    * **iso**: Isotropic Debye-Waller Factor B (short for Isotropic)
+    * **bij**: Anisotropic Temperature Factor
+    * **uij**: Anisotropic Displacement Factor
 
     '''
     iso = 1
@@ -94,11 +91,11 @@ class Cell:
     To create a Cell class object by setting individual attributes:
 
     .. code-block:: python
+        :emphasize-lines: 5,6-7
 
         from pyemaps import Cell
-        # create a Cell object with all defaults (0.0) to its 
-        data members.
-
+        
+        # create a Cell object with all defaults values (0.0).
         si_cell = Cell()
 
         si_cell.a = 5.4307
@@ -542,9 +539,17 @@ class Atom:
                     yield key, self._data[key]
 
     def isISO(self):
+        '''
+        Check to see if this Atom thermal type is isotropic
+
+        '''
         return self._atype == iso.value
 
     def prepare(self, rvec = None):
+       '''
+       Format Atom data and prepare it for loading into backend simulation module.
+
+       '''
        if rvec is None:
               return self._loc
 
@@ -853,8 +858,10 @@ class Crystal:
         
     .. note::
 
-        For other methods of creating Crystal objects, see Crystal class 
-        *from_* methods.
+        1. All atoms in a crystal must have the same thermal type.
+        
+        2. For other methods of creating Crystal objects, see Crystal class 
+           *from_* methods.
 
     """
     def __init__(self, name="Diamond", data=None):
@@ -935,6 +942,11 @@ class Crystal:
 
         spg = SPG(data = data['spg'])
         setattr(self, 'spg', spg)
+
+        # initially nothing is loaded, no rvec and no load type
+        self._loaded = False
+        self._rvec = None
+        self._ltype = -1
 
     @property
     def cell(self):
@@ -1024,6 +1036,10 @@ class Crystal:
         self._spg = vspg
 
     def isISO(self):
+        '''
+        Check if crystal thermal type is Isotropic or not 
+
+        '''
         return self._dw == iso.value
 
     def __eq__(self, other):
@@ -1084,6 +1100,14 @@ class Crystal:
                  yield('spg', dict(self._spg))
             if k == "_atoms":
                  yield('atoms', [dict(a) for a in self.atoms])
+
+    def loaded(self):
+        '''
+        Check to see if crystal data is loaded into simulation module
+        or not.
+        
+        '''
+        return self._loaded
 
     @classmethod
     def from_builtin(cls, cn='Diamond'):

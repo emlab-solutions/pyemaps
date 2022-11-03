@@ -24,6 +24,7 @@ def add_stereo(target):
         # load the crystal
         
         self.load()
+
         ret = dif.diffract(3)
         if ret != 1:
             raise StereodiagramError('Stereodiagram generation failed')

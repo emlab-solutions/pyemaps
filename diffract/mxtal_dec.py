@@ -93,6 +93,7 @@ def add_mxtal(target):
         dif.initcontrols()
         
         self.load(cty=1)
+            
         tmat = farray(np.array(trMatrix))
         
         pxz = farray(np.array(xz))

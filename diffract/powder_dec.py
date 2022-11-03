@@ -86,6 +86,7 @@ def add_powder(target):
         from numpy import asfortranarray as farray
         
         self.load()
+          
         rawP = farray(np.zeros((2,1000), dtype=np.double))
        
         ret = powder.generate_powder(rawP, kv=kv, t2max=t2max, 
