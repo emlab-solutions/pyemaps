@@ -1,46 +1,6 @@
 
 def add_powder(target):
-    '''
-    #####INPUT#######
-    -------------kv-----------------------
-      Accelaration Voltage in Kilo-Volts
-    --------------------------------------
-    -------------t2max---------------------
-      Maximum scattering angle 
-    --------------------------------------
-    -------------smax---------------------
-      Maximum Sin(theta)/Wavelength
-    --------------------------------------
-    -------------eta, gamma---------------
-      Eta - the mixing coefficient between gaussian and lorentzian 
-            in a pseudo-Voight peak function
-      Gamma - diffraction peaks half maximum half width
-    --------------------------------------
-    -------------absp---------------------
-      With Absoption structure factor or not 
-      values - 0, or 1 (default 0)
-    --------------------------------------
-    -------------isbgdon---------------------
-      Background on or not (default no background)
-    --------------------------------------
-    -------------bamp---------------------
-      Background amplitude
-    --------------------------------------
-    -------------bgamma---------------------
-      Background width
-    --------------------------------------
-    -------------bmfact---------------------
-      Background exponential damping factor
-    --------------------------------------
-
-    ####OUTPUT########
-     The function returns an array of 2 x 1000 containing 
-     the powder diffraction for the loaded crystal
-     
-     The first 1000 is the scattering angle 2theta and the second 
-     the intensity    
-    '''
-    
+   
     try:
         from . import powder
 
@@ -48,8 +8,15 @@ def add_powder(target):
         print(f"Error: required module pyemaps.powder not found")
         
     def plotPowder(self, pw):
+
         """
-        plot one powder diffraction
+        Show powder diffraction
+
+        :param pw: Required. Powder diffraction data
+        :type pw: array
+
+        (TODO: link to an pwoder plot example)
+
         """
         import numpy as np
         import matplotlib.pyplot as plt
@@ -81,7 +48,54 @@ def add_powder(target):
             bamp = 0.35, 
             bgamma = 0.001, 
             bmfact = 0.02):
+        '''
+        Generates powder diffraction.
+
+        :param kv: Optional. Accelaration voltage in kilo-volts.
+        :type kv: int or float
+
+        :param t2max: Optional. Maximum scattering angle.
+        :type t2max: float
+
+        :param smax: Optional. Maximum Sin(theta)/Wavelength.
+        :type smax: float
+
+        :param smax: Optional. Maximum Sin(theta)/Wavelength.
+        :type smax: float
+
+        :param eta: Optional. the mixing coefficient between gaussian and lorentzian in a pseudo-Voight peak function.
+        :type eta: float
+
+        :param gamma: Optional. Diffraction peaks half maximum half width.
+        :type gamma: float
+
+        :param absp: Optional. With Absoption structure factor (1 -default) or not (0).
+        :type absp: int
+
+        :param isbgdon: Optional. Background on or not (default no background).
+        :type isbgdon: int
+
+        :param bamp: Optional. Background amplitude.
+        :type bamp: float
+
+        :param bgamma: Optional. Background width.
+        :type bgamma: float
+
+        :param bmfact: Optional. Background exponential damping factor.
+        :type bmfact: float
+
+        :return: rawP
+        :rtype: array
+
+        .. note::
+
+        The function returns an array of 2 x 1000 containing 
+        the powder diffraction for loaded crystal.
         
+        The first 1000 is the scattering angle 2theta and the second 
+        the intensity  
+        
+        '''     
         import numpy as np
         from numpy import asfortranarray as farray
         

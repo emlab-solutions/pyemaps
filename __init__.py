@@ -126,6 +126,7 @@ else:
     th_start, th_end, th_step = bloch.get_sam_defs()
     
     DEF_THICKNESS = (th_start, th_end, th_step)
+
 #---------- defaults simulation setting-------------------------
     # sampling: DEF_SAMPLING
     # pixsize: DEF_PIXSIZE
@@ -139,7 +140,6 @@ else:
      DEF_OMEGA) = bloch.get_sim_defs()
 #----------  Microoscope setting default------------------------
     DEF_APERTURE = bloch.get_mic_defs()
-
 
 #fall through if blch module is not found
 try:

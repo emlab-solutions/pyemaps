@@ -1,35 +1,14 @@
 def add_csf(target):
     '''
-    #####INPUT#######
-    -------------kv-----------------------
-      Accelaration Voltage in Volts
-    --------------------------------------
-    -------------smax---------------------
-      Limit of Sin(theta)/Wave length
-    --------------------------------------
-    -------------sftype-------------------
-      Structure Factors Type:
-      1 - x-ray structure factor (default)
-      2 - electron structure factor in volts (V)
-      3 - electron structure factor in 1/angstrom^2 in (V)
-      4 - electron absorption structure factor in 1/angstrom^2 (V)
-    --------------------------------------
-    -------------aptype-------------------
-      Structure Factor in (Amplitude, Phase) or (Real, Imaginary):
-      0 - in (Real, Imaginary) 
-      1 - in (Amplitude, Phase) (default)
-    --------------------------------------
+      Generate crystal structure factors. The following types 
+      Structure Factors are supported:
 
-    ####OUTPUT########
-    The function returns an array of structure factors
-    Each item in the output array [sfs] is of a dictionary type
-    for each element:
-      hkl: (h,k,l)    - Miller Indices 
-      sw: s           - Sin(theta)/Wave length
-      ds: d           - d-spacing
-      amp_re          - Structure factor amplitude or rela part
-      phase_im        - Structure factor phase or imaginary part
-'''
+      * x-ray structure factor (default)
+      * electron structure factor in volts (V)
+      * electron structure factor in 1/angstrom^2 in (V)
+      * electron absorption structure factor in 1/angstrom^2 (V)
+      
+    '''
     try:
         from . import csf
 
@@ -44,7 +23,31 @@ def add_csf(target):
     sf_ap_flag = [('real', 'imaginary'), ('amplitude', 'phase')]
 
     def printCSF(self, sfs):
+        """
+        Format and print structure factors to standard output.
 
+        :param sfs: structure factor data from generateCSF() call.
+        
+        Example of the output for a X-Ray Structure Factor for Silicon:
+
+        .. code-block:: console
+
+                -----X-ray Structure Factors----- 
+            crystal            : Silicon
+            h k l              : Miller Index
+            s-w                : Sin(ϴ)/Wavelength <= 1.0
+            d-s                : D-Spacing
+
+            h   k    l        s-w             d-s          amplitude         phase
+
+            1   1   1    0.1594684670    3.1354161069    58.89618        180.000000
+            0   0   2    0.1841383247    2.7153500000    6.565563e-31    0.000000
+            0   2   2    0.2604109162    1.9200423983    67.56880        180.000000
+            1   1   3    0.3053588663    1.6374176590    44.24472        180.000000
+            2   2   2    0.3189369340    1.5677080534    8.151511e-14    180.000000
+            ...
+
+        """
         sftype =sfs[0]['sftype']
         aptype =sfs[0]['aptype']
         if sftype < 1 or sftype > 4:
@@ -103,7 +106,48 @@ def add_csf(target):
         print('\n')          
 
     def generateCSF(self, kv = 100, smax = 0.5, sftype = 1, aptype = 0):
+        """
         
+        :param kv: Optional. Accelaration Voltage in Kilo-Volts, default value 100
+        :type kv: floats
+        :param smax: Optional. Limit of Sin(theta)/Wave length, default value 0.5
+        :type smax: floats
+        
+        :param sftype: Optional. Structure factor types to be generated, default value 1 - x-ray
+        :type sftype: int
+
+        :param aptype: Optional. Output type, default value 0 - amplitude and phase 
+        :type aptype: int
+
+        :return: sfs
+        :rtype: lis of dict
+
+        .. note:: *sftype* has the following value representing:
+
+            1. x-ray structure factor (default)
+            2. electron structure factor in volts (KV)
+            3. electron structure factor in 1/angstrom^2 in (KV)
+            4. electron absorption structure factor in 1/angstrom^2 (KV)
+
+        .. note:: *aptype* has the following value representing:
+
+            0: amplitude and phase
+            1: real and imaginary
+
+        The return of an array of structure factors in the following 
+        python dictionary format:
+
+        .. code-block:: python
+   
+            {
+                'hkl': (h,k,l),         # Miller Indices 
+                'sw': s,                # Sin(theta)/Wave length
+                'ds': d,                # d-spacing value
+                'amp_re': ar            # amplitude or rela part 
+                'phase_im': ph          # phase or imaginary part
+            }
+
+        """
         sfs = [dict(kv = kv, smax = smax, sftype = sftype, aptype = aptype)]
 
         self.load()

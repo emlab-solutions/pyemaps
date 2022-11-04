@@ -36,14 +36,16 @@ from pyemaps import DEF_EXCITATION, \
 
 class SIMControl:
     '''
-    Simulation control parameters, to be embedded in EMControl, including:
-    excitation:     excitation error range in (min, max)
-    gmax:           maximum recipricol vector length
-    bmin:           beta perturbation cutoff
-    intensity:      kinematic diffraction intensity cutoff level and scale in (level, scale)
-    xaxis:          crystal horizontal axis in reciprical space
-    gctl:           maximum index number for g-list
-    zctl:           maximum zone index number
+    Simulation controls, to be embedded in EMControl, including:
+
+    * **excitation**, excitation error range in (min, max)
+    * **gmax**, maximum recipricol vector length
+    * **bmin**, beta perturbation cutoff
+    * **intensity**, kinematic diffraction intensity cutoff level and scale in (level, scale)
+    * **xaxis**, crystal horizontal axis in reciprical space
+    * **gctl**, maximum index number for g-list
+    * **zctl**, maximum zone index number
+
     '''
     def __init__(self, excitation = DEF_EXCITATION, \
                        gmax = DEF_GMAX, \
@@ -64,30 +66,40 @@ class SIMControl:
 
     @property
     def excitation(self):
+       '''excitation error range in (min, max)'''
        return self._excitation
 
     @property
     def gmax(self):
+       '''maximum recipricol vector length'''
        return self._gmax
 
     @property
     def bmin(self):
+       '''beta perturbation cutoff'''
        return self._bmin
 
     @property
     def intensity(self):
+       ''' 
+       kinematic diffraction intensity cutoff 
+       level and scale in (level, scale)
+       '''
        return self._intensity
 
     @property
     def gctl(self):
+       '''maximum index number for g-list'''
        return self._gctl
 
     @property
     def zctl(self):
+       '''maximum zone or Miller index index number'''
        return self._zctl
 
     @property
     def xaxis(self):
+       '''crystal horizontal axis in reciprical space'''
        return self._xaxis
 
     @excitation.setter
@@ -201,29 +213,39 @@ class SIMControl:
 
        return "\n ".join(simulation)
 
-    def isDefExcitation(self):
+    def _isDefExcitation(self):
+        '''Helper function to minimize trips to backend modules'''
         return self._excitation == DEF_EXCITATION
 
-    def isDefGmax(self):
+    def _isDefGmax(self):
+        '''Helper function to minimize trips to backend modules'''
         return self._gmax == DEF_GMAX
 
-    def isDefBmin(self):
+    def _isDefBmin(self):
+        '''Helper function to minimize trips to backend modules'''
         return self._bmin == DEF_BMIN
 
-    def isDefIntensity(self):
+    def _isDefIntensity(self):
+        '''Helper function to minimize trips to backend modules'''
         return self._intensity == DEF_INTENSITY
 
-    def isDefXaxis(self):
+    def _isDefXaxis(self):
+        '''Helper function to minimize trips to backend modules'''
         return self._xaxis == DEF_XAXIS
 
-    def isDefGctl(self):
+    def _isDefGctl(self):
+        '''Helper function to minimize trips to backend modules'''
         return self._gctl == DEF_GCTL
 
-    def isDefZctl(self):
+    def _isDefZctl(self):
+        '''Helper function to minimize trips to backend modules'''
         return self._zctl == DEF_ZCTL
 
     @classmethod
-    def from_random(cls):
+    def _from_random(cls):
+
+        ''' Design for internal testing purpose only'''
+
         import random
         # random xaxis:
         ax = tuple(random.sample(range(4), k = 3))

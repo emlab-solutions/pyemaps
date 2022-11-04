@@ -395,7 +395,7 @@ def get_install_requires():
         return install_reqs
     else:
         raise Exception('The OS is not supported')
-
+    
 def get_emaps_macros():
 
     if build_type == 'full':

@@ -11,7 +11,7 @@ def add_bloch(target):
                    MAX_DEPTH, \
                    DEF_OMEGA, \
                    DEF_CBED_DSIZE, \
-                   DEF_KV, \
+                   DEF_MODE, \
                    DEF_DSIZE_LIMITS
     from .. import BImgList, EMC, SIMC
 
@@ -22,6 +22,7 @@ def add_bloch(target):
 
     BIMG_EXT = '.im3'
     MAX_BIMGFN = 256
+    CBED_MODE = DEF_MODE + 1
 
     def getBlochFN(self):
         '''
@@ -30,7 +31,6 @@ def add_bloch(target):
         (TODO: ref to environment variable for construction of the file name)
 
         '''
-        
         cfn = compose_ofn(None, self.name, ty='bloch')+BIMG_EXT
 
         l = len(cfn)
@@ -47,38 +47,41 @@ def add_bloch(target):
     def generateBloch(self, aperture = DEF_APERTURE, 
                             omega = DEF_OMEGA,  
                             sampling = DEF_SAMPLING,
-                            pix_size = 25,
+                            pix_size = DEF_PIXSIZE,
                             det_size = DEF_DETSIZE,
                             disk_size = DEF_CBED_DSIZE,
-                            sample_thickness = (200, 200, 100),
-                            em_controls = EMC(cl=200, 
+                            sample_thickness = DEF_THICKNESS,
+                            em_controls = EMC(cl=200, # set smaller that 1000 default value
                                               simc = SIMC(gmax=1.0, excitation=(0.3,1.0))),
                             bSave = False):
         """
         Generate dynamic diffraction (Bloch) image(s).
 
-        :param aperture: Optional, Objective aperture
+        :param aperture: Optional. Objective aperture
         :type aperture: float
 
-        :param omega: Optional, Diagnization cutoff value
+        :param omega: Optional. Diagnization cutoff value
         :type omega: float
 
-        :param sampling: Optional, Number of sampling points
+        :param sampling: Optional. Number of sampling points
         :type sampling: int
 
-        :param pix_size: Optional, Detector pixel size in microns
+        :param pix_size: Optional. Detector pixel size in microns
         :type pix_size: int
 
-        :param det_size: Optional, Detector size or output image size
+        :param det_size: Optional. Detector size or output image size
         :type det_size: int
 
-        :param thickness: Optional, sample thickness
-        :type thickness: int
+        :param disk_size: Optional. Diffracted beams size in range set by DEF_DSIZE_LIMITS
+        :type disk_size: float
 
-        :param em_controls: Optional, electron microscope control object. (TODO, ref to the class)
+        :param thickness: Optional. Sample thickness in (start, end, step) tuple
+        :type thickness: tuple of int
+
+        :param em_controls: Optional. electron microscope control object. (TODO, ref to the class)
         :type em_controls: pyemaps.EMC
 
-        :param bSave: Optional, True - save the output to a raw image file (ext: im3)
+        :param bSave: Optional. True - save the output to a raw image file (ext: im3)
         :type bSave: bool
 
         .. note::
@@ -92,7 +95,9 @@ def add_bloch(target):
             generated.
 
         """
-        
+        if disk_size < DEF_DSIZE_LIMITS[0] or disk_size > DEF_DSIZE_LIMITS[1]:
+            raise BlochError('Diffracted beam size bust be in range {DEF_DSIZE_LIMITS}')
+
         th_start, th_end, th_step = sample_thickness
 
         if th_start > th_end or th_step <= 0:
@@ -103,7 +108,7 @@ def add_bloch(target):
             raise BlochListError(f'Number of sample thickness cannot exceed {MAX_DEPTH}')
 
         dif.initcontrols()
-        dif.setmode(2) # alway in CBED mode
+        dif.setmode(CBED_MODE) # alway in CBED mode
 
         
         # setting default simulation controls
@@ -136,6 +141,7 @@ def add_bloch(target):
 
         if ret != 0:
             raise BlochError('Error computing dynamic diffraction')
+
         # 
         #successful bloch runtime, then retreive bloch image
         #     
@@ -230,6 +236,12 @@ def add_bloch(target):
         print diffracted beams for given sample coordinates 
         must be called between beginSCMatrix(...) and endSCMatrix().
 
+        :param ib_coords: Optional. Sampling point coordinates tuple
+        :type ib_coords: tuple
+
+        :param bPrint: Optional. True - print beams info on standard output
+        :type bPrint: bool
+
         '''
         
         scmdim = bloch.get_scmdim(ib_coords)
@@ -262,6 +274,25 @@ def add_bloch(target):
         This method returns eigen values for given sampling point.
         must be called between beginSCMatrix(...) and endSCMatrix().
 
+        :param ib_coords: Optional. Sampling point coordinates tuple
+        :type ib_coords: tuple
+
+        :return: a vector of complex numbers
+        :rtype: array
+
+        Example of the eigen vales:
+
+        .. code-block:: console
+
+        Eigen values at: (0, 0):
+        [ 0.04684002-0.00218389j -0.2064669 -0.00147516j -0.30446348+0.00055009j
+        -0.27657617+0.00023512j -0.2765751 +0.00023515j  0.00539041-0.00382443j
+        -0.535879  -0.00023585j -0.5612881 +0.00045343j -0.55369247+0.00026236j
+        -0.55368818+0.00026249j -0.19093572+0.00066419j -0.1550311 +0.00045471j
+        -0.15503166+0.00045471j -0.58842399-0.00202841j -0.67850191+0.00042728j
+        -0.72713566+0.00060655j -0.70972681+0.00052279j -0.72092338+0.0005903j
+        -0.72093237+0.00059052j -0.64608335-0.0001983j  -0.64607544-0.00019853j]
+
         '''
         scmdim = bloch.get_scmdim(ib_coords)
         if scmdim <= 0:
@@ -273,13 +304,13 @@ def add_bloch(target):
         
         return ev
 
-    def beginSCMatrix(self, *, 
+    def beginSCMatrix(self, 
                         aperture = DEF_APERTURE, 
                         omega = DEF_OMEGA,  
                         sampling = DEF_SAMPLING,
                         disk_size = DEF_CBED_DSIZE,
                         rvec = (0.0,0.0,0.0),
-                        thickness = 200,
+                        thickness = DEF_THICKNESS[0],
                         em_controls = EMC(cl=200, 
                                           simc = SIMC(gmax=1.0, 
                                           excitation=(0.3,1.0))
@@ -289,43 +320,39 @@ def add_bloch(target):
         This function begins to run dynamic diffraction simulation and prepare to retieve scattering matrix 
         with sampling point coordinates and sample thickness
         
-        
-
-        :param aperture: Optional, Objective aperture
+        :param aperture: Optional. Objective aperture
         :type aperture: float
 
-        :param omega: Optional, Diagnization cutoff value
+        :param omega: Optional. Diagnization cutoff value
         :type omega: float
 
-        :param sampling: Optional, Number of sampling points
+        :param sampling: Optional. Number of sampling points
         :type sampling: int
 
-        :param pix_size: Optional, Detector pixel size in microns
-        :type pix_size: int
+        :param disk_size: Optional. Diffracted beams size in range set by DEF_DSIZE_LIMITS
+        :type disk_size: float
 
-        :param det_size: Optional, Detector size or output image size
-        :type det_size: int
-
-        :param thickness: Optional, sample thickness
+        :param thickness: Optional. sample thickness
         :type thickness: int
 
-        :param rvec: Optional, R vector shifting atom coordinates in crystal, value between 0.0 and 1.0
+        :param rvec: Optional. R vector shifting atom coordinates in crystal, value between 0.0 and 1.0
         :type rvec: tuple
 
-        :return (ns, s): ns = number of sampling points; s - a list of sampling points in (x,y) coordiantes
+        :return: (ns, s). ns = number of sampling points; s - a list of sampling points in (x,y) coordiantes
         :rtype: tuple
 
 
         '''
-        
+        if disk_size < DEF_DSIZE_LIMITS[0] or disk_size > DEF_DSIZE_LIMITS[1]:
+            raise BlochError('Diffracted beam size bust be in range {DEF_DSIZE_LIMITS}')
 
         dif.initcontrols()
-        dif.setmode(2) # alway in CBED mode
+        dif.setmode(CBED_MODE) # alway in CBED mode
 
         dif.setdisksize(disk_size)
         
         # setting default simulation controls
-        # print(f'simulation parameters: {em_controls.simc}')
+        
         self.set_sim_controls(em_controls.simc)
 
         # Load crystal data to backend modules 
@@ -335,7 +362,6 @@ def add_bloch(target):
         tx, ty = em_controls.tilt
         dx, dy = em_controls.defl
         z = em_controls.zone
-        # print(f'zone input from generateSCMatrix: {z}:{em_controls.zone}')
         vt, cl = em_controls.vt,  em_controls.cl
         
         dif.setsamplecontrols(tx, ty, dx, dy)
@@ -360,7 +386,7 @@ def add_bloch(target):
 
         print(f'---Scattering matrix data now available for the following sampling points---')
         print(f'call getSCMartix to retrive the scattering matrix at any of the following samplign points')
-        # Crystal.printIBDetails()
+       
         nsampling = bloch.get_nsampling()
         sampling_points, ret = bloch.get_samplingpoints(nsampling)
 
@@ -378,7 +404,14 @@ def add_bloch(target):
 
     @staticmethod
     def endSCMatrix():
-        # freeing backend bloch module memory 
+        """
+        Ends scattering matrix runs started by BeginSCMatrix().
+
+        Backend bloch module will no longers retain the scattering 
+        matrix, Eigen values, sampling points etc in its memory, 
+        unless a new call to beginSCMatrix().
+
+        """
         bloch.cleanup()
 
     @staticmethod
@@ -402,90 +435,20 @@ def add_bloch(target):
         if ret <= 0:
             raise BlochError('Error retieving scattering matrix, input matrix dimention too small, use printIBDetails to find extact dimentsion')
         return np.transpose(scm)
-
-    # def generateBloch(self, *, aperture = DEF_APERTURE, 
-    #                         omega = DEF_OMEGA,  
-    #                         sampling = DEF_SAMPLING,
-    #                         pix_size = 25,
-    #                         det_size = DEF_DETSIZE,
-    #                         disk_size = DEF_CBED_DSIZE,
-    #                         thickness = 200,
-    #                         em_controls = EMC(cl=200, 
-    #                                           simc = SIMC(gmax=1.0, excitation=(0.3,1.0))
-    #                                           )
-    #                  ):
-    #     '''
-    #     aperture = 1.0,                 #  Objective aperture
-    #     omega = 10,                     #  Diagnization cutoff                            
-    #     sampling = 8,                   #  Number of sampling points
-    #     pix_size = 25,                  #  Detector pixel size in microns
-    #     thickness = 200,                #  Sample thickness
-    #     det_size = 512,                 #  Detector size (it's also resulting bloch image array dimension)
-    #     disk_size = 0.16,               #  Diffraction disk rdius in 1/A
-    #     '''
-                   
-    #     dif.initcontrols()
-    #     dif.setmode(2) # alway in CBED mode
-
-    #     dif.setdisksize(disk_size)
-        
-    #     # setting default simulation controls
-    #     self.set_sim_controls(em_controls.simc)
-    #     # Load crystal data to backend modules 
-        
-    #     self.load()
-  
-    #     tx, ty = em_controls.tilt
-    #     dx, dy = em_controls.defl
-    #     z = em_controls.zone
-    #     vt, cl = em_controls.vt,  em_controls.cl
-        
-    #     dif.setsamplecontrols(tx, ty, dx, dy)
-    #     dif.setemcontrols(cl, vt)        
-    #     dif.setzone(z[0], z[1], z[2])
-        
-    #     ret = dif.diffract(1)
-    #     if ret == 0:
-    #         raise BlochError('Error bloch runtime1')
-        
-    #     dif.diff_internaldelete(1)
-    #     bloch.setsamplethickness(thickness, thickness, 100)
-
-    #     ret = bloch.dobloch(aperture,omega,sampling,0.0)
-        
-    #     if ret == 2:
-    #         print('Contact support@emlabsoftware.com for how to register for ' +
-    #         'a full and accelerated version of pyemaps')
-    #         raise BlochError('Bloch computation resource limit reached')
-
-    #     if ret != 0:
-    #         raise BlochError('Error computing dynamic diffraction')
-
-    #     #successful bloch runtime, then retreive bloch image
-    #     # 
-    #     #     
-    #     ret = bloch.imagegen(thickness,0,pix_size,det_size)
-    #     if(ret != 0):
-    #         raise BlochError("bloch image generation failed!")
-
-    #     raw_image = farray(np.zeros((det_size,det_size), dtype=np.double))
-    #     bloch.get_rawimagedata(raw_image)
-    #     bloch.imgmemdelete()
-    #     dif.diff_delete()
-
-    #     return em_controls, raw_image
     
     target.generateBloch = generateBloch
     # target.generateBlochImgs = generateBlochImgs
     target.getBlochFN = getBlochFN
 
     target.beginSCMatrix = beginSCMatrix
-    # These calls must be between the above and endSCMartix calls
+    # ---These calls must be between the above and endSCMartix calls
+    
     target.printIBDetails = printIBDetails
     target.getSCMatrix = getSCMatrix
     target.getEigen = getEigen
     target.getBeams = getBeams
-    # These calls must be between the above and endSCMartix calls
+
+    # ---These calls must be between the above and endSCMartix calls
     target.endSCMatrix = endSCMatrix
 
     return target

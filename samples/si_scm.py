@@ -24,7 +24,7 @@ Date:       October 19th, 2022
 
 This sample code is to demonstrate how to generated scattering matrix
 '''
-# c_name = 'Germanium'
+
 c_name = 'silicon'
 
 def runSCMTests():
@@ -44,7 +44,7 @@ def runSCMTests():
             simc = SIMC(gmax=2.0, excitation=(1.0,2.0))
             )
     ds = 0.25
-    ib_coords = ( 0,0)
+    ib_coords = (0,0)
     try:
         
         # s  = list of sampling points (x,y)
@@ -80,7 +80,7 @@ def runSCMTests():
             #     print(scm)
 
     
-    # cleanup backend module memory
+    # cleanup 
     cr.endSCMatrix()
 
 if __name__ == "__main__":

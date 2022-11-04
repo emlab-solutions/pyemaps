@@ -1,7 +1,19 @@
 
 def add_dpgen(target):
-    def dp_gen(self, res =1):
+    def generateDPDB(self, res =1):
+        """
+        Generate a list diffraction paterns and save them in proprietory
+        binary formatted database file.
+
+        The database created will be used for diffraction pattern indexing
+        and recognition functions.
+
+        This feature is accessible for paid customers only.
+
+        :param res: resolution of the diffraction pattern
+
         
+        """
         try:
             from . import dif, dpgen
 
@@ -49,6 +61,6 @@ def add_dpgen(target):
 
         return 0
     
-    target.dp_gen = dp_gen
+    target.generateDPDB = generateDPDB
 
     return target
