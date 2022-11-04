@@ -51,7 +51,7 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
     emclist =[] 
 
     if sim_rand:
-        sc = SIMC.from_random()
+        sc = SIMC._from_random()
 
     for i in range(-3,3): 
         emc=EMC(cl=200)

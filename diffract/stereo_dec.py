@@ -3,10 +3,32 @@ def add_stereo(target):
                             tilt=(0.0,0.0),
                             zone = (0, 0, 1)):
         """
-        This routine returns a Stereodiagram.
+        Generate stereodiagram.
 
-        :param em_control: only tilt and zone in emc affect output
-        :param xa: xaxis set by user or default to the above value
+        :param xa: Optional. X-axis (TODO)
+        :type xa: tuple
+        :param tilt: Optional. Sample tilts in (x,y)
+        :type tilt: tuple
+        :param zone: Optional. Zone axis
+        :type zone: tuple
+
+        :return: stereo_list
+        :rtype: list of dict object
+
+        Example of the stereodiagram output:
+
+        .. code-block:: json
+
+            [
+                {
+                    "c": (x,y),              #center
+                    "r": rad,                #radius
+                    "idx": (h, k, l),        #Miller Index
+                }
+            ]    
+
+        To display the resulting stereodiagram, use (TODO, ref to showStereo)
+        showStereo() function in display module.
         
         """
         from . import dif, stereo

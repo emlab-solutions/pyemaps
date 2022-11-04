@@ -1106,6 +1106,9 @@ class Crystal:
         Check to see if crystal data is loaded into simulation module
         or not.
         
+        :return: 
+        :rtype: bool
+
         '''
         return self._loaded
 

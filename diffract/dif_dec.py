@@ -70,7 +70,7 @@ def add_dif(target):
 
     def unload(self):
         '''
-        Remove crystal from the memory of backend simulation modules.
+        Remove crystal data from the memory in the backend simulation modules.
         
         '''
         dif.crystaldelete()
@@ -411,28 +411,28 @@ def add_dif(target):
             # all defaults set in backend set by dif.initcontrols()
             return
                     
-        if not simc.isDefExcitation():
+        if not simc._isDefExcitation():
             sgmin, sgmax = simc.excitation
             dif.setexcitation(sgmin, sgmax)
 
-        if not simc.isDefGmax():
+        if not simc._isDefGmax():
             dif.setglen(simc.gmax)
 
-        if not simc.isDefBmin():
+        if not simc._isDefBmin():
             dif.setgcutoff(simc.bmin)
 
-        if not simc.isDefIntensity():
+        if not simc._isDefIntensity():
             intz0, intctl = simc.intensity
             dif.setintensities(intctl, intz0)
 
-        if not simc.isDefXaxis():
+        if not simc._isDefXaxis():
             x0,x1,x2 = simc.xaxis
             dif.set_xaxis(1, x0, x1, x2)
 
-        if not simc.isDefGctl():
+        if not simc._isDefGctl():
             dif.setgctl(simc.gctl)
 
-        if not simc.isDefZctl():
+        if not simc._isDefZctl():
             dif.setzctl(simc.zctl)
 
     target.generateDP = generateDP
