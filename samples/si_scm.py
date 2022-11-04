@@ -39,16 +39,17 @@ def runSCMTests():
 
     # -----For a list beams coordinates 
     #      to generate more scattering matrix, run cr.printIBDetails()
+    
     ec =EMC(cl=200,
             tilt=(0.0, 0.0),
             simc = SIMC(gmax=2.0, excitation=(1.0,2.0))
             )
     ds = 0.25
     ib_coords = (0,0)
+    
     try:
         
-        # s  = list of sampling points (x,y)
-        _, s = si.beginSCMatrix(em_controls = ec, 
+        ns, s = si.beginSCMatrix(em_controls = ec, 
                         disk_size = ds)
 
     except BlochError as e:
@@ -60,26 +61,33 @@ def runSCMTests():
         except BlochError as e:
             print(f'Failed to generate scattering matrix {e.message}')
         else:
-            print(f'Sacattering matrix at sampling point {ib_coords}:\n{si_scm}')
-            # output eigen values at ib_coords
-            print(f'\nEigen values at: {ib_coords}: ')
+            print(f'----Sampling points in this scattering matrix calculation---:')
+            print(f'{s}')
+
+            print(f'----Sacattering matrix at sampling point {ib_coords}----:')
+            print(f' \n{si_scm}')
+
+            print(f'----Eigen values at: {ib_coords}----')
             print(cr.getEigen(ib_coords = ib_coords))
-            # outputMiller Indices at ib_coords
-            print(f'\nDiffracted Beams at: {ib_coords}: ')
+
+            print(f'----Diffracted Beams in Miller Indexes at: {ib_coords}----: ')
             cr.getBeams(ib_coords = ib_coords, bPrint=True)
-            # output list if ib_coords and tilts and etc...
-            print(f'\nBeam Tilts In Reciprical Space and Misc') 
+
+            print(f'----Beam Tilts In Reciprical Space and misc. info') 
             cr.printIBDetails()
+
+            #       get a random sampling point from available list of
+            #       sampling points and print the corresponding 
+            #       scattering matrix
+
+            import random
+            radnum = random.randrange(1, ns-1)
+            ib_coords = s[radnum]
+            scm = cr.getSCMatrix(ib_coords = ib_coords)
+            print(f'--Sacattering matrix at a random sampling point {ib_coords}----:')
+            print(f'{scm}')
             
-            # ------enable below to step through all sampling points 
-            #       and print all scattering matrix
 
-            # for sc in s:
-            #     scm = cr.getSCMatrix(ib_coords = sc)
-            #     print(f'--Sacattering matrix at sampling point {sc}:\n{scm}--')
-            #     print(scm)
-
-    
     # cleanup 
     cr.endSCMatrix()
 
