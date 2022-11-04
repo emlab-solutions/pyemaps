@@ -545,21 +545,12 @@ class Atom:
         '''
         return self._atype == iso.value
 
-    def prepare(self, rvec = None):
+    def prepare(self):
        '''
        Format Atom data and prepare it for loading into backend simulation module.
 
        '''
-       if rvec is None:
-              return self._loc
-
-       if len(rvec) != 3 and not all(isinstance(v, (int,float)) for v in rvec):
-              raise UCError('R vector must be three integers tuple')
-
        tloc=[float(l) for l in self._loc]
-       
-       for i in range(3):
-         tloc[i] += rvec[i]
             
        return tloc   
 
@@ -945,7 +936,6 @@ class Crystal:
 
         # initially nothing is loaded, no rvec and no load type
         self._loaded = False
-        self._rvec = None
         self._ltype = -1
 
     @property

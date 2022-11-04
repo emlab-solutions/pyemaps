@@ -9,7 +9,7 @@ def add_dif(target):
     from .. import DEF_MODE, DEF_CBED_DSIZE
     from .. import EMCError,DPListError,CrystalClassError,DPError
 
-    def load(self, rvec=(0.0,0.0,0.0), cty=0):
+    def load(self, cty=0):
         '''
         Prepare and load crystal data into backend simulation module.
 
@@ -23,8 +23,6 @@ def add_dif(target):
         One way to prevent data races is to guard all simulations for 
         one crystal object between its load() and unload() methods.
 
-        :param rvec: Optional, r vector of three floats
-        :type rvec: tuple
         :param cty: Optional, 0 - normal crystal loading, 1 - loading for crystal constructor 
         :type cty: int
 
@@ -36,11 +34,11 @@ def add_dif(target):
 
             * *pyemaps* tried to optimize its performance by minimizing trips to the
             backend simulation module. So if the crystal data has been loaded
-            before in the same way as the current call (rvec, cty are the same as 
+            before in the same way as the current call (cty is the same as 
             previous load), this call will be skipped.
 
         '''
-        if self.loaded() and rvec == self._rvec and cty == self._ltype:
+        if self.loaded() and cty == self._ltype:
             return
 
         diff_cell = self._cell.prepare() #cell constant
@@ -54,7 +52,7 @@ def add_dif(target):
                 raise CrystalClassError(f"Atomic symbol {an} length cannot exceed 10")
             atn[i] = an.ljust(10)
 
-        diff_atoms = farray([at.prepare(rvec=rvec) for at in self._atoms], dtype=float)
+        diff_atoms = farray([at.prepare() for at in self._atoms], dtype=float)
         
         diff_spg = self._spg.prepare()
 
@@ -65,7 +63,6 @@ def add_dif(target):
             raise CrystalClassError('Failed to load cystal to backend module')
 
         self._loaded = True
-        self._rvec = rvec
         self._ltype = cty
 
     def unload(self):

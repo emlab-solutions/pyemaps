@@ -284,14 +284,14 @@ def add_bloch(target):
 
         .. code-block:: console
 
-        Eigen values at: (0, 0):
-        [ 0.04684002-0.00218389j -0.2064669 -0.00147516j -0.30446348+0.00055009j
-        -0.27657617+0.00023512j -0.2765751 +0.00023515j  0.00539041-0.00382443j
-        -0.535879  -0.00023585j -0.5612881 +0.00045343j -0.55369247+0.00026236j
-        -0.55368818+0.00026249j -0.19093572+0.00066419j -0.1550311 +0.00045471j
-        -0.15503166+0.00045471j -0.58842399-0.00202841j -0.67850191+0.00042728j
-        -0.72713566+0.00060655j -0.70972681+0.00052279j -0.72092338+0.0005903j
-        -0.72093237+0.00059052j -0.64608335-0.0001983j  -0.64607544-0.00019853j]
+            Eigen values at: (0, 0):
+            [ 0.04684002-0.00218389j -0.2064669 -0.00147516j -0.30446348+0.00055009j
+            -0.27657617+0.00023512j -0.2765751 +0.00023515j  0.00539041-0.00382443j
+            -0.535879  -0.00023585j -0.5612881 +0.00045343j -0.55369247+0.00026236j
+            -0.55368818+0.00026249j -0.19093572+0.00066419j -0.1550311 +0.00045471j
+            -0.15503166+0.00045471j -0.58842399-0.00202841j -0.67850191+0.00042728j
+            -0.72713566+0.00060655j -0.70972681+0.00052279j -0.72092338+0.0005903j
+            -0.72093237+0.00059052j -0.64608335-0.0001983j  -0.64607544-0.00019853j]
 
         '''
         scmdim = bloch.get_scmdim(ib_coords)
@@ -309,7 +309,6 @@ def add_bloch(target):
                         omega = DEF_OMEGA,  
                         sampling = DEF_SAMPLING,
                         disk_size = DEF_CBED_DSIZE,
-                        rvec = (0.0,0.0,0.0),
                         thickness = DEF_THICKNESS[0],
                         em_controls = EMC(cl=200, 
                                           simc = SIMC(gmax=1.0, 
@@ -335,9 +334,6 @@ def add_bloch(target):
         :param thickness: Optional. sample thickness
         :type thickness: int
 
-        :param rvec: Optional. R vector shifting atom coordinates in crystal, value between 0.0 and 1.0
-        :type rvec: tuple
-
         :return: (ns, s). ns = number of sampling points; s - a list of sampling points in (x,y) coordiantes
         :rtype: tuple
 
@@ -357,7 +353,7 @@ def add_bloch(target):
 
         # Load crystal data to backend modules 
            
-        self.load(rvec=rvec)
+        self.load()
   
         tx, ty = em_controls.tilt
         dx, dy = em_controls.defl
@@ -398,7 +394,7 @@ def add_bloch(target):
         spoints = np.transpose(sampling_points)
 
         sp = [tuple(p) for p in spoints]
-        print(f'List of sampling points: {sp}')
+        
         return nsampling, sp
 
 
@@ -415,13 +411,19 @@ def add_bloch(target):
         bloch.cleanup()
 
     @staticmethod
-    def getSCMatrix(ib_coords = (0,0)):
+    def getSCMatrix(ib_coords = (0,0), rvec = None):
         '''
         This function retieves scattering matrix by sampling point coordinates,
         this call must be between:
         1. beginSCMatrix(...), and
         2. endSCMatrix() 
         All available input for ib_coords are captured in standard output from beginSCMatrix()
+
+        :param ib_coords: Optional. Sampling point coordinates tuple
+        :type ib_coords: tuple
+
+        :param rvec: Optional. R vector shifting atom coordinates in crystal, value between 0.0 and 1.0
+        :type rvec: tuple
 
         '''
         
@@ -431,7 +433,13 @@ def add_bloch(target):
         if scmdim <= 0:
             raise BlochError("Error finding corresponding scattering matrix,  to find potential input for ib_coords")
 
-        scm, ret = bloch.getscm(ib_coords, scmdim)
+        if rvec is None:
+            rvec = (0.0,0.0,0.0)
+
+        elif not all(isinstance(v, (int,float)) for v in rvec) or len(rvec) != 3:
+            raise BlochError("Invalid R vector input, must be tuple of three floats")
+
+        scm, ret = bloch.getscm(ib_coords, rvec, scmdim)
         if ret <= 0:
             raise BlochError('Error retieving scattering matrix, input matrix dimention too small, use printIBDetails to find extact dimentsion')
         return np.transpose(scm)
