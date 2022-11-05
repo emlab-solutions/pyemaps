@@ -23,28 +23,57 @@
 
 # This class is helper for handling pyemaps microscope controls
 # """
+"""
+There are two controls classes this module defines: microscope controls
+and simulations controls. Since the latter changes much less frequently 
+than the former, simulation control data is a member of a microscope
+controls object in which it can be left with default. 
 
+Simulation control constants and default values:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. autodata:: DEF_EXCITATION
+
+.. autodata:: DEF_GMAX, 
+
+.. autodata:: DEF_BMIN
+
+.. autodata:: DEF_INTENSITY
+
+.. autodata:: DEF_GCTL
+
+.. autodata:: DEF_ZCTL
+
+.. autodata:: DEF_XAXIS
+
+Microscope control constants and default values:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autodata:: DEF_TILT
+
+.. autodata:: DEF_ZONE, 
+
+.. autodata:: DEF_DEFL
+
+.. autodata:: DEF_KV
+
+.. autodata:: DEF_CL
+
+"""
 from . import  EMCError
 
-from pyemaps import DEF_EXCITATION, \
-                    DEF_GMAX, \
-                    DEF_BMIN, \
-                    DEF_INTENSITY, \
-                    DEF_GCTL, \
-                    DEF_ZCTL, \
-                    DEF_XAXIS              
+from pyemaps import (
+                    DEF_EXCITATION, 
+                    DEF_GMAX, 
+                    DEF_BMIN, 
+                    DEF_INTENSITY, 
+                    DEF_GCTL, 
+                    DEF_ZCTL, 
+                    DEF_XAXIS)              
+
 
 class SIMControl:
     '''
-    Simulation controls, to be embedded in EMControl, including:
-
-    * **excitation**, excitation error range in (min, max)
-    * **gmax**, maximum recipricol vector length
-    * **bmin**, beta perturbation cutoff
-    * **intensity**, kinematic diffraction intensity cutoff level and scale in (level, scale)
-    * **xaxis**, crystal horizontal axis in reciprical space
-    * **gctl**, maximum index number for g-list
-    * **zctl**, maximum zone index number
+    Simulation controls, to be embedded in EMControl
 
     '''
     def __init__(self, excitation = DEF_EXCITATION, \
@@ -287,9 +316,18 @@ DEF_CONTROLS_KEYS = ['zone','tilt','defl', 'cl', 'vt']
 
 class EMControl:
     '''
-    initializing class include the following controls:
-    
+    Microscope controls class. Its attributes include
+
+    * **tilt**: sample tilt in x and y directory (x,y)
+    * **zone**: starting zone axis
+    * **defl**: shifts in x and y direction (x, y)
+    * **cl**: cameral length
+    * **vt**: hight voltage in kilo-volts
+    * **simc*: embedded SIMControl (TODO ref to ) object
+
     '''
+
+
     def __init__(self, tilt = DEF_TILT, 
                        zone = DEF_ZONE, 
                        defl = DEF_DEFL, 
@@ -310,6 +348,14 @@ class EMControl:
     @classmethod
     def from_dict(cls, emc_dict):
 
+        '''
+        Create an EMControl object from a python dict object
+
+        :param emc_dict: Required. 
+        :type emc_dict: dict
+        :raises: EMCError. 
+
+        '''
         if not isinstance(emc_dict, dict):
             raise EMCError('invalid data input in constructing EMC from a dictionary')
 
@@ -335,30 +381,32 @@ class EMControl:
         
     @property
     def zone(self):
+        '''starting zone axis'''
         return self._zone
     
     @property
     def tilt(self):
+        '''tilt in x and y directions (x,y)'''
         return self._tilt
     
     @property
     def defl(self):
+        '''shifts in x and y directions (x, y)'''
         return self._defl
     
     @property
     def cl(self):
+        '''cameral length'''
         return self._cl
     
     @property
     def vt(self):
+        '''hight voltage in kilo-volts'''
         return self._vt
     
     @property
-    def zone(self):
-        return self._zone
-    
-    @property
     def simc(self):
+        '''SIMControl (TODO ref to ) object'''
         return self._simc
 
     @zone.setter
