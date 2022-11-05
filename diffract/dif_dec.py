@@ -391,7 +391,7 @@ def add_dif(target):
 	
     def set_sim_controls(self, simc = None):
         '''
-        Sets simulation controls in the bachend. 
+        Sets simulation controls in the backend. 
 
         This method also tries to minimize the trip to the backend 
         simulation module by check if sefaults are provided. If so,

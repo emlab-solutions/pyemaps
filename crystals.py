@@ -1105,7 +1105,8 @@ class Crystal:
     @classmethod
     def from_builtin(cls, cn='Diamond'):
         """        
-        creates imports crystal data from pyemaps build-in crystal database
+        Create a crystal by importing data from pyemaps build-in 
+        crystal database
         
         :param cn: Optional. Name of the crystal in pyemaps's builtin database.
         :type cn: string
