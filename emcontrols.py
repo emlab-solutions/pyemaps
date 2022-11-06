@@ -46,7 +46,7 @@ Simulation control constants and default values:
 .. autodata:: DEF_XAXIS
 
 Microscope control constants and default values:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autodata:: DEF_TILT
 

@@ -693,15 +693,10 @@ class SPG:
         return str(f"spg: number: {self._number} setting: {self._setting}")
 
     def prepare(self):
+        from .spg.spg_dec import validateSPG
         
-        # validating here
-        if self._number < 1 or self._number > SPG_ITNUM_MAX:
-            raise SPGITMumberNotInRangeError(SPG_ITNUM_MAX)
-        
-        setting_max = get_setmaxbynumber(self._number)
-
-        if self._setting > setting_max:    
-            raise SPGSettingNotInRangeError(setting_max)
+        if not validateSPG(self._number, self._setting):
+            raise SPGInvalidDataInputError()
 
         return farray([self._number, self._setting], dtype=int)
 
