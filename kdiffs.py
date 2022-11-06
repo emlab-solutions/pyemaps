@@ -20,6 +20,11 @@
 # Author:     EMLab Solutions, Inc.
 # Date:       May 07, 2022    
 # '''
+'''
+Kinematic diffraction module is designed to handle kinematic simulation
+data. It is composed of Point, Line and Disk class objects.
+
+'''
 from . import EMC
 from . import DPError, PointError, LineError, PIndexError, \
               DiskError, DPListError
@@ -27,14 +32,24 @@ from . import DPError, PointError, LineError, PIndexError, \
 # precision digits for comparison purposes
 NDIGITS = 1
 DIFF_PRECISION = 0.95
+
 XMAX, YMAX = 75, 75
+#int: Diffraction simulation output limits
 
-DEF_MODE = 1 #normal mode by default
+DEF_MODE = 1 
+#int: Default diffraction simulation mode, normal
 
-def double_eq(a,b):
+def _double_eq(a,b):
+    '''
+    For internal testing only
+    '''
     return abs(a-b) <= DIFF_PRECISION
 
 class Point:
+    '''
+    Coordinates of kinematic diffraction pattern object.
+    
+    '''
     def __init__(self, p=(0.0, 0.0)):
 
         setattr(self, 'x', p[0])
@@ -42,10 +57,16 @@ class Point:
 
     @property
     def x(self):
+        '''
+        X coordinate
+        '''
         return self._x
     
     @property
     def y(self):
+        '''
+        Y coordinate
+        '''
         return self._y
 
     @x.setter
@@ -107,8 +128,8 @@ class Point:
     
     def __eq__(self, other):
         if isinstance(other, Point):
-            return double_eq(self._x, other.x) and \
-                   double_eq(self._y, other.y)
+            return _double_eq(self._x, other.x) and \
+                   _double_eq(self._y, other.y)
 
         raise PointError("comparison must be of Point objects")
 
@@ -119,6 +140,10 @@ class Point:
         return iter((self._x, self._y))
 
 class Line:
+    '''
+    Kikuchi line representation in kinematic diffraction patterns.
+    
+    '''
     def __init__(self, pt1 = Point(), pt2=Point(), type=1):
         
         setattr(self, 'pt1', pt1)  
@@ -127,14 +152,26 @@ class Line:
 
     @property
     def pt1(self):
+        '''
+        The first end point of a Line
+
+        '''
         return self._pt1
 
     @property
     def pt2(self):
+        '''
+        The second end point of a Line
+
+        '''
         return self._pt2
     
     @property
     def type(self):
+        '''
+        The type of a Line: Kikuchi line or HOLZ line
+
+        '''
         return self._type
 
     @pt1.setter
@@ -195,6 +232,7 @@ class Line:
             return self
         
         raise LineError("addition of different type not supported")
+
     def __imul__(self, rhs):
         if not isinstance(rhs, int) and not isinstance(rhs, float):
             raise ValueError('right hand side must be numberic')
@@ -235,6 +273,10 @@ class Line:
         return [(x1,y1),(x2,y2)]
 
 class Index:
+    '''
+    Miller Indexes of a diffracted beam
+
+    '''
     def __init__(self, I0=(0,0,0)):
 
         setattr(self, 'I1', I0[0])
@@ -243,14 +285,26 @@ class Index:
 
     @property
     def I1(self):
+        '''
+        The first element of Miller Index of a diffracted beam
+
+        '''
         return self._I1
 
     @property
     def I2(self):
+        '''
+        The second element of Miller Index of a diffracted beam
+
+        '''
         return self._I2
 
     @property
     def I3(self):
+        '''
+        The third element of Miller Index of a diffracted beam
+
+        '''
         return self._I3
         
     @I1.setter
@@ -316,6 +370,10 @@ class Index:
         return iter((self._I1, self._I2, self._I3))
 
 class Disk:
+    '''
+    Diffracted beams representation in kinematic diffraction patterns
+
+    '''
     def __init__(self, c=Point(), r=0.0, i=Index()):
 
         setattr(self, 'c', c)
@@ -324,14 +382,26 @@ class Disk:
 
     @property 
     def c(self):
+        '''
+        The center point of a diffracted beam.
+
+        '''
         return self._c
     
     @property
     def r(self):
+        '''
+        The radius of a diffracted beam.
+
+        '''
         return self._r
     
     @property
     def idx(self):
+        '''
+        The Miller index of a diffracted beam.
+
+        '''
         return self._idx
 
     @c.setter
@@ -408,6 +478,10 @@ class Disk:
                str("radius: {}".format(self._r))
 
     def to_dict(self):
+        '''
+        Creates a diffracted beam object from a dict pyton object
+
+        '''
         dd = {}  
         dd['c'] = self._c.__key__()
         dd['idx'] = self._idx.__key__()
@@ -435,9 +509,20 @@ class Disk:
         return iter((cx, cy, self._r, i1, i2, i3))
 
 class diffPattern:
-    # TODO 6/24
+    '''
+    Create a kinematic diffraction pattern based on the pyemaps
+    kinematic simulation output in python dict object.
+
+    See ( TODO ref to visualization section) for how to visualize 
+    kinematic diffraction patterns using this object.
+
+    '''
     def __init__(self, diff_dict):
-        # validation first
+        '''
+        :param diff_dict: Required. Only accepts output from pyemaps kinematic diffraction run.
+        :type diff_dict: dict.
+
+        '''
         if not diff_dict or not isinstance(diff_dict, dict):
             raise DPError("failed to construct diffraction pattern object")
 
@@ -698,7 +783,8 @@ class diffPattern:
         
         return "\n".join(sDiff)
 
-    def difference(self, other):
+    def _difference(self, other):
+        '''Internal testing use only'''
         # A - B (self - other)
         if not isinstance(other, diffPattern):
             raise DPError("DP object does not compare with objects of DP types")
@@ -730,7 +816,8 @@ class diffPattern:
 
 class Diffraction:
     '''
-    list of DP objects and its associated EMC 
+    List of DP objects and its associated EMControl objects.
+
     '''
     def __init__(self, name, mode=DEF_MODE):
         

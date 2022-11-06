@@ -27,7 +27,15 @@
 from pathlib import Path
 import os
 import re
+'''
+Fileutils is a helper module in assisting pyemaps file i/o functions.
+Its methods include reading crystal data files and writing simulation 
+output files. 
 
+It also detects pyemaps data home environment variables and directs
+file i/o accoridng to the rule set in (TODO ref to environment section).
+
+'''
 
 # ------------------pyemaps data file and locations-------------
 #             set by PYEMAPS_DATAHOME 
@@ -36,6 +44,16 @@ import re
 def auto_fn(cn):
     '''
     Auto-generate file name based on crystal name and time stamp
+    when file is generated from pyemaps simulations.
+
+    This can be modified to tune the output to any other specific needs.
+
+    :param cn: Required. A crystal name.
+    :type: string
+
+    :return: file name composed of crytsal name from teh input and time stamp in yyyymmddmmss format
+    rtype: string
+
     '''
     import datetime
 
@@ -45,10 +63,21 @@ def auto_fn(cn):
 
 def find_pyemaps_datahome(home_type='crystals'):
     '''
-    The file name of intended bloch image is constructed:
-    1) if environment variavle PYEMAPS_HOME is set then
-        the file will be in $PYEMAPS_HOME/"<home_type>" folder
-    2) otherwise, the file will be save in current working directory
+    Detects enviroment variable set by PYEMAPS_DATA and return the
+    diretcory set by the variable or return current working directory.
+    
+    :param home_type: Optional. Type of home directory
+    :type home_type: string
+    :return: data home path for <home_type> where all file i/o is located
+    :rtype: string
+
+    Folder names depending by *home_type*:
+
+    1. **crystals**: all crystal data files.
+    2. **bloch**: all dynamic simulation output files.
+    3. **mxtal**: all .xyz files saved from crystal constructor.
+    4. **stereo**: all .png files saved from stereodiagram plotting methods
+
     '''
     # pyemaps_datahome = ''
     # if home_type='crystals' and 'PYEMAPS_CRYSTALS' in os.environ:
@@ -101,7 +130,7 @@ def find_pyemaps_datahome(home_type='crystals'):
         return pyemaps_home
 
 
-def fn_path_exists(fn):
+def _fn_path_exists(fn):
     fn_dir = os.path.dirname(fn)
     if fn_dir is not None and Path(fn_dir).exists():
         return True
@@ -109,8 +138,7 @@ def fn_path_exists(fn):
 
 def compose_ofn(fn, name, ty='diffraction'):
     '''
-    validing user input file and compose output file name
-    using pyemaps's environment variable
+    Compose output file name based file name and file type.
 
     '''
     pyemaps_datahome=find_pyemaps_datahome(home_type=ty)
@@ -143,28 +171,9 @@ def compose_ofn(fn, name, ty='diffraction'):
 
 import numpy as np
 from numpy import asfortranarray as farray
-from . import sct
-from . import spgseek as spgra
+from .spg.spg_dec import *
 
 from . import XTLError, SPGError, CIFError, SPGSettingNotInRangeError,SPGITMumberNotInRangeError
-
-SCT_SYM_LEN = sct.elmn #6
-
-sct_symbtable = re.split(r'\s+', sct.elnams.tobytes().decode().strip())
-
-sct_cifsymbtable = re.split(r'\s+', sct.cifelnams.tobytes().decode().strip())
-
-# space group builtin data
-
-SPG_SYMMETRY_MAXCOL = spgra.getsymmetrymaxlen() #48
-
-SPG_SETTING_MAX = spgra.getspgallsettingmax() #6
-
-SPG_SYMMETRY_MAXLEN = spgra.getsymmetryitemlen() #20
-
-SPG_ITNUM_MAX = spgra.getspgitnum() #234
-
-SPG_ENTRY_MAX = spgra.getspgentrynum() #310
 
 
 cell_keys=['a','b','c','alpha','beta','gamma']
@@ -191,10 +200,10 @@ HM_RX = re.compile(HM_CORE_PATTERN, re.VERBOSE)
 # HM_PATTERN ='[][ \t_(),.;:"&<>/\{\}\'`~!@#$%?+=*A-Za-z0-9|^-]*' not used 
 
 
-def float_eq(a,b):
+def _float_eq(a,b):
     return abs(a-b) < 0.000001
 
-def getCIFFloats(sArr, fillval=0.0):
+def _getCIFFloats(sArr, fillval=0.0):
     '''
     input sArr: dictionary string array from CIF file
     Return: float array
@@ -223,7 +232,7 @@ def getCIFFloats(sArr, fillval=0.0):
 
     return retArr
 
-def getCIFFloat(s):
+def _getCIFFloat(s):
     '''
     input s: dictionary string from CIF file
     Return: float number
@@ -244,7 +253,7 @@ def getCIFFloat(s):
     
     return ret
 
-def getCIFInt(s):
+def _getCIFInt(s):
     '''
     input s: dictionary string from CIF file
     Return: int number
@@ -262,7 +271,7 @@ def getCIFInt(s):
     
     return int(sw)
 
-def scrubCIFSymmXYZ(cf, maxlen):
+def _scrubCIFSymmXYZ(cf, maxlen):
     '''
     scrub off those items white space and longer than MAX_SPG_LEN
 
@@ -279,7 +288,7 @@ def scrubCIFSymmXYZ(cf, maxlen):
             
     return l, res
 
-def simplifyCIF(str1, str2):
+def _simplifyCIF(str1, str2):
     s1 = str1.replace('-', '+-').strip('+')
     s2 = str2.replace('-', '+-').strip('+')
     
@@ -298,7 +307,7 @@ def simplifyCIF(str1, str2):
 
     return 1
 
-def isCIFEquivalent(c, cc):
+def _isCIFEquivalent(c, cc):
     '''
     Compare two expressions of symmetry in the form of
     expr1,expr2,expr3
@@ -315,16 +324,16 @@ def isCIFEquivalent(c, cc):
 
     sym_pairs = list(zip(ct, cct))
     for p in sym_pairs:
-        res = simplifyCIF(p[0], p[1])
+        res = _simplifyCIF(p[0], p[1])
         if res != 0:
             return False
     return True
 
-def compareCIFSymmetry(n, coords, cf_coords):
+def _compareCIFSymmetry(n, coords, cf_coords):
     '''
     compare two symmrety array if:
-    1) coords contained in cf_coords, return 0
-    2) otherwise return 1
+    1. coords contained in cf_coords, return 0
+    2. otherwise return 1
     the comparison is done using sympy module with expression equivalence
     ''' 
     count = 0
@@ -336,14 +345,14 @@ def compareCIFSymmetry(n, coords, cf_coords):
         
         found = False
         for cfc in cf_coords: 
-            if isCIFEquivalent(cstr, cfc):
+            if _isCIFEquivalent(cstr, cfc):
                 found = True
                 break
         if not found:
             return 1
     return 0
 
-def matchCIFHM(l1, l0):
+def _matchCIFHM(l1, l0):
     '''
     Compare two Space Group H-M strings and find the longest match length
     '''
@@ -355,9 +364,12 @@ def matchCIFHM(l1, l0):
         else:
             break
     return res
-  
 
-def validAtomSiteLabel(l):
+def _validAtomSiteLabel(l):
+    try:
+        from .scattering.sct_dec import sct_symbtable, sct_cifsymbtable
+    except:
+        raise CIFError(f"pyemaps scattering database module must be available")
     
     ll = l.strip().upper()
 
@@ -379,7 +391,11 @@ def validAtomSiteLabel(l):
     
 def loadCrystalCIFData(fn):
     """
-    Loading crystal instance data from a user supplied .cif file:
+    Reads a .cif file for crystal data.
+
+    ..note:: 
+
+        This method is still in active development. 
     
     """
     from .CifFile import ReadCif
@@ -427,34 +443,34 @@ def loadCrystalCIFData(fn):
         '_cell_angle_gamma' not in c_dict:
         raise CIFError(cfn, 'missing required cell parameters data keys')
 
-    lp = getCIFFloat( c_dict['_cell_length_a'])
+    lp = _getCIFFloat( c_dict['_cell_length_a'])
     
     if lp ==  negative_infinity:
         raise CIFError(cfn, 'missing or invalid cell parameters value for _cell_length_a')
 
     cell['a'] = lp
 
-    lp = getCIFFloat( c_dict['_cell_length_b'])
+    lp = _getCIFFloat( c_dict['_cell_length_b'])
     if lp ==  negative_infinity:
         raise CIFError(cfn, 'missing or invalid cell parameters value for _cell_length_b')
     cell['b'] = lp
     
-    lp = getCIFFloat( c_dict['_cell_length_c'])
+    lp = _getCIFFloat( c_dict['_cell_length_c'])
     if lp ==  negative_infinity:
         raise CIFError(cfn, 'missing or invalid cell parameters value for _cell_length_c')
     cell['c'] = lp
     
-    lp = getCIFFloat( c_dict['_cell_angle_alpha'])
+    lp = _getCIFFloat( c_dict['_cell_angle_alpha'])
     if lp ==  negative_infinity:
         raise CIFError(cfn, 'missing or invalid cell parameters value for _cell_angle_alpha')
     cell['alpha'] = lp
     
-    lp = getCIFFloat( c_dict['_cell_angle_beta'])
+    lp = _getCIFFloat( c_dict['_cell_angle_beta'])
     if lp ==  negative_infinity:
         raise CIFError(cfn, 'missing or invalid cell parameters value for _cell_angle_beta')
     cell['beta'] = lp
     
-    lp = getCIFFloat( c_dict['_cell_angle_gamma'])
+    lp = _getCIFFloat( c_dict['_cell_angle_gamma'])
     if lp ==  negative_infinity:
         raise CIFError(cfn, 'missing or invalid cell parameters value for _cell_angle_gamma')
     cell['gamma'] = lp
@@ -485,24 +501,24 @@ def loadCrystalCIFData(fn):
     if not xs and len(xs) != at_len:
         raise CIFError(cfn, 'invalid unit cell value for _atom_site_fract_x')
         
-    xx = getCIFFloats(xs)
+    xx = _getCIFFloats(xs)
 
     ys = c_dict['_atom_site_fract_y']
     if not ys and len(ys) != at_len:
         raise CIFError(cfn, 'invalid unit cell value for _atom_site_fract_y')
         
-    yy = getCIFFloats(ys)
+    yy = _getCIFFloats(ys)
 
     zs = c_dict['_atom_site_fract_z']
     if not zs and len(zs) != at_len:
         raise CIFError(cfn, 'invalid unit cell value for _atom_site_fract_z')
         
-    zz = getCIFFloats(zs)
+    zz = _getCIFFloats(zs)
 
     # Occupancy data
     occ = [1.0]*at_len
     if '_atom_site_occupancy' in c_dict:
-        occ_raw = getCIFFloats(c_dict['_atom_site_occupancy'])
+        occ_raw = _getCIFFloats(c_dict['_atom_site_occupancy'])
         if not occ_raw or len(occ_raw) != at_len:
             raise CIFError(cfn, 'invalid unit cell value for _atom_site_occupancy')
         occ = occ_raw
@@ -557,89 +573,89 @@ def loadCrystalCIFData(fn):
 
         if '_atom_site_aniso_U_11' in c_dict:
             dw = 'uij'
-            u11 = getCIFFloats(c_dict['_atom_site_aniso_U_11'])
+            u11 = _getCIFFloats(c_dict['_atom_site_aniso_U_11'])
 
             for i, uf11 in enumerate(u11):
                 atoms[i]['b11'] = uf11
         
         if '_atom_site_aniso_U_22' in c_dict:
             dw = 'uij'
-            u22 = getCIFFloats(c_dict['_atom_site_aniso_U_22'])
+            u22 = _getCIFFloats(c_dict['_atom_site_aniso_U_22'])
 
             for i, uf22 in enumerate(u22):
                 atoms[i]['b22'] = uf22
 
         if '_atom_site_aniso_U_33' in c_dict:
             dw = 'uij'
-            u33 = getCIFFloats(c_dict['_atom_site_aniso_U_33'])
+            u33 = _getCIFFloats(c_dict['_atom_site_aniso_U_33'])
             for i, uf33 in enumerate(u33):
                 atoms[i]['b33'] = uf33
         
         if '_atom_site_aniso_U_12' in c_dict:
             dw = 'uij'
-            u12 = getCIFFloats(c_dict['_atom_site_aniso_U_12'])
+            u12 = _getCIFFloats(c_dict['_atom_site_aniso_U_12'])
 
             for i, uf12 in enumerate(u12):
                 atoms[i]['b12'] = uf12
     
         if '_atom_site_aniso_U_13' in c_dict:
             dw = 'uij'
-            u13 = getCIFFloats(c_dict['_atom_site_aniso_U_13'])
+            u13 = _getCIFFloats(c_dict['_atom_site_aniso_U_13'])
             for i, uf13 in enumerate(u13):
                 atoms[i]['b13'] = uf13
 
         if '_atom_site_aniso_U_23' in c_dict:
             dw = 'uij'
-            u23 = getCIFFloats(c_dict['_atom_site_aniso_U_23'])
+            u23 = _getCIFFloats(c_dict['_atom_site_aniso_U_23'])
             for i, uf23 in enumerate(u23):
                 atoms[i]['b23'] = uf23
 
         if '_atom_site_aniso_B_11' in c_dict:
             b11 = [0.0]*at_len
             dw = 'bij'
-            b11 = getCIFFloats(c_dict['_atom_site_aniso_B_11'])
+            b11 = _getCIFFloats(c_dict['_atom_site_aniso_B_11'])
             for i, bf11 in enumerate(b11):
                 atoms[i]['b11'] = bf11
         
         if '_atom_site_aniso_B_22' in c_dict:
             b22 = [0.0]*at_len
             dw = 'bij'
-            b22 = getCIFFloats(c_dict['_atom_site_aniso_B_22'])
+            b22 = _getCIFFloats(c_dict['_atom_site_aniso_B_22'])
             for i, bf22 in enumerate(b22):
                 atoms[i]['b22'] = bf22
             
         if '_atom_site_aniso_B_33' in c_dict:
             b33 = [0.0]*at_len
             dw = 'bij'
-            b33 = getCIFFloats(c_dict['_atom_site_aniso_B_33'])
+            b33 = _getCIFFloats(c_dict['_atom_site_aniso_B_33'])
             for i, bf33 in enumerate(b33):
                 atoms[i]['b33'] = bf33
         
         if '_atom_site_aniso_B_12' in c_dict:
             b12 = [0.0]*at_len
             dw = 'bij'
-            b12 = getCIFFloats(c_dict['_atom_site_aniso_B_12'])
+            b12 = _getCIFFloats(c_dict['_atom_site_aniso_B_12'])
             for i, bf12 in enumerate(b12):
                 atoms[i]['b12'] = bf12
         
         if '_atom_site_aniso_B_13' in c_dict:
             b13 = [0.0]*at_len
             dw = 'bij'
-            b13 = getCIFFloats(c_dict['_atom_site_aniso_B_13'])
+            b13 = _getCIFFloats(c_dict['_atom_site_aniso_B_13'])
             for i, bf13 in enumerate(b13):
                 atoms[i]['b13'] = bf13
 
         if '_atom_site_aniso_B_23' in c_dict:
             b23 = [0.0]*at_len
             dw = 'bij'
-            b23 = getCIFFloats(c_dict['_atom_site_aniso_B_23'])
+            b23 = _getCIFFloats(c_dict['_atom_site_aniso_B_23'])
             for i, bf23 in enumerate(b23):
                 atoms[i]['b23'] = bf23
         
     elif '_atom_site_U_iso_or_equiv' in c_dict or '_atom_site_Uiso_or_equiv' in c_dict:
         
         dw = 'uij'
-        bxx = getCIFFloats(c_dict['_atom_site_U_iso_or_equiv'])
+        bxx = _getCIFFloats(c_dict['_atom_site_U_iso_or_equiv'])
         for i, b in enumerate(bxx):
             atoms[i]['b11'] = atoms[i]['b22'] = atoms[i]['b33'] = b
             atoms[i]['b12'] = atoms[i]['b13'] = atoms[i]['b23'] = 0.0
@@ -648,7 +664,7 @@ def loadCrystalCIFData(fn):
     elif '_atom_site_B_iso_or_equiv' in c_dict:
         dw = 'iso'
     
-        d_w = getCIFFloats(c_dict['_atom_site_B_iso_or_equiv'], 0.05)
+        d_w = _getCIFFloats(c_dict['_atom_site_B_iso_or_equiv'], 0.05)
         for i, d in enumerate(d_w):
             atoms[i]['d-w'] = d
     else:
@@ -660,7 +676,7 @@ def loadCrystalCIFData(fn):
     vatoms = []
     for at in atoms:  
         symb = at['symb']  
-        v, vsymb = validAtomSiteLabel(symb)        
+        v, vsymb = _validAtomSiteLabel(symb)        
         if not v:
             print(f'Warning: unrecognized unit cell site label: {symb}, removing the corresponding unit cell')
         else:
@@ -687,12 +703,12 @@ def loadCrystalCIFData(fn):
     spg_pairs =[(0,0)]
 
     if  spgInCIF:
-        spg_num = getCIFInt(c_dict[k]) 
+        spg_num = _getCIFInt(c_dict[k]) 
 
     if spgInCIF and spg_num >= 1 and  spg_num <= SPG_ITNUM_MAX:
         
         spg_pairs.clear()
-        spg_smax = spgra.getspgsettingmax(spg_num)
+        spg_smax = get_settingmax(spg_num)
         for i in range(1, spg_smax+1):
             spg_pairs.append((spg_num, i))
     else:
@@ -744,13 +760,13 @@ def loadCrystalCIFData(fn):
         maxMatched = 0
         mIndex = -1
         for i in range(SPG_ENTRY_MAX):
-            emaps_spghm, spgnum, spgsetting = spgra.getspghm(i+1)
+            emaps_spghm, spgnum, spgsetting = loouphm(i+1)
 
             cemaps_spghm = emaps_spghm.decode().strip()
 
             emaps_spghm_list = re.split(r'\s+', cemaps_spghm)
 
-            nmatched = matchCIFHM(emaps_spghm_list, spgHM)
+            nmatched = _matchCIFHM(emaps_spghm_list, spgHM)
             
             if nmatched > maxMatched: 
                 maxMatched = nmatched
@@ -766,7 +782,7 @@ def loadCrystalCIFData(fn):
             raise CIFError(cfn, 'no match found in pyemaps space group database')
     
     if '_symmetry_space_group_setting' in c_dict:
-        spg_setting = getCIFInt(c_dict['_symmetry_space_group_setting'])
+        spg_setting = _getCIFInt(c_dict['_symmetry_space_group_setting'])
 
         if spg_setting < 1 or spg_setting > SPG_SETTING_MAX:
             raise SPGSettingNotInRangeError()
@@ -788,13 +804,13 @@ def loadCrystalCIFData(fn):
         elif '_space_group_symop_operation_xyz' in c_dict:
             cif_coords = c_dict['_space_group_symop_operation_xyz']
         
-        l, pact = scrubCIFSymmXYZ(cif_coords, SPG_SYMMETRY_MAXLEN)
+        l, pact = _scrubCIFSymmXYZ(cif_coords, SPG_SYMMETRY_MAXLEN)
         
         max_match = -1
         new_pairs = []
         for sp in spg_pairs:
             coords = farray(np.empty((SPG_SYMMETRY_MAXCOL, SPG_SYMMETRY_MAXLEN), dtype='c'))
-            coords, n = spgra.getsymmetryxyz(sp[0], sp[1], coords)
+            coords, n = getsymmetryxyz(sp, coords)
             
             
             if n == -1:
@@ -804,7 +820,7 @@ def loadCrystalCIFData(fn):
                 # no match
                 continue
 
-            if compareCIFSymmetry(n, coords, pact) == 0:
+            if _compareCIFSymmetry(n, coords, pact) == 0:
                 if max_match < n:
                     max_match = n
                     new_pairs.append(sp)
@@ -847,7 +863,7 @@ def loadCrystalCIFData(fn):
 
     return name, data
  
-def get_atom_len(dw):
+def _get_atom_len(dw):
     if dw == 'iso':
         return len(at_iso_keys)
     
@@ -858,7 +874,8 @@ def get_atom_len(dw):
 
 def loadCrystalData(fn, cn=None):
     """
-    Base function for from_builtin and from_xtl
+    Reading built-in datbase or a .xtl file for crystal data.
+
     """
 
     data = {}
@@ -932,7 +949,7 @@ def loadCrystalData(fn, cn=None):
 
                     token = [n for n in re.split(' +', atomStr)]
 
-                    alen = get_atom_len(data['dw'])
+                    alen = _get_atom_len(data['dw'])
                     tokenlen = len(token)
                     if tokenlen < alen - 1 or tokenlen > alen:
                         raise XTLError(fn, 'invalid unit cell input')
@@ -967,7 +984,7 @@ def loadCrystalData(fn, cn=None):
             new_atoms = []
             for a in atoms:
                 symb = a['symb']
-                valided, new_symb = validAtomSiteLabel(symb)
+                valided, new_symb = _validAtomSiteLabel(symb)
                 if not valided:
                     print(f'Warning: invalid unit cell symbol {symb}, removing corresponding unit cell')
                     continue
@@ -988,7 +1005,7 @@ def loadCrystalData(fn, cn=None):
 
     return name, data
 
-def get_setmaxbynumber(num):
-    return spgra.getspgsettingmax(num)
+# def get_setmaxbynumber(num):
+#     return spgra.getspgsettingmax(num)
     
        
