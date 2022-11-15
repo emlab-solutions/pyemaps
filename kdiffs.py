@@ -274,7 +274,8 @@ class Line:
 
 class Index:
     '''
-    Miller Indexes of a diffracted beam
+    Miller Indexes of a diffracted beam representation in kinematic
+    diffraction pattern.
 
     '''
     def __init__(self, I0=(0,0,0)):
@@ -513,14 +514,14 @@ class diffPattern:
     Create a kinematic diffraction pattern based on the pyemaps
     kinematic simulation output in python dict object.
 
-    See ( TODO ref to visualization section) for how to visualize 
+    See :doc:Visualization for how to visualize 
     kinematic diffraction patterns using this object.
 
     '''
     def __init__(self, diff_dict):
         '''
-        :param diff_dict: Required. Only accepts output from pyemaps kinematic diffraction run.
-        :type diff_dict: dict.
+        :param diff_dict: Only accepts output from pyemaps kinematic diffraction run.
+        :type diff_dict: dict, required
 
         '''
         if not diff_dict or not isinstance(diff_dict, dict):
@@ -904,8 +905,8 @@ class Diffraction:
         '''
         return self._diffList[key]
 
-    def report_difference(self, other):
-
+    def _report_difference(self, other):
+        """ internal testing call"""
         if not isinstance(other, Diffraction):
             raise DPListError('connt report difference between two different type of objects')
         

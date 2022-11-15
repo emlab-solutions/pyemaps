@@ -23,6 +23,16 @@
 # Date Created:       May 07, 2022  
 
 # '''
+
+"""
+
+Crystals module contains python classes and methods for creating,
+importing and loading crystal data from various sources. It also 
+provides the core interfaces to the backend diffraction simulations 
+and calculations.
+
+"""
+
 from enum import Enum
 import os
 import json
@@ -117,8 +127,8 @@ class Cell:
         This Cell constructor allows Cell construction with python dict and
         list object, as well as customization. 
 
-        :param data: Optional cell constant python dictionary or list
-        :type data: dict or list
+        :param data: Cell constant python dictionary or list
+        :type data: dict or list, optional
         :raise CellValueError: if cell data validations fail.
 
         """
@@ -312,7 +322,6 @@ class Atom:
     include atom symbol, positional data (x, y, z) and thermal coefficients
     as well as its occupancy.
 
-
     To create an isotropic Atom object with a python dict object:
 
     .. code-block:: json 
@@ -383,10 +392,10 @@ class Atom:
         """
         Internal representation of single atom in a crystal object.
 
-        :param a_type: Optional atom thermal factor type.
-        :type a_type: int
-        :param data: Optional atoms data input. Default None
-        :type data: dict or list
+        :param a_type: Atom thermal factor type.
+        :type a_type: int, optional
+        :param data: Atoms positional and other data input. 
+        :type data: dict or list, optional
         :raise UCError: if data validation fails.
 
         """
@@ -473,7 +482,7 @@ class Atom:
     @loc.setter
     def loc(self, locdata=None):
         '''
-        Atom position attribute.
+        Atom position and other attributes.
         
         Must be a list of floats or None. In later case, this attribute
         will default to all 0.0.
@@ -603,8 +612,8 @@ class SPG:
         """
         SPG object constructor.
 
-        :param data: optional space group data input.
-        :type data: dict or list
+        :param data: Space group data input.
+        :type data: dict or list, optional
         :raise SPGInvalidDataInputError: if cell data validations fail.
 
         """
@@ -648,8 +657,8 @@ class SPG:
         """
         Setting Symmetry Space Group Setting Number
         
-        :param n: required, integer number
-        :type n: int
+        :param n: International Tables Number
+        :type n: int, optional
         :raise SPGInvalidDataInputError: if n is not an integer or integer string
 
         """
@@ -664,8 +673,8 @@ class SPG:
     def setting(self, s=None):
         """
         Symmetry setting data.
-        :param s: required, integer number
-        :type s: int or string
+        :param s: Symmetry setting number
+        :type s: int or string, optional
         :raise SPGInvalidDataInputError: if s is not an integer or integer string
 
         """
@@ -726,8 +735,7 @@ from .diffract.csf_dec import add_csf
 #   building atomic structure based on crystal data
 from .diffract.mxtal_dec import add_mxtal
 
-#---Powder diffraction Calculation---
-#   TODO
+#---Powder diffraction Calculation and rendering---
 from .diffract.powder_dec import add_powder
 
 #---Kinematic diffraction patterns database generation (upcoming) 
@@ -764,16 +772,13 @@ class Crystal:
     Crystal class constructors include:
 
     1. Crystal(name, data): python dictionary object (default)
-    2. Crystal.from_builtin(name): from pyemaps' own built-in crystal database
-    3. Crystal.from_xtl(xtl_filename): from a proprietory crystal data file
-    4. Crystal.from_cif(cif_filename): from Crystallographic Information File
-    5. Crystal.from_json(cif_filename): from .JSON File
-    6. Crystal.from_dict(cif_filename): from a python dict object
-    7. Crystal(): from setting individual components
-    
-    In addition to standard methods for getting and setting each components of 
-    the crystal class, interfaces and methods to generate simulation data using the crystal
-    data attributes from backend modules are added as the corresponding modules become available.
+    2. From pyemaps built-in crystal database: `from_builtin <pyemaps.crystals.html#pyemaps.crystals.Crystal.from_builtin>`_;
+    3. From a pyemaps proprietory crystal data file: `from_xtl <pyemaps.crystals.html#pyemaps.crystals.Crystal.from_xtl>`_;
+    4. From Crystallographic Information File (CIF): `from_cif <pyemaps.crystals.html#pyemaps.crystals.Crystal.from_cif>`_; 
+    5. From .JSON File: `from_json <pyemaps.crystals.html#pyemaps.crystals.Crystal.from_json>`_;
+    6. From a python dict object: `from_dict <pyemaps.crystals.html#pyemaps.crystals.Crystal.from_dict>`_;
+    7. Custom from individual components such as `Cell <pyemaps.crystals.html#pyemaps.crystals.Cell>`_, `Atom <pyemaps.crystals.html#pyemaps.crystals.Atom>`_ objects
+
 
     To create a Crystal object using a python dictionary object:
 
@@ -844,20 +849,17 @@ class Crystal:
         
     .. note::
 
-        1. All atoms in a crystal must have the same thermal type.
-        
-        2. For other methods of creating Crystal objects, see Crystal class 
-           *from_* methods.
+        All atoms in a crystal must have the same thermal type.
 
     """
     def __init__(self, name="Diamond", data=None):
         """
         Default constructor for crystal object    
         
-        :param name: Optional name of the crystal or default to 'Diamond'
-        :type name: string
-        :param data: Optional data of the crystal. Default to dictionary with just dw value of 'iso'
-        :type data: dict
+        :param name: Name of the crystal or default to 'Diamond'
+        :type name: string, optional
+        :param data: Other data of the crystal. 
+        :type data: dict, optional
         :raise CrystalClassError: If data validations fail.
 
         
@@ -1091,7 +1093,7 @@ class Crystal:
         Check to see if crystal data is loaded into simulation module
         or not.
         
-        :return: 
+        :return: `True` - loaded; otherwise `False`
         :rtype: bool
 
         '''
@@ -1103,10 +1105,10 @@ class Crystal:
         Create a crystal by importing data from pyemaps build-in 
         crystal database
         
-        :param cn: Optional. Name of the crystal in pyemaps's builtin database.
-        :type cn: string
+        :param cn: Name of the crystal in pyemaps's builtin database.
+        :type cn: string, optional
         :raise CrystalClassError: If reading database fails or any of its components 
-                                  (cell, atoms, spg) fail to validate.
+                                  fail to validate.
 
         .. note::
         
@@ -1136,8 +1138,8 @@ class Crystal:
         """
         To create a crystal object by importing data from xtl formtted file.
 
-        :param fn: Required. Crystal data file name in pyemaps propietory format.
-        :type fn: string
+        :param fn: Crystal data file name in pyemaps propietory format.
+        :type fn: string, required
         :raise CrystalClassError: file reading fails or any of its components fail to validate.
 
         **XTL Format Example:**
@@ -1160,8 +1162,9 @@ class Crystal:
         **Validation**:
 
         - if dw == iso, atoms line must have at least 4 floating numbers in 
-          (x,y,x,d-w,occ) where occ defaults to 1.00 if not provided.
-        - if dw == uij,bij, atoms line must have at least 9 floating points in 
+          of (x,y,x,d-w,occ) where occ defaults to 1.00 if not provided.
+
+        - if dw == uij,bij, each atom data must have at least 9 floating points like 
           (x,y,z,b11,b22,b33,b12,b13,b23,occ)
         
         **Input File Name Search**:
@@ -1170,6 +1173,8 @@ class Crystal:
         - Current working directory.
         - *PYEMAPSHOME*/crystals directory, where
           *PYEMAPSHOME* is an environment variable pointing to pyemaps data home directory.
+
+        For detals how pyemaps look for crystal files, See :ref:`Environment Variables <Environment Variables>`.
 
         """
 
@@ -1199,8 +1204,8 @@ class Crystal:
         """
         import crystal data from a cif (Crystallographic Information File).
 
-        :param fn: required crystal data file name in JSON format.
-        :type fn: string
+        :param fn: Crystal data file name in JSON format.
+        :type fn: string, required
         :raise CrystalClassError: If file reading fails or any of its components 
                                   (cell, atoms, spg) fail to validate.
         """
@@ -1230,8 +1235,8 @@ class Crystal:
         """
         Import crystal data from a .json file.
 
-        :param jfn: required crystal data file name in JSON format.
-        :type jfn: string
+        :param jfn: Crystal data file name in JSON format.
+        :type jfn: string, required
         :raise CrystalClassError: If file reading fails or any of its components fail to validate.
 
         An example of a json file content:
@@ -1292,8 +1297,8 @@ class Crystal:
         """
         Import crystal data from a python dictionary object.
         
-        :param cdict: required crystal data file name in as a python dictionary object.
-        :type cdict: dict
+        :param cdict: Crystal data file name in as a python dictionary object.
+        :type cdict: dict, required
         :raise CrystalClassError: If any of its components import fails.
 
         An example of a json file content:
@@ -1339,7 +1344,8 @@ class Crystal:
     def list_all_builtin_crystals():
         """
         To list all builtin crystals available in pyemaps built-in crystal database,
-        use this routine to determine the name of the crystal to load using from_builtin().
+        use this routine to determine the name of the crystal to load using 
+        `from_builtin <pyemaps.crystals.html#pyemaps.crystals.Crystal.from_builtin>`_.
 
         """
         import glob

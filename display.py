@@ -22,10 +22,10 @@
 Display is provided as a helper module. It serves as demonstration
 purpose only. It is implemented for a list of pyemaps simulation objects
 and multiprocess and pipe python objects. Currently this rendering
-functions may not be fit for single display.
+functions may not be best fit for single display.
 
-Check (TODO: ref to visutalization ) for other ways to customize 
-your own visualization methods rendering pyemaps simulations results.  
+Check :doc:`visualization` for examples of customizing your own 
+visualization methods rendering pyemaps simulations results.  
 
 """
 import matplotlib, sys, os

@@ -49,15 +49,15 @@ def runSCMTests():
     
     try:
         
-        ns, s = si.beginSCMatrix(em_controls = ec, 
-                        disk_size = ds)
+        ns, s = si.beginBloch(em_controls = ec, 
+                        dbsize = ds)
 
     except BlochError as e:
         print(f'Failed to generate scattering matrix {e.message}')
     else:
         # get the scattering matrix now
         try:
-            si_scm = cr.getSCMatrix(ib_coords = ib_coords)
+            si_scm = si.getSCMatrix(ib_coords = ib_coords)
         except BlochError as e:
             print(f'Failed to generate scattering matrix {e.message}')
         else:
@@ -68,13 +68,13 @@ def runSCMTests():
             print(f' \n{si_scm}')
 
             print(f'----Eigen values at: {ib_coords}----')
-            print(cr.getEigen(ib_coords = ib_coords))
+            print(si.getEigen(ib_coords = ib_coords))
 
             print(f'----Diffracted Beams in Miller Indexes at: {ib_coords}----: ')
-            cr.getBeams(ib_coords = ib_coords, bPrint=True)
+            si.getBeams(ib_coords = ib_coords, bPrint=True)
 
             print(f'----Beam Tilts In Reciprical Space and misc. info') 
-            cr.printIBDetails()
+            si.printIBDetails()
 
             #       get a random sampling point from available list of
             #       sampling points and print the corresponding 
@@ -83,13 +83,13 @@ def runSCMTests():
             import random
             radnum = random.randrange(1, ns-1)
             ib_coords = s[radnum]
-            scm = cr.getSCMatrix(ib_coords = ib_coords)
+            scm = si.getSCMatrix(ib_coords = ib_coords)
             print(f'--Sacattering matrix at a random sampling point {ib_coords}----:')
             print(f'{scm}')
             
 
     # cleanup 
-    cr.endSCMatrix()
+    si.endBloch()
 
 if __name__ == "__main__":
     runSCMTests()

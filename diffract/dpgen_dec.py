@@ -11,6 +11,7 @@ def add_dpgen(target):
         This feature is accessible for paid customers only.
 
         :param res: resolution of the diffraction pattern
+        :type res: integer
 
         
         """

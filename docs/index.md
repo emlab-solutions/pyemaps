@@ -675,7 +675,7 @@ Examples of how to use this control class along with previous controls are in sa
     from pyemaps import Crystal as cr
     si = cr.from_builtin('Silicon')
     mx = si.generateMxtal(**kargs)
-    write_xyz(mx, fn)  
+    writeXYZ(mx, fn)  
     
     # fn is the output .xyz file to be placed in PYEMAPS_DATA/mxtal fodler
 ``` 

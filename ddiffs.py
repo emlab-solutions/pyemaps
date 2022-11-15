@@ -23,7 +23,10 @@
 # Author:     EMLab Solutions, Inc.
 # Date:       July 17, 2022    
 # '''
+"""
+Simple wrapper for dynamic simulation images.
 
+"""
 from . import EMC
 from . import BlochListError
 class BlochImgs:

@@ -1,7 +1,34 @@
 def add_bloch(target):    
-    '''
-    bloch module interfaces
-    '''
+    """
+    
+    Dynamic Simulation Specific Controls Default Values:
+    ---------------------------------------------------- 
+
+    .. data:: DEF_APERTURE
+        :value: = 1.0
+
+    .. data:: DEF_OMEGA
+        :value: = 10
+
+    .. data:: DEF_SAMPLING
+        :value: = 8
+
+    .. data:: DEF_PIXSIZE
+        :value: = 25
+
+    .. data:: DEF_DETSIZE
+        :value: = 512
+
+    .. data:: DEF_CBED_DSIZE
+        :value: = 0.16
+
+    .. data:: DEF_THICKNESS
+        :value: = (200, 200, 100)
+
+    .. data:: DEF_DSIZE_LIMITS
+        :value: = (0.01, 0.5)
+
+    """
     from . import bloch, dif
     from .. import DEF_APERTURE, \
                    DEF_THICKNESS, \
@@ -26,9 +53,10 @@ def add_bloch(target):
 
     def getBlochFN(self):
         '''
-        Construct a bloch image output file name.
+        Constructs a bloch image output file name.
         
-        (TODO: ref to environment variable for construction of the file name)
+        Refer to :ref:`Environment Variables <Environment Variables>` 
+        for how this file name is constructed.
 
         '''
         cfn = compose_ofn(None, self.name, ty='bloch')+BIMG_EXT
@@ -44,18 +72,16 @@ def add_bloch(target):
 
         return cfn, ffn, l
         
-    def generateBloch(self, aperture = DEF_APERTURE, 
-                            omega = DEF_OMEGA,  
-                            sampling = DEF_SAMPLING,
-                            pix_size = DEF_PIXSIZE,
-                            det_size = DEF_DETSIZE,
-                            disk_size = DEF_CBED_DSIZE,
-                            sample_thickness = DEF_THICKNESS,
-                            em_controls = EMC(cl=200, # set smaller that 1000 default value
-                                              simc = SIMC(gmax=1.0, excitation=(0.3,1.0))),
-                            bSave = False):
+    def beginBloch(self, aperture = DEF_APERTURE,
+                         omega = DEF_OMEGA,
+                         sampling = DEF_SAMPLING,
+                         dbsize = DEF_CBED_DSIZE,
+                         em_controls = EMC(cl=200, # set smaller that 1000 default value
+                                           simc = SIMC(gmax=1.0, excitation=(0.3,1.0)))):
         """
-        Generate dynamic diffraction (Bloch) image(s).
+        Begins a dynamic diffraction (Bloch) simulation session. 
+        The simulation results are retained between this and 
+        `endBloch call <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_. 
 
         :param aperture: Optional. Objective aperture
         :type aperture: float
@@ -66,46 +92,50 @@ def add_bloch(target):
         :param sampling: Optional. Number of sampling points
         :type sampling: int
 
-        :param pix_size: Optional. Detector pixel size in microns
-        :type pix_size: int
+        :param dbsize: Diffracted beams size.
+        :type dbsize: float, optional
 
-        :param det_size: Optional. Detector size or output image size
-        :type det_size: int
-
-        :param disk_size: Optional. Diffracted beams size in range set by DEF_DSIZE_LIMITS
-        :type disk_size: float
-
-        :param thickness: Optional. Sample thickness in (start, end, step) tuple
-        :type thickness: tuple of int
-
-        :param em_controls: Optional. electron microscope control object. (TODO, ref to the class)
+        :param em_controls: Optional. electron `microscope control <pyemaps.emcontrols.html#module-pyemaps.emcontrols>`_ object. 
         :type em_controls: pyemaps.EMC
 
-        :param bSave: Optional. True - save the output to a raw image file (ext: im3)
-        :type bSave: bool
+        :return: a tuple (n, ns) where ns is a list of sampling points; n is the number of sampling point
+        :rtype: tuple 
 
-        .. note::
+        Default values:
 
-            There will be one slice of image generated for each sample
-            thickness specified by sample_thickness = (start, end, step) arguement:
+        ::
 
-            start, start+step ... start+N*step
+            DEF_APERTURE = 1.0
+            DEF_OMEGA = 10
+            DEF_SAMPLING = 8
+            DEF_CBED_DSIZE - 0.16
+            DEF_DSIZE_LIMITS =(0.01, 0.5)
 
-            when start is not the same as end, end will not have image
-            generated.
+        .. note:: 
 
+            During the simulation session, results are retained in pyemaps 
+            bloch module. The following methods are used to retrieve the
+            result before the end of session:
+
+            1. `getBlochimages <pyemaps.crystals.html#pyemaps.crystals.Crystal.getBlochImages>`_. 
+               Retrieve a list of bloch images
+            2. `getSCMatrix <pyemaps.crystals.html#pyemaps.crystals.Crystal.getSCMatrix>`_. 
+               Retrieve a scattering matrix at a sampling point
+        
+        .. note:: 
+
+            Other information available during the session:
+            
+            a. List of sampling points, diffraction beams tilts etc 
+               with `printIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails>`_;
+            b. Eigen values at each sampling points in 
+               `getEigen <pyemaps.crystals.html#pyemaps.crystals.Crystal.getEigen>`_;
+            c. Diagnization Miller indexes at each sampling point: 
+               `getBeams <pyemaps.crystals.html#pyemaps.crystals.Crystal.getBeams>`_;
+        
         """
-        if disk_size < DEF_DSIZE_LIMITS[0] or disk_size > DEF_DSIZE_LIMITS[1]:
+        if dbsize < DEF_DSIZE_LIMITS[0] or dbsize > DEF_DSIZE_LIMITS[1]:
             raise BlochError('Diffracted beam size bust be in range {DEF_DSIZE_LIMITS}')
-
-        th_start, th_end, th_step = sample_thickness
-
-        if th_start > th_end or th_step <= 0:
-            raise BlochListError('Sample thickness parameter invalid')               
-
-        dep = (th_end-th_start) // th_step + 1
-        if dep > MAX_DEPTH:
-            raise BlochListError(f'Number of sample thickness cannot exceed {MAX_DEPTH}')
 
         dif.initcontrols()
         dif.setmode(CBED_MODE) # alway in CBED mode
@@ -114,7 +144,7 @@ def add_bloch(target):
         # setting default simulation controls
         self.set_sim_controls(em_controls.simc)
 
-        dif.setdisksize(disk_size)
+        dif.setdisksize(dbsize)
    
         self.load()
 
@@ -129,80 +159,142 @@ def add_bloch(target):
         
         ret = dif.diffract(1)
         if ret == 0:
+            dif.diff_internaldelete(1)
             raise BlochError('Error bloch runtime1')
         
         dif.diff_internaldelete(1)
-        bloch.setsamplethickness(th_start, th_end, th_step)
         
         ret = bloch.dobloch(aperture,omega,sampling,0.0)
         
         if ret == 2:
+            self.endBloch()
             raise BlochError('Predefined Bloch computation resource limit reached')
 
         if ret != 0:
+            self.endBloch()
             raise BlochError('Error computing dynamic diffraction')
-
-        # 
-        #successful bloch runtime, then retreive bloch image
-        #     
         
-        slice_step = th_step 
-        slice_num = 1 + (th_end-th_start) // slice_step
-        th = th_start
+        nsampling = bloch.get_nsampling()
+        sampling_points, ret = bloch.get_samplingpoints(nsampling)
 
-        myBlochImgs = BImgList(self._name)
-        imgfn =''
-        if bSave: 
+        if ret != 0:
+            raise BlochError('Failed to retrive sampling points used in scattering matrix run')
+        
+        # print(f'# of sampling points: {nsampling}')
+        
+        spoints = np.transpose(sampling_points)
+
+        sp = [tuple(p) for p in spoints]
+        
+        return nsampling, sp
+
+    def getBlochImages(self, 
+                      sample_thickness = DEF_THICKNESS,
+                      pix_size = DEF_PIXSIZE,
+                      det_size = DEF_DETSIZE,
+                      bSave = False):
+       """
+        Retrieves a set of dynamic diffraction image from the simulation 
+        sessiom marked by
+        `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_. and 
+        `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.   
+        
+        :param thickness: Optional. sample thickness range abd step in tuple of three integers (th_start, th_end, th_step)
+        :type thickness: int
+
+        :param pix_size: Optional. Detector pixel size in microns
+        :type pix_size: int
+
+        :param det_size: Optional. Detector size or output image size
+        :type det_size: int
+
+        :param bSave: Optional. True - save the output to a raw image file with extension of 'im3'
+        :type bSave: bool
+
+        :return: a 2x2 raw intensity array of double precision intensity
+        :rtype: array
+
+        Default values:
+
+        ::
+
+            DEF_PIXSIZE = 25
+            DEF_DETSIZE = 512
+            DEF_THICKNESS = (200, 200, 100)
+
+       """
+       th_start, th_end, th_step = sample_thickness
+
+       if th_start > th_end or th_step <= 0 or \
+          not isinstance(th_start, int) or \
+          not isinstance(th_end, int) or \
+          not isinstance(th_step, int):
+            raise BlochListError('Sample thickness input must be valid integers range')               
+
+       thlist = []
+       if th_start == th_end:
+            thlist.append(th_start)
+       else:
+            thlist = list(range(th_start, th_end, th_step))
+            thlist.append(th_end)
+
+       dep = len(thlist)
+
+       if dep > MAX_DEPTH:
+            raise BlochListError(f'Number of sample thickness cannot exceed {MAX_DEPTH}')
+
+       imgfn =''
+       if bSave: 
             imgfn, bfn, l = self.getBlochFN()
-            if bloch.openimgfile(det_size, bfn, l) != 0:
+            if bloch.openimgfile(det_size, dep, bfn, l) != 0:
                 raise BlochError('Error opening file for write')
-
-        for i in range(slice_num):
-            ret = bloch.imagegen(th,0,pix_size,det_size, bSave)
+            
+       bimgl = []
+       for th in thlist:
+            bimg, ret = bloch.imagegen(th, 0, pix_size,
+                                        det_size, bsave = bSave)
+            
             if(ret != 0):
-                raise BlochError("bloch image generation failed!")
+              self.endBloch()
+              raise BlochError("bloch image generation failed!")
 
-            raw_image = farray(np.zeros((det_size,det_size), dtype=np.double))
-        
-            bloch.get_rawimagedata(raw_image)
-        
-            myBlochImgs.add(em_controls, raw_image)
+            bimgl.append(bimg)
 
-            th += slice_step
-
-        if bSave:
-            if (bloch.closeimgfile() != 0):
+       if bSave:
+            if bloch.closeimgfile() != 0:
                 raise BlochError('Error closing file')
 
             print(f'Raw Bloch images data has been successfully saved to: {imgfn}')
             print(f'To view, import the file into ImageJ or other tools')
 
-# ------- clean up ---------
-        bloch.imgmemdelete()
-        dif.diff_delete()
-
-        return myBlochImgs
-
-    @staticmethod
-    def printIBDetails():
+       return bimgl
+       
+    def printIBDetails(self):
         '''
-        Print beams details after bloch scattering matrix run
+        Prints a dynamic diffraction simulation details during a session
+        marked by 
+        `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_. and 
+        `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.   
 
-        Useful before retrieving the scattering matrix with incident 
-        beam details as parameters
+        Information regarding the simulation session include sampling points and their
+        associated tilts etc.
 
         '''
         nib = bloch.get_nsampling()
         if nib <=0:
+            self.endBloch()
             raise BlochError("Failed to retrieve number of incidental beams")
 
         if nib == 0:
+            self.endBloch()
             raise BlochError("No incidental beams found")
         
         net, tilt, dimscm, ret = bloch.getibinfo(nib)
         if ret != 0:
+            self.endBloch()
             raise BlochError("failed to retrieve incidental beams info")
         
+        print(f'\n-------Dynamic Simulation Session for {self._name}---------\n')
         print(f'Total Number of Beams: {nib}\n')
 
         smp = "Sampling"
@@ -230,11 +322,12 @@ def add_bloch(target):
 
             print(f"{sn1}{sn2}{st1}{st2}{st3}{sd}")   
 
-    @staticmethod
-    def getBeams(ib_coords=(0,0), bPrint=False):
+    def getBeams(self, ib_coords=(0,0), bPrint=False):
         '''
-        print diffracted beams for given sample coordinates 
-        must be called between beginSCMatrix(...) and endSCMatrix().
+        Prints diffracted beams for given sample coordinates. It must be called 
+        during a dynamic diffraction simulation session marked by 
+        `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
+        and `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.
 
         :param ib_coords: Optional. Sampling point coordinates tuple
         :type ib_coords: tuple
@@ -246,11 +339,13 @@ def add_bloch(target):
         
         scmdim = bloch.get_scmdim(ib_coords)
         if scmdim <= 0:
+            self.endBloch()
             raise BlochError("Error finding corresponding scattering matrix, use printIBDetails to find potential input for ib_coords")
         
         ev, ret = bloch.getbeams(ib_coords, scmdim)
 
         if ret < 0 or ret != scmdim:
+            self.endBloch()
             raise BlochError("failed to retrieve incidental beams info")
         evv = np.transpose(ev) 
         if bPrint:
@@ -268,11 +363,14 @@ def add_bloch(target):
                 print(f"{sh}{sk}{sl}") 
         return evv   
 
-    @staticmethod
-    def getEigen(ib_coords=(0,0)):
+    def getEigen(self, ib_coords=(0,0)):
         '''
-        This method returns eigen values for given sampling point.
-        must be called between beginSCMatrix(...) and endSCMatrix().
+        Returns eigen values for given sampling point.
+
+        It must be called during a dynamic diffraction simulation session
+        marked by
+        `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_ and 
+        `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.   
 
         :param ib_coords: Optional. Sampling point coordinates tuple
         :type ib_coords: tuple
@@ -296,134 +394,52 @@ def add_bloch(target):
         '''
         scmdim = bloch.get_scmdim(ib_coords)
         if scmdim <= 0:
+            self.endBloch()
             raise BlochError("Error finding corresponding scattering matrix, use printIBDetails to find potential input for ib_coords")
         
         ev, ret = bloch.geteigenvalues(ib_coords, scmdim)
         if ret < 0 or ret != scmdim:
+            self.endBloch()
             raise BlochError("failed to retrieve incidental beams info")
         
         return ev
 
-    def beginSCMatrix(self, 
-                        aperture = DEF_APERTURE, 
-                        omega = DEF_OMEGA,  
-                        sampling = DEF_SAMPLING,
-                        disk_size = DEF_CBED_DSIZE,
-                        thickness = DEF_THICKNESS[0],
-                        em_controls = EMC(cl=200, 
-                                          simc = SIMC(gmax=1.0, 
-                                          excitation=(0.3,1.0))
-                        )
-                     ):
+    def getSCMatrix(self,
+                    ib_coords = (0,0), 
+                    sample_thickness = DEF_THICKNESS[0],
+                    rvec = None):
         '''
-        This function begins to run dynamic diffraction simulation and prepare to retieve scattering matrix 
-        with sampling point coordinates and sample thickness
+        Obtains scattering matrix at a given sampling point.
+
+        To get a list of sampling points used in this dynamic simulation session,
+        call `getIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.getIBDetails>`_
+
+        or:
+
+        capture the output from 
+        `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
         
-        :param aperture: Optional. Objective aperture
-        :type aperture: float
+        This call must be made during a dynamic simulation session marked by
+        `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_ and   
+        `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_
 
-        :param omega: Optional. Diagnization cutoff value
-        :type omega: float
+        :param ib_coords: Sampling point coordinates tuple, defaults to (0.0, 0.0)
+        :type ib_coords: tuple, optional
 
-        :param sampling: Optional. Number of sampling points
-        :type sampling: int
+        :param thickness: Sample thickness. defaults to 200
+        :type thickness: int, optional
 
-        :param disk_size: Optional. Diffracted beams size in range set by DEF_DSIZE_LIMITS
-        :type disk_size: float
+        :param rvec: R vector shifting atom coordinates in crystal, value between 0.0 and 1.0, defaults to (0.0,0.0,0.0)
+        :type rvec: tuple of floats, optional
 
-        :param thickness: Optional. sample thickness
-        :type thickness: int
+        :return: scattering matrix at a given sampling point
+        :rtype: complex array
 
-        :return: (ns, s). ns = number of sampling points; s - a list of sampling points in (x,y) coordiantes
-        :rtype: tuple
-
-
-        '''
-        if disk_size < DEF_DSIZE_LIMITS[0] or disk_size > DEF_DSIZE_LIMITS[1]:
-            raise BlochError('Diffracted beam size bust be in range {DEF_DSIZE_LIMITS}')
-
-        dif.initcontrols()
-        dif.setmode(CBED_MODE) # alway in CBED mode
-
-        dif.setdisksize(disk_size)
+        Default values:
         
-        # setting default simulation controls
-        
-        self.set_sim_controls(em_controls.simc)
+        ::
 
-        # Load crystal data to backend modules 
-           
-        self.load()
-  
-        tx, ty = em_controls.tilt
-        dx, dy = em_controls.defl
-        z = em_controls.zone
-        vt, cl = em_controls.vt,  em_controls.cl
-        
-        dif.setsamplecontrols(tx, ty, dx, dy)
-        dif.setemcontrols(cl, vt)        
-        dif.setzone(z[0], z[1], z[2])
-        
-        ret = dif.diffract(1)
-        if ret == 0:
-            raise BlochError('Error bloch runtime1')
-            
-        dif.diff_internaldelete(1)
-        bloch.setsamplethickness(thickness, thickness, 100)
-
-        ret = bloch.dobloch(aperture,omega,sampling,0.0,scm=1)
-        if ret == 2:
-            print('Contact support@emlabsoftware.com for how to register for ' +
-            'a full and accelerated version of pyemaps')
-            raise BlochError('Bloch computation resource limit reached')
-
-        if ret != 0:
-            raise BlochError('Error computing dynamic diffraction')
-
-        print(f'---Scattering matrix data now available for the following sampling points---')
-        print(f'call getSCMartix to retrive the scattering matrix at any of the following samplign points')
-       
-        nsampling = bloch.get_nsampling()
-        sampling_points, ret = bloch.get_samplingpoints(nsampling)
-
-        if ret != 0:
-            raise BlochError('Failed to retrive sampling points used in scattering matrix run')
-        
-        print(f'# of sampling points: {nsampling}')
-        
-        spoints = np.transpose(sampling_points)
-
-        sp = [tuple(p) for p in spoints]
-        
-        return nsampling, sp
-
-
-    @staticmethod
-    def endSCMatrix():
-        """
-        Ends scattering matrix runs started by BeginSCMatrix().
-
-        Backend bloch module will no longers retain the scattering 
-        matrix, Eigen values, sampling points etc in its memory, 
-        unless a new call to beginSCMatrix().
-
-        """
-        bloch.cleanup()
-
-    @staticmethod
-    def getSCMatrix(ib_coords = (0,0), rvec = None):
-        '''
-        This function retieves scattering matrix by sampling point coordinates,
-        this call must be between:
-        1. beginSCMatrix(...), and
-        2. endSCMatrix() 
-        All available input for ib_coords are captured in standard output from beginSCMatrix()
-
-        :param ib_coords: Optional. Sampling point coordinates tuple
-        :type ib_coords: tuple
-
-        :param rvec: Optional. R vector shifting atom coordinates in crystal, value between 0.0 and 1.0
-        :type rvec: tuple
+            DEF_THICKNESS[0] = 200
 
         '''
         
@@ -431,32 +447,168 @@ def add_bloch(target):
         scmdim = bloch.get_scmdim(ib_coords)
         
         if scmdim <= 0:
+            self.endBloch()
             raise BlochError("Error finding corresponding scattering matrix,  to find potential input for ib_coords")
 
         if rvec is None:
             rvec = (0.0,0.0,0.0)
 
         elif not all(isinstance(v, (int,float)) for v in rvec) or len(rvec) != 3:
+            self.endBloch()
             raise BlochError("Invalid R vector input, must be tuple of three floats")
 
-        scm, ret = bloch.getscm(ib_coords, rvec, scmdim)
+        scm, ret = bloch.getscm(ib_coords, sample_thickness, rvec, scmdim)
         if ret <= 0:
+            self.endBloch()
             raise BlochError('Error retieving scattering matrix, input matrix dimention too small, use printIBDetails to find extact dimentsion')
+        
         return np.transpose(scm)
-    
-    target.generateBloch = generateBloch
-    # target.generateBlochImgs = generateBlochImgs
+
+    # @staticmethod
+    # def saveRawImages(self, imglist, det_size):
+        
+    #     imgfn, bfn, l = self.getBlochFN()
+    #     if bloch.openimgfile(det_size, bfn, l) != 0:
+    #         raise BlochError('Error opening file for write')
+
+    #     for img in imglist:
+            
+    #         # validating the image size, matching size input
+    #         if not isinstance(img[0], list) or \
+    #             not not isinstance(img[1], list):
+    #             raise BlochError('Invalid image data')
+            
+    #         if len(img[0]) != det_size or \
+    #             len(img[1]) != det_size:
+    #             raise BlochError('Image data dimension does not mtach input')
+
+    #         ri = farray(np.array(img), dtype=float)
+    #         if bloch.writerawimage(ri) != 0:
+    #             raise BlochError("Failed to write raw image")
+        
+    #     if (bloch.closeimgfile() != 0):
+    #         raise BlochError('Error closing file')
+
+    #     print(f'Raw Bloch images data has been successfully saved to: {imgfn}')
+    #     print(f'To view, import the file into ImageJ or other tools')
+
+
+    def endBloch(self):
+       """
+       Clean up Bloch module. This function follows 
+        `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
+       to mark the end of a dynamic simulation session.
+
+       """
+       bloch.cleanup()
+       dif.diff_delete()
+        
+    def generateBloch(self, aperture = DEF_APERTURE,                    #
+                            omega = DEF_OMEGA,                          # 10
+                            sampling = DEF_SAMPLING,                    # 8
+                            pix_size = DEF_PIXSIZE,                     # 100
+                            det_size = DEF_DETSIZE,                     # 512
+                            disk_size = DEF_CBED_DSIZE,                 # 0.16
+                            sample_thickness = DEF_THICKNESS,           #(200,1000,100)
+                            em_controls = EMC(cl=200, # set smaller that 1000 default value
+                                              simc = SIMC(gmax=1.0, excitation=(0.3,1.0))),
+                            bSave = False):
+        """
+        Generates dynamic diffraction (Bloch) image(s). This function is equivalent to 
+        calling :
+        
+        1. `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_ 
+        2. `getBlockImages <pyemaps.crystals.html#pyemaps.crystals.Crystal.getBlockImages>`_
+        3. `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_
+
+        :param aperture: Objective aperture.
+        :type aperture: float, optional
+
+        :param omega: Diagnization cutoff value, defaults to 10.
+        :type omega: float, optional
+
+        :param sampling: Number of sampling points
+        :type sampling: int, optional
+
+        :param pix_size: Detector pixel size in microns
+        :type pix_size: int, optional
+
+        :param det_size: Detector size or output image size
+        :type det_size: int, optional
+
+        :param disk_size: Diffracted beams size in range
+        :type disk_size: float, optional
+
+        :param thickness: Sample thickness in (start, end, step) tuple
+        :type thickness: tuple of int, optional
+
+        :param em_controls: Microscope controls object
+        :type em_controls: `Microscope control <pyemaps.emcontrols.html#module-pyemaps.emcontrols>`_, optional
+
+        :param bSave: `True` - save the output to a raw image file (ext: im3)
+        :type bSave: bool, optional
+
+        Default values:
+
+        ::
+
+            DEF_APERTURE = 1.0
+            DEF_OMEGA = 10
+            DEF_SAMPLING = 8
+            DEF_CBED_DSIZE - 0.16
+            DEF_DSIZE_LIMITS =(0.01, 0.5)
+            DEF_PIXSIZE = 25
+            DEF_DETSIZE = 512
+            DEF_THICKNESS = (200, 200, 100)
+
+        .. note::
+
+            There will be one slice of image generated for each sample
+            thickness specified by sample_thickness = (start, end, step) arguement:
+
+            start, start+step ... start+N*step, end
+
+        """
+        try:
+           
+            _, _ = self.beginBloch(aperture=aperture, 
+                            omega=omega, 
+                            sampling=sampling, 
+                            dbsize = disk_size,
+                            em_controls=em_controls)
+
+            bimgs = self.getBlochImages(
+                sample_thickness = sample_thickness,
+                pix_size = pix_size,
+                det_size = det_size,
+                bSave = bSave)
+        except:
+            raise BlochError('Failed to generate dynamic simulation')
+        
+        
+        self.endBloch()
+
+        myBlochImgs = BImgList(self._name)
+        for img in bimgs:
+            myBlochImgs.add(em_controls, img)
+
+        return myBlochImgs
+
+    target.beginBloch = beginBloch
     target.getBlochFN = getBlochFN
 
-    target.beginSCMatrix = beginSCMatrix
     # ---These calls must be between the above and endSCMartix calls
     
     target.printIBDetails = printIBDetails
-    target.getSCMatrix = getSCMatrix
     target.getEigen = getEigen
     target.getBeams = getBeams
+    target.getSCMatrix = getSCMatrix
+    target.getBlochImages = getBlochImages
 
     # ---These calls must be between the above and endSCMartix calls
-    target.endSCMatrix = endSCMatrix
+
+    target.endBloch = endBloch
+
+    target.generateBloch = generateBloch
 
     return target
