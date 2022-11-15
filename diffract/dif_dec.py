@@ -23,19 +23,14 @@ def add_dif(target):
         One way to prevent data races is to guard all simulations for 
         one crystal object between its load() and unload() methods.
 
-        :param cty: Optional, 0 - normal crystal loading, 1 - loading for crystal constructor 
-        :type cty: int
+        :param cty: 0 - normal crystal loading, 1 - loading for crystal constructor 
+        :type cty: int, optional
 
         .. note::
 
-            * When loading for crystal constructor module (mxtal), different type
-            of calculation is needed from the normal crystal loading for other
-            simulations. cty = 1 is set to indicate the difference.
-
-            * *pyemaps* tried to optimize its performance by minimizing trips to the
-            backend simulation module. So if the crystal data has been loaded
-            before in the same way as the current call (cty is the same as 
-            previous load), this call will be skipped.
+            This routine is designed to minimize trips to the backend simulation modules
+            and therefore miximizing the performance. Users do not need to handle this calls
+            directly.
 
         '''
         if self.loaded() and cty == self._ltype:
@@ -75,12 +70,18 @@ def add_dif(target):
 
     def generateDP(self, mode = None, dsize = None, em_controls = None):
         """
-        Kinematic diffraction simulation method.
+        Kinematic diffraction simulation.
 
-        :param mode: Optional, mode of kinemetic diffraction - normal(1) or CBED(2).
-        :param dsize: Optional, diffractted beam size, only applied to CBED mode.
-        :param: Optional, electron microscope controls object.
-        :return: (emc, dp).
+        :param mode: Mode of kinemetic diffraction - normal(1) or CBED(2).
+        :type mode: int, optional
+
+        :param dsize: diffractted beam size, only applied to CBED mode.
+        :type dsize: float, optional
+        
+        :param em_controls: `Microscope control <pyemaps.emcontrols.html#module-pyemaps.emcontrols>`_ object. 
+        :type em_controls: pyemaps.EMC, optional
+
+        :return: A tuple (emc, dp) where emc is the microscope control and dp is a `diffPattern <pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern>`_ object .
         :rtype: tuple.
  
         """
@@ -254,14 +255,21 @@ def add_dif(target):
 
     def generateDif(self, mode = None, dsize = None, em_controls = None):
         """
-         Kinematic diffraction simulation method. 
-         Replaced by generateDP and to be depricated at stable production
+         Another kinematic diffraction simulation method to be deprecated in
+         stabel production soon. Its replacement is:
+         `generateDP <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateDP>`_.
 
-        :param mode: Optional, mode of kinemetic diffraction - normal(1) or CBED(2).
-        :param dsize: Optional, diffractted beam size, only applied to CBED mode.
-        :param: Optional, electron microscope controls object.
+        :param mode: mode of kinemetic diffraction - normal(1) or CBED(2).
+        :type mode: int
+
+        :param dsize: diffractted beam size, only applied to CBED mode.
+        :param dsize: float
+
+        :param em_controls: electron microscope controls object.
+        :type em_controls: pyemaps.EMC
+
         :return: myDif.
-        :rtype: DPList.
+        :rtype: pyemaps.DPList.
 
         """
         from . import DPList
@@ -280,9 +288,10 @@ def add_dif(target):
         '''
         Transform vector from real to recriprocal space
         
-        :param v: Optional, a vector of float coordinates
-        :type v: tuple
-        :return: rx, ry, rz
+        :param v: A vector of float coordinates
+        :type v: tuple, optional
+
+        :return: a transformed vector
         :rtype: tuple
 
         '''           
@@ -299,9 +308,10 @@ def add_dif(target):
         '''
         Transform vector from recriprocal to real space
         
-        :param v: Optional, a vector of float coordinates
-        :type v: tuple
-        :return: dx, dy, dz
+        :param v: A vector of float coordinates
+        :type v: tuple, optional
+
+        :return: Tranformed vector
         :rtype: tuple of floats
         
         '''          
@@ -321,13 +331,16 @@ def add_dif(target):
         Calculates angle between two real space vectors or 
         two reciprocal space vectors
         
-        :param v1: Optional, a vector of float coordinates
-        :type v1: tuple
-        :param v2: Optional, a vector of float coordinates
-        :type v2: tuple
-        :param ty: Optional, 0 real space, 1 reciprocal space
-        :type ty: int
-        :return: a
+        :param v1: A vector of float coordinates
+        :type v1: tuple, optional
+
+        :param v2: A vector of float coordinates
+        :type v2: tuple, optional
+
+        :param ty: 0 real space, 1 reciprocal space
+        :type ty: int, optional
+
+        :return: an angle between v1 and v2.
         :rtype: float
 
 
@@ -351,13 +364,15 @@ def add_dif(target):
         
         '''
         Calculates vector length real space vectors or in reciprocal 
-        space vectors
+        space vectors.
         
-        :param v: Optional, a vector of float coordinates
-        :type v: tuple
-        :param ty: Optional, 0 real space, 1 reciprocal space
-        :type ty: int
-        :return: ln
+        :param v: A vector of float coordinates
+        :type v: tuple, optional
+
+        :param ty: 0 real space, 1 reciprocal space
+        :type ty: int, optional
+
+        :return: vector length in reciprical space or in reciprocal space
         :rtype: float
 
         '''        
@@ -375,9 +390,10 @@ def add_dif(target):
         '''
         Calculates electron wavelength.
 
-        :param kv: Optional, high voltage
-        :type kv: float or int
-        return: wlen
+        :param kv: High voltage
+        :type kv: float or int, optional
+
+        return: wave length
         rtype: float
 
         '''
@@ -394,9 +410,12 @@ def add_dif(target):
         Sets simulation controls in the backend. 
 
         This method also tries to minimize the trip to the backend 
-        simulation module by check if sefaults are provided. If so,
-        skip the call to the backend.
+        simulation module by skipping the call to the backend if
+        default values are given.
 
+        :param simc: `Simulation control <pyemaps.emcontrols.html#pyemaps.emcontrols.SIMControl>`_ objects
+        :type simc: pyemaps.SIMC, optional
+        
         .. note::
 
             *pyemaps" assumes that attributes in sim_control class are

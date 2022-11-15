@@ -10,12 +10,11 @@ def add_powder(target):
     def plotPowder(self, pw):
 
         """
-        Show powder diffraction
+        Show powder diffraction created from 
+        `generatePowder <pyemaps.crystals.html#pyemaps.crystals.Crystal.generatePowder>`_.
 
-        :param pw: Required. Powder diffraction data
-        :type pw: array
-
-        (TODO: link to an pwoder plot example)
+        :param pw: Powder diffraction data
+        :type pw: array, required
 
         """
         import numpy as np
@@ -51,50 +50,42 @@ def add_powder(target):
         '''
         Generates powder diffraction.
 
-        :param kv: Optional. Accelaration voltage in kilo-volts.
-        :type kv: int or float
+        :param kv: Accelaration voltage in kilo-volts.
+        :type kv: int or float, optional
 
-        :param t2max: Optional. Maximum scattering angle.
-        :type t2max: float
+        :param t2max: Maximum scattering angle.
+        :type t2max: float, optional
 
-        :param smax: Optional. Maximum Sin(theta)/Wavelength.
-        :type smax: float
+        :param smax: Maximum Sin(theta)/Wavelength.
+        :type smax: float, optional
 
-        :param smax: Optional. Maximum Sin(theta)/Wavelength.
-        :type smax: float
+        :param smax: Maximum Sin(theta)/Wavelength.
+        :type smax: float, optional
 
-        :param eta: Optional. the mixing coefficient between gaussian and lorentzian in a pseudo-Voight peak function.
-        :type eta: float
+        :param eta: the mixing coefficient between gaussian and lorentzian in a pseudo-Voight peak function.
+        :type eta: float, optional
 
-        :param gamma: Optional. Diffraction peaks half maximum half width.
-        :type gamma: float
+        :param gamma: Diffraction peaks half maximum half width.
+        :type gamma: float, optional
 
-        :param absp: Optional. With Absoption structure factor (1 -default) or not (0).
-        :type absp: int
+        :param absp: With Absoption structure factor (1 -default) or not (0).
+        :type absp: int, optional
 
-        :param isbgdon: Optional. Background on or not (default no background).
-        :type isbgdon: int
+        :param isbgdon: Background on or not (default no background).
+        :type isbgdon: int, optional
 
-        :param bamp: Optional. Background amplitude.
-        :type bamp: float
+        :param bamp: Background amplitude.
+        :type bamp: float, optional
 
-        :param bgamma: Optional. Background width.
-        :type bgamma: float
+        :param bgamma: Background width.
+        :type bgamma: float, optional
 
-        :param bmfact: Optional. Background exponential damping factor.
-        :type bmfact: float
+        :param bmfact: Background exponential damping factor.
+        :type bmfact: float, optional
 
-        :return: rawP
+        :return: an array of 2 x 1000 with the first row representing the scattering angle 2theta and the second the intensity
         :rtype: array
 
-        .. note::
-
-        The function returns an array of 2 x 1000 containing 
-        the powder diffraction for loaded crystal.
-        
-        The first 1000 is the scattering angle 2theta and the second 
-        the intensity  
-        
         '''     
         import numpy as np
         from numpy import asfortranarray as farray

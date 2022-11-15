@@ -24,18 +24,19 @@
 # Date:       September 26th, 2022    
 # """
 
-from pathlib import Path
-import os
-import re
 '''
 Fileutils is a helper module in assisting pyemaps file i/o functions.
 Its methods include reading crystal data files and writing simulation 
 output files. 
 
 It also detects pyemaps data home environment variables and directs
-file i/o accoridng to the rule set in (TODO ref to environment section).
+file i/o accoridng to the rule set in :ref:`Environment Variables <Environment Variables>`.
 
 '''
+
+from pathlib import Path
+import os
+import re
 
 # ------------------pyemaps data file and locations-------------
 #             set by PYEMAPS_DATAHOME 
@@ -48,10 +49,10 @@ def auto_fn(cn):
 
     This can be modified to tune the output to any other specific needs.
 
-    :param cn: Required. A crystal name.
-    :type: string
+    :param cn: A crystal name.
+    :type cn: string, required
 
-    :return: file name composed of crytsal name from teh input and time stamp in yyyymmddmmss format
+    :return: file name composed of crytsal name and time stamp in yyyymmddmmss format
     rtype: string
 
     '''
@@ -66,12 +67,12 @@ def find_pyemaps_datahome(home_type='crystals'):
     Detects enviroment variable set by PYEMAPS_DATA and return the
     diretcory set by the variable or return current working directory.
     
-    :param home_type: Optional. Type of home directory
-    :type home_type: string
-    :return: data home path for <home_type> where all file i/o is located
+    :param home_type: Type of home directory
+    :type home_type: string, optional
+    :return: data home path.
     :rtype: string
 
-    Folder names depending by *home_type*:
+    Folder names depending by *home_type* input:
 
     1. **crystals**: all crystal data files.
     2. **bloch**: all dynamic simulation output files.
@@ -129,13 +130,6 @@ def find_pyemaps_datahome(home_type='crystals'):
     else: 
         return pyemaps_home
 
-
-def _fn_path_exists(fn):
-    fn_dir = os.path.dirname(fn)
-    if fn_dir is not None and Path(fn_dir).exists():
-        return True
-    return False
-
 def compose_ofn(fn, name, ty='diffraction'):
     '''
     Compose output file name based file name and file type.
@@ -173,7 +167,8 @@ import numpy as np
 from numpy import asfortranarray as farray
 from .spg.spg_dec import *
 
-from . import XTLError, SPGError, CIFError, SPGSettingNotInRangeError,SPGITMumberNotInRangeError
+from . import (XTLError, SPGError, CIFError, 
+               SPGSettingNotInRangeError,SPGITMumberNotInRangeError)
 
 
 cell_keys=['a','b','c','alpha','beta','gamma']
@@ -393,7 +388,13 @@ def loadCrystalCIFData(fn):
     """
     Reads a .cif file for crystal data.
 
-    ..note:: 
+    :param fn: cif file name
+    :type: string, required
+
+    :return: tuple of crystal name and crystal data as dict object
+    :rtype: dict
+
+    .. note:: 
 
         This method is still in active development. 
     
@@ -876,6 +877,15 @@ def loadCrystalData(fn, cn=None):
     """
     Reading built-in datbase or a .xtl file for crystal data.
 
+    :param fn: XTL formatted Crystal file name
+    :type: string, required
+
+    :param cn: Crystal name
+    :type: string, optional
+
+    :return: tuple of crystal name and crystal data as dict object
+    :rtype: dict
+
     """
 
     data = {}
@@ -1005,7 +1015,5 @@ def loadCrystalData(fn, cn=None):
 
     return name, data
 
-# def get_setmaxbynumber(num):
-#     return spgra.getspgsettingmax(num)
     
        

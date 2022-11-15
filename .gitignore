@@ -166,3 +166,6 @@ test/sanity/output*
 
 # bloch image output file
 *.im3
+
+# saved code
+*_save.py

@@ -1,7 +1,7 @@
 def add_csf(target):
     '''
       Generate crystal structure factors. The following types 
-      Structure Factors are supported:
+      Structure Factors are currently supported:
 
       * x-ray structure factor (default)
       * electron structure factor in volts (V)
@@ -26,7 +26,9 @@ def add_csf(target):
         """
         Format and print structure factors to standard output.
 
-        :param sfs: structure factor data from generateCSF() call.
+        :param sfs: structure factor data generated from 
+         `generateCSF <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateCSF>`_.
+        :type sfs: dict, required
         
         Example of the output for a X-Ray Structure Factor for Silicon:
 
@@ -107,20 +109,22 @@ def add_csf(target):
 
     def generateCSF(self, kv = 100, smax = 0.5, sftype = 1, aptype = 0):
         """
-        
-        :param kv: Optional. Accelaration Voltage in Kilo-Volts, default value 100
-        :type kv: floats
-        :param smax: Optional. Limit of Sin(theta)/Wave length, default value 0.5
-        :type smax: floats
-        
-        :param sftype: Optional. Structure factor types to be generated, default value 1 - x-ray
-        :type sftype: int
+        Calculates structure factors.
 
-        :param aptype: Optional. Output type, default value 0 - amplitude and phase 
-        :type aptype: int
+        :param kv:Accelaration Voltage in Kilo-Volts, default value 100
+        :type kv: int or float, optional
 
-        :return: sfs
-        :rtype: lis of dict
+        :param smax: Limit of Sin(theta)/Wave length, default value 0.5
+        :type smax: int or float, optional
+        
+        :param sftype: Structure factor types to be generated, default value 1 - x-ray
+        :type sftype: , int, optional
+
+        :param aptype: Output format type, default value 0 - amplitude and phase 
+        :type aptype: , int, optional
+
+        :return: a dict object with structure factor data
+        :rtype: dict
 
         .. note:: *sftype* has the following value representing:
 
@@ -129,7 +133,7 @@ def add_csf(target):
             3. electron structure factor in 1/angstrom^2 in (KV)
             4. electron absorption structure factor in 1/angstrom^2 (KV)
 
-        .. note:: *aptype* has the following value representing:
+        .. note:: *aptype* has the following value representing structure factor format:
 
             0: amplitude and phase
             1: real and imaginary
@@ -137,13 +141,13 @@ def add_csf(target):
         The return of an array of structure factors in the following 
         python dictionary format:
 
-        .. code-block:: python
+        .. code-block:: json
    
             {
                 'hkl': (h,k,l),         # Miller Indices 
                 'sw': s,                # Sin(theta)/Wave length
                 'ds': d,                # d-spacing value
-                'amp_re': ar            # amplitude or rela part 
+                'amp_re': ar            # amplitude or real part 
                 'phase_im': ph          # phase or imaginary part
             }
 

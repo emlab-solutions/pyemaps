@@ -5,14 +5,16 @@ def add_stereo(target):
         """
         Generate stereodiagram.
 
-        :param xa: Optional. X-axis (TODO)
-        :type xa: tuple
-        :param tilt: Optional. Sample tilts in (x,y)
-        :type tilt: tuple
-        :param zone: Optional. Zone axis
-        :type zone: tuple
+        :param xa: Crystal horizontal axis in reciprical space
+        :type xa: tuple of 3 integers, optional
 
-        :return: stereo_list
+        :param tilt: Sample tilts in (x,y)
+        :type tilt: tuple, optional
+
+        :param zone: Zone axis
+        :type zone: tuple, optional
+
+        :return: A list of stereodiagram elements represented by dict object
         :rtype: list of dict object
 
         Example of the stereodiagram output:
@@ -21,14 +23,14 @@ def add_stereo(target):
 
             [
                 {
-                    "c": (x,y),              #center
-                    "r": rad,                #radius
-                    "idx": (h, k, l),        #Miller Index
+                    "c": (x,y),              # center
+                    "r": rad,                # radius
+                    "idx": (h, k, l),        # Miller Index
                 }
             ]    
 
-        To display the resulting stereodiagram, use (TODO, ref to showStereo)
-        showStereo() function in display module.
+        To display the resulting stereodiagram, use 
+        `showStereo <pyemaps.display.html#pyemaps.display.showStereo>`_.
         
         """
         from . import dif, stereo
@@ -60,7 +62,6 @@ def add_stereo(target):
         if ret != 1:
             raise StereodiagramError('Stereodiagram generation failed')
 
-        # print(f'number of spots: {ns}')
         stereo_list = []
         for i in range(ns):
             item = {}

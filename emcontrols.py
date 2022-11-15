@@ -23,40 +23,56 @@
 
 # This class is helper for handling pyemaps microscope controls
 # """
+
 """
-There are two controls classes this module defines: microscope controls
-and simulations controls. Since the latter changes much less frequently 
-than the former, simulation control data is a member of a microscope
-controls object in which it can be left with default. 
+There are two controls classes this module defines: `microscope controls <modules.html#pyemaps.emcontrols.EMControl>`_
+and `simulations controls <modules.html#pyemaps.emcontrols.SIMControl>`_. 
 
-Simulation control constants and default values:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. autodata:: DEF_EXCITATION
+Since the latter changes much less frequently than the former, 
+simulation control is embedded as a member of a microscope controls class.
 
-.. autodata:: DEF_GMAX, 
-
-.. autodata:: DEF_BMIN
-
-.. autodata:: DEF_INTENSITY
-
-.. autodata:: DEF_GCTL
-
-.. autodata:: DEF_ZCTL
-
-.. autodata:: DEF_XAXIS
-
-Microscope control constants and default values:
+Simulation Control Constants and Default Values:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autodata:: DEF_TILT
+.. data:: DEF_EXCITATION
+    :value: (0.3, 2.0)
 
-.. autodata:: DEF_ZONE, 
+.. data:: DEF_GMAX 
+    :value: = 3.5
 
-.. autodata:: DEF_DEFL
+.. data:: DEF_BMIN
+    :value: = 0.1
 
-.. autodata:: DEF_KV
+.. data:: DEF_INTENSITY
+    :value: = (0.0, 5)
 
-.. autodata:: DEF_CL
+.. data:: DEF_GCTL
+    :value: = 6.0
+
+.. data:: DEF_ZCTL
+    :value: = 5.0
+
+.. data:: DEF_XAXIS
+    :value: = (0, 0, 0)
+
+Microscope Control Constants and Default Values:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. data:: DEF_TILT
+    :value: = (0.0, 0.0)
+
+.. data:: DEF_ZONE
+    :value: = (1, 0, 0)
+
+.. data:: DEF_DEFL
+    :value: = (0.0, 0.0)
+
+.. data:: DEF_KV
+    :value: = 200.0
+
+.. data:: DEF_CL
+    :value: = 1000.0
+
 
 """
 from . import  EMCError
@@ -323,7 +339,7 @@ class EMControl:
     * **defl**: shifts in x and y direction (x, y)
     * **cl**: cameral length
     * **vt**: hight voltage in kilo-volts
-    * **simc*: embedded SIMControl (TODO ref to ) object
+    * **simc*: `SIMControl <pyemaps.emcontrols.html#pyemaps.emcontrols.SIMControl>`_ object
 
     '''
 
@@ -351,9 +367,9 @@ class EMControl:
         '''
         Create an EMControl object from a python dict object
 
-        :param emc_dict: Required. 
-        :type emc_dict: dict
-        :raises: EMCError. 
+        :param emc_dict: Microscope control dict object
+        :type emc_dict: dict, required
+        :raises: EMCError, if validation fails
 
         '''
         if not isinstance(emc_dict, dict):
@@ -406,7 +422,9 @@ class EMControl:
     
     @property
     def simc(self):
-        '''SIMControl (TODO ref to ) object'''
+        '''
+        `SIMControl <modules.html#pyemaps.emcontrols.SIMControl>`_ object
+        '''
         return self._simc
 
     @zone.setter
