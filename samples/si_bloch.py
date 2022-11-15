@@ -51,7 +51,7 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
     emclist =[] 
 
     if sim_rand:
-        sc = SIMC.from_random()
+        sc = SIMC._from_random()
 
     for i in range(-3,3): 
         emc=EMC(cl=200)
@@ -69,12 +69,15 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
     with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
 
         for ec in emclist:
-            fs.append(e.submit(cr.generateBloch, disk_size=dsize, sampling = 20, em_controls = ec))
+            fs.append(e.submit(cr.generateBloch, 
+                               disk_size=dsize, 
+                               sampling = 20, 
+                               em_controls = ec))
         
         bimgs = BImgList(name) 
         for f in concurrent.futures.as_completed(fs):
             try:
-               emc, img = f.result()
+               emc, img = f.result()[0]
 
             except (BlochError, EMCError) as e:
                 print(f'{f} generated an exception: {e.message}, {emc}') 

@@ -41,6 +41,6 @@ def test_mxtal():
         print(f'error: generating mxtal data: {e}')
     else:
         print(f'\nCrystal Structure Data Generated for {si.name}:')
-        si.print_xyz(mx)
+        si.printXYZ(mx)
 if __name__ == "__main__":
     test_mxtal()

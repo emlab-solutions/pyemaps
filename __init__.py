@@ -126,6 +126,7 @@ else:
     th_start, th_end, th_step = bloch.get_sam_defs()
     
     DEF_THICKNESS = (th_start, th_end, th_step)
+
 #---------- defaults simulation setting-------------------------
     # sampling: DEF_SAMPLING
     # pixsize: DEF_PIXSIZE
@@ -139,7 +140,6 @@ else:
      DEF_OMEGA) = bloch.get_sim_defs()
 #----------  Microoscope setting default------------------------
     DEF_APERTURE = bloch.get_mic_defs()
-
 
 #fall through if blch module is not found
 try:
@@ -179,7 +179,7 @@ from .kdiffs import diffPattern as DP
 from .kdiffs import Diffraction as DPList
 from .ddiffs import BlochImgs as BImgList
 
-from .crystals import Crystal
+from .crystals import Cell, Atom, SPG, Crystal
 try:
     from .kdiffs import XMAX, YMAX
 except ImportError as e:

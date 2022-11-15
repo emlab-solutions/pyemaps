@@ -1,49 +1,96 @@
+# """
+# This file is part of pyemaps
+# ___________________________
+
+# pyemaps is free software for non-comercial use: you can 
+# redistribute it and/or modify it under the terms of the GNU General 
+# Public License as published by the Free Software Foundation, either 
+# version 3 of the License, or (at your option) any later version.
+
+# pyemaps is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
+
+# Contact supprort@emlabsoftware.com for any questions and comments.
+# ___________________________
+
+# Author:     EMLab Solutions, Inc.
+# Date:       May 09, 2022   
+
+# This class is helper for handling pyemaps microscope controls
+# """
+
 """
-This file is part of pyemaps
-___________________________
+There are two controls classes this module defines: `microscope controls <modules.html#pyemaps.emcontrols.EMControl>`_
+and `simulations controls <modules.html#pyemaps.emcontrols.SIMControl>`_. 
 
-pyemaps is free software for non-comercial use: you can 
-redistribute it and/or modify it under the terms of the GNU General 
-Public License as published by the Free Software Foundation, either 
-version 3 of the License, or (at your option) any later version.
+Since the latter changes much less frequently than the former, 
+simulation control is embedded as a member of a microscope controls class.
 
-pyemaps is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+Simulation Control Constants and Default Values:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You should have received a copy of the GNU General Public License
-along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
+.. data:: DEF_EXCITATION
+    :value: (0.3, 2.0)
 
-Contact supprort@emlabsoftware.com for any questions and comments.
-___________________________
+.. data:: DEF_GMAX 
+    :value: = 3.5
 
-Author:     EMLab Solutions, Inc.
-Date:       May 09, 2022   
+.. data:: DEF_BMIN
+    :value: = 0.1
 
-This class is helper for handling pyemaps microscope controls
+.. data:: DEF_INTENSITY
+    :value: = (0.0, 5)
+
+.. data:: DEF_GCTL
+    :value: = 6.0
+
+.. data:: DEF_ZCTL
+    :value: = 5.0
+
+.. data:: DEF_XAXIS
+    :value: = (0, 0, 0)
+
+Microscope Control Constants and Default Values:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. data:: DEF_TILT
+    :value: = (0.0, 0.0)
+
+.. data:: DEF_ZONE
+    :value: = (1, 0, 0)
+
+.. data:: DEF_DEFL
+    :value: = (0.0, 0.0)
+
+.. data:: DEF_KV
+    :value: = 200.0
+
+.. data:: DEF_CL
+    :value: = 1000.0
+
+
 """
-
 from . import  EMCError
 
-from pyemaps import DEF_EXCITATION, \
-                    DEF_GMAX, \
-                    DEF_BMIN, \
-                    DEF_INTENSITY, \
-                    DEF_GCTL, \
-                    DEF_ZCTL, \
-                    DEF_XAXIS              
+from pyemaps import (
+                    DEF_EXCITATION, 
+                    DEF_GMAX, 
+                    DEF_BMIN, 
+                    DEF_INTENSITY, 
+                    DEF_GCTL, 
+                    DEF_ZCTL, 
+                    DEF_XAXIS)              
+
 
 class SIMControl:
     '''
-    Simulation control parameters, to be embedded in EMControl, including:
-    excitation:     excitation error range in (min, max)
-    gmax:           maximum recipricol vector length
-    bmin:           beta perturbation cutoff
-    intensity:      kinematic diffraction intensity cutoff level and scale in (level, scale)
-    xaxis:          crystal horizontal axis in reciprical space
-    gctl:           maximum index number for g-list
-    zctl:           maximum zone index number
+    Simulation controls, to be embedded in EMControl
+
     '''
     def __init__(self, excitation = DEF_EXCITATION, \
                        gmax = DEF_GMAX, \
@@ -64,30 +111,40 @@ class SIMControl:
 
     @property
     def excitation(self):
+       '''excitation error range in (min, max)'''
        return self._excitation
 
     @property
     def gmax(self):
+       '''maximum recipricol vector length'''
        return self._gmax
 
     @property
     def bmin(self):
+       '''beta perturbation cutoff'''
        return self._bmin
 
     @property
     def intensity(self):
+       ''' 
+       kinematic diffraction intensity cutoff 
+       level and scale in (level, scale)
+       '''
        return self._intensity
 
     @property
     def gctl(self):
+       '''maximum index number for g-list'''
        return self._gctl
 
     @property
     def zctl(self):
+       '''maximum zone or Miller index index number'''
        return self._zctl
 
     @property
     def xaxis(self):
+       '''crystal horizontal axis in reciprical space'''
        return self._xaxis
 
     @excitation.setter
@@ -100,9 +157,8 @@ class SIMControl:
           not isinstance(excit[1], (int, float)) or \
           excit[0] > excit[1]:
             raise EMCError('Excitation values must be a tuple of two ordered numbers')
-       
        self._excitation = excit
-
+       
     @gmax.setter
     def gmax(self, gm):
 
@@ -195,36 +251,46 @@ class SIMControl:
        simulation.append('excitation error range: ' +  str(self._excitation))
        simulation.append('maximum recipricol vector length: ' + str(self._gmax))
        simulation.append('beta perturbation cutoff: ' + str(self._bmin))
-       simulation.append('kinematic diffraction intensity cutoff level and scale: ')
+       simulation.append('kinematic diffraction intensity cutoff level and scale: '+ str(self._intensity))
        simulation.append('crystal horizontal axis in reciprical space: ' + str(self._xaxis))
        simulation.append('maximum index number for g-list: ' + str(self._gctl))
        simulation.append('maximum zone index number: ' + str(self._zctl))
 
        return "\n ".join(simulation)
 
-    def isDefExcitation(self):
+    def _isDefExcitation(self):
+        '''Helper function to minimize trips to backend modules'''
         return self._excitation == DEF_EXCITATION
 
-    def isDefGmax(self):
+    def _isDefGmax(self):
+        '''Helper function to minimize trips to backend modules'''
         return self._gmax == DEF_GMAX
 
-    def isDefBmin(self):
+    def _isDefBmin(self):
+        '''Helper function to minimize trips to backend modules'''
         return self._bmin == DEF_BMIN
 
-    def isDefIntensity(self):
+    def _isDefIntensity(self):
+        '''Helper function to minimize trips to backend modules'''
         return self._intensity == DEF_INTENSITY
 
-    def isDefXaxis(self):
+    def _isDefXaxis(self):
+        '''Helper function to minimize trips to backend modules'''
         return self._xaxis == DEF_XAXIS
 
-    def isDefGctl(self):
+    def _isDefGctl(self):
+        '''Helper function to minimize trips to backend modules'''
         return self._gctl == DEF_GCTL
 
-    def isDefZctl(self):
+    def _isDefZctl(self):
+        '''Helper function to minimize trips to backend modules'''
         return self._zctl == DEF_ZCTL
 
     @classmethod
-    def from_random(cls):
+    def _from_random(cls):
+
+        ''' Design for internal testing purpose only'''
+
         import random
         # random xaxis:
         ax = tuple(random.sample(range(4), k = 3))
@@ -266,10 +332,19 @@ DEF_CONTROLS_KEYS = ['zone','tilt','defl', 'cl', 'vt']
 
 class EMControl:
     '''
-    initializing class include the following controls:
-    
+    Microscope controls class. Its attributes include
+
+    * **tilt**: sample tilt in x and y directory (x,y)
+    * **zone**: starting zone axis
+    * **defl**: shifts in x and y direction (x, y)
+    * **cl**: cameral length
+    * **vt**: hight voltage in kilo-volts
+    * **simc*: `SIMControl <pyemaps.emcontrols.html#pyemaps.emcontrols.SIMControl>`_ object
+
     '''
-    def __init__(self, *, tilt = DEF_TILT, 
+
+
+    def __init__(self, tilt = DEF_TILT, 
                        zone = DEF_ZONE, 
                        defl = DEF_DEFL, 
                        vt = DEF_KV, 
@@ -280,8 +355,7 @@ class EMControl:
                        zone = zone, 
                        defl = defl,
                        vt = vt,
-                       cl = cl)
-        
+                       cl = cl)     
         for k, v in emc_dict.items():
             setattr(self, k, v)
         
@@ -290,6 +364,14 @@ class EMControl:
     @classmethod
     def from_dict(cls, emc_dict):
 
+        '''
+        Create an EMControl object from a python dict object
+
+        :param emc_dict: Microscope control dict object
+        :type emc_dict: dict, required
+        :raises: EMCError, if validation fails
+
+        '''
         if not isinstance(emc_dict, dict):
             raise EMCError('invalid data input in constructing EMC from a dictionary')
 
@@ -315,30 +397,34 @@ class EMControl:
         
     @property
     def zone(self):
+        '''starting zone axis'''
         return self._zone
     
     @property
     def tilt(self):
+        '''tilt in x and y directions (x,y)'''
         return self._tilt
     
     @property
     def defl(self):
+        '''shifts in x and y directions (x, y)'''
         return self._defl
     
     @property
     def cl(self):
+        '''cameral length'''
         return self._cl
     
     @property
     def vt(self):
+        '''hight voltage in kilo-volts'''
         return self._vt
     
     @property
-    def zone(self):
-        return self._zone
-    
-    @property
     def simc(self):
+        '''
+        `SIMControl <modules.html#pyemaps.emcontrols.SIMControl>`_ object
+        '''
         return self._simc
 
     @zone.setter
@@ -349,7 +435,7 @@ class EMControl:
         
         if zv == (0,0,0):
            raise EMCError("Zone axis must not be (0,0,0)")
-
+  
         self._zone = zv 
 
     @tilt.setter

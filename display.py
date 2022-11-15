@@ -1,23 +1,32 @@
+# """
+# This file is part of pyemaps
+# ___________________________
+# pyemaps is free software for non-comercial use: you can 
+# redistribute it and/or modify it under the terms of the GNU General 
+# Public License as published by the Free Software Foundation, either 
+# version 3 of the License, or (at your option) any later version.
+# pyemaps is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# You should have received a copy of the GNU General Public License
+# along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
+# Contact supprort@emlabsoftware.com for any questions and comments.
+# ___________________________
+
+# Author:     EMLab Solutions, Inc.
+# Date:       May 07, 2022    
+# """
+
 """
-This file is part of pyemaps
-___________________________
-pyemaps is free software for non-comercial use: you can 
-redistribute it and/or modify it under the terms of the GNU General 
-Public License as published by the Free Software Foundation, either 
-version 3 of the License, or (at your option) any later version.
-pyemaps is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-You should have received a copy of the GNU General Public License
-along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
-Contact supprort@emlabsoftware.com for any questions and comments.
-___________________________
-This sample code is to demostrate using pyemaps to generate and render
-kinematic diffraction patterns while changing with sample tilt in 
-x direction 
-Author:     EMLab Solutions, Inc.
-Date:       May 07, 2022    
+Display is provided as a helper module. It serves as demonstration
+purpose only. It is implemented for a list of pyemaps simulation objects
+and multiprocess and pipe python objects. Currently this rendering
+functions may not be best fit for single display.
+
+Check :doc:`visualization` for examples of customizing your own 
+visualization methods rendering pyemaps simulations results.  
+
 """
 import matplotlib, sys, os
 hasDisplay = True
@@ -50,13 +59,13 @@ feat_lookup={'dif': TY_DIF,
              'bloch': TY_BLOCH,
              'stereo':TY_STEREO}
 
-def get_feature(ty):
+def _get_feature(ty):
     if ty < TY_DIF or ty > TY_STEREO:
         raise ValueError("Feature lookup failed")
 
     return list(feat_lookup.keys())[list(feat_lookup.values()).index(ty)]
 
-def find_dpi():
+def _find_dpi():
     matplotlib.use('TkAgg')
     dpi = 96 #default
     try:
@@ -83,19 +92,19 @@ def find_dpi():
     dpi = w*96/width_px
     return dpi
 
-def isLinux():
+def _isLinux():
     import sys
     return ('linux' in sys.platform)
 
-def isWin():
+def _isWin():
     import sys
     return (sys.platform == 'win32')
 
 class DifPlotter:
-    '''
-    diffraction data plotter that receives data from the pipe and
-    plot them with pyplot
-    '''
+    # '''
+    # diffraction data plotter that receives data from the pipe and
+    # plot them with pyplot
+    # '''
     def __init__(self):
         self.name = 'Silicon'
         self.save = 0
@@ -104,6 +113,7 @@ class DifPlotter:
         self.save_to = None
 
     def terminate(self):
+        
         plt.close(self.fig) #just close the current figure
             
     def plotKDif(self):
@@ -251,7 +261,7 @@ class DifPlotter:
                 self.plotControls()
 
                 if self.save:
-                    save_type = get_feature(self.type)
+                    save_type = _get_feature(self.type)
                     self.save_to = compose_ofn(None, self.name, ty=save_type)
                     plt.savefig(self.save_to + '.png')
                     print(f'image saved to: {self.save_to}.png')
@@ -260,7 +270,7 @@ class DifPlotter:
         return True
 
     def showImage(self):
-        if isLinux() and not hasDisplay:
+        if _isLinux() and not hasDisplay:
             return
         plt.show()
         
@@ -282,7 +292,7 @@ class DifPlotter:
         self.pipe = pipe
 
         if sys.platform == 'win32':
-            curr_dpi = find_dpi()
+            curr_dpi = _find_dpi()
         else:
             curr_dpi = 96
         if type == TY_STEREO:
@@ -322,10 +332,10 @@ class DifPlotter:
         self.showImage()
 
 class NBPlot:
-    '''
-    Creating a non-bloch plot object with a pipe object sending diffraction data
-    to difPlotter
-    '''
+    # '''
+    # Creating a non-bloch plot object with a pipe object sending diffraction data
+    # to difPlotter
+    # '''
     def __init__(self, type = TY_DIF):
         self.plot_pipe, plotter_pipe = mp.Pipe()
         self.plotter = DifPlotter()
@@ -343,16 +353,16 @@ class NBPlot:
 def showDif(dpl=None, kshow=True, ishow=True, bSave = False):
    
     """
-    Show Stereodiagram using matplotlib
-    -------------------------------------------------------
-    dpl:      list of diffraction patterns 
+    Render kinematic diffraction pattern generated by pyemaps.
 
-    name:       name of the crystal
-
-    ishow:      showing hkl indeces or not
-    kshow:      showing Kikuchi lines or not
-
-    bSave:      save the image as a file in pyemaps data home directory
+    :param dpl: Optional. Kinematic difraction pattern object list
+    :type dpl: DPList
+    :param kshow: Optional. Whether to display Kikuchi lines.
+    :type kshow: bool 
+    :param ishow: Optional. Whether to display Miller indexes.
+    :type ishow: bool 
+    :param bSave: Optional. Whether to save the diplay into a .png image file.
+    :type bSave: bool 
     
     """
     from pyemaps import DPList
@@ -362,7 +372,7 @@ def showDif(dpl=None, kshow=True, ishow=True, bSave = False):
     
     mode = dpl.mode
     name = dpl.name
-    if isLinux() and not hasDisplay: bSave = True 
+    if _isLinux() and not hasDisplay: bSave = True 
     #always save to file on linux as it may just the commandline
     pl = NBPlot(TY_DIF)
     for c, dp in dpl:  
@@ -373,16 +383,17 @@ def showDif(dpl=None, kshow=True, ishow=True, bSave = False):
     pl.plot(finished=True)
 
 def showBloch(bimgs, bColor = False, bSave = False):
+    
     """
-    Show dynamic diffraction using matplotlib
-    -------------------------------------------------------
-    bimgs:      list of bloch images with asoociated emcontrols
+    Render dynamic diffraction pattern generated by pyemaps.
 
-    name:       name of the crystal
-
-    bColor:      showing images in predefined color map, otherwise in grey scale
-
-    bSave:      save the image as a file in pyemaps data home directory
+    :param bimgs: Optional. Dynamic difraction pattern object list (TODO:ref to BlochImgs)
+    :type bimgs: BlochImgs
+    :param bColor: Optional. Whether to display the image in predefined color map.
+    :type bColor: bool 
+    :param bSave: Optional. Whether to save the image into a .im3 image file.
+    :type bSave: bool 
+    
     """
     from pyemaps import BImgList
 
@@ -391,7 +402,7 @@ def showBloch(bimgs, bColor = False, bSave = False):
 
     name = bimgs.name
    
-    if isLinux() and not hasDisplay: bSave = True 
+    if _isLinux() and not hasDisplay: bSave = True 
     #always save to file on linux as it may just the commandline
 
     pl = NBPlot(TY_BLOCH)
@@ -403,20 +414,26 @@ def showBloch(bimgs, bColor = False, bSave = False):
     pl.plot(finished=True)
 
 def showStereo(slist, name, iShow = False, bSave=False, zLimit = 2):
+    
     """
-    Show Stereodiagram using matplotlib
-    -------------------------------------------------------
-    slist:      list of stereodiagrams (controls, stereo_dict)
+    Render stereodiagram generated by pyemaps.
 
-    name:       name of the crystal
+    :param slist: Required. Stereodiagram by pyemaps.generateStereo (TODO:ref to BlochImgs)
+    :type slist: list
+    :param iShow: Optional. Whether to display Miller indexes or not.
+    :type iShow: bool 
+    :param bSave: Optional. Whether to save the image into a .png image file.
+    :type bSave: bool  
+    :param zlimit: Optional. Miller indexes cutoff number.
+    :type zlimit: int 
 
-    iShow:      showing hkl indeces
+    .. note::
 
-    bSave:      save the image as a file in pyemaps data home directory
-
-    zlimit:     hkl index filter, resulting image will not disply any hlk > zlimit
+        When zlimit is set at 2, it is applied to all elements of each 
+        Miller index. For example, (3, 1, 0) will not be rendered.  
+    
     """
-    if isLinux() and not hasDisplay: bSave = True 
+    if _isLinux() and not hasDisplay: bSave = True 
     #always save to file on linux as it may just the commandline
     
     pl = NBPlot(TY_STEREO)
