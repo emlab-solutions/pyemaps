@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>pyemaps.display module &#8212; pyemaps 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyemaps.display module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-pyemaps.display">
+<span id="pyemaps-display-module"></span><h1>pyemaps.display module<a class="headerlink" href="#module-pyemaps.display" title="Permalink to this heading">¶</a></h1>
+<p>Display is provided as a helper module. It serves as demonstration
+purpose only. It is implemented for a list of pyemaps simulation objects
+and multiprocess and pipe python objects. Currently this rendering
+functions may not be best fit for single display.</p>
+<p>Check <a class="reference internal" href="visualization.html"><span class="doc">Visualisation</span></a> for examples of customizing your own 
+visualization methods rendering pyemaps simulations results.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyemaps.display.DifPlotter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">DifPlotter</span></span><a class="headerlink" href="#pyemaps.display.DifPlotter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.display.DifPlotter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.DifPlotter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.display.DifPlotter.terminate">
+<span class="sig-name descname"><span class="pre">terminate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.DifPlotter.terminate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.display.DifPlotter.plotKDif">
+<span class="sig-name descname"><span class="pre">plotKDif</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.DifPlotter.plotKDif" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.display.DifPlotter.plotDDif">
+<span class="sig-name descname"><span class="pre">plotDDif</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.DifPlotter.plotDDif" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.display.DifPlotter.plotControls">
+<span class="sig-name descname"><span class="pre">plotControls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.DifPlotter.plotControls" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.display.DifPlotter.plotStereo">
+<span class="sig-name descname"><span class="pre">plotStereo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.DifPlotter.plotStereo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.display.DifPlotter.call_back">
+<span class="sig-name descname"><span class="pre">call_back</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.DifPlotter.call_back" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.display.DifPlotter.showImage">
+<span class="sig-name descname"><span class="pre">showImage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.DifPlotter.showImage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.display.DifPlotter.position_fig">
+<span class="sig-name descname"><span class="pre">position_fig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.DifPlotter.position_fig" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyemaps.display.NBPlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">NBPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">TY_DIF</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.NBPlot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.display.NBPlot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">TY_DIF</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.NBPlot.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.display.NBPlot.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">finished</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.NBPlot.plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.display.showDif">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">showDif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dpl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kshow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ishow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bSave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.showDif" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render kinematic diffraction pattern generated by pyemaps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dpl</strong> (<em>DPList</em>) – Optional. Kinematic difraction pattern object list</p></li>
+<li><p><strong>kshow</strong> (<em>bool</em>) – Optional. Whether to display Kikuchi lines.</p></li>
+<li><p><strong>ishow</strong> (<em>bool</em>) – Optional. Whether to display Miller indexes.</p></li>
+<li><p><strong>bSave</strong> (<em>bool</em>) – Optional. Whether to save the diplay into a .png image file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.display.showBloch">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">showBloch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bimgs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bColor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bSave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.showBloch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render dynamic diffraction pattern generated by pyemaps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bimgs</strong> (<a class="reference internal" href="pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs" title="pyemaps.ddiffs.BlochImgs"><em>BlochImgs</em></a>) – Optional. Dynamic difraction pattern object list (TODO:ref to BlochImgs)</p></li>
+<li><p><strong>bColor</strong> (<em>bool</em>) – Optional. Whether to display the image in predefined color map.</p></li>
+<li><p><strong>bSave</strong> (<em>bool</em>) – Optional. Whether to save the image into a .im3 image file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.display.showStereo">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">showStereo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bSave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.showStereo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render stereodiagram generated by pyemaps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>slist</strong> (<em>list</em>) – Required. Stereodiagram by pyemaps.generateStereo (TODO:ref to BlochImgs)</p></li>
+<li><p><strong>iShow</strong> (<em>bool</em>) – Optional. Whether to display Miller indexes or not.</p></li>
+<li><p><strong>bSave</strong> (<em>bool</em>) – Optional. Whether to save the image into a .png image file.</p></li>
+<li><p><strong>zlimit</strong> (<em>int</em>) – Optional. Miller indexes cutoff number.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When zlimit is set at 2, it is applied to all elements of each 
+Miller index. For example, (3, 1, 0) will not be rendered.</p>
+</div>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rn.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules, Classes and Interfaces</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyemaps.display module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, EMLab Solutions, Inc..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    </div>
+  </body>
+</html>
