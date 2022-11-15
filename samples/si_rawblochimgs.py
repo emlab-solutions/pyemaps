@@ -6,7 +6,7 @@ if __name__ == '__main__':
     try:
         si = cr.from_builtin('Silicon')
 
-        bimgs = si.generateBlochImgs(bSave=True)
+        bimgs = si.generateBloch(sample_thickness=(200, 1000, 100), bSave=True)
 
     except (CrystalClassError, BlochError) as e:
         print(f'error: generate and write bloch image data1: {e.message}')

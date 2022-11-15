@@ -123,7 +123,7 @@ def test_xyz():
         print(f'error: generating mxtal data2: cause unknown')
     else:
         # print(f'successfully generated mxtal: {mx}')
-        ret = si.write_xyz(mx)
+        ret = si.writeXYZ(mx)
 
         if ret != 0:
             print(f'failed to write data: {mx} to file')

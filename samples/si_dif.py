@@ -64,7 +64,7 @@ def generate_difs(name = 'Silicon', mode = DEF_MODE, ckey = 'tilt', sim_rand=Fal
     emclist =[] 
 
     if sim_rand:
-        sc = SIMC.from_random()
+        sc = SIMC._from_random()
 
     for i in range(-3,3): 
         emc = EMC()

@@ -88,9 +88,13 @@ dif_source = ['diffract.f90',
             'lafit.f90'
             ]
 
+# bloch_files = ['zg.f90',
+#                'bloch.f90',
+#                'bloch_mem.f90'
+#               ]
 bloch_files = ['zg.f90',
-               'bloch.f90',
-               'bloch_mem.f90'
+               'bloch_mem.f90',
+               'bloch.f90'
               ]
 stereo_files = ['stereo.f90']
 
@@ -395,7 +399,7 @@ def get_install_requires():
         return install_reqs
     else:
         raise Exception('The OS is not supported')
-
+    
 def get_emaps_macros():
 
     if build_type == 'full':

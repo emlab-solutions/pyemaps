@@ -24,7 +24,8 @@ Date:       October 19th, 2022
 
 This sample code is to demonstrate how to generated scattering matrix
 '''
-c_name = 'Silicon'
+
+c_name = 'silicon'
 
 def runSCMTests():
 
@@ -38,22 +39,57 @@ def runSCMTests():
 
     # -----For a list beams coordinates 
     #      to generate more scattering matrix, run cr.printIBDetails()
+    
+    ec =EMC(cl=200,
+            tilt=(0.0, 0.0),
+            simc = SIMC(gmax=2.0, excitation=(1.0,2.0))
+            )
+    ds = 0.25
+    ib_coords = (0,0)
+    
     try:
-        ec =EMC(cl=200, zone=(1,1,2),
-                            simc = SIMC(gmax=1.0, excitation=(0.3,1.0))
-                )
-        ds = 0.25
-        si_scm = si.generateSCMatrix(em_controls = ec, 
-                                    disk_size = ds,
-                                    ib_coords = (0,0))
+        
+        ns, s = si.beginBloch(em_controls = ec, 
+                        dbsize = ds)
 
     except BlochError as e:
         print(f'Failed to generate scattering matrix {e.message}')
     else:
-        print('Scattering matrix generated successfully!')
-        print(si_scm)
-        print('Other beams info...')
-        cr.printIBDetails()
+        # get the scattering matrix now
+        try:
+            si_scm = si.getSCMatrix(ib_coords = ib_coords)
+        except BlochError as e:
+            print(f'Failed to generate scattering matrix {e.message}')
+        else:
+            print(f'----Sampling points in this scattering matrix calculation---:')
+            print(f'{s}')
+
+            print(f'----Sacattering matrix at sampling point {ib_coords}----:')
+            print(f' \n{si_scm}')
+
+            print(f'----Eigen values at: {ib_coords}----')
+            print(si.getEigen(ib_coords = ib_coords))
+
+            print(f'----Diffracted Beams in Miller Indexes at: {ib_coords}----: ')
+            si.getBeams(ib_coords = ib_coords, bPrint=True)
+
+            print(f'----Beam Tilts In Reciprical Space and misc. info') 
+            si.printIBDetails()
+
+            #       get a random sampling point from available list of
+            #       sampling points and print the corresponding 
+            #       scattering matrix
+
+            import random
+            radnum = random.randrange(1, ns-1)
+            ib_coords = s[radnum]
+            scm = si.getSCMatrix(ib_coords = ib_coords)
+            print(f'--Sacattering matrix at a random sampling point {ib_coords}----:')
+            print(f'{scm}')
+            
+
+    # cleanup 
+    si.endBloch()
 
 if __name__ == "__main__":
     runSCMTests()

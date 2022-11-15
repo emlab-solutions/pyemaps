@@ -409,6 +409,7 @@ if __name__ == "__main__":
     parser.add_argument("-il", "--install-local", action="store_true", help="no build", required=False)
     parser.add_argument("-v", "--build-version", type=str, nargs="?", const="", default="", help="build version input", required=False)
     parser.add_argument("-bt", "--build-type", type=str, nargs="?", const="free", default="free", help="build free pyemaps package, defaults to free", required=False)
+    # parser.add_argument("-a", "--add-dpgen", action="store_false", help="no build", required=False)
     
 
 # ########## set envs ##################
