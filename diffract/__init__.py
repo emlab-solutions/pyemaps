@@ -1,4 +1,4 @@
-'''
+# '''
 # This file is part of pyemaps
 # ___________________________
 #
@@ -17,7 +17,7 @@
 #
 # Contact supprort@emlabsoftware.com for any questions and comments.
 # ___________________________
-'''
+# '''
 
 # root directory for all emaps modules
 from .emaps import dif

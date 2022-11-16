@@ -1,4 +1,4 @@
-'''
+# '''
 # This file is part of pyemaps
 # ___________________________
 #
@@ -17,6 +17,6 @@
 #
 # Contact supprort@emlabsoftware.com for any questions and comments.
 # ___________________________
-'''
+# '''
 
 from .spg import spgseek
