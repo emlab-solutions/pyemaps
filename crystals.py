@@ -827,7 +827,7 @@ class Crystal:
 
         For a list of builtin crystal names, call:
         
-        .. code-bloch:: python
+        .. code-block:: python
         
             Crystal.list_all_builtin_crystals()
 

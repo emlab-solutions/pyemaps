@@ -414,6 +414,9 @@ the following data:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>For a list of builtin crystal names, call:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Crystal</span><span class="o">.</span><span class="n">list_all_builtin_crystals</span><span class="p">()</span>
+</pre></div>
+</div>
 </div>
 <p>To create a Crystal object with custom Cell, SPG and Atom objects:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Cell</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">SPG</span><span class="p">,</span> <span class="n">Crystal</span>
@@ -2306,13 +2309,75 @@ Dfffracted beams object creation.</p>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rn.html">Release Notes</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Modules, Classes and Interfaces</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.crystals">Crystals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.emcontrols">Microscope Controls</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.kdiffs">Kinematic Diffractions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.ddiffs">Dynamic Diffraction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.display">Display</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.fileutils">File Utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.errors">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.crystals">Crystals</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.crystals.Cell"><code class="docutils literal notranslate"><span class="pre">Cell</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.crystals.Atom"><code class="docutils literal notranslate"><span class="pre">Atom</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.crystals.SPG"><code class="docutils literal notranslate"><span class="pre">SPG</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.crystals.Crystal"><code class="docutils literal notranslate"><span class="pre">Crystal</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.emcontrols">Microscope Controls</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#simulation-control-constants-and-default-values">Simulation Control Constants and Default Values:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#microscope-control-constants-and-default-values">Microscope Control Constants and Default Values:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.emcontrols.EMCError"><code class="docutils literal notranslate"><span class="pre">EMCError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.emcontrols.SIMControl"><code class="docutils literal notranslate"><span class="pre">SIMControl</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.emcontrols.EMControl"><code class="docutils literal notranslate"><span class="pre">EMControl</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.kdiffs">Kinematic Diffractions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.kdiffs.Point"><code class="docutils literal notranslate"><span class="pre">Point</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.kdiffs.Line"><code class="docutils literal notranslate"><span class="pre">Line</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.kdiffs.Index"><code class="docutils literal notranslate"><span class="pre">Index</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.kdiffs.Disk"><code class="docutils literal notranslate"><span class="pre">Disk</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.kdiffs.diffPattern"><code class="docutils literal notranslate"><span class="pre">diffPattern</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.ddiffs">Dynamic Diffraction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.ddiffs.EMC"><code class="docutils literal notranslate"><span class="pre">EMC</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.ddiffs.BlochListError"><code class="docutils literal notranslate"><span class="pre">BlochListError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.ddiffs.BlochImgs"><code class="docutils literal notranslate"><span class="pre">BlochImgs</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.display">Display</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.display.showDif"><code class="docutils literal notranslate"><span class="pre">showDif()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.display.showBloch"><code class="docutils literal notranslate"><span class="pre">showBloch()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.display.showStereo"><code class="docutils literal notranslate"><span class="pre">showStereo()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.fileutils">File Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.auto_fn"><code class="docutils literal notranslate"><span class="pre">auto_fn()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.find_pyemaps_datahome"><code class="docutils literal notranslate"><span class="pre">find_pyemaps_datahome()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.compose_ofn"><code class="docutils literal notranslate"><span class="pre">compose_ofn()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.loadCrystalCIFData"><code class="docutils literal notranslate"><span class="pre">loadCrystalCIFData()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.loadCrystalData"><code class="docutils literal notranslate"><span class="pre">loadCrystalData()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.errors">Error Handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.pyemapsError"><code class="docutils literal notranslate"><span class="pre">pyemapsError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.CrystalClassError"><code class="docutils literal notranslate"><span class="pre">CrystalClassError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.XTLError"><code class="docutils literal notranslate"><span class="pre">XTLError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.CIFError"><code class="docutils literal notranslate"><span class="pre">CIFError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.CellError"><code class="docutils literal notranslate"><span class="pre">CellError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.CellValueError"><code class="docutils literal notranslate"><span class="pre">CellValueError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.CellDataError"><code class="docutils literal notranslate"><span class="pre">CellDataError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.SPGError"><code class="docutils literal notranslate"><span class="pre">SPGError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.SPGITMumberNotInRangeError"><code class="docutils literal notranslate"><span class="pre">SPGITMumberNotInRangeError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.SPGSettingNotInRangeError"><code class="docutils literal notranslate"><span class="pre">SPGSettingNotInRangeError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.SPGInvalidDataInputError"><code class="docutils literal notranslate"><span class="pre">SPGInvalidDataInputError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.UCError"><code class="docutils literal notranslate"><span class="pre">UCError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.DPError"><code class="docutils literal notranslate"><span class="pre">DPError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.PointError"><code class="docutils literal notranslate"><span class="pre">PointError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.LineError"><code class="docutils literal notranslate"><span class="pre">LineError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.PIndexError"><code class="docutils literal notranslate"><span class="pre">PIndexError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.DiskError"><code class="docutils literal notranslate"><span class="pre">DiskError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.DPListError"><code class="docutils literal notranslate"><span class="pre">DPListError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.BlochError"><code class="docutils literal notranslate"><span class="pre">BlochError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.EMCError"><code class="docutils literal notranslate"><span class="pre">EMCError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.BlochListError"><code class="docutils literal notranslate"><span class="pre">BlochListError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.StereodiagramError"><code class="docutils literal notranslate"><span class="pre">StereodiagramError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.errors.MxtalError"><code class="docutils literal notranslate"><span class="pre">MxtalError</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

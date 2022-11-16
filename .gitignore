@@ -169,3 +169,6 @@ test/sanity/output*
 
 # saved code
 *_save.py
+
+# docs
+*docs/.doctrees
