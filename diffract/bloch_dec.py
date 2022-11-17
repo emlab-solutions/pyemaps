@@ -412,7 +412,7 @@ def add_bloch(target):
         Obtains scattering matrix at a given sampling point.
 
         To get a list of sampling points used in this dynamic simulation session,
-        call `getIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.getIBDetails>`_
+        call `printIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails>`_
 
         or:
 

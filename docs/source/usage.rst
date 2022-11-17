@@ -92,7 +92,7 @@ built-in database for Silicon crystal using
    for more details.
 
 
-Once a crystal object is created and loaded` it is ready for simulations
+Once a crystal object is created and loaded, it is ready for simulations
 and calculations.   
 
 Kinematic Diffraction Simulation
@@ -140,8 +140,10 @@ list of control parameters.
 visualizes the *si_dp* diffraction pattern with options controling whether to show Kikuchi lines or
 Miller Indexes.
 
-Dynamic Diffraction Simulation - Bloch
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Bloch Wave Dynamic Diffraction Simulation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+To simplify, we will call this simulation as Bloch or Bloch simulation throughout this help
+document.
 
 .. code-block:: python
 
@@ -184,7 +186,8 @@ visualizing the Bloch simulation results.
    <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateBloch>`_. 
    
    The raw image data file can be imprted into third party visualization tools
-   such as ImageJ (TODO link) and DigitalMicrograph. 
+   such as `ImageJ <https://imagej.nih.gov/ij/>'_ and `DigitalMicrograph 
+   <https://www.gatan.com/products/tem-analysis/gatan-microscopy-suite-software>`_. 
 
 .. note::
 
@@ -197,12 +200,25 @@ visualizing the Bloch simulation results.
    <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.
 
 To see all crystal names in the *pyemaps* built-in database, call 
-`list_all_builtin_crystals: <pyemaps.crystals.html#pyemaps.crystals.Crystal.list_all_builtin_crystals>`_:
+`list_all_builtin_crystals <pyemaps.crystals.html#pyemaps.crystals.Crystal.list_all_builtin_crystals>`_:
 
 .. code-block:: python
 
    from pyemaps import Crystal as cr
    cr.list_all_builtin_crystals()
+
+Current list of built-in crystals in *pyemaps*:
+
+::
+
+   'Aluminium', 'AluminiumOxide', 'Aluminium_FCC', 'BariumTitanate_180k', 'BariumTitanate_270k', 
+   'BariumTitanate_Tetra', 'Boron_Tetra', 'CadmiumSelenide_Hex', 'CadmiumSulfide_Cubic', 
+   'CadmiumSulfide_Hex', 'Chromium_BCC', 'CopperOxide', 'Copper_FCC', 'Cu2O_Cuprite', 'Diamond', 
+   'ErbiumPyrogermanate', 'FePd_Tetra', 'FeS2_Pyrite', 'GalliumAntimonide', 'GalliumArsenide', 
+   'GalliumNitride', 'Germanium', 'Gold_FCC', 'IndiumArsenide', 'LaMnO3', 'LeadZirconateTitanate', 
+   'Li2MnO3', 'limno2', 'NaFeO2', 'Nb3Sn', 'Silicon', 'StrontiumTitanate', 'TelluriumDioxide', 
+   'TinDioxide_RT', 'TitaniumDioxide_Anatase', 'TitaniumDioxide_Rutile', 'TungstenDiselenide', 
+   'VanadiumDioxide_RT', 'ZincOxide', 'Zinc_HCP', 'ZirconiumNitride'
 
 
 Samples code
