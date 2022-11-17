@@ -62,7 +62,7 @@ Microscope Control Constants and Default Values:
     :value: = (0.0, 0.0)
 
 .. data:: DEF_ZONE
-    :value: = (1, 0, 0)
+    :value: = (0, 0, 1)
 
 .. data:: DEF_DEFL
     :value: = (0.0, 0.0)
