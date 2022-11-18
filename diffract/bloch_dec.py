@@ -396,7 +396,7 @@ def add_bloch(target):
         if scmdim <= 0:
             self.endBloch()
             raise BlochError("Error finding corresponding scattering matrix, use printIBDetails to find potential input for ib_coords")
-        
+  
         ev, ret = bloch.geteigenvalues(ib_coords, scmdim)
         if ret < 0 or ret != scmdim:
             self.endBloch()
