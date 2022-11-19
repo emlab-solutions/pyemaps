@@ -44,6 +44,13 @@ Improvements
 - Crystal volume limit increased to 1200.
 - Dynamic diffraction simulation expanded to handle larger number of 
   diffracted beams up to 5000.
+
+  .. warning::
+
+      The increase can result in much longer simulation time. In some cases
+      with large diffracted beams numbers near the limit, it may mean 
+      30 minutes or longer. The simulation time varies depending your system. 
+
 - More build-in crystal data added because of the above expansions. Additional
   built-in crystals:
 
