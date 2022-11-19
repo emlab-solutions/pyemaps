@@ -929,7 +929,7 @@ marked by
 <span class="sig-name descname"><span class="pre">getSCMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ib_coords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_thickness</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_THICKNESS[0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rvec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.getSCMatrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Obtains scattering matrix at a given sampling point.</p>
 <p>To get a list of sampling points used in this dynamic simulation session,
-call <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getIBDetails">getIBDetails</a></p>
+call <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails">printIBDetails</a></p>
 <p>or:</p>
 <p>capture the output from 
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a></p>
@@ -1091,7 +1091,7 @@ default values are given.</p>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><a href="#id15"><span class="problematic" id="id16">*</span></a>pyemaps” assumes that attributes in sim_control class are
+<p><a href="#id16"><span class="problematic" id="id17">*</span></a>pyemaps” assumes that attributes in sim_control class are
 rarely changed.</p>
 </div>
 </dd></dl>
@@ -1430,7 +1430,7 @@ simulation control is embedded as a member of a microscope controls class.</p>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_ZONE">
-<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_ZONE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">=</span> <span class="pre">(1,</span> <span class="pre">0,</span> <span class="pre">0)</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_ZONE" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_ZONE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">=</span> <span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">1)</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_ZONE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
@@ -1527,7 +1527,7 @@ level and scale in (level, scale)</p>
 <li><p><strong>defl</strong>: shifts in x and y direction (x, y)</p></li>
 <li><p><strong>cl</strong>: cameral length</p></li>
 <li><p><strong>vt</strong>: hight voltage in kilo-volts</p></li>
-<li><p><a href="#id19"><span class="problematic" id="id20">**</span></a>simc*: <a class="reference external" href="pyemaps.emcontrols.html#pyemaps.emcontrols.SIMControl">SIMControl</a> object</p></li>
+<li><p><a href="#id20"><span class="problematic" id="id21">**</span></a>simc*: <a class="reference external" href="pyemaps.emcontrols.html#pyemaps.emcontrols.SIMControl">SIMControl</a> object</p></li>
 </ul>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.__init__">
