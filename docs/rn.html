@@ -89,10 +89,17 @@ This function is now equivalent to calling:</p>
 </section>
 <section id="improvements">
 <h3>Improvements<a class="headerlink" href="#improvements" title="Permalink to this heading">¶</a></h3>
-<ul class="simple">
+<ul>
 <li><p>Crystal volume limit increased to 1200.</p></li>
 <li><p>Dynamic diffraction simulation expanded to handle larger number of
-diffracted beams up to 5000.</p></li>
+diffracted beams up to 5000.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The increase can result in much longer simulation time. In some cases
+with large diffracted beams numbers near the limit, it may mean
+30 minutes or longer. The simulation time varies depending your system.</p>
+</div>
+</li>
 <li><p>More build-in crystal data added because of the above expansions. Additional
 built-in crystals:</p></li>
 </ul>
