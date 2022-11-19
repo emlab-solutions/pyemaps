@@ -169,3 +169,13 @@ test/sanity/output*
 
 # saved code
 *_save.py
+
+# docs
+*docs/.doctrees
+
+# wav files
+*.wav
+fort.7
+
+# not to save sample code
+*samples/bt.py

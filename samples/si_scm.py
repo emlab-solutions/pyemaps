@@ -83,6 +83,7 @@ def runSCMTests():
             import random
             radnum = random.randrange(1, ns-1)
             ib_coords = s[radnum]
+            
             scm = si.getSCMatrix(ib_coords = ib_coords)
             print(f'--Sacattering matrix at a random sampling point {ib_coords}----:')
             print(f'{scm}')

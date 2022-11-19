@@ -120,7 +120,7 @@ data sources, including imports from CIF, JSON formatted files. Go to
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal">Crystal class</a>
 for more details.</p>
 </div>
-<p>Once a crystal object is created and loaded` it is ready for simulations
+<p>Once a crystal object is created and loaded, it is ready for simulations
 and calculations.</p>
 <section id="kinematic-diffraction-simulation">
 <h3>Kinematic Diffraction Simulation<a class="headerlink" href="#kinematic-diffraction-simulation" title="Permalink to this heading">¶</a></h3>
@@ -163,8 +163,10 @@ list of control parameters.</p>
 visualizes the <em>si_dp</em> diffraction pattern with options controling whether to show Kikuchi lines or
 Miller Indexes.</p>
 </section>
-<section id="dynamic-diffraction-simulation-bloch">
-<h3>Dynamic Diffraction Simulation - Bloch<a class="headerlink" href="#dynamic-diffraction-simulation-bloch" title="Permalink to this heading">¶</a></h3>
+<section id="bloch-wave-dynamic-diffraction-simulation">
+<h3>Bloch Wave Dynamic Diffraction Simulation<a class="headerlink" href="#bloch-wave-dynamic-diffraction-simulation" title="Permalink to this heading">¶</a></h3>
+<p>To simplify, we will call this simulation as Bloch or Bloch simulation throughout this help
+document.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>        <span class="c1"># Crystal class</span>
 <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">BImgList</span>             <span class="c1"># Dynamic diffraction image list class</span>
 <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">showBloch</span>            <span class="c1"># Builtin visualization helper function</span>
@@ -200,7 +202,7 @@ visualizing the Bloch simulation results.</p>
 <p>To generate multiple images with a specified range of sample thickness
 and save them in raw image data file. See the description of <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateBloch">generateBloch method</a>.</p>
 <p>The raw image data file can be imprted into third party visualization tools
-such as ImageJ (TODO link) and DigitalMicrograph.</p>
+such as <a class="reference external" href="https://www.gatan.com/products/tem-analysis/gatan-microscopy-suite-software">ImageJ &lt;https://imagej.nih.gov/ij/&gt;’_ and `DigitalMicrograph</a>.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -210,9 +212,20 @@ between <a class="reference external" href="pyemaps.crystals.html#pyemaps.crysta
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch calls</a>.</p>
 </div>
 <p>To see all crystal names in the <em>pyemaps</em> built-in database, call
-<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.list_all_builtin_crystals">list_all_builtin_crystals:</a>:</p>
+<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.list_all_builtin_crystals">list_all_builtin_crystals</a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>
 <span class="n">cr</span><span class="o">.</span><span class="n">list_all_builtin_crystals</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Current list of built-in crystals in <em>pyemaps</em>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;Aluminium&#39;</span><span class="p">,</span> <span class="s1">&#39;AluminiumOxide&#39;</span><span class="p">,</span> <span class="s1">&#39;Aluminium_FCC&#39;</span><span class="p">,</span> <span class="s1">&#39;BariumTitanate_180k&#39;</span><span class="p">,</span> <span class="s1">&#39;BariumTitanate_270k&#39;</span><span class="p">,</span>
+<span class="s1">&#39;BariumTitanate_Tetra&#39;</span><span class="p">,</span> <span class="s1">&#39;Boron_Tetra&#39;</span><span class="p">,</span> <span class="s1">&#39;CadmiumSelenide_Hex&#39;</span><span class="p">,</span> <span class="s1">&#39;CadmiumSulfide_Cubic&#39;</span><span class="p">,</span>
+<span class="s1">&#39;CadmiumSulfide_Hex&#39;</span><span class="p">,</span> <span class="s1">&#39;Chromium_BCC&#39;</span><span class="p">,</span> <span class="s1">&#39;CopperOxide&#39;</span><span class="p">,</span> <span class="s1">&#39;Copper_FCC&#39;</span><span class="p">,</span> <span class="s1">&#39;Cu2O_Cuprite&#39;</span><span class="p">,</span> <span class="s1">&#39;Diamond&#39;</span><span class="p">,</span>
+<span class="s1">&#39;ErbiumPyrogermanate&#39;</span><span class="p">,</span> <span class="s1">&#39;FePd_Tetra&#39;</span><span class="p">,</span> <span class="s1">&#39;FeS2_Pyrite&#39;</span><span class="p">,</span> <span class="s1">&#39;GalliumAntimonide&#39;</span><span class="p">,</span> <span class="s1">&#39;GalliumArsenide&#39;</span><span class="p">,</span>
+<span class="s1">&#39;GalliumNitride&#39;</span><span class="p">,</span> <span class="s1">&#39;Germanium&#39;</span><span class="p">,</span> <span class="s1">&#39;Gold_FCC&#39;</span><span class="p">,</span> <span class="s1">&#39;IndiumArsenide&#39;</span><span class="p">,</span> <span class="s1">&#39;LaMnO3&#39;</span><span class="p">,</span> <span class="s1">&#39;LeadZirconateTitanate&#39;</span><span class="p">,</span>
+<span class="s1">&#39;Li2MnO3&#39;</span><span class="p">,</span> <span class="s1">&#39;limno2&#39;</span><span class="p">,</span> <span class="s1">&#39;NaFeO2&#39;</span><span class="p">,</span> <span class="s1">&#39;Nb3Sn&#39;</span><span class="p">,</span> <span class="s1">&#39;Silicon&#39;</span><span class="p">,</span> <span class="s1">&#39;StrontiumTitanate&#39;</span><span class="p">,</span> <span class="s1">&#39;TelluriumDioxide&#39;</span><span class="p">,</span>
+<span class="s1">&#39;TinDioxide_RT&#39;</span><span class="p">,</span> <span class="s1">&#39;TitaniumDioxide_Anatase&#39;</span><span class="p">,</span> <span class="s1">&#39;TitaniumDioxide_Rutile&#39;</span><span class="p">,</span> <span class="s1">&#39;TungstenDiselenide&#39;</span><span class="p">,</span>
+<span class="s1">&#39;VanadiumDioxide_RT&#39;</span><span class="p">,</span> <span class="s1">&#39;ZincOxide&#39;</span><span class="p">,</span> <span class="s1">&#39;Zinc_HCP&#39;</span><span class="p">,</span> <span class="s1">&#39;ZirconiumNitride&#39;</span>
 </pre></div>
 </div>
 </section>
@@ -276,7 +289,11 @@ tilt in x direction.</p>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#enviroment-variables">Enviroment Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#quickstart-pyemaps">Quickstart pyemaps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quickstart-pyemaps">Quickstart pyemaps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#kinematic-diffraction-simulation">Kinematic Diffraction Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bloch-wave-dynamic-diffraction-simulation">Bloch Wave Dynamic Diffraction Simulation</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#samples-code">Samples code</a></li>
 </ul>
 </li>

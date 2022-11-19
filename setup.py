@@ -94,6 +94,7 @@ dif_source = ['diffract.f90',
 #               ]
 bloch_files = ['zg.f90',
                'bloch_mem.f90',
+               'files.f90',
                'bloch.f90'
               ]
 stereo_files = ['stereo.f90']
@@ -301,10 +302,7 @@ def get_cdata(sdn = 'cdata'):
     '''
     import glob
 
-    free_xtl_remove = ['BiMnO3.xtl', 
-                       'CoSb3_Skutterudite.xtl', 
-                       'Pentacene.xtl', 
-                       'SiAlONa.xtl']
+    free_xtl_remove = ['SiAlONa.xtl']
 
     base_dir = os.path.realpath(__file__)
     samples_base_dir = os.path.join(os.path.dirname(base_dir), sdn)
