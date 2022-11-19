@@ -264,7 +264,7 @@ def add_bloch(target):
             if bloch.closeimgfile() != 0:
                 raise BlochError('Error closing file')
 
-            print(f'Raw Bloch images data has been successfully saved to: {imgfn}')
+            print(f'{det_size}x{det_size}x{dep} raw Bloch images has been successfully saved to: {imgfn}')
             print(f'To view, import the file into ImageJ or other tools')
 
        return bimgl
@@ -396,7 +396,7 @@ def add_bloch(target):
         if scmdim <= 0:
             self.endBloch()
             raise BlochError("Error finding corresponding scattering matrix, use printIBDetails to find potential input for ib_coords")
-        
+  
         ev, ret = bloch.geteigenvalues(ib_coords, scmdim)
         if ret < 0 or ret != scmdim:
             self.endBloch()
@@ -412,7 +412,7 @@ def add_bloch(target):
         Obtains scattering matrix at a given sampling point.
 
         To get a list of sampling points used in this dynamic simulation session,
-        call `getIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.getIBDetails>`_
+        call `printIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails>`_
 
         or:
 
@@ -460,7 +460,7 @@ def add_bloch(target):
         scm, ret = bloch.getscm(ib_coords, sample_thickness, rvec, scmdim)
         if ret <= 0:
             self.endBloch()
-            raise BlochError('Error retieving scattering matrix, input matrix dimention too small, use printIBDetails to find extact dimentsion')
+            raise BlochError('Error retieving scattering matrix, input matrix dimension too small, use printIBDetails to find extact dimentsion')
         
         return np.transpose(scm)
 

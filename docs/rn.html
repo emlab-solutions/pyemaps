@@ -50,10 +50,12 @@
   <section id="release-notes">
 <h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this heading">¶</a></h1>
 <section id="version-0-4-7-beta">
-<h2>Version 0.4.7 Beta:<a class="headerlink" href="#version-0-4-7-beta" title="Permalink to this heading">¶</a></h2>
-<ul>
-<li><p><strong>Date</strong>: November 14th, 2022</p></li>
-<li><p><strong>New</strong></p>
+<h2>Version 0.4.7 Beta<a class="headerlink" href="#version-0-4-7-beta" title="Permalink to this heading">¶</a></h2>
+<section id="id1">
+<h3>11-14-2022<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="new">
+<h3>New<a class="headerlink" href="#new" title="Permalink to this heading">¶</a></h3>
 <p>Reorganized dynamic diffraction simulation into sessions with:</p>
 <ol class="arabic simple">
 <li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a>. Starts a Bloch wave dynamic diffraction session.</p></li>
@@ -78,8 +80,35 @@ This function is now equivalent to calling:</p>
 <li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch</a></p></li>
 </ul>
 </div>
+</section>
+</section>
+<section id="version-0-4-8-beta">
+<h2>Version 0.4.8 Beta<a class="headerlink" href="#version-0-4-8-beta" title="Permalink to this heading">¶</a></h2>
+<section id="id4">
+<h3>11-19-2022<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="improvements">
+<h3>Improvements<a class="headerlink" href="#improvements" title="Permalink to this heading">¶</a></h3>
+<ul>
+<li><p>Crystal volume limit increased to 1200.</p></li>
+<li><p>Dynamic diffraction simulation expanded to handle larger number of
+diffracted beams up to 5000.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The increase can result in much longer simulation time. In some cases
+with large diffracted beams numbers near the limit, it may mean
+30 minutes or longer. The simulation time varies depending your system.</p>
+</div>
 </li>
+<li><p>More build-in crystal data added because of the above expansions. Additional
+built-in crystals:</p></li>
 </ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;BiMnO3&#39;</span>
+<span class="s1">&#39;CoSb3_Skutterudite&#39;</span>
+<span class="s1">&#39;Pentacene&#39;</span>
+</pre></div>
+</div>
+</section>
 </section>
 </section>
 
@@ -99,7 +128,16 @@ This function is now equivalent to calling:</p>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Release Notes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#version-0-4-7-beta">Version 0.4.7 Beta:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-4-7-beta">Version 0.4.7 Beta</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">11-14-2022</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#new">New</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-4-8-beta">Version 0.4.8 Beta</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">11-19-2022</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#improvements">Improvements</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules, Classes and Interfaces</a></li>
