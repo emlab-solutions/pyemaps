@@ -186,8 +186,8 @@ visualizing the Bloch simulation results.
    <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateBloch>`_. 
    
    The raw image data file can be imprted into third party visualization tools
-   such as `ImageJ <https://imagej.nih.gov/ij/>'_ and `DigitalMicrograph 
-   <https://www.gatan.com/products/tem-analysis/gatan-microscopy-suite-software>`_. 
+   such as `ImageJ <https://imagej.nih.gov/ij/>`_ and 
+   `DigitalMicrograph <https://www.gatan.com/products/tem-analysis/gatan-microscopy-suite-software>`_. 
 
 .. note::
 
