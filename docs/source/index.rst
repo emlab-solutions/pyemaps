@@ -59,12 +59,12 @@ Welcome to pyemaps' documentation!
 .. _bloch3: https://github.com/emlab-solutions/imagepypy/raw/main/Si_bloch2.jpg
 
 
-.. |bloch_img4| image:: https://github.com/emlab-solutions/imagepypy/raw/main/si_bloch1.png
+.. |bloch_img4| image:: https://github.com/emlab-solutions/imagepypy/raw/main/si_block1.jpg
    :alt: Dynamic Diffraction for Silicon
    :height: 200
    :width: 200
    :target: `bloch4`_ 
-.. _bloch4: https://github.com/emlab-solutions/imagepypy/raw/main/si_bloch1.png
+.. _bloch4: https://github.com/emlab-solutions/imagepypy/raw/main/si_block1.jpg
 
 +-----------------------+---------------------+---------------------+--------------------------+
 |       |dif_img1|      |       |dif_img2|    |    |stereo_img|     |   |powder_img|           |
