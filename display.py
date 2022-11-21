@@ -49,7 +49,8 @@ DISPLAY_SIZE = 900 # default
 PLOT_MULTIPLIER = 6
 
 clrs = ["#2973A5", "cyan", "limegreen", "yellow", "red"]
-gclrs=plt.get_cmap('gray')
+# clrs=plt.get_cmap('binary')
+gclrs=plt.get_cmap('Greys')
 
 TY_DIF = 1
 TY_BLOCH = 2
@@ -132,13 +133,13 @@ class DifPlotter:
             xx = [kl.pt1.x, kl.pt2.x]
             yy = [kl.pt1.y, kl.pt2.y]
         
-            self.ax.plot(xx, yy, line_color, alpha=0.2)
+            self.ax.plot(xx, yy, line_color, alpha=0.35, linewidth=1.75)
 
         for hl in dp.hlines:
             hl *=PLOT_MULTIPLIER
             xx = [hl.pt1.x, hl.pt2.x]
             yy = [hl.pt1.y, hl.pt2.y]
-            self.ax.plot(xx, yy, 'k', alpha=0.2)
+            self.ax.plot(xx, yy, 'k', alpha=0.35, linewidth=1.75)
 
         for d in dp.disks:
             d *= PLOT_MULTIPLIER
@@ -167,6 +168,7 @@ class DifPlotter:
 
         clrMap = gclrs #default to grey
         if color:
+            # clrMap=clrs
             clrMap = LinearSegmentedColormap.from_list("mycmap", clrs)
 
         self.ax.clear()
@@ -225,7 +227,7 @@ class DifPlotter:
                 if abs(index[0]) <= zl and abs(index[1]) <= zl and abs(index[2]) <= zl:
                     plt.text(centre[0],centre[1], 
                             str(index),
-                            {'color': 'white', 'fontsize': 8},
+                            {'color': 'red', 'fontsize': 8},
                             horizontalalignment='center',
                             verticalalignment='bottom')
 
@@ -295,12 +297,12 @@ class DifPlotter:
             curr_dpi = _find_dpi()
         else:
             curr_dpi = 96
-        if type == TY_STEREO:
-            self.fig, self.ax = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
-                        dpi=curr_dpi, facecolor=(0,0,0)) #setting image size in pixels 
-        else:   
-            self.fig, self.ax = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
-                        dpi=curr_dpi) #setting image size in pixels
+        # if type == TY_STEREO:
+        #     self.fig, self.ax = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
+        #                 dpi=curr_dpi, facecolor=(0,0,0)) #setting image size in pixels 
+        # else:   
+        self.fig, self.ax = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
+                    dpi=curr_dpi) #setting image size in pixels
         if hasDisplay:
             self.position_fig(20, 20)
 

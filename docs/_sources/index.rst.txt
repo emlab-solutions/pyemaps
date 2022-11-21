@@ -4,7 +4,7 @@ Welcome to pyemaps' documentation!
 
 
 .. |dif_img1| image:: https://github.com/emlab-solutions/imagepypy/raw/main/si_dif1.png
-   :alt: Kinematic Diffraction for Silicon
+   :alt: Dynamic Diffraction for Silicon
    :height: 200
    :width: 200
    :target: `diffract1`_ 
@@ -12,7 +12,7 @@ Welcome to pyemaps' documentation!
 
 
 .. |dif_img2| image:: https://github.com/emlab-solutions/imagepypy/raw/main/si_dif2.png
-   :alt: Kinematic Diffraction for Silicon in CBED Mode
+   :alt: Dynamic Diffraction for Silicon in CBED Mode
    :height: 200
    :width: 200
    :target: `diffract2`_ 
@@ -35,8 +35,42 @@ Welcome to pyemaps' documentation!
 .. _powder: https://github.com/emlab-solutions/imagepypy/raw/main/powder.png
 
 
+.. |bloch_img1| image:: https://github.com/emlab-solutions/imagepypy/raw/main/Si_bloch4.jpg
+   :alt: Dynamic Diffraction for Silicon
+   :height: 200
+   :width: 200
+   :target: `bloch1`_ 
+.. _bloch1: https://github.com/emlab-solutions/imagepypy/raw/main/Si_bloch4.jpg
+
+
+.. |bloch_img2| image:: https://github.com/emlab-solutions/imagepypy/raw/main/Si_bloch3.jpg
+   :alt: Dynamic Diffraction for Silicon
+   :height: 200
+   :width: 200
+   :target: `bloch2`_ 
+.. _bloch2: https://github.com/emlab-solutions/imagepypy/raw/main/Si_bloch3.jpg
+
+
+.. |bloch_img3| image:: https://github.com/emlab-solutions/imagepypy/raw/main/Si_bloch2.jpg
+   :alt: Dynamic Diffraction for Silicon
+   :height: 200
+   :width: 200
+   :target: `bloch3`_ 
+.. _bloch3: https://github.com/emlab-solutions/imagepypy/raw/main/Si_bloch2.jpg
+
+
+.. |bloch_img4| image:: https://github.com/emlab-solutions/imagepypy/raw/main/si_bloch1.png
+   :alt: Dynamic Diffraction for Silicon
+   :height: 200
+   :width: 200
+   :target: `bloch4`_ 
+.. _bloch4: https://github.com/emlab-solutions/imagepypy/raw/main/si_bloch1.png
+
 +-----------------------+---------------------+---------------------+--------------------------+
 |       |dif_img1|      |       |dif_img2|    |    |stereo_img|     |   |powder_img|           |
++-----------------------+---------------------+---------------------+--------------------------+
++-----------------------+---------------------+---------------------+--------------------------+
+|       |bloch_img1|    |       |bloch_img2|  |    |bloch_img3|     |   |bloch_img4|           |
 +-----------------------+---------------------+---------------------+--------------------------+
 
 Contents

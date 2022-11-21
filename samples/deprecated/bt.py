@@ -1,4 +1,5 @@
-cname = 'Boron_Tetra'
+# cname = 'Boron_Tetra'
+cname = 'Silicon'
 MAX_PROCWORKERS = 2
 
 def bt_bloch():
@@ -24,7 +25,7 @@ def bt_bloch():
 
         for ec in emclist:
             fs.append(e.submit(cr.generateBloch, sample_thickness = sth, 
-                      em_controls = ec, disk_size=0.05, bSave=True))
+                      em_controls = ec, sampling = 20, bSave=True))
         
         for f in concurrent.futures.as_completed(fs):
             try:
