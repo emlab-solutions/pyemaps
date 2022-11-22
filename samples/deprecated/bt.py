@@ -14,6 +14,7 @@ def bt_bloch():
     gmax = 3.5
     sgmin = 0.3
     sgmax = 1.0
+    omega = 20
     sth = (50, 1000, 50)
 
     simc = SIMC(gmax = gmax, excitation=(sgmin, sgmax))
@@ -24,8 +25,12 @@ def bt_bloch():
     with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
 
         for ec in emclist:
-            fs.append(e.submit(cr.generateBloch, sample_thickness = sth, 
-                      em_controls = ec, sampling = 20, bSave=True))
+            fs.append(e.submit(cr.generateBloch, 
+                      sample_thickness = sth, 
+                      em_controls = ec, 
+                      omega = omega, 
+                      sampling = 20, 
+                      bSave=True))
         
         for f in concurrent.futures.as_completed(fs):
             try:
@@ -38,7 +43,7 @@ def bt_bloch():
                 print(f'failed to generate diffraction patterns: {e}') 
                 return bimg
             else: 
-                showBloch(bimg) 
+                showBloch(bimg, bSave=True) 
             
 
 if __name__ == "__main__":

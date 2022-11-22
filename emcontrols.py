@@ -38,40 +38,40 @@ Simulation Control Constants and Default Values:
     :value: (0.3, 2.0)
 
 .. data:: DEF_GMAX 
-    :value: = 3.5
+    :value: 3.5
 
 .. data:: DEF_BMIN
-    :value: = 0.1
+    :value: 0.1
 
 .. data:: DEF_INTENSITY
-    :value: = (0.0, 5)
+    :value: (0.0, 5)
 
 .. data:: DEF_GCTL
-    :value: = 6.0
+    :value: 6.0
 
 .. data:: DEF_ZCTL
-    :value: = 5.0
+    :value: 5.0
 
 .. data:: DEF_XAXIS
-    :value: = (0, 0, 0)
+    :value: (0, 0, 0)
 
 Microscope Control Constants and Default Values:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. data:: DEF_TILT
-    :value: = (0.0, 0.0)
+    :value: (0.0, 0.0)
 
 .. data:: DEF_ZONE
-    :value: = (0, 0, 1)
+    :value: (0, 0, 1)
 
 .. data:: DEF_DEFL
-    :value: = (0.0, 0.0)
+    :value: (0.0, 0.0)
 
 .. data:: DEF_KV
-    :value: = 200.0
+    :value: 200.0
 
 .. data:: DEF_CL
-    :value: = 1000.0
+    :value: 1000.0
 
 
 """

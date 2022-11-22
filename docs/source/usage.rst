@@ -39,7 +39,9 @@ The layout of the pyemaps data home directory is as follows:
 
     $(PYEMAPS_DATA)=<local directory>  # pyemaps data home, must have read and write permisions
     $(PYEMAPS_DATA)/crystals           # hosts all custom crystal data files (.xtl, .cif)
+    $(PYEMAPS_DATA)/dif                # location for all kinematic diffraction simulation output
     $(PYEMAPS_DATA)/bloch              # location for all bloch images output files
+    $(PYEMAPS_DATA)/stereo             # location for all stereodiagram output files
     $(PYEMAPS_DATA)/mxtal              # place for all crystal constructor output files such as *.xyz
 
 .. note::
