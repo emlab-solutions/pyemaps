@@ -2,17 +2,17 @@
 Visualisation
 =============
 
-Pyemaps provides a set of helper functions with python's *matplotlib* to
-display diffraction patterns. 
+*pyemaps* provides a set of helper functions to show diffraction patterns.
+These function are implemented with python's *matplotlib*. 
 
 *si_dif.py* and *si_bloch.py* sample code demonstrate the rendering of 
 diffraction patterns generated for *silicon* crystal by plotting
 its kikuchi lines, diffracted beams and HOLZ lines for kinematic 
-simulation and show the raw image data in the case of dynamic 
-or Bloch simulation.
+simulation and showing the raw image in the case of Bloch simulation.
 
-Users can also get direct access to diffraction patterns data and visualize
-the pattern with many other third party tools such as ImageJ, DigitalMicrogrpah.
+Users can also access diffraction patterns data directly and visualize
+the pattern with third party tools such as `ImageJ <https://imagej.nih.gov/ij/>`_, 
+`DigitalMicrograph <https://www.gatan.com/products/tem-analysis/gatan-microscopy-suite-software>`_.
 
 Rendering Kinematic Diffraction Patterns
 ----------------------------------------

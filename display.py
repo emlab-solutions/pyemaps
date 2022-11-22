@@ -45,12 +45,12 @@ from .fileutils import *
 
 import time
 
-DISPLAY_SIZE = 900 # default
+DISPLAY_SIZE = 1500 # default
 PLOT_MULTIPLIER = 6
 
 clrs = ["#2973A5", "cyan", "limegreen", "yellow", "red"]
 # clrs=plt.get_cmap('binary')
-gclrs=plt.get_cmap('Greys')
+gclrs=plt.get_cmap('gray')
 
 TY_DIF = 1
 TY_BLOCH = 2
@@ -111,20 +111,29 @@ class DifPlotter:
         self.save = 0
         self.difData = None
         self.emc = None
-        self.save_to = None
-
+    
+    def savePlot(self):
+        if self.save:
+            save_type = _get_feature(self.type)
+            save_to = compose_ofn(None, self.name, ty=save_type)
+            plt.savefig(save_to + '.png')
+            print(f'image saved to: {save_to}.png')
+   
     def terminate(self):
-        
+        # self.savePlot()
         plt.close(self.fig) #just close the current figure
             
     def plotKDif(self):
-        dp, mode, kshow, ishow = self.difData
+        idx, emc, dp, mode, kshow, ishow = self.difData
         
-        self.ax.clear()
+        n1, n2 = getGridPos(idx, 3)
+
+        iax = self.axes[n1, n2]
+        iax.clear()
         
-        self.ax.set_axis_off()
-        self.ax.set_aspect('equal')
-        self.ax.set_title(self.name)
+        iax.set_axis_off()
+        iax.set_aspect('equal')
+        # iax.set_title(self.name)
 
         line_color = 'k' if kshow else 'w'
         for kl in dp.klines:
@@ -133,13 +142,13 @@ class DifPlotter:
             xx = [kl.pt1.x, kl.pt2.x]
             yy = [kl.pt1.y, kl.pt2.y]
         
-            self.ax.plot(xx, yy, line_color, alpha=0.35, linewidth=1.75)
+            iax.plot(xx, yy, line_color, alpha=0.35, linewidth=1.75)
 
         for hl in dp.hlines:
             hl *=PLOT_MULTIPLIER
             xx = [hl.pt1.x, hl.pt2.x]
             yy = [hl.pt1.y, hl.pt2.y]
-            self.ax.plot(xx, yy, 'k', alpha=0.35, linewidth=1.75)
+            iax.plot(xx, yy, 'k', alpha=0.35, linewidth=1.75)
 
         for d in dp.disks:
             d *= PLOT_MULTIPLIER
@@ -152,54 +161,65 @@ class DifPlotter:
                                 linewidth = 0.5, 
                                 alpha=1.0, 
                                 fc='blue')
-            self.ax.add_patch(dis)
+            iax.add_patch(dis)
         
             if ishow:
-                plt.text(centre[0],centre[1], 
+                iax.text(centre[0],centre[1], 
                         str(d.idx),
                         {'color': 'red', 'fontsize': 8},
                         horizontalalignment='center',
                         verticalalignment='bottom' if mode == 1 else 'center')
+           
+        self.plotControls(emc,iax)
 
     def plotDDif(self):
         from matplotlib.colors import LinearSegmentedColormap
 
-        img, color = self.difData
+        idx, emc, img, color = self.difData
+        
+        n1, n2 = getGridPos(idx, 3)
 
+        iax = self.axes[n1, n2]
         clrMap = gclrs #default to grey
         if color:
             # clrMap=clrs
             clrMap = LinearSegmentedColormap.from_list("mycmap", clrs)
 
-        self.ax.clear()
-        self.ax.set_axis_off()
-        self.ax.set_title(self.name, fontsize=12)
-        plt.imshow(img, cmap=clrMap)
+        iax.clear()
+        iax.set_axis_off()
+        # iax.set_title(self.name, fontsize=12)
 
-    def plotControls(self):
-        controls_text = str(self.emc)
+        self.plotControls(emc,iax)
+
+        iax.imshow(img, cmap=clrMap)
+
+    def plotControls(self, emc, ax):
+        controls_text = str(emc)
 
         # finding control text plot or coordinates:
-        x0, _ = plt.xlim()
-        y0, _ = plt.ylim()
+        x0= 0
+        y0= 0
 
         if self.type != 3:
-            plt.text(x0 + 10, y0 - 10, controls_text,
+            ax.text(x0, y0, controls_text,
                     {'color': 'grey', 'fontsize': 6}
             )
             return
 
-        plt.text(x0 + 0.05, y0 - 0.05, controls_text,
+        ax.text( -1.0, -1.0, controls_text,
                     {'color': 'grey', 'fontsize': 6}
             )
 
     def plotStereo(self):
-        sdata, ishow, zl = self.difData  
+        idx, emc, sdata, ishow, zl = self.difData 
         
-        self.ax.clear()
+        n1, n2 = getGridPos(idx, 3)
+
+        iax = self.axes[n1, n2]
+        iax.clear()
         
-        self.ax.set_axis_off()
-        self.ax.set_title(self.name, color='blue')
+        iax.set_axis_off()
+        # iax.set_title(self.name, color='blue')
 
         # adding a unit disk
         unitdis = patches.Circle((0.0, 0.0), 
@@ -208,7 +228,7 @@ class DifPlotter:
                             linewidth = 0.5, 
                             alpha=1.0, 
                             color='blue')
-        self.ax.add_patch(unitdis)
+        iax.add_patch(unitdis)
 
         for s in sdata:
             c, r, idx = s['c'], s['r'], s['idx']
@@ -221,30 +241,38 @@ class DifPlotter:
                                 linewidth = 0.5, 
                                 alpha=1.0, 
                                 fc='blue')
-            self.ax.add_patch(dis)
+            iax.add_patch(dis)
         
             if ishow:
-                if abs(index[0]) <= zl and abs(index[1]) <= zl and abs(index[2]) <= zl:
-                    plt.text(centre[0],centre[1], 
+                if abs(index[0]) <= zl and \
+                   abs(index[1]) <= zl and \
+                   abs(index[2]) <= zl:
+
+                    iax.text(centre[0],centre[1], 
                             str(index),
                             {'color': 'red', 'fontsize': 8},
                             horizontalalignment='center',
                             verticalalignment='bottom')
 
             # set the limits
-        self.ax.set_xlim([-1.0, 1.0])
-        self.ax.set_ylim([-1.0, 1.0])
+        iax.set_xlim([-1.0, 1.0])
+        iax.set_ylim([-1.0, 1.0])
+
+        self.plotControls(emc,iax)
 
     def call_back(self):
+        
         while self.pipe.poll():
             command = self.pipe.recv()
             
             if command is None:
                 self.terminate()
                 return False
+            elif command == ():
+                self.savePlot()
             else:
-                self.emc, self.name, self.save, self.difData = command
-
+                self.difData = command
+                
                 if self.type == 1: #diffraction plot type
                     self.plotKDif()
             
@@ -257,16 +285,8 @@ class DifPlotter:
                 else:
                     raise ValueError("No data to plot")
                 
-                self.plotControls()
-                self.fig.canvas.draw_idle()
-                
-                self.plotControls()
+                self.fig.canvas.draw_idle()  
 
-                if self.save:
-                    save_type = _get_feature(self.type)
-                    self.save_to = compose_ofn(None, self.name, ty=save_type)
-                    plt.savefig(self.save_to + '.png')
-                    print(f'image saved to: {self.save_to}.png')
                 plt.pause(1.0)
 
         return True
@@ -288,10 +308,12 @@ class DifPlotter:
             pass
 
 
-    def __call__(self, pipe, type):
+    def __call__(self, pipe, type, name, bSave, n1, n2):
         import sys
         
         self.pipe = pipe
+        self.name = name
+        self.save = bSave
 
         if sys.platform == 'win32':
             curr_dpi = _find_dpi()
@@ -301,12 +323,17 @@ class DifPlotter:
         #     self.fig, self.ax = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
         #                 dpi=curr_dpi, facecolor=(0,0,0)) #setting image size in pixels 
         # else:   
-        self.fig, self.ax = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
-                    dpi=curr_dpi) #setting image size in pixels
+        self.fig, self.axes = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
+                    dpi=curr_dpi, nrows=n1, ncols=n2) #setting image size in pixels
+        
+        for x in self.axes.ravel():
+            x.axis("off")
+            
         if hasDisplay:
             self.position_fig(20, 20)
 
-        self.ax.set_axis_off()
+        # for ax in self.axes:
+        #     ax.set_axis_off()
         
         if type == 1:
             pyemaps_title = 'PYEMAPS - Kinematic Diffraction' 
@@ -330,7 +357,8 @@ class DifPlotter:
         timer = self.fig.canvas.new_timer(interval=1500)
         timer.add_callback(self.call_back)
         timer.start()
-
+        
+        self.fig.suptitle(self.name)
         self.showImage()
 
 class NBPlot:
@@ -338,11 +366,22 @@ class NBPlot:
     # Creating a non-bloch plot object with a pipe object sending diffraction data
     # to difPlotter
     # '''
-    def __init__(self, type = TY_DIF):
+    def __init__(self, type = TY_DIF, n = 1, name='', bSave=False):
+
+        n1, n2 = getGridDims(n, 3)
+        
         self.plot_pipe, plotter_pipe = mp.Pipe()
         self.plotter = DifPlotter()
         self.plot_process = mp.Process(
-            target=self.plotter, args=(plotter_pipe, type), daemon=True)
+            target=self.plotter, 
+            args=(plotter_pipe, 
+                  type,
+                  name,
+                  bSave,
+                  n1,
+                  n2), 
+            daemon=True)
+
         self.plot_process.start()
 
     def plot(self, data = (), finished=False):
@@ -376,11 +415,16 @@ def showDif(dpl=None, kshow=True, ishow=True, bSave = False):
     name = dpl.name
     if _isLinux() and not hasDisplay: bSave = True 
     #always save to file on linux as it may just the commandline
-    pl = NBPlot(TY_DIF)
-    for c, dp in dpl:  
-        d = (c, name, bSave, (dp, mode, kshow, ishow))
+    n = len(dpl)
+
+    pl = NBPlot(TY_DIF, n, name, bSave)
+    for i, cdp in enumerate(dpl.diffList):
+        c, dp = cdp  
+        d = (i, c, dp, mode, kshow, ishow)
         pl.plot(data = d)
         time.sleep(1.0)
+    pl.plot()
+    time.sleep(1.0)
 
     pl.plot(finished=True)
 
@@ -407,11 +451,16 @@ def showBloch(bimgs, bColor = False, bSave = False):
     if _isLinux() and not hasDisplay: bSave = True 
     #always save to file on linux as it may just the commandline
 
-    pl = NBPlot(TY_BLOCH)
-    for c, img in bimgs: 
-        d = (c, name, bSave, (img, bColor))
+    n = len(bimgs.blochList)
+    pl = NBPlot(TY_BLOCH, n, name, bSave)
+    for i, cimg in enumerate(bimgs.blochList):
+        c, img = cimg  
+        d = (i, c, img, bColor)
         pl.plot(data = d)
         time.sleep(1.0)
+
+    pl.plot()
+    time.sleep(1.0)
 
     pl.plot(finished=True)
 
@@ -438,10 +487,38 @@ def showStereo(slist, name, iShow = False, bSave=False, zLimit = 2):
     if _isLinux() and not hasDisplay: bSave = True 
     #always save to file on linux as it may just the commandline
     
-    pl = NBPlot(TY_STEREO)
-    for c, s in slist:  
-        d = (c, name, bSave, (s, iShow, zLimit))
+    n = len(slist)
+    
+    pl = NBPlot(TY_STEREO, n, name, bSave)
+    for i, ss in enumerate(slist):  
+        c, s = ss
+        d = (i, c, s, iShow, zLimit)
         pl.plot(data = d)
         time.sleep(1.0)
-
+    pl.plot()
+    time.sleep(1.0)
     pl.plot(finished=True)
+
+def getGridDims(n, nCols = 3):
+    
+    nr = n % nCols
+
+    nrows = n // nCols
+    
+    if nr != 0:
+        nrows += 1
+
+    ncols = nr + 1
+    if n > 3:
+        ncols = 3
+
+    return nrows, ncols
+
+
+def getGridPos(i, nCols = 3):
+    
+    ncols = i % nCols
+
+    nrows = i // nCols
+
+    return nrows, ncols
