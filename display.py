@@ -45,7 +45,9 @@ from .fileutils import *
 
 import time
 
-DISPLAY_SIZE = 1500 # default
+
+DISPLAY_MULTIPLE_SIZE = 500 
+DISPLAY_ONE_SIZE = 900
 PLOT_MULTIPLIER = 6
 
 clrs = ["#2973A5", "cyan", "limegreen", "yellow", "red"]
@@ -111,6 +113,8 @@ class DifPlotter:
         self.save = 0
         self.difData = None
         self.emc = None
+        self.cShow = True
+        self.layout = 'individual'
     
     def savePlot(self):
         if self.save:
@@ -126,7 +130,10 @@ class DifPlotter:
     def plotKDif(self):
         idx, emc, dp, mode, kshow, ishow = self.difData
         
-        n1, n2 = getGridPos(idx, 3)
+        if self.layout == 'table':
+            n1, n2 = _getGridPos(idx, 3)
+        else:
+            n1, n2 = 0, 0
 
         iax = self.axes[n1, n2]
         iax.clear()
@@ -170,14 +177,19 @@ class DifPlotter:
                         horizontalalignment='center',
                         verticalalignment='bottom' if mode == 1 else 'center')
            
-        self.plotControls(emc,iax)
+        if self.cShow:
+            self.plotControls(emc,iax)
+
 
     def plotDDif(self):
         from matplotlib.colors import LinearSegmentedColormap
 
-        idx, emc, img, color = self.difData
+        idx, emc, img, color, tag = self.difData
         
-        n1, n2 = getGridPos(idx, 3)
+        if self.layout == 'table':
+            n1, n2 = _getGridPos(idx, 3)
+        else:
+            n1, n2 = 0, 0
 
         iax = self.axes[n1, n2]
         clrMap = gclrs #default to grey
@@ -187,11 +199,13 @@ class DifPlotter:
 
         iax.clear()
         iax.set_axis_off()
-        # iax.set_title(self.name, fontsize=12)
 
-        self.plotControls(emc,iax)
+        iax.set_title(tag)
 
         iax.imshow(img, cmap=clrMap)
+        if self.cShow:
+            self.plotControls(emc,iax)
+
 
     def plotControls(self, emc, ax):
         controls_text = str(emc)
@@ -200,20 +214,28 @@ class DifPlotter:
         x0= 0
         y0= 0
 
-        if self.type != 3:
+        if self.type != TY_STEREO:
+            x0, _ = ax.get_xlim()
+            y0, _ = ax.get_ylim()
+
             ax.text(x0, y0, controls_text,
                     {'color': 'grey', 'fontsize': 6}
             )
             return
 
+
         ax.text( -1.0, -1.0, controls_text,
                     {'color': 'grey', 'fontsize': 6}
-            )
+                )
 
     def plotStereo(self):
-        idx, emc, sdata, ishow, zl = self.difData 
+        idx, emc, sdata, ishow, zl= self.difData 
         
-        n1, n2 = getGridPos(idx, 3)
+        
+        if self.layout == 'table':
+            n1, n2 = _getGridPos(idx, 3)
+        else:
+            n1, n2 = 0, 0
 
         iax = self.axes[n1, n2]
         iax.clear()
@@ -257,8 +279,12 @@ class DifPlotter:
             # set the limits
         iax.set_xlim([-1.0, 1.0])
         iax.set_ylim([-1.0, 1.0])
+        
+        tag = 'zone: ' + str(emc.zone)
+        iax.set_title(tag)
 
-        self.plotControls(emc,iax)
+        if self.cShow:
+            self.plotControls(emc,iax)
 
     def call_back(self):
         
@@ -308,32 +334,37 @@ class DifPlotter:
             pass
 
 
-    def __call__(self, pipe, type, name, bSave, n1, n2):
+    def __call__(self, pipe, type, name, bSave, n1, n2, cShow, layout):
         import sys
         
         self.pipe = pipe
         self.name = name
         self.save = bSave
+        self.layout = layout
+        self.cShow = cShow
 
         if sys.platform == 'win32':
             curr_dpi = _find_dpi()
         else:
             curr_dpi = 96
-        # if type == TY_STEREO:
-        #     self.fig, self.ax = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
-        #                 dpi=curr_dpi, facecolor=(0,0,0)) #setting image size in pixels 
-        # else:   
-        self.fig, self.axes = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
-                    dpi=curr_dpi, nrows=n1, ncols=n2) #setting image size in pixels
-        
+            
+        if layout == 'table':
+            display_size = DISPLAY_MULTIPLE_SIZE * n2
+        else:
+            display_size = DISPLAY_ONE_SIZE
+
+        self.fig, self.axes = plt.subplots(figsize=(display_size/curr_dpi,
+                                                    display_size/curr_dpi), 
+                                            squeeze=False, 
+                                            clip_on=True,
+                                            nrows=n1, 
+                                            ncols=n2) #setting image size in pixels
         for x in self.axes.ravel():
             x.axis("off")
+            x.set_aspect('equal')
             
         if hasDisplay:
             self.position_fig(20, 20)
-
-        # for ax in self.axes:
-        #     ax.set_axis_off()
         
         if type == 1:
             pyemaps_title = 'PYEMAPS - Kinematic Diffraction' 
@@ -354,11 +385,13 @@ class DifPlotter:
             else:
                 self.fig.canvas.set_window_title(pyemaps_title)
 
+        self.fig.suptitle(self.name, ha='center', fontsize=24)
+        # self.fig.tight_layout()
+        
         timer = self.fig.canvas.new_timer(interval=1500)
         timer.add_callback(self.call_back)
         timer.start()
         
-        self.fig.suptitle(self.name)
         self.showImage()
 
 class NBPlot:
@@ -366,10 +399,13 @@ class NBPlot:
     # Creating a non-bloch plot object with a pipe object sending diffraction data
     # to difPlotter
     # '''
-    def __init__(self, type = TY_DIF, n = 1, name='', bSave=False):
+    def __init__(self, type = TY_DIF, n = 1, name='', bSave=False, cShow = True, layout='individual'):
 
-        n1, n2 = getGridDims(n, 3)
-        
+        if layout == 'table':
+            n1, n2 = _getGridDims(n, 3)
+        else:
+            n1, n2 = 1, 1
+
         self.plot_pipe, plotter_pipe = mp.Pipe()
         self.plotter = DifPlotter()
         self.plot_process = mp.Process(
@@ -379,7 +415,9 @@ class NBPlot:
                   name,
                   bSave,
                   n1,
-                  n2), 
+                  n2,
+                  cShow, 
+                  layout), 
             daemon=True)
 
         self.plot_process.start()
@@ -391,19 +429,23 @@ class NBPlot:
         else:
             send(data)
 
-def showDif(dpl=None, kshow=True, ishow=True, bSave = False):
+def showDif(dpl=None, kshow=True, ishow=True, bSave = False, layout='individual', cShow=True):
    
     """
     Render kinematic diffraction pattern generated by pyemaps.
 
-    :param dpl: Optional. Kinematic difraction pattern object list
+    :param dpl: Kinematic difraction pattern object list `DPList <pyemaps.kdiffs.html#pyemaps.kdiffs.DPList>`_
     :type dpl: DPList
-    :param kshow: Optional. Whether to display Kikuchi lines.
+    :param kshow: Whether to display Kikuchi lines.
     :type kshow: bool 
-    :param ishow: Optional. Whether to display Miller indexes.
+    :param ishow: Whether to display Miller indexes.
     :type ishow: bool 
-    :param bSave: Optional. Whether to save the diplay into a .png image file.
-    :type bSave: bool 
+    :param bSave: Whether to save the diplay into a .png image file.
+    :type bSave: bool  
+    :param layout: layout format. individual (default): plotting one by one, table: plotting in a table of 3 columns  
+    :type layout: str, optional 
+    :param cShow: Plot control annotation. `True` (default): plot the control parameters on lower left corner; `False` do not plot.
+    :type zlimit: bool, optional
     
     """
     from pyemaps import DPList
@@ -415,9 +457,9 @@ def showDif(dpl=None, kshow=True, ishow=True, bSave = False):
     name = dpl.name
     if _isLinux() and not hasDisplay: bSave = True 
     #always save to file on linux as it may just the commandline
-    n = len(dpl)
+    n = len(dpl.diffList)
 
-    pl = NBPlot(TY_DIF, n, name, bSave)
+    pl = NBPlot(TY_DIF, n, name, bSave, cShow, layout)
     for i, cdp in enumerate(dpl.diffList):
         c, dp = cdp  
         d = (i, c, dp, mode, kshow, ishow)
@@ -428,17 +470,21 @@ def showDif(dpl=None, kshow=True, ishow=True, bSave = False):
 
     pl.plot(finished=True)
 
-def showBloch(bimgs, bColor = False, bSave = False):
+def showBloch(bimgs, bColor = False, bSave = False, layout='individual', cShow=True):
     
     """
     Render dynamic diffraction pattern generated by pyemaps.
 
-    :param bimgs: Optional. Dynamic difraction pattern object list (TODO:ref to BlochImgs)
+    :param bimgs: Optional. Dynamic difraction pattern object list `BImgList <pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs>`_
     :type bimgs: BlochImgs
     :param bColor: Optional. Whether to display the image in predefined color map.
     :type bColor: bool 
     :param bSave: Optional. Whether to save the image into a .im3 image file.
-    :type bSave: bool 
+    :type bSave: bool  
+    :param layout: layout format. individual (default): plotting one by one, table: plotting in a table of 3 columns  
+    :type layout: str, optional 
+    :param cShow: Plot control annotation. `True` (default): plot the control parameters on lower left corner; `False` do not plot.
+    :type zlimit: bool, optional
     
     """
     from pyemaps import BImgList
@@ -452,10 +498,11 @@ def showBloch(bimgs, bColor = False, bSave = False):
     #always save to file on linux as it may just the commandline
 
     n = len(bimgs.blochList)
-    pl = NBPlot(TY_BLOCH, n, name, bSave)
+    pl = NBPlot(TY_BLOCH, n, name, bSave, cShow, layout)
     for i, cimg in enumerate(bimgs.blochList):
         c, img = cimg  
-        d = (i, c, img, bColor)
+        tag = 'Sample Thickness: ' + str(500+i*250)
+        d = (i, c, img, bColor, tag)
         pl.plot(data = d)
         time.sleep(1.0)
 
@@ -464,19 +511,23 @@ def showBloch(bimgs, bColor = False, bSave = False):
 
     pl.plot(finished=True)
 
-def showStereo(slist, name, iShow = False, bSave=False, zLimit = 2):
+def showStereo(slist, name, iShow = False, bSave=False, zLimit = 2, layout='individual', cShow=True):
     
     """
     Render stereodiagram generated by pyemaps.
 
-    :param slist: Required. Stereodiagram by pyemaps.generateStereo (TODO:ref to BlochImgs)
-    :type slist: list
-    :param iShow: Optional. Whether to display Miller indexes or not.
-    :type iShow: bool 
-    :param bSave: Optional. Whether to save the image into a .png image file.
-    :type bSave: bool  
-    :param zlimit: Optional. Miller indexes cutoff number.
-    :type zlimit: int 
+    :param slist: Stereodiagram output from `generateStereo <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateStereo>`_.
+    :type slist: list, required
+    :param iShow: Whether to display Miller indexes or not.
+    :type iShow: bool, optional
+    :param bSave: Whether to save the image into a .png image file.
+    :type bSave: bool, optional  
+    :param zlimit: Miller indexes cutoff number.
+    :type zlimit: int, optional  
+    :param layout: layout format. individual (default): plotting one by one in sequence, table: plotting in a table of 3 columns  
+    :type layout: str, optional 
+    :param cShow: Plot control annotation. `True` (default): plot the control parameters on lower left corner; `False` do not plot.
+    :type zlimit: bool, optional
 
     .. note::
 
@@ -489,7 +540,7 @@ def showStereo(slist, name, iShow = False, bSave=False, zLimit = 2):
     
     n = len(slist)
     
-    pl = NBPlot(TY_STEREO, n, name, bSave)
+    pl = NBPlot(TY_STEREO, n, name, bSave, cShow, layout)
     for i, ss in enumerate(slist):  
         c, s = ss
         d = (i, c, s, iShow, zLimit)
@@ -499,23 +550,24 @@ def showStereo(slist, name, iShow = False, bSave=False, zLimit = 2):
     time.sleep(1.0)
     pl.plot(finished=True)
 
-def getGridDims(n, nCols = 3):
-    
-    nr = n % nCols
+def _getGridDims(n, nCol = 3):
+   
+    # print(f'found grid input: {n}, {nCol}')
+    nr = n % nCol
 
-    nrows = n // nCols
+    nrows = n // nCol
     
     if nr != 0:
         nrows += 1
 
-    ncols = nr + 1
-    if n > 3:
+    ncols = nr
+    if n >= 3:
         ncols = 3
-
+    # print(f'found grid: {nrows}, {ncols}')
     return nrows, ncols
 
 
-def getGridPos(i, nCols = 3):
+def _getGridPos(i, nCols = 3):
     
     ncols = i % nCols
 
