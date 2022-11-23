@@ -49,19 +49,130 @@
             
   <section id="visualisation">
 <h1>Visualisation<a class="headerlink" href="#visualisation" title="Permalink to this heading">¶</a></h1>
-<p>Pyemaps provides a set of helper functions with python’s <em>matplotlib</em> to
-display diffraction patterns.</p>
+<p><em>pyemaps</em> provides a set of helper functions to show diffraction patterns.
+These function are implemented with python’s <em>matplotlib</em>.</p>
 <p><em>si_dif.py</em> and <em>si_bloch.py</em> sample code demonstrate the rendering of
 diffraction patterns generated for <em>silicon</em> crystal by plotting
 its kikuchi lines, diffracted beams and HOLZ lines for kinematic
-simulation and show the raw image data in the case of dynamic
-or Bloch simulation.</p>
-<p>Users can also get direct access to diffraction patterns data and visualize
-the pattern with many other third party tools such as ImageJ, DigitalMicrogrpah.</p>
-<section id="rendering-kinematic-diffraction-patterns">
-<h2>Rendering Kinematic Diffraction Patterns<a class="headerlink" href="#rendering-kinematic-diffraction-patterns" title="Permalink to this heading">¶</a></h2>
+simulation and showing the raw image in the case of Bloch simulation.</p>
+<p>Users can also access diffraction patterns data directly and visualize
+the pattern with third party tools such as <a class="reference external" href="https://imagej.nih.gov/ij/">ImageJ</a>,
+<a class="reference external" href="https://www.gatan.com/products/tem-analysis/gatan-microscopy-suite-software">DigitalMicrograph</a>.
+as shown in <a class="reference internal" href="#thirdparty"><span class="std std-ref">Rendering by Third Party Tools</span></a></p>
+<section id="builtin-displays">
+<h2>Builtin Displays<a class="headerlink" href="#builtin-displays" title="Permalink to this heading">¶</a></h2>
+<section id="kinematic-diffraction-simulations">
+<h3>Kinematic Diffraction Simulations<a class="headerlink" href="#kinematic-diffraction-simulations" title="Permalink to this heading">¶</a></h3>
+<p>Additional example of <em>pyemaps</em>’s builtin functions for <em>silicon</em> crystal
+as starting zone changes:</p>
+<img alt="dif_table.png" src="dif_table.png" />
+</section>
+<section id="dynamic-diffraction-simulations">
+<h3>Dynamic Diffraction Simulations<a class="headerlink" href="#dynamic-diffraction-simulations" title="Permalink to this heading">¶</a></h3>
+<p>Below is another example of using <em>pyemaps</em> builtin display functions
+to render images from Bloch simulation for <em>silicon</em> with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">zone</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">hight</span> <span class="n">voltage</span> <span class="p">(</span><span class="n">vt</span><span class="p">):</span> <span class="mi">100</span>
+<span class="n">sample</span> <span class="n">thickness</span> <span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">1750</span><span class="p">,</span> <span class="mi">250</span><span class="p">)</span>
+<span class="p">(</span><span class="n">starting</span> <span class="n">at</span> <span class="mi">500</span><span class="p">,</span> <span class="n">ending</span> <span class="n">at</span> <span class="mi">1750</span> <span class="k">with</span> <span class="n">an</span> <span class="n">increment</span> <span class="n">of</span> <span class="mi">250</span><span class="p">)</span>
+<span class="n">sampling</span> <span class="n">points</span><span class="p">:</span> <span class="mi">40</span>
+</pre></div>
+</div>
+<img alt="_images/bloch_table.png" src="_images/bloch_table.png" />
+<p>Notice how the images are generated as a list of data arrays <em>bimgs</em>
+in the following code and rendered by <em>showBloch</em> functions.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">EMC</span><span class="p">,</span> <span class="n">EMCError</span><span class="p">,</span> <span class="n">BlochError</span><span class="p">,</span> <span class="n">DEF_CBED_DSIZE</span>
+
+<span class="k">def</span> <span class="nf">generate_bloch_images</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Silicon&#39;</span><span class="p">,</span> <span class="n">dsize</span> <span class="o">=</span> <span class="n">DEF_CBED_DSIZE</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">concurrent.futures</span>
+    <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cryst</span>
+    <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">BImgList</span><span class="p">,</span> <span class="n">SIMC</span>
+
+    <span class="n">si</span> <span class="o">=</span> <span class="n">cryst</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">sth</span> <span class="o">=</span> <span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">1750</span><span class="p">,</span> <span class="mi">250</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">bimgs</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">generateBloch</span><span class="p">(</span><span class="n">disk_size</span><span class="o">=</span><span class="n">dsize</span><span class="p">,</span>
+                        <span class="n">sampling</span> <span class="o">=</span> <span class="mi">40</span><span class="p">,</span>
+                        <span class="n">sample_thickness</span><span class="o">=</span><span class="n">sth</span><span class="p">,</span>
+                        <span class="n">em_controls</span> <span class="o">=</span> <span class="n">EMC</span><span class="p">(</span><span class="n">zone</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">vt</span><span class="o">=</span><span class="mi">100</span><span class="p">))</span>
+
+
+    <span class="k">except</span> <span class="p">(</span><span class="n">BlochError</span><span class="p">,</span> <span class="n">EMCError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s1"> generated an exception: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bimgs</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;failed to generate diffraction patterns: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bimgs</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">bimgs</span>
+
+<span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">showBloch</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="n">imgs</span> <span class="o">=</span> <span class="n">generate_bloch_images</span><span class="p">()</span>
+    <span class="n">showBloch</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="n">bSave</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="stereodiagram">
+<h3>Stereodiagram<a class="headerlink" href="#stereodiagram" title="Permalink to this heading">¶</a></h3>
+<p>Similar build-in function to display stereodiagram output from <em>pyemaps</em>
+is showStereo function. It takes a stereodiagram dictionary objects
+generated from <em>pyemaps</em>’ <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateStereo">generateStereo</a>
+and render each of the spots by accessing the dictionary objects directly
+as demonstrated below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">concurrent.futures</span>
+<span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">EMC</span>
+<span class="n">MAX_PROCWORKERS</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="k">def</span> <span class="nf">getStereo</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">emc</span> <span class="o">=</span> <span class="n">EMC</span><span class="p">()):</span>
+
+    <span class="n">stereo</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">generateStereo</span><span class="p">(</span><span class="n">zone</span> <span class="o">=</span> <span class="n">emc</span><span class="o">.</span><span class="n">zone</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">emc</span><span class="p">,</span> <span class="n">stereo</span>
+
+<span class="k">def</span> <span class="nf">generate_stereo_list</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Silicon&#39;</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>
+
+    <span class="n">si</span> <span class="o">=</span> <span class="n">cr</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">emclist</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span>
+        <span class="n">emclist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EMC</span><span class="p">(</span><span class="n">zone</span><span class="o">=</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="o">-</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span>
+
+    <span class="n">fs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">slist</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">with</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ProcessPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">MAX_PROCWORKERS</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+
+        <span class="k">for</span> <span class="n">ec</span> <span class="ow">in</span> <span class="n">emclist</span><span class="p">:</span>
+            <span class="n">fs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">getStereo</span><span class="p">,</span> <span class="n">si</span><span class="p">,</span> <span class="n">emc</span><span class="o">=</span><span class="n">ec</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">as_completed</span><span class="p">(</span><span class="n">fs</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">emc</span><span class="p">,</span> <span class="n">stereo</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;failed to generate stereodiagram with &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">slist</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">emc</span><span class="p">,</span> <span class="n">stereo</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">slist</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">showStereo</span>
+
+    <span class="n">stereoList</span> <span class="o">=</span> <span class="n">generate_stereo_list</span><span class="p">()</span>
+    <span class="n">showStereo</span><span class="p">(</span><span class="n">stereoList</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Silicon&#39;</span><span class="p">,</span> <span class="n">iShow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">zLimit</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">bSave</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="stereo_table.png" src="stereo_table.png" />
+</section>
+</section>
+<section id="rendering-by-third-party-tools">
+<span id="thirdparty"></span><h2>Rendering by Third Party Tools<a class="headerlink" href="#rendering-by-third-party-tools" title="Permalink to this heading">¶</a></h2>
 <p>pyemaps kinematic diffraction simulation results are captured by
-<a class="reference external" href="pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern">DP or diffPattern</a> clases:</p>
+<a class="reference external" href="pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern">DP or diffPattern</a> class:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>
 
 <span class="n">si</span> <span class="o">=</span> <span class="n">cr</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="s1">&#39;Silicon&#39;</span><span class="p">)</span>
@@ -174,9 +285,8 @@ in DigitalMicrograph:</p>
     <span class="k">return</span> <span class="mi">0</span>
 </pre></div>
 </div>
-</section>
-<section id="visualing-dynamic-diffraction-patterns">
-<h2>Visualing Dynamic Diffraction Patterns<a class="headerlink" href="#visualing-dynamic-diffraction-patterns" title="Permalink to this heading">¶</a></h2>
+<section id="dynamic-diffraction-patterns">
+<h3>Dynamic Diffraction Patterns<a class="headerlink" href="#dynamic-diffraction-patterns" title="Permalink to this heading">¶</a></h3>
 <p>The output from bloch dynamic diffraction simulation is an array of 2 or 3 dimensional floating
 numbers representing image intensities, depending on whether one or multiple slices of
 dynamic diffraction images are generated.</p>
@@ -189,6 +299,15 @@ details.</p>
 run in Digita;Micrograph. The raw image contains 10 images each at a sample thickness
 range betwwen 0 and 1000.</p>
 <img alt="_images/bloch_3d_dm.png" src="_images/bloch_3d_dm.png" />
+</section>
+<section id="constructing-crystal">
+<h3>Constructing Crystal<a class="headerlink" href="#constructing-crystal" title="Permalink to this heading">¶</a></h3>
+<p><em>pyemaps</em>’ <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateMxtal">generateMxtal</a>
+function produces .XYZ file that can be improted into
+<a class="reference external" href="http://www.jmol.org/">Jmole</a> and visualize the
+crystal in 3D atomic structure. The following is an example of such rendering:</p>
+<img alt="https://github.com/emlab-solutions/imagepypy/raw/main/mxtal01.png" src="https://github.com/emlab-solutions/imagepypy/raw/main/mxtal01.png" />
+</section>
 </section>
 </section>
 
@@ -205,8 +324,17 @@ range betwwen 0 and 1000.</p>
 <li class="toctree-l1"><a class="reference internal" href="requirements.html">Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Visualisation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#rendering-kinematic-diffraction-patterns">Rendering Kinematic Diffraction Patterns</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#visualing-dynamic-diffraction-patterns">Visualing Dynamic Diffraction Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#builtin-displays">Builtin Displays</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#kinematic-diffraction-simulations">Kinematic Diffraction Simulations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dynamic-diffraction-simulations">Dynamic Diffraction Simulations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#stereodiagram">Stereodiagram</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#rendering-by-third-party-tools">Rendering by Third Party Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dynamic-diffraction-patterns">Dynamic Diffraction Patterns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#constructing-crystal">Constructing Crystal</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>

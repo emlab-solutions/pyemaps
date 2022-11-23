@@ -9,13 +9,14 @@ def bt_bloch():
 
     cr = cryst.from_builtin(cname)
     
-    zlist = [(1, 0, 0), (1, 0, 1), (0, 0, 1)]
-    # zlist = [(0, 0, 1)]
+    # zlist = [(1, 0, 0), (1, 0, 1), (0, 0, 1)]
+    zlist = [(1, 1, 1)]
     gmax = 3.5
     sgmin = 0.3
     sgmax = 1.0
     omega = 20
-    sth = (50, 1000, 50)
+    # sth = (50, 1000, 50)
+    sth = (500, 2000, 250)
 
     simc = SIMC(gmax = gmax, excitation=(sgmin, sgmax))
 

@@ -13,12 +13,137 @@ simulation and showing the raw image in the case of Bloch simulation.
 Users can also access diffraction patterns data directly and visualize
 the pattern with third party tools such as `ImageJ <https://imagej.nih.gov/ij/>`_, 
 `DigitalMicrograph <https://www.gatan.com/products/tem-analysis/gatan-microscopy-suite-software>`_.
+as shown in :ref:`Rendering by Third Party Tools <thirdparty>`
 
-Rendering Kinematic Diffraction Patterns
-----------------------------------------
+Builtin Displays
+----------------
+
+Kinematic Diffraction Simulations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Additional example of *pyemaps*'s builtin functions for *silicon* crystal
+as starting zone changes:
+
+.. image:: dif_table.png
+
+Dynamic Diffraction Simulations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Below is another example of using *pyemaps* builtin display functions
+to render images from Bloch simulation for *silicon* with:
+
+::
+
+    zone: (1,1,1) 
+    hight voltage (vt): 100
+    sample thickness (500, 1750, 250)
+    (starting at 500, ending at 1750 with an increment of 250)
+    sampling points: 40
+
+.. image:: bloch_table.png
+
+Notice how the images are generated as a list of data arrays *bimgs*
+in the following code and rendered by *showBloch* functions.
+
+.. code-block:: python
+
+    from pyemaps import EMC, EMCError, BlochError, DEF_CBED_DSIZE
+
+    def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE):
+        import concurrent.futures
+        from pyemaps import Crystal as cryst
+        from pyemaps import BImgList, SIMC
+
+        si = cryst.from_builtin(name)
+        sth = (500, 1750, 250)
+        try:
+            bimgs = si.generateBloch(disk_size=dsize,
+                            sampling = 40, 
+                            sample_thickness=sth,
+                            em_controls = EMC(zone=(1,1,1), vt=100))
+            
+            
+        except (BlochError, EMCError) as e:
+            print(f'{f} generated an exception: {e.message}, {c}') 
+            return bimgs
+        except Exception as e:
+            print(f'failed to generate diffraction patterns: {e}') 
+            return bimgs
+        else: 
+            return bimgs
+
+    from pyemaps import showBloch
+    
+    if __name__ == '__main__':
+
+        imgs = generate_bloch_images()
+        showBloch(imgs, bSave=True)
+
+
+
+Stereodiagram
+~~~~~~~~~~~~~
+
+Similar build-in function to display stereodiagram output from *pyemaps*
+is showStereo function. It takes a stereodiagram dictionary objects
+generated from *pyemaps*' `generateStereo <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateStereo>`_
+and render each of the spots by accessing the dictionary objects directly
+as demonstrated below:
+
+.. code-block:: python
+
+    import concurrent.futures
+    from pyemaps import EMC
+    MAX_PROCWORKERS = 4
+
+    def getStereo(cc, emc = EMC()):
+        
+        stereo = cc.generateStereo(zone = emc.zone)
+        return emc, stereo
+        
+    def generate_stereo_list(name = 'Silicon'):  
+        from pyemaps import Crystal as cr
+        
+        si = cr.from_builtin(name)
+        emclist = []
+        
+        for i in range(-3,3): 
+            emclist.append(EMC(zone=(i,-i,1)))
+        
+        fs = []
+        slist=[]
+        with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
+            
+            for ec in emclist:
+                fs.append(e.submit(getStereo, si, emc=ec))
+
+            for f in concurrent.futures.as_completed(fs):
+                try:
+                    emc, stereo = f.result()               
+                except Exception as e:
+                    print('failed to generate stereodiagram with ' + str(e))
+                    exit(1)
+                else:
+                    slist.append((emc, stereo))    
+        
+        return slist
+
+    if __name__ == '__main__':
+        
+        from pyemaps import showStereo
+        
+        stereoList = generate_stereo_list()
+        showStereo(stereoList, name='Silicon', iShow=True, zLimit = 1, bSave=True)
+
+.. image:: stereo_table.png
+
+
+.. _thirdparty:
+
+Rendering by Third Party Tools
+------------------------------
 
 pyemaps kinematic diffraction simulation results are captured by 
-`DP or diffPattern <pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern>`_ clases:
+`DP or diffPattern <pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern>`_ class:
 
 .. code-block:: python
     
@@ -136,8 +261,8 @@ in DigitalMicrograph:
         del dm_dif_img
         return 0        
 
-Visualing Dynamic Diffraction Patterns
------------------------------------- 
+Dynamic Diffraction Patterns
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The output from bloch dynamic diffraction simulation is an array of 2 or 3 dimensional floating
 numbers representing image intensities, depending on whether one or multiple slices of 
@@ -155,4 +280,14 @@ range betwwen 0 and 1000.
 
 .. image:: bloch_3d_dm.png 
     
-     
+
+Constructing Crystal
+~~~~~~~~~~~~~~~~~~~~
+
+*pyemaps*' `generateMxtal <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateMxtal>`_
+function produces .XYZ file that can be improted into 
+`Jmole <http://www.jmol.org/>`_ and visualize the 
+crystal in 3D atomic structure. The following is an example of such rendering:
+
+
+.. image:: https://github.com/emlab-solutions/imagepypy/raw/main/mxtal01.png
