@@ -286,6 +286,37 @@ class SIMControl:
         '''Helper function to minimize trips to backend modules'''
         return self._zctl == DEF_ZCTL
 
+    def plot_format(self):
+        '''
+        Format simulation controls in builtin display functions
+        Only plot those parameter that are not defaults
+
+        '''
+        simcstrs = []
+
+        if not self._isDefExcitation():
+            simcstrs.append('excitation=' + str(self._excitation))
+
+        if not self._isDefGmax():
+            simcstrs.append('gmax=' + str(self._gmax))
+
+        if not self._isDefBmin():
+            simcstrs.append('bmin=' + str(self._bmin))
+
+        if not self._isDefIntensity():
+            simcstrs.append('intensity=' + str(self._intensity))
+
+        if not self._isDefXaxis():
+            simcstrs.append('xaxis=' + str(self._xaxis))
+
+        if not self._isDefGctl():
+            simcstrs.append('gctl=' + str(self._gctl))
+
+        if not self._isDefZctl():
+            simcstrs.append('zctl=' + str(self._zctl))
+        
+        return ';'.join(simcstrs)
+
     @classmethod
     def _from_random(cls):
 
@@ -519,3 +550,42 @@ class EMControl:
         cstr.append('Voltage: ' + str(self._vt))
         return '\n'.join(cstr)
 
+    def plot_format(self):
+        """
+        Control string format for built-in display functions
+        Only non-default controls values are displayed
+
+        """
+        emcstrs = []
+        if self._zone != DEF_ZONE:
+            emcstrs.append('zone=' + str(self._zone))
+
+        if self._tilt != DEF_TILT:
+            emcstrs.append('tilt=' + str(self._tilt))
+
+        if self._defl != DEF_DEFL:
+            emcstrs.append('defl=' + str(self._defl))
+
+        if self._cl != DEF_CL:
+            emcstrs.append('cl=' + str(self._cl))
+
+        if self._vt != DEF_KV:
+            emcstrs.append('vt=' + str(self._vt))
+
+        cstr = ''
+
+        if len(emcstrs) != 0:
+            cstr = cstr + ';'.join(emcstrs)
+
+        simstr = self._simc.plot_format()
+
+        if len(simstr) != 0 and len(cstr) != 0:
+            return cstr + '\n' + simstr
+
+        if len(simstr) == 0 and len(cstr) != 0:
+            return cstr
+
+        if len(simstr) != 0 and len(cstr) == 0:
+            return simstr
+        
+        return ''
