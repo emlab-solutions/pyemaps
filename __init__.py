@@ -54,6 +54,8 @@ else:
 
     DEF_EXCITATION= (sgmn, sgmx)
     DEF_INTENSITY = (intz, intc)
+    XMAX = 75  # set in dif backend
+    YMAX = 75  #set in dif backend
 
 #-------------- defaults from backend for sample controls---------------
     # Default starting zone setting: DEF_ZONE

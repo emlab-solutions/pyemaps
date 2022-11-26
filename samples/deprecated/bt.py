@@ -44,7 +44,7 @@ def bt_bloch():
                 print(f'failed to generate diffraction patterns: {e}') 
                 return bimg
             else: 
-                showBloch(bimg, bSave=True) 
+                showBloch(bimg, bSave=True, layout='table') 
             
 
 if __name__ == "__main__":
