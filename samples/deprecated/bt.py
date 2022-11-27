@@ -1,4 +1,5 @@
-cname = 'Boron_Tetra'
+# cname = 'Boron_Tetra'
+cname = 'Silicon'
 MAX_PROCWORKERS = 2
 
 def bt_bloch():
@@ -8,12 +9,14 @@ def bt_bloch():
 
     cr = cryst.from_builtin(cname)
     
-    zlist = [(1, 0, 0), (1, 0, 1), (0, 0, 1)]
-    # zlist = [(0, 0, 1)]
+    # zlist = [(1, 0, 0), (1, 0, 1), (0, 0, 1)]
+    zlist = [(1, 1, 1)]
     gmax = 3.5
     sgmin = 0.3
     sgmax = 1.0
-    sth = (50, 1000, 50)
+    omega = 20
+    # sth = (50, 1000, 50)
+    sth = (500, 2000, 250)
 
     simc = SIMC(gmax = gmax, excitation=(sgmin, sgmax))
 
@@ -23,8 +26,12 @@ def bt_bloch():
     with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
 
         for ec in emclist:
-            fs.append(e.submit(cr.generateBloch, sample_thickness = sth, 
-                      em_controls = ec, disk_size=0.05, bSave=True))
+            fs.append(e.submit(cr.generateBloch, 
+                      sample_thickness = sth, 
+                      em_controls = ec, 
+                      omega = omega, 
+                      sampling = 20, 
+                      bSave=True))
         
         for f in concurrent.futures.as_completed(fs):
             try:
@@ -37,7 +44,7 @@ def bt_bloch():
                 print(f'failed to generate diffraction patterns: {e}') 
                 return bimg
             else: 
-                showBloch(bimg) 
+                showBloch(bimg, bSave=True, layout='table') 
             
 
 if __name__ == "__main__":

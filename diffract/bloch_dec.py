@@ -295,7 +295,7 @@ def add_bloch(target):
             raise BlochError("failed to retrieve incidental beams info")
         
         print(f'\n-------Dynamic Simulation Session for {self._name}---------\n')
-        print(f'Total Number of Beams: {nib}\n')
+        print(f'Total Number of sampling points: {nib}\n')
 
         smp = "Sampling"
         stilt = "Beam Tilts In Reciprical Space"

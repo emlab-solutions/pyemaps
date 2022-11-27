@@ -53,10 +53,20 @@
 <col style="width: 29%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/emlab-solutions/imagepypy/raw/main/si_dif1.png"><img alt="Kinematic Diffraction for Silicon" src="https://github.com/emlab-solutions/imagepypy/raw/main/si_dif1.png" style="width: 200px; height: 200px;" /></a></p></td>
-<td><p><a class="reference external" href="https://github.com/emlab-solutions/imagepypy/raw/main/si_dif2.png"><img alt="Kinematic Diffraction for Silicon in CBED Mode" src="https://github.com/emlab-solutions/imagepypy/raw/main/si_dif2.png" style="width: 200px; height: 200px;" /></a></p></td>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/emlab-solutions/imagepypy/raw/main/si_dif1.png"><img alt="Dynamic Diffraction for Silicon" src="https://github.com/emlab-solutions/imagepypy/raw/main/si_dif1.png" style="width: 200px; height: 200px;" /></a></p></td>
+<td><p><a class="reference external" href="https://github.com/emlab-solutions/imagepypy/raw/main/si_dif2.png"><img alt="Dynamic Diffraction for Silicon in CBED Mode" src="https://github.com/emlab-solutions/imagepypy/raw/main/si_dif2.png" style="width: 200px; height: 200px;" /></a></p></td>
 <td><p><a class="reference external" href="https://github.com/emlab-solutions/imagepypy/raw/main/si_stereo.png"><img alt="Dynamic Diffraction for Silicon" src="https://github.com/emlab-solutions/imagepypy/raw/main/si_stereo.png" style="width: 200px; height: 200px;" /></a></p></td>
 <td><p><a class="reference external" href="https://github.com/emlab-solutions/imagepypy/raw/main/powder.png"><img alt="Dynamic Diffraction for Silicon" src="https://github.com/emlab-solutions/imagepypy/raw/main/powder.png" style="width: 200px; height: 200px;" /></a></p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/emlab-solutions/imagepypy/raw/main/Si_bloch4.jpg"><img alt="Dynamic Diffraction for Silicon" src="https://github.com/emlab-solutions/imagepypy/raw/main/Si_bloch4.jpg" style="width: 200px; height: 200px;" /></a></p></td>
+<td><p><a class="reference external" href="https://github.com/emlab-solutions/imagepypy/raw/main/Si_bloch3.jpg"><img alt="Dynamic Diffraction for Silicon" src="https://github.com/emlab-solutions/imagepypy/raw/main/Si_bloch3.jpg" style="width: 200px; height: 200px;" /></a></p></td>
+<td><p><a class="reference external" href="https://github.com/emlab-solutions/imagepypy/raw/main/Si_bloch2.jpg"><img alt="Dynamic Diffraction for Silicon" src="https://github.com/emlab-solutions/imagepypy/raw/main/Si_bloch2.jpg" style="width: 200px; height: 200px;" /></a></p></td>
+<td><p><a class="reference external" href="https://github.com/emlab-solutions/imagepypy/raw/main/si_block1.jpg"><img alt="Dynamic Diffraction for Silicon" src="https://github.com/emlab-solutions/imagepypy/raw/main/si_block1.jpg" style="width: 200px; height: 200px;" /></a></p></td>
 </tr>
 </tbody>
 </table>
@@ -82,8 +92,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualisation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="visualization.html#rendering-kinematic-diffraction-patterns">Rendering Kinematic Diffraction Patterns</a></li>
-<li class="toctree-l2"><a class="reference internal" href="visualization.html#visualing-dynamic-diffraction-patterns">Visualing Dynamic Diffraction Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#builtin-displays">Builtin Displays</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="visualization.html#kinematic-diffraction-simulations">Kinematic Diffraction Simulations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="visualization.html#dynamic-diffraction-simulations">Dynamic Diffraction Simulations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="visualization.html#stereodiagram">Stereodiagram</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html#rendering-by-third-party-tools">Rendering by Third Party Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="visualization.html#dynamic-diffraction-patterns">Dynamic Diffraction Patterns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="visualization.html#constructing-crystal">Constructing Crystal</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a><ul>
@@ -101,6 +120,11 @@
 <li class="toctree-l2"><a class="reference internal" href="rn.html#version-0-4-8-beta">Version 0.4.8 Beta</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="rn.html#id4">11-19-2022</a></li>
 <li class="toctree-l3"><a class="reference internal" href="rn.html#improvements">Improvements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="rn.html#version-0-4-9-beta">Version 0.4.9 Beta</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rn.html#id5">11-26-2022</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rn.html#id6">Improvements</a></li>
 </ul>
 </li>
 </ul>
@@ -213,6 +237,7 @@
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.SIMControl.gctl"><code class="docutils literal notranslate"><span class="pre">SIMControl.gctl</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.SIMControl.zctl"><code class="docutils literal notranslate"><span class="pre">SIMControl.zctl</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.SIMControl.xaxis"><code class="docutils literal notranslate"><span class="pre">SIMControl.xaxis</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.SIMControl.plot_format"><code class="docutils literal notranslate"><span class="pre">SIMControl.plot_format()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="modules.html#pyemaps.emcontrols.EMControl"><code class="docutils literal notranslate"><span class="pre">EMControl</span></code></a><ul>
@@ -224,6 +249,7 @@
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.EMControl.cl"><code class="docutils literal notranslate"><span class="pre">EMControl.cl</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.EMControl.vt"><code class="docutils literal notranslate"><span class="pre">EMControl.vt</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.EMControl.simc"><code class="docutils literal notranslate"><span class="pre">EMControl.simc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.EMControl.plot_format"><code class="docutils literal notranslate"><span class="pre">EMControl.plot_format()</span></code></a></li>
 </ul>
 </li>
 </ul>
