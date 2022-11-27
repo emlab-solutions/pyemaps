@@ -59,3 +59,41 @@ Improvements
     'BiMnO3'
     'CoSb3_Skutterudite'
     'Pentacene'
+
+
+Version 0.4.9 Beta
+------------------ 
+
+11-26-2022 
+~~~~~~~~~~
+
+Improvements
+~~~~~~~~~~~~
+
+- Bug fixes.
+- *Display* module enhancements:
+    1. Added layout option of *table* format. For example, 
+       showDif(dpl, ..., layout='table') will result in rendering of 
+       kinematic diffraction pattern *dpl* in a m x n table format 
+       where n is less or equal to 3.
+
+       .. note:: 
+
+          If *layout* input is ommitted or set to 'individual', the 
+          functions will render each image individually in sequence 
+          as before.
+
+    2. *cShow* option is also added to the display functions to show 
+       control parameters on the final figure if it is set to `True`.
+       Otherwise, no control parameters will be displayed. 
+
+      .. note:: 
+
+        Due to space constraints, control parameters with default values
+        will be ommitted from the final rendering, even if cShow is set 
+        to True.
+
+    
+    .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png
+        :target: https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png
+    

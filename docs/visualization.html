@@ -63,64 +63,117 @@ as shown in <a class="reference internal" href="#thirdparty"><span class="std st
 <h2>Builtin Displays<a class="headerlink" href="#builtin-displays" title="Permalink to this heading">¶</a></h2>
 <section id="kinematic-diffraction-simulations">
 <h3>Kinematic Diffraction Simulations<a class="headerlink" href="#kinematic-diffraction-simulations" title="Permalink to this heading">¶</a></h3>
-<p>Additional example of <em>pyemaps</em>’s builtin functions for <em>silicon</em> crystal
-as starting zone changes:</p>
-<img alt="dif_table.png" src="dif_table.png" />
+<p>Additional example of <em>pyemaps</em>’s builtin functions for rendering
+kinematic diffraction simulations for <em>silicon</em> crystal with starting zone
+changing and camera length set at 2500:</p>
+<a class="reference external image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png" src="https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png" /></a>
+<p>with the following sample code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">DEF_CBED_DSIZE</span><span class="p">,</span> <span class="n">DEF_MODE</span>
+<span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">EMC</span>
+
+<span class="n">MAX_PROCWORKERS</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="k">def</span> <span class="nf">generate_difs</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Silicon&#39;</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="n">DEF_MODE</span><span class="p">):</span>
+
+    <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">DPList</span>
+    <span class="kn">import</span> <span class="nn">concurrent.futures</span>
+    <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cryst</span>
+
+    <span class="n">cr</span> <span class="o">=</span> <span class="n">cryst</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">dsize</span> <span class="o">=</span> <span class="n">DEF_CBED_DSIZE</span>
+
+    <span class="n">zlist</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+           <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)]</span>
+
+    <span class="n">fs</span><span class="o">=</span><span class="p">[]</span>
+
+    <span class="n">difs</span> <span class="o">=</span> <span class="n">DPList</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="n">emclist</span> <span class="o">=</span><span class="p">[</span><span class="n">EMC</span><span class="p">(</span><span class="n">zone</span><span class="o">=</span><span class="n">z</span><span class="p">,</span> <span class="n">cl</span><span class="o">=</span><span class="mi">2500</span><span class="p">)</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">zlist</span><span class="p">]</span>
+
+    <span class="k">with</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ProcessPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">MAX_PROCWORKERS</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+
+        <span class="k">for</span> <span class="n">ec</span> <span class="ow">in</span> <span class="n">emclist</span><span class="p">:</span>
+            <span class="n">fs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">cr</span><span class="o">.</span><span class="n">generateDP</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span>  <span class="n">dsize</span><span class="o">=</span><span class="n">dsize</span><span class="p">,</span> <span class="n">em_controls</span> <span class="o">=</span> <span class="n">ec</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">as_completed</span><span class="p">(</span><span class="n">fs</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">emc</span><span class="p">,</span> <span class="n">diffP</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+                <span class="n">difs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">emc</span><span class="p">,</span> <span class="n">diffP</span><span class="p">)</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s1"> generated an exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">difs</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">showDif</span>
+
+    <span class="n">dpl</span> <span class="o">=</span> <span class="n">generate_difs</span><span class="p">(</span><span class="n">mode</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">showDif</span><span class="p">(</span><span class="n">dpl</span><span class="p">,</span> <span class="n">cShow</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">ishow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s1">&#39;table&#39;</span><span class="p">,</span> <span class="n">bSave</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="dynamic-diffraction-simulations">
 <h3>Dynamic Diffraction Simulations<a class="headerlink" href="#dynamic-diffraction-simulations" title="Permalink to this heading">¶</a></h3>
 <p>Below is another example of using <em>pyemaps</em> builtin display functions
-to render images from Bloch simulation for <em>silicon</em> with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">zone</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">hight</span> <span class="n">voltage</span> <span class="p">(</span><span class="n">vt</span><span class="p">):</span> <span class="mi">100</span>
-<span class="n">sample</span> <span class="n">thickness</span> <span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">1750</span><span class="p">,</span> <span class="mi">250</span><span class="p">)</span>
+to render Bloch simulation images for <em>silicon</em> with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">zone</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">hight</span> <span class="n">voltage</span> <span class="n">vt</span><span class="o">=</span><span class="mi">100</span>
+<span class="n">sample</span> <span class="n">thickness</span> <span class="o">=</span> <span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">1750</span><span class="p">,</span> <span class="mi">250</span><span class="p">)</span>
 <span class="p">(</span><span class="n">starting</span> <span class="n">at</span> <span class="mi">500</span><span class="p">,</span> <span class="n">ending</span> <span class="n">at</span> <span class="mi">1750</span> <span class="k">with</span> <span class="n">an</span> <span class="n">increment</span> <span class="n">of</span> <span class="mi">250</span><span class="p">)</span>
 <span class="n">sampling</span> <span class="n">points</span><span class="p">:</span> <span class="mi">40</span>
 </pre></div>
 </div>
-<img alt="_images/bloch_table.png" src="_images/bloch_table.png" />
-<p>Notice how the images are generated as a list of data arrays <em>bimgs</em>
-in the following code and rendered by <em>showBloch</em> functions.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">EMC</span><span class="p">,</span> <span class="n">EMCError</span><span class="p">,</span> <span class="n">BlochError</span><span class="p">,</span> <span class="n">DEF_CBED_DSIZE</span>
+<a class="reference external image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/bloch_table.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/bloch_table.png" src="https://github.com/emlab-solutions/imagepypy/raw/main/bloch_table.png" /></a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">EMC</span><span class="p">,</span> <span class="n">DEF_CBED_DSIZE</span>
 
-<span class="k">def</span> <span class="nf">generate_bloch_images</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Silicon&#39;</span><span class="p">,</span> <span class="n">dsize</span> <span class="o">=</span> <span class="n">DEF_CBED_DSIZE</span><span class="p">):</span>
-    <span class="kn">import</span> <span class="nn">concurrent.futures</span>
+<span class="n">MAX_PROCWORKERS</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="k">def</span> <span class="nf">generate_bloch_images</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Silicon&#39;</span><span class="p">,</span> <span class="n">dsize</span> <span class="o">=</span> <span class="n">DEF_CBED_DSIZE</span><span class="p">,</span> <span class="n">ckey</span> <span class="o">=</span> <span class="s1">&#39;tilt&#39;</span><span class="p">):</span>
+
     <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cryst</span>
-    <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">BImgList</span><span class="p">,</span> <span class="n">SIMC</span>
+    <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">SIMC</span>
 
-    <span class="n">si</span> <span class="o">=</span> <span class="n">cryst</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">cr</span> <span class="o">=</span> <span class="n">cryst</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="n">vt</span> <span class="o">=</span> <span class="mi">100</span>
     <span class="n">sth</span> <span class="o">=</span> <span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">1750</span><span class="p">,</span> <span class="mi">250</span><span class="p">)</span>
+    <span class="n">simc</span> <span class="o">=</span> <span class="n">SIMC</span><span class="p">(</span><span class="n">excitation</span><span class="o">=</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span><span class="mf">1.0</span><span class="p">),</span> <span class="n">bmin</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">bimgs</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">generateBloch</span><span class="p">(</span><span class="n">disk_size</span><span class="o">=</span><span class="n">dsize</span><span class="p">,</span>
-                        <span class="n">sampling</span> <span class="o">=</span> <span class="mi">40</span><span class="p">,</span>
-                        <span class="n">sample_thickness</span><span class="o">=</span><span class="n">sth</span><span class="p">,</span>
-                        <span class="n">em_controls</span> <span class="o">=</span> <span class="n">EMC</span><span class="p">(</span><span class="n">zone</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">vt</span><span class="o">=</span><span class="mi">100</span><span class="p">))</span>
-
-
-    <span class="k">except</span> <span class="p">(</span><span class="n">BlochError</span><span class="p">,</span> <span class="n">EMCError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s1"> generated an exception: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">bimgs</span>
+        <span class="n">bimgs</span> <span class="o">=</span> <span class="n">cr</span><span class="o">.</span><span class="n">generateBloch</span><span class="p">(</span><span class="n">sampling</span> <span class="o">=</span> <span class="mi">40</span><span class="p">,</span>
+                                <span class="n">em_controls</span> <span class="o">=</span> <span class="n">EMC</span><span class="p">(</span><span class="n">zone</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+                                <span class="n">vt</span><span class="o">=</span><span class="n">vt</span><span class="p">,</span>
+                                <span class="n">simc</span><span class="o">=</span><span class="n">simc</span><span class="p">),</span>
+                                <span class="n">sample_thickness</span> <span class="o">=</span> <span class="n">sth</span>
+                                <span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;failed to generate diffraction patterns: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">bimgs</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">bimgs</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Generated an exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">bimgs</span>
 
-<span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">showBloch</span>
+    <span class="k">return</span> <span class="n">bimgs</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 
+    <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">showBloch</span>
+
     <span class="n">imgs</span> <span class="o">=</span> <span class="n">generate_bloch_images</span><span class="p">()</span>
-    <span class="n">showBloch</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="n">bSave</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">showBloch</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="n">cShow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s1">&#39;table&#39;</span><span class="p">,</span> <span class="n">bSave</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="stereodiagram">
 <h3>Stereodiagram<a class="headerlink" href="#stereodiagram" title="Permalink to this heading">¶</a></h3>
 <p>Similar build-in function to display stereodiagram output from <em>pyemaps</em>
-is showStereo function. It takes a stereodiagram dictionary objects
-generated from <em>pyemaps</em>’ <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateStereo">generateStereo</a>
-and render each of the spots by accessing the dictionary objects directly
+is showStereo function in <em>pyemaps</em>’s <em>display</em> module. It takes a
+stereodiagram dictionary objects generated from <em>pyemaps</em>’
+<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateStereo">generateStereo</a>
+and renders each element by accessing the dictionary objects directly
 as demonstrated below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">concurrent.futures</span>
 <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">EMC</span>
@@ -163,10 +216,15 @@ as demonstrated below:</p>
     <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">showStereo</span>
 
     <span class="n">stereoList</span> <span class="o">=</span> <span class="n">generate_stereo_list</span><span class="p">()</span>
-    <span class="n">showStereo</span><span class="p">(</span><span class="n">stereoList</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Silicon&#39;</span><span class="p">,</span> <span class="n">iShow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">zLimit</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">bSave</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">showStereo</span><span class="p">(</span><span class="n">stereoList</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Silicon&#39;</span><span class="p">,</span>
+            <span class="n">cShow</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">iShow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">zLimit</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">layout</span><span class="o">=</span><span class="s1">&#39;table&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="stereo_table.png" src="stereo_table.png" />
+<a class="reference external image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/stereo_table.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/stereo_table.png" src="https://github.com/emlab-solutions/imagepypy/raw/main/stereo_table.png" /></a>
 </section>
 </section>
 <section id="rendering-by-third-party-tools">
@@ -192,15 +250,7 @@ objects and dp.disks of <a class="reference external" href="pyemaps.kdiffs.html#
 and so on. Each of the objects is accessible for its own data such as points when plotting.</p>
 <p>Below is an exmaple of rendering a diffraction pattern generated for <em>Diamond</em> builtin crystal
 in DigitalMicrograph:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">DigitalMicrograph</span> <span class="k">as</span> <span class="nn">DM</span>
-
-<span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>
-
-<span class="n">di</span> <span class="o">=</span> <span class="n">cr</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="s1">&#39;Diamond&#39;</span><span class="p">)</span>
-<span class="n">_</span><span class="p">,</span> <span class="n">dp</span> <span class="o">=</span> <span class="n">di</span><span class="o">.</span><span class="n">generateDP</span><span class="p">()</span>
-
-<span class="k">def</span> <span class="nf">show_diffract</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">md</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Diamond&#39;</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">show_diffract</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">md</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Diamond&#39;</span><span class="p">):</span>
 
     <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">XMAX</span><span class="o">*</span><span class="n">mult</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">YMAX</span><span class="o">*</span><span class="n">mult</span><span class="p">)</span>
 
@@ -284,6 +334,12 @@ in DigitalMicrograph:</p>
     <span class="k">del</span> <span class="n">dm_dif_img</span>
     <span class="k">return</span> <span class="mi">0</span>
 </pre></div>
+</div>
+<p>where <em>dp</em> is the kinematic diffraction pattern generated from generateDP call.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To get the above display work in <em>DM</em>, <em>pyemaps</em> must be installed in <em>DM</em>’s
+python environment.</p>
 </div>
 <section id="dynamic-diffraction-patterns">
 <h3>Dynamic Diffraction Patterns<a class="headerlink" href="#dynamic-diffraction-patterns" title="Permalink to this heading">¶</a></h3>

@@ -110,6 +110,47 @@ built-in crystals:</p></li>
 </div>
 </section>
 </section>
+<section id="version-0-4-9-beta">
+<h2>Version 0.4.9 Beta<a class="headerlink" href="#version-0-4-9-beta" title="Permalink to this heading">¶</a></h2>
+<section id="id5">
+<h3>11-26-2022<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="id6">
+<h3>Improvements<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
+<ul>
+<li><p>Bug fixes.</p></li>
+<li><dl>
+<dt><em>Display</em> module enhancements:</dt><dd><ol class="arabic">
+<li><p>Added layout option of <em>table</em> format. For example,
+showDif(dpl, …, layout=’table’) will result in rendering of
+kinematic diffraction pattern <em>dpl</em> in a m x n table format
+where n is less or equal to 3.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If <em>layout</em> input is ommitted or set to ‘individual’, the
+functions will render each image individually in sequence
+as before.</p>
+</div>
+</li>
+<li><p><em>cShow</em> option is also added to the display functions to show
+control parameters on the final figure if it is set to <cite>True</cite>.
+Otherwise, no control parameters will be displayed.</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Due to space constraints, control parameters with default values
+will be ommitted from the final rendering, even if cShow is set
+to True.</p>
+</div>
+</div></blockquote>
+<a class="reference external image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png" src="https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png" /></a>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+</section>
 </section>
 
 
@@ -136,6 +177,11 @@ built-in crystals:</p></li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-4-8-beta">Version 0.4.8 Beta</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id4">11-19-2022</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#improvements">Improvements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-4-9-beta">Version 0.4.9 Beta</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id5">11-26-2022</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Improvements</a></li>
 </ul>
 </li>
 </ul>
