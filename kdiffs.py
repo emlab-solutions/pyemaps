@@ -33,7 +33,7 @@ from . import DPError, PointError, LineError, PIndexError, \
 NDIGITS = 1
 DIFF_PRECISION = 0.95
 
-XMAX, YMAX = 75, 75
+from . import XMAX, YMAX
 #int: Diffraction simulation output limits
 
 DEF_MODE = 1 
@@ -119,6 +119,15 @@ class Point:
             return self
 
         raise PointError("addition of different type other than Point type not supported")
+    
+            
+    def __isub__(self, other):
+        if isinstance(other, Point):
+            self._x -= other.x
+            self._y -= other.y
+            return self
+
+        raise PointError("subtraction of different type other than Point type not supported")
     
     def __key__(self):
         return (self._x, self._y)
@@ -220,6 +229,19 @@ class Line:
     
     def __hash__(self):
         return hash(self.__key__())
+    
+    def __isub__(self, other):
+        '''
+        This operator override is for shifting the line by fixed amount 
+        by 2D vector
+
+        '''
+        if isinstance(other, Point):
+            self._pt1 -= other
+            self._pt2 -= other
+            return self
+        
+        raise LineError("substraction of Line class from non-Point class type not supported")
     
     def __iadd__(self, other):
         '''
@@ -453,6 +475,17 @@ class Disk:
         
         raise DiskError('addition cannot be done with non-Disk type')
     
+    def __isub__(self, other):
+        '''
+        This operator override is for shifting the line when
+        other line object has the same pt1 and ot2
+        '''
+        if isinstance(other, Point):
+            self._c -= other
+            return self
+        
+        raise DiskError('substraction cannot be done with non-Point type')
+    
     def __imul__(self, rhs):
         
         if not isinstance(rhs, int) and not isinstance(rhs, float):
@@ -618,8 +651,8 @@ class diffPattern:
             pt1 = Point(k[0])
             pt2 = Point(k[1])
 
-            pt1 += self._shift
-            pt2 += self._shift
+            pt1 -= self._shift
+            pt2 -= self._shift
 
             ln = Line(pt1, pt2)
 
@@ -644,8 +677,8 @@ class diffPattern:
 
             pt1 = Point(h[0])
             pt2 = Point(h[1])
-            pt1 += self._shift
-            pt2 += self._shift
+            pt1 -= self._shift
+            pt2 -= self._shift
 
             ln = Line(pt1, pt2)
 
@@ -670,7 +703,7 @@ class diffPattern:
                 raise DPError("disks must be an index of three integers")
 
             ctr = Point(d['c'])
-            ctr += self._shift
+            ctr -= self._shift
             
             r = d['r']
             indx = Index(d['idx'])

@@ -1,8 +1,6 @@
 Welcome to pyemaps' documentation!
 ===================================
 
-
-
 .. |dif_img1| image:: https://github.com/emlab-solutions/imagepypy/raw/main/si_dif1.png
    :alt: Dynamic Diffraction for Silicon
    :height: 200

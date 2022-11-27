@@ -392,7 +392,7 @@ class DifPlotter:
             else:
                 self.fig.canvas.set_window_title(pyemaps_title)
 
-        self.fig.suptitle(self.name, va='center', fontsize=24)
+        self.fig.suptitle(self.name, va='top', fontsize=24)
         # self.fig.tight_layout()
         
         timer = self.fig.canvas.new_timer(interval=1500)
