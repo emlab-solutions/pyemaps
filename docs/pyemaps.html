@@ -1449,6 +1449,11 @@ visualization methods rendering pyemaps simulations results.</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.display.DifPlotter.savePlot">
+<span class="sig-name descname"><span class="pre">savePlot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.DifPlotter.savePlot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.display.DifPlotter.terminate">
 <span class="sig-name descname"><span class="pre">terminate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.DifPlotter.terminate" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1465,7 +1470,7 @@ visualization methods rendering pyemaps simulations results.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.display.DifPlotter.plotControls">
-<span class="sig-name descname"><span class="pre">plotControls</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.DifPlotter.plotControls" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">plotControls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.DifPlotter.plotControls" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1492,11 +1497,11 @@ visualization methods rendering pyemaps simulations results.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pyemaps.display.NBPlot">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">NBPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">TY_DIF</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.NBPlot" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">NBPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">TY_DIF</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bSave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'individual'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.NBPlot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.display.NBPlot.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">TY_DIF</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.NBPlot.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">TY_DIF</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bSave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'individual'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.NBPlot.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -1508,15 +1513,17 @@ visualization methods rendering pyemaps simulations results.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyemaps.display.showDif">
-<span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">showDif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dpl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kshow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ishow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bSave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.showDif" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">showDif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dpl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kshow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ishow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'individual'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bSave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.showDif" title="Permalink to this definition">¶</a></dt>
 <dd><p>Render kinematic diffraction pattern generated by pyemaps.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dpl</strong> (<em>DPList</em>) – Optional. Kinematic difraction pattern object list</p></li>
-<li><p><strong>kshow</strong> (<em>bool</em>) – Optional. Whether to display Kikuchi lines.</p></li>
-<li><p><strong>ishow</strong> (<em>bool</em>) – Optional. Whether to display Miller indexes.</p></li>
-<li><p><strong>bSave</strong> (<em>bool</em>) – Optional. Whether to save the diplay into a .png image file.</p></li>
+<li><p><strong>dpl</strong> (<em>DPList</em>) – Kinematic difraction pattern object list <a class="reference external" href="pyemaps.kdiffs.html#pyemaps.kdiffs.DPList">DPList</a></p></li>
+<li><p><strong>cShow</strong> (<em>bool</em><em>, </em><em>optional</em>) – Plot control annotation. <cite>True</cite> (default): plot the control parameters on lower left corner; <cite>False</cite> do not plot.</p></li>
+<li><p><strong>kshow</strong> (<em>bool</em>) – Whether to display Kikuchi lines.</p></li>
+<li><p><strong>ishow</strong> (<em>bool</em>) – Whether to display Miller indexes.</p></li>
+<li><p><strong>layout</strong> (<em>str</em><em>, </em><em>optional</em>) – layout format. individual (default): plotting one by one, table: plotting in a table of 3 columns</p></li>
+<li><p><strong>bSave</strong> (<em>bool</em>) – Whether to save the diplay into a .png image file.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1524,13 +1531,15 @@ visualization methods rendering pyemaps simulations results.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyemaps.display.showBloch">
-<span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">showBloch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bimgs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bColor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bSave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.showBloch" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">showBloch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bimgs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bColor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'individual'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bSave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.showBloch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Render dynamic diffraction pattern generated by pyemaps.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>bimgs</strong> (<a class="reference internal" href="pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs" title="pyemaps.ddiffs.BlochImgs"><em>BlochImgs</em></a>) – Optional. Dynamic difraction pattern object list (TODO:ref to BlochImgs)</p></li>
+<li><p><strong>bimgs</strong> (<a class="reference internal" href="pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs" title="pyemaps.ddiffs.BlochImgs"><em>BlochImgs</em></a>) – Optional. Dynamic difraction pattern object list <a class="reference external" href="pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs">BImgList</a></p></li>
+<li><p><strong>cShow</strong> (<em>bool</em><em>, </em><em>optional</em>) – Plot control annotation. <cite>True</cite> (default): plot the control parameters on lower left corner; <cite>False</cite> do not plot.</p></li>
 <li><p><strong>bColor</strong> (<em>bool</em>) – Optional. Whether to display the image in predefined color map.</p></li>
+<li><p><strong>layout</strong> (<em>str</em><em>, </em><em>optional</em>) – layout format. individual (default): plotting one by one, table: plotting in a table of 3 columns</p></li>
 <li><p><strong>bSave</strong> (<em>bool</em>) – Optional. Whether to save the image into a .im3 image file.</p></li>
 </ul>
 </dd>
@@ -1539,15 +1548,17 @@ visualization methods rendering pyemaps simulations results.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyemaps.display.showStereo">
-<span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">showStereo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bSave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.showStereo" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">showStereo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'individual'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bSave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.showStereo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Render stereodiagram generated by pyemaps.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>slist</strong> (<em>list</em>) – Required. Stereodiagram by pyemaps.generateStereo (TODO:ref to BlochImgs)</p></li>
-<li><p><strong>iShow</strong> (<em>bool</em>) – Optional. Whether to display Miller indexes or not.</p></li>
-<li><p><strong>bSave</strong> (<em>bool</em>) – Optional. Whether to save the image into a .png image file.</p></li>
-<li><p><strong>zlimit</strong> (<em>int</em>) – Optional. Miller indexes cutoff number.</p></li>
+<li><p><strong>slist</strong> (<em>list</em><em>, </em><em>required</em>) – Stereodiagram output from <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateStereo">generateStereo</a>.</p></li>
+<li><p><strong>cShow</strong> (<em>bool</em><em>, </em><em>optional</em>) – Plot control annotation. <cite>True</cite> (default): plot the control parameters on lower left corner; <cite>False</cite> do not plot.</p></li>
+<li><p><strong>iShow</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to display Miller indexes or not.</p></li>
+<li><p><strong>zlimit</strong> (<em>int</em><em>, </em><em>optional</em>) – Miller indexes cutoff number.</p></li>
+<li><p><strong>layout</strong> (<em>str</em><em>, </em><em>optional</em>) – layout format. individual (default): plotting one by one in sequence, table: plotting in a table of 3 columns</p></li>
+<li><p><strong>bSave</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to save the image into a .png image file.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1574,32 +1585,32 @@ simulation control is embedded as a member of a microscope controls class.</p>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_GMAX">
-<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_GMAX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">=</span> <span class="pre">3.5</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_GMAX" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_GMAX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3.5</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_GMAX" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_BMIN">
-<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_BMIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">=</span> <span class="pre">0.1</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_BMIN" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_BMIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_BMIN" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_INTENSITY">
-<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_INTENSITY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">=</span> <span class="pre">(0.0,</span> <span class="pre">5)</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_INTENSITY" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_INTENSITY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.0,</span> <span class="pre">5)</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_INTENSITY" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_GCTL">
-<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_GCTL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">=</span> <span class="pre">6.0</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_GCTL" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_GCTL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6.0</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_GCTL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_ZCTL">
-<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_ZCTL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">=</span> <span class="pre">5.0</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_ZCTL" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_ZCTL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5.0</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_ZCTL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_XAXIS">
-<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_XAXIS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">=</span> <span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_XAXIS" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_XAXIS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_XAXIS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </section>
@@ -1607,27 +1618,27 @@ simulation control is embedded as a member of a microscope controls class.</p>
 <h3>Microscope Control Constants and Default Values:<a class="headerlink" href="#microscope-control-constants-and-default-values" title="Permalink to this heading">¶</a></h3>
 <dl class="py data">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_TILT">
-<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_TILT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">=</span> <span class="pre">(0.0,</span> <span class="pre">0.0)</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_TILT" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_TILT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.0,</span> <span class="pre">0.0)</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_TILT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_ZONE">
-<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_ZONE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">=</span> <span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">1)</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_ZONE" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_ZONE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">1)</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_ZONE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_DEFL">
-<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_DEFL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">=</span> <span class="pre">(0.0,</span> <span class="pre">0.0)</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_DEFL" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_DEFL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.0,</span> <span class="pre">0.0)</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_DEFL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_KV">
-<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_KV</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">=</span> <span class="pre">200.0</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_KV" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_KV</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">200.0</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_KV" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_CL">
-<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_CL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">=</span> <span class="pre">1000.0</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_CL" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_CL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1000.0</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_CL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </section>
@@ -1682,6 +1693,13 @@ level and scale in (level, scale)</p>
 <dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.xaxis">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">xaxis</span></span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.xaxis" title="Permalink to this definition">¶</a></dt>
 <dd><p>crystal horizontal axis in reciprical space</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.plot_format">
+<span class="sig-name descname"><span class="pre">plot_format</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.plot_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format simulation controls in builtin display functions
+Only plot those parameter that are not defaults</p>
 </dd></dl>
 
 </dd></dl>
@@ -1752,6 +1770,13 @@ level and scale in (level, scale)</p>
 <dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.simc">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">simc</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.simc" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference external" href="modules.html#pyemaps.emcontrols.SIMControl">SIMControl</a> object</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.plot_format">
+<span class="sig-name descname"><span class="pre">plot_format</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.plot_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Control string format for built-in display functions
+Only non-default controls values are displayed</p>
 </dd></dl>
 
 </dd></dl>

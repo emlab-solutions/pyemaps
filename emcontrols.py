@@ -38,40 +38,40 @@ Simulation Control Constants and Default Values:
     :value: (0.3, 2.0)
 
 .. data:: DEF_GMAX 
-    :value: = 3.5
+    :value: 3.5
 
 .. data:: DEF_BMIN
-    :value: = 0.1
+    :value: 0.1
 
 .. data:: DEF_INTENSITY
-    :value: = (0.0, 5)
+    :value: (0.0, 5)
 
 .. data:: DEF_GCTL
-    :value: = 6.0
+    :value: 6.0
 
 .. data:: DEF_ZCTL
-    :value: = 5.0
+    :value: 5.0
 
 .. data:: DEF_XAXIS
-    :value: = (0, 0, 0)
+    :value: (0, 0, 0)
 
 Microscope Control Constants and Default Values:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. data:: DEF_TILT
-    :value: = (0.0, 0.0)
+    :value: (0.0, 0.0)
 
 .. data:: DEF_ZONE
-    :value: = (0, 0, 1)
+    :value: (0, 0, 1)
 
 .. data:: DEF_DEFL
-    :value: = (0.0, 0.0)
+    :value: (0.0, 0.0)
 
 .. data:: DEF_KV
-    :value: = 200.0
+    :value: 200.0
 
 .. data:: DEF_CL
-    :value: = 1000.0
+    :value: 1000.0
 
 
 """
@@ -285,6 +285,37 @@ class SIMControl:
     def _isDefZctl(self):
         '''Helper function to minimize trips to backend modules'''
         return self._zctl == DEF_ZCTL
+
+    def plot_format(self):
+        '''
+        Format simulation controls in builtin display functions
+        Only plot those parameter that are not defaults
+
+        '''
+        simcstrs = []
+
+        if not self._isDefExcitation():
+            simcstrs.append('excitation=' + str(self._excitation))
+
+        if not self._isDefGmax():
+            simcstrs.append('gmax=' + str(self._gmax))
+
+        if not self._isDefBmin():
+            simcstrs.append('bmin=' + str(self._bmin))
+
+        if not self._isDefIntensity():
+            simcstrs.append('intensity=' + str(self._intensity))
+
+        if not self._isDefXaxis():
+            simcstrs.append('xaxis=' + str(self._xaxis))
+
+        if not self._isDefGctl():
+            simcstrs.append('gctl=' + str(self._gctl))
+
+        if not self._isDefZctl():
+            simcstrs.append('zctl=' + str(self._zctl))
+        
+        return ';'.join(simcstrs)
 
     @classmethod
     def _from_random(cls):
@@ -519,3 +550,42 @@ class EMControl:
         cstr.append('Voltage: ' + str(self._vt))
         return '\n'.join(cstr)
 
+    def plot_format(self):
+        """
+        Control string format for built-in display functions
+        Only non-default controls values are displayed
+
+        """
+        emcstrs = []
+        if self._zone != DEF_ZONE:
+            emcstrs.append('zone=' + str(self._zone))
+
+        if self._tilt != DEF_TILT:
+            emcstrs.append('tilt=' + str(self._tilt))
+
+        if self._defl != DEF_DEFL:
+            emcstrs.append('defl=' + str(self._defl))
+
+        if self._cl != DEF_CL:
+            emcstrs.append('cl=' + str(self._cl))
+
+        if self._vt != DEF_KV:
+            emcstrs.append('vt=' + str(self._vt))
+
+        cstr = ''
+
+        if len(emcstrs) != 0:
+            cstr = cstr + ';'.join(emcstrs)
+
+        simstr = self._simc.plot_format()
+
+        if len(simstr) != 0 and len(cstr) != 0:
+            return cstr + '\n' + simstr
+
+        if len(simstr) == 0 and len(cstr) != 0:
+            return cstr
+
+        if len(simstr) != 0 and len(cstr) == 0:
+            return simstr
+        
+        return ''

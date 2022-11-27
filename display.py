@@ -45,10 +45,14 @@ from .fileutils import *
 
 import time
 
-DISPLAY_SIZE = 900 # default
+from . import XMAX, YMAX  #(75,75)
+
+DISPLAY_MULTIPLE_SIZE = 500 
+DISPLAY_ONE_SIZE = 900
 PLOT_MULTIPLIER = 6
 
 clrs = ["#2973A5", "cyan", "limegreen", "yellow", "red"]
+# clrs=plt.get_cmap('binary')
 gclrs=plt.get_cmap('gray')
 
 TY_DIF = 1
@@ -110,20 +114,35 @@ class DifPlotter:
         self.save = 0
         self.difData = None
         self.emc = None
-        self.save_to = None
-
+        self.cShow = True
+        self.layout = 'individual'
+    
+    def savePlot(self):
+        if self.save:
+            save_type = _get_feature(self.type)
+            save_to = compose_ofn(None, self.name, ty=save_type)
+            plt.savefig(save_to + '.png')
+            print(f'image saved to: {save_to}.png')
+   
     def terminate(self):
-        
+        # self.savePlot()
         plt.close(self.fig) #just close the current figure
             
     def plotKDif(self):
-        dp, mode, kshow, ishow = self.difData
+        idx, emc, dp, mode, kshow, ishow = self.difData
         
-        self.ax.clear()
-        
-        self.ax.set_axis_off()
-        self.ax.set_aspect('equal')
-        self.ax.set_title(self.name)
+        if self.layout == 'table':
+            n1, n2 = _getGridPos(idx, 3)
+        else:
+            n1, n2 = 0, 0
+
+        iax = self.axes[n1, n2]
+        iax.clear()
+        iax.set_xlim(-XMAX*PLOT_MULTIPLIER, XMAX*PLOT_MULTIPLIER)
+        iax.set_ylim(-YMAX*PLOT_MULTIPLIER, YMAX*PLOT_MULTIPLIER)
+        iax.set_axis_off()
+        iax.set_aspect('equal')
+        # iax.set_title(self.name)
 
         line_color = 'k' if kshow else 'w'
         for kl in dp.klines:
@@ -132,13 +151,13 @@ class DifPlotter:
             xx = [kl.pt1.x, kl.pt2.x]
             yy = [kl.pt1.y, kl.pt2.y]
         
-            self.ax.plot(xx, yy, line_color, alpha=0.2)
+            iax.plot(xx, yy, line_color, alpha=0.35, linewidth=1.75)
 
         for hl in dp.hlines:
             hl *=PLOT_MULTIPLIER
             xx = [hl.pt1.x, hl.pt2.x]
             yy = [hl.pt1.y, hl.pt2.y]
-            self.ax.plot(xx, yy, 'k', alpha=0.2)
+            iax.plot(xx, yy, 'k', alpha=0.35, linewidth=1.75)
 
         for d in dp.disks:
             d *= PLOT_MULTIPLIER
@@ -151,53 +170,85 @@ class DifPlotter:
                                 linewidth = 0.5, 
                                 alpha=1.0, 
                                 fc='blue')
-            self.ax.add_patch(dis)
+            iax.add_patch(dis)
         
             if ishow:
-                plt.text(centre[0],centre[1], 
+                iax.text(centre[0],centre[1], 
                         str(d.idx),
                         {'color': 'red', 'fontsize': 8},
                         horizontalalignment='center',
                         verticalalignment='bottom' if mode == 1 else 'center')
+           
+        if self.cShow:
+            self.plotControls(emc,iax)
+
 
     def plotDDif(self):
         from matplotlib.colors import LinearSegmentedColormap
 
-        img, color = self.difData
+        idx, emc, img, color = self.difData
+        
+        if self.layout == 'table':
+            n1, n2 = _getGridPos(idx, 3)
+        else:
+            n1, n2 = 0, 0
 
+        iax = self.axes[n1, n2]
         clrMap = gclrs #default to grey
         if color:
+            # clrMap=clrs
             clrMap = LinearSegmentedColormap.from_list("mycmap", clrs)
 
-        self.ax.clear()
-        self.ax.set_axis_off()
-        self.ax.set_title(self.name, fontsize=12)
-        plt.imshow(img, cmap=clrMap)
+        iax.clear()
+        iax.set_axis_off()
 
-    def plotControls(self):
-        controls_text = str(self.emc)
+        # iax.set_title(tag)
+
+        iax.imshow(img, cmap=clrMap)
+        if self.cShow:
+            self.plotControls(emc,iax)
+
+
+    def plotControls(self, emc, ax):
+        controls_text = emc.plot_format()
 
         # finding control text plot or coordinates:
-        x0, _ = plt.xlim()
-        y0, _ = plt.ylim()
+        x0= x1 = 0.0
+        y0= 0.0
 
-        if self.type != 3:
-            plt.text(x0 + 10, y0 - 10, controls_text,
-                    {'color': 'grey', 'fontsize': 6}
-            )
-            return
+        # if self.type != TY_STEREO:
+        x0, x1 = ax.get_xlim()
+        y0, y1 = ax.get_ylim()
 
-        plt.text(x0 + 0.05, y0 - 0.05, controls_text,
-                    {'color': 'grey', 'fontsize': 6}
-            )
+        width = x1-x0
+        height = (y1-y0)/8
+
+        textrec = patches.Rectangle((x0, y0-height), 
+                                        width, height,
+                                        linewidth=0.0,
+                                        fill = False)
+        ax.add_patch(textrec)
+
+        ax.text(x0 + 0.5*width, y0 - 0.5*height, controls_text,
+                {'color': 'grey', 'fontsize': 6},
+                ha='center',
+                va='center')
+                
 
     def plotStereo(self):
-        sdata, ishow, zl = self.difData  
+        idx, emc, sdata, ishow, zl= self.difData 
         
-        self.ax.clear()
         
-        self.ax.set_axis_off()
-        self.ax.set_title(self.name, color='blue')
+        if self.layout == 'table':
+            n1, n2 = _getGridPos(idx, 3)
+        else:
+            n1, n2 = 0, 0
+
+        iax = self.axes[n1, n2]
+        iax.clear()
+        
+        iax.set_axis_off()
+        # iax.set_title(self.name, color='blue')
 
         # adding a unit disk
         unitdis = patches.Circle((0.0, 0.0), 
@@ -206,7 +257,7 @@ class DifPlotter:
                             linewidth = 0.5, 
                             alpha=1.0, 
                             color='blue')
-        self.ax.add_patch(unitdis)
+        iax.add_patch(unitdis)
 
         for s in sdata:
             c, r, idx = s['c'], s['r'], s['idx']
@@ -219,30 +270,42 @@ class DifPlotter:
                                 linewidth = 0.5, 
                                 alpha=1.0, 
                                 fc='blue')
-            self.ax.add_patch(dis)
+            iax.add_patch(dis)
         
             if ishow:
-                if abs(index[0]) <= zl and abs(index[1]) <= zl and abs(index[2]) <= zl:
-                    plt.text(centre[0],centre[1], 
+                if abs(index[0]) <= zl and \
+                   abs(index[1]) <= zl and \
+                   abs(index[2]) <= zl:
+
+                    iax.text(centre[0],centre[1], 
                             str(index),
-                            {'color': 'white', 'fontsize': 8},
+                            {'color': 'red', 'fontsize': 8},
                             horizontalalignment='center',
                             verticalalignment='bottom')
 
             # set the limits
-        self.ax.set_xlim([-1.0, 1.0])
-        self.ax.set_ylim([-1.0, 1.0])
+        iax.set_xlim([-1.0, 1.0])
+        iax.set_ylim([-1.0, 1.0])
+        
+        # tag = 'zone: ' + str(emc.zone)
+        # iax.set_title(tag)
+
+        if self.cShow:
+            self.plotControls(emc,iax)
 
     def call_back(self):
+        
         while self.pipe.poll():
             command = self.pipe.recv()
             
             if command is None:
                 self.terminate()
                 return False
+            elif command == ():
+                self.savePlot()
             else:
-                self.emc, self.name, self.save, self.difData = command
-
+                self.difData = command
+                
                 if self.type == 1: #diffraction plot type
                     self.plotKDif()
             
@@ -255,16 +318,8 @@ class DifPlotter:
                 else:
                     raise ValueError("No data to plot")
                 
-                self.plotControls()
-                self.fig.canvas.draw_idle()
-                
-                self.plotControls()
+                self.fig.canvas.draw_idle()  
 
-                if self.save:
-                    save_type = _get_feature(self.type)
-                    self.save_to = compose_ofn(None, self.name, ty=save_type)
-                    plt.savefig(self.save_to + '.png')
-                    print(f'image saved to: {self.save_to}.png')
                 plt.pause(1.0)
 
         return True
@@ -286,25 +341,37 @@ class DifPlotter:
             pass
 
 
-    def __call__(self, pipe, type):
+    def __call__(self, pipe, type, name, bSave, n1, n2, cShow, layout):
         import sys
         
         self.pipe = pipe
+        self.name = name
+        self.save = bSave
+        self.layout = layout
+        self.cShow = cShow
 
         if sys.platform == 'win32':
             curr_dpi = _find_dpi()
         else:
             curr_dpi = 96
-        if type == TY_STEREO:
-            self.fig, self.ax = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
-                        dpi=curr_dpi, facecolor=(0,0,0)) #setting image size in pixels 
-        else:   
-            self.fig, self.ax = plt.subplots(figsize=(DISPLAY_SIZE/curr_dpi,DISPLAY_SIZE/curr_dpi), 
-                        dpi=curr_dpi) #setting image size in pixels
+            
+        if layout == 'table':
+            display_size = DISPLAY_MULTIPLE_SIZE * n2
+        else:
+            display_size = DISPLAY_ONE_SIZE
+
+        self.fig, self.axes = plt.subplots(figsize=(display_size/curr_dpi,
+                                                    display_size/curr_dpi), 
+                                            squeeze=False, 
+                                            # clip_on=True,
+                                            nrows=n1, 
+                                            ncols=n2) #setting image size in pixels
+        for x in self.axes.ravel():
+            x.axis("off")
+            x.set_aspect('equal')
+            
         if hasDisplay:
             self.position_fig(20, 20)
-
-        self.ax.set_axis_off()
         
         if type == 1:
             pyemaps_title = 'PYEMAPS - Kinematic Diffraction' 
@@ -325,10 +392,13 @@ class DifPlotter:
             else:
                 self.fig.canvas.set_window_title(pyemaps_title)
 
+        self.fig.suptitle(self.name, va='top', fontsize=24)
+        # self.fig.tight_layout()
+        
         timer = self.fig.canvas.new_timer(interval=1500)
         timer.add_callback(self.call_back)
         timer.start()
-
+        
         self.showImage()
 
 class NBPlot:
@@ -336,11 +406,27 @@ class NBPlot:
     # Creating a non-bloch plot object with a pipe object sending diffraction data
     # to difPlotter
     # '''
-    def __init__(self, type = TY_DIF):
+    def __init__(self, type = TY_DIF, n = 1, name='', bSave=False, cShow = True, layout='individual'):
+
+        if layout == 'table':
+            n1, n2 = _getGridDims(n, 3)
+        else:
+            n1, n2 = 1, 1
+
         self.plot_pipe, plotter_pipe = mp.Pipe()
         self.plotter = DifPlotter()
         self.plot_process = mp.Process(
-            target=self.plotter, args=(plotter_pipe, type), daemon=True)
+            target=self.plotter, 
+            args=(plotter_pipe, 
+                  type,
+                  name,
+                  bSave,
+                  n1,
+                  n2,
+                  cShow, 
+                  layout), 
+            daemon=True)
+
         self.plot_process.start()
 
     def plot(self, data = (), finished=False):
@@ -350,19 +436,28 @@ class NBPlot:
         else:
             send(data)
 
-def showDif(dpl=None, kshow=True, ishow=True, bSave = False):
+def showDif(dpl=None, 
+            cShow=True,
+            kshow=True, 
+            ishow=True, 
+            layout='individual',
+            bSave = False):
    
     """
     Render kinematic diffraction pattern generated by pyemaps.
 
-    :param dpl: Optional. Kinematic difraction pattern object list
+    :param dpl: Kinematic difraction pattern object list `DPList <pyemaps.kdiffs.html#pyemaps.kdiffs.DPList>`_
     :type dpl: DPList
-    :param kshow: Optional. Whether to display Kikuchi lines.
+    :param cShow: Plot control annotation. `True` (default): plot the control parameters on lower left corner; `False` do not plot.
+    :type cShow: bool, optional
+    :param kshow: Whether to display Kikuchi lines.
     :type kshow: bool 
-    :param ishow: Optional. Whether to display Miller indexes.
+    :param ishow: Whether to display Miller indexes.
     :type ishow: bool 
-    :param bSave: Optional. Whether to save the diplay into a .png image file.
-    :type bSave: bool 
+    :param layout: layout format. individual (default): plotting one by one, table: plotting in a table of 3 columns  
+    :type layout: str, optional 
+    :param bSave: Whether to save the diplay into a .png image file.
+    :type bSave: bool  
     
     """
     from pyemaps import DPList
@@ -374,25 +469,37 @@ def showDif(dpl=None, kshow=True, ishow=True, bSave = False):
     name = dpl.name
     if _isLinux() and not hasDisplay: bSave = True 
     #always save to file on linux as it may just the commandline
-    pl = NBPlot(TY_DIF)
-    for c, dp in dpl:  
-        d = (c, name, bSave, (dp, mode, kshow, ishow))
+    n = len(dpl.diffList)
+
+    pl = NBPlot(TY_DIF, n, name, bSave, cShow, layout)
+    for i, cdp in enumerate(dpl.diffList):
+        c, dp = cdp  
+        d = (i, c, dp, mode, kshow, ishow)
         pl.plot(data = d)
         time.sleep(1.0)
+    pl.plot()
+    time.sleep(1.0)
 
     pl.plot(finished=True)
 
-def showBloch(bimgs, bColor = False, bSave = False):
-    
+def showBloch(bimgs, 
+              cShow=True, 
+              bColor = False, 
+              layout='individual', 
+              bSave = False):
     """
     Render dynamic diffraction pattern generated by pyemaps.
 
-    :param bimgs: Optional. Dynamic difraction pattern object list (TODO:ref to BlochImgs)
-    :type bimgs: BlochImgs
+    :param bimgs: Optional. Dynamic difraction pattern object list `BImgList <pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs>`_
+    :type bimgs: BlochImgs 
+    :param cShow: Plot control annotation. `True` (default): plot the control parameters on lower left corner; `False` do not plot.
+    :type cShow: bool, optional
     :param bColor: Optional. Whether to display the image in predefined color map.
     :type bColor: bool 
+    :param layout: layout format. individual (default): plotting one by one, table: plotting in a table of 3 columns  
+    :type layout: str, optional
     :param bSave: Optional. Whether to save the image into a .im3 image file.
-    :type bSave: bool 
+    :type bSave: bool  
     
     """
     from pyemaps import BImgList
@@ -405,27 +512,44 @@ def showBloch(bimgs, bColor = False, bSave = False):
     if _isLinux() and not hasDisplay: bSave = True 
     #always save to file on linux as it may just the commandline
 
-    pl = NBPlot(TY_BLOCH)
-    for c, img in bimgs: 
-        d = (c, name, bSave, (img, bColor))
+    n = len(bimgs.blochList)
+    pl = NBPlot(TY_BLOCH, n, name, bSave, cShow, layout)
+
+    for i, cimg in enumerate(bimgs.blochList):
+        c, img = cimg  
+        # tag = 'Sample Thickness: ' + str(500+i*250)
+        d = (i, c, img, bColor)
         pl.plot(data = d)
         time.sleep(1.0)
 
+    pl.plot()
+    time.sleep(1.0)
+
     pl.plot(finished=True)
 
-def showStereo(slist, name, iShow = False, bSave=False, zLimit = 2):
+def showStereo(slist, name, 
+               cShow= True,          #em_controls annotated or not
+               iShow = False,       #display miller indexes or not
+               zLimit = 2,          # miller indexes limit (absolute value)
+               layout='individual', # individual or table display format
+               bSave=False):        # save the rendering to a file or not
     
     """
     Render stereodiagram generated by pyemaps.
 
-    :param slist: Required. Stereodiagram by pyemaps.generateStereo (TODO:ref to BlochImgs)
-    :type slist: list
-    :param iShow: Optional. Whether to display Miller indexes or not.
-    :type iShow: bool 
-    :param bSave: Optional. Whether to save the image into a .png image file.
-    :type bSave: bool  
-    :param zlimit: Optional. Miller indexes cutoff number.
-    :type zlimit: int 
+    :param slist: Stereodiagram output from `generateStereo <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateStereo>`_.
+    :type slist: list, required
+    :param cShow: Plot control annotation. `True` (default): plot the control parameters on lower left corner; `False` do not plot.
+    :type cShow: bool, optional
+    :param iShow: Whether to display Miller indexes or not.
+    :type iShow: bool, optional
+    :param zlimit: Miller indexes cutoff number.
+    :type zlimit: int, optional  
+    :param layout: layout format. individual (default): plotting one by one in sequence, table: plotting in a table of 3 columns  
+    :type layout: str, optional 
+    :param bSave: Whether to save the image into a .png image file.
+    :type bSave: bool, optional  
+
 
     .. note::
 
@@ -436,10 +560,39 @@ def showStereo(slist, name, iShow = False, bSave=False, zLimit = 2):
     if _isLinux() and not hasDisplay: bSave = True 
     #always save to file on linux as it may just the commandline
     
-    pl = NBPlot(TY_STEREO)
-    for c, s in slist:  
-        d = (c, name, bSave, (s, iShow, zLimit))
+    n = len(slist)
+    
+    pl = NBPlot(TY_STEREO, n, name, bSave, cShow, layout)
+    for i, ss in enumerate(slist):  
+        c, s = ss
+        d = (i, c, s, iShow, zLimit)
         pl.plot(data = d)
         time.sleep(1.0)
-
+    pl.plot()
+    time.sleep(1.0)
     pl.plot(finished=True)
+
+def _getGridDims(n, nCol = 3):
+   
+    # print(f'found grid input: {n}, {nCol}')
+    nr = n % nCol
+
+    nrows = n // nCol
+    
+    if nr != 0:
+        nrows += 1
+
+    ncols = nr
+    if n >= 3:
+        ncols = 3
+    # print(f'found grid: {nrows}, {ncols}')
+    return nrows, ncols
+
+
+def _getGridPos(i, nCols = 3):
+    
+    ncols = i % nCols
+
+    nrows = i // nCols
+
+    return nrows, ncols
