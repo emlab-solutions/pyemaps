@@ -86,6 +86,7 @@ def generate_difs(name = 'Silicon', mode = DEF_MODE, ckey = 'tilt', sim_rand=Fal
         if sim_rand:
             emc.simc = sc
 
+        emc.cl = 2000
         emclist.append(emc)
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
@@ -113,9 +114,9 @@ if __name__ == '__main__':
 
     em_keys = ['tilt', 'zone', 'defl', 'vt', 'cl']
     for k in em_keys:
-        dpl = generate_difs(ckey=k)
+        dpl = generate_difs(ckey=k, mode = 2)
         showDif(dpl)
 
     for k in em_keys:
-        dpl = generate_difs(ckey=k, sim_rand=True)
+        dpl = generate_difs(ckey=k, sim_rand=True, mode = 2)
         showDif(dpl)
