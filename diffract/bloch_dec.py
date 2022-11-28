@@ -77,10 +77,14 @@ def add_bloch(target):
                          sampling = DEF_SAMPLING,
                          dbsize = DEF_CBED_DSIZE,
                          em_controls = EMC(cl=200, # set smaller that 1000 default value
-                                           simc = SIMC(gmax=1.0, excitation=(0.3,1.0)))):
+                                           simc = SIMC(gmax=1.0, 
+                                                       excitation=(0.3,1.0)
+                                                       )
+                                            )
+                    ):
         """
         Begins a dynamic diffraction (Bloch) simulation session. 
-        The simulation results are retained between this and 
+        The simulation results are retained in the session between this and 
         `endBloch call <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_. 
 
         :param aperture: Optional. Objective aperture
@@ -185,21 +189,31 @@ def add_bloch(target):
         spoints = np.transpose(sampling_points)
 
         sp = [tuple(p) for p in spoints]
+
+        # updating controls
+        em_controls(omega = omega, 
+                    aperture = aperture,
+                    sampling = sampling)                      
         
+        em_controls.simc(mode = 2, 
+                        dsize = dbsize
+                        )
+
+        self.session_controls=em_controls
         return nsampling, sp
 
     def getBlochImages(self, 
-                      sample_thickness = DEF_THICKNESS,
-                      pix_size = DEF_PIXSIZE,
-                      det_size = DEF_DETSIZE,
-                      bSave = False):
+                        sample_thickness = DEF_THICKNESS,
+                        pix_size = DEF_PIXSIZE,
+                        det_size = DEF_DETSIZE,
+                        bSave = False):
        """
         Retrieves a set of dynamic diffraction image from the simulation 
         sessiom marked by
         `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_. and 
         `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.   
         
-        :param thickness: Optional. sample thickness range abd step in tuple of three integers (th_start, th_end, th_step)
+        :param thickness: Optional. sample thickness range and step in tuple of three integers (th_start, th_end, th_step)
         :type thickness: int
 
         :param pix_size: Optional. Detector pixel size in microns
@@ -265,9 +279,17 @@ def add_bloch(target):
                 raise BlochError('Error closing file')
 
             print(f'{det_size}x{det_size}x{dep} raw Bloch images has been successfully saved to: {imgfn}')
-            print(f'To view, import the file into ImageJ or other tools')
+            print(f'To view, import the file into `ImageJ <https://imagej.nih.gov/ij/>`_ or other tools')
 
-       return bimgl
+        # updating controls
+       self.session_controls(sample_thickness=sample_thickness)
+       self.session_controls.simc(pix_size=pix_size, det_size=det_size)
+
+       bimgs = BImgList(self.name)
+       for bi in bimgl:
+            bimgs.add(self.session_controls, bi)
+
+       return bimgs
        
     def printIBDetails(self):
         '''
@@ -277,7 +299,7 @@ def add_bloch(target):
         `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.   
 
         Information regarding the simulation session include sampling points and their
-        associated tilts etc.
+        associated diffracted beam directions etc.
 
         '''
         nib = bloch.get_nsampling()
@@ -329,11 +351,14 @@ def add_bloch(target):
         `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
         and `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.
 
-        :param ib_coords: Optional. Sampling point coordinates tuple
+        :param ib_coords: Sampling point coordinates tuple
         :type ib_coords: tuple
 
-        :param bPrint: Optional. True - print beams info on standard output
-        :type bPrint: bool
+        :param bPrint: True - print beams info on standard output
+        :type bPrint: bool, optional
+
+        :return: a list of Miller Indexes.
+        :rtype: list
 
         '''
         
@@ -372,11 +397,11 @@ def add_bloch(target):
         `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_ and 
         `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.   
 
-        :param ib_coords: Optional. Sampling point coordinates tuple
-        :type ib_coords: tuple
+        :param ib_coords: Sampling point coordinates tuple
+        :type ib_coords: tuple, optional, default (0,0)
 
-        :return: a vector of complex numbers
-        :rtype: array
+        :return: a list of complex numbers
+        :rtype: list
 
         Example of the eigen vales:
 
@@ -555,7 +580,7 @@ def add_bloch(target):
             DEF_APERTURE = 1.0
             DEF_OMEGA = 10
             DEF_SAMPLING = 8
-            DEF_CBED_DSIZE - 0.16
+            DEF_CBED_DSIZE = 0.16
             DEF_DSIZE_LIMITS =(0.01, 0.5)
             DEF_PIXSIZE = 25
             DEF_DETSIZE = 512
@@ -584,15 +609,25 @@ def add_bloch(target):
                 bSave = bSave)
         except:
             raise BlochError('Failed to generate dynamic simulation')
-        
-        
+
+        # adding more control parameters to em and sim controls objects
+        # em_controls(omega = omega, 
+        #             aperture = aperture, 
+        #             sample_thickness=sample_thickness
+        #             )
+
+        # em_controls.simc(sampling=sampling,
+        #                 pix_size=pix_size,
+        #                 det_szie=det_size
+        #                 )   
+
         self.endBloch()
 
-        myBlochImgs = BImgList(self._name)
-        for img in bimgs:
-            myBlochImgs.add(em_controls, img)
+        # myBlochImgs = BImgList(self._name)
+        # for img in bimgs:
+        #     myBlochImgs.add(em_controls, img)
 
-        return myBlochImgs
+        return bimgs
 
     target.beginBloch = beginBloch
     target.getBlochFN = getBlochFN

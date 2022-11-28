@@ -106,6 +106,11 @@ def add_dif(target):
         if ret != 200:
             raise DPError('failed to generate diffraction patterns')
 
+        # update the controls
+        em_controls(dict(mode=mode))
+        if mode == 2:
+            em_controls(dict(dsize=dsize))
+            
         return em_controls, DP(diffp)
 
     def _get_diffraction(self, zone = None, 
