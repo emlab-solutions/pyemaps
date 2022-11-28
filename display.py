@@ -142,24 +142,22 @@ class DifPlotter:
         iax.set_axis_off()
         iax.set_aspect('equal')
 
-        intlist = [k.intensity for k in dp.klines]
-        lint, hint = min(intlist), max(intlist)
+        if dp.nklines > 0:
+            intlist = [k.intensity for k in dp.klines]
+            lint, hint = min(intlist), max(intlist)
 
-        for kl in dp.klines:
-            # print(f'kline: {kl}')
-            if not kshow:
-                opacity = 0.0 
-            else: 
-                opacity = kl.calOpacity(lint,hint)
-                # print(f'got here: {opacity}')
+            for kl in dp.klines:
+                
+                if not kshow:
+                    opacity = 0.0 
+                else: 
+                    opacity = kl.calOpacity(lint,hint)
 
-            # lw = kl.calLineWidth(lint,hint)
-            # print(f'line width by intensity: {lw}')
-            kl *=PLOT_MULTIPLIER
-            xx = [kl.pt1.x, kl.pt2.x]
-            yy = [kl.pt1.y, kl.pt2.y]
-        
-            iax.plot(xx, yy, 'k', alpha=opacity, linewidth=1.75)
+                kl *=PLOT_MULTIPLIER
+                xx = [kl.pt1.x, kl.pt2.x]
+                yy = [kl.pt1.y, kl.pt2.y]
+            
+                iax.plot(xx, yy, 'k', alpha=opacity, linewidth=1.75)
         
         if dp.nhlines > 0:
             intlist = [h.intensity for h in dp.hlines]
