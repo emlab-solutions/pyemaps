@@ -70,8 +70,9 @@ install_requires_common = [
             # 'mkl-service == 2.4.0'
             ]
 
-dif_source = ['diffract.f90',
+dif_source = [
             'diff_types.f90', 
+            'diffract.f90',
             'scattering.f90', 
             'spgra.f90',
             'diff_memalloc.f90',

@@ -25,13 +25,15 @@ Kinematic diffraction module is designed to handle kinematic simulation
 data. It is composed of Point, Line and Disk class objects.
 
 '''
-from . import EMC
+from . import EMC, SIMC
 from . import DPError, PointError, LineError, PIndexError, \
               DiskError, DPListError
 
 # precision digits for comparison purposes
 NDIGITS = 1
 DIFF_PRECISION = 0.95
+MIN_OPACITY = 0.2
+MAX_OPACITY = 0.35
 
 from . import XMAX, YMAX
 #int: Diffraction simulation output limits
@@ -153,10 +155,11 @@ class Line:
     Kikuchi line representation in kinematic diffraction patterns.
     
     '''
-    def __init__(self, pt1 = Point(), pt2=Point(), type=1):
+    def __init__(self, pt1 = Point(), pt2=Point(), intensity=0, type=1):
         
         setattr(self, 'pt1', pt1)  
         setattr(self, 'pt2', pt2)    
+        setattr(self, 'intensity', intensity)    
         setattr(self, 'type', type)
 
     @property
@@ -182,6 +185,14 @@ class Line:
 
         '''
         return self._type
+    
+    @property
+    def intensity(self):
+        '''
+        Line intensity
+
+        '''
+        return self._intensity
 
     @pt1.setter
     def pt1(self, pv):
@@ -202,7 +213,14 @@ class Line:
         if not isinstance(ty, int):
             raise LineError("type must be integer")
 
-        self._type = ty
+        self._type = ty 
+
+    @intensity.setter
+    def intensity(self, intense):
+        if not isinstance(intense, (int, float)):
+            raise LineError("intensity must be integer or float")
+
+        self._intensity = intense
 
     def __lt__(self, other):
 
@@ -220,12 +238,15 @@ class Line:
             if not (pt1 == pt2):
                 return pt1 < pt2
 
+            if self._intensity != other.intensity:
+                return self._intensity < other.intensity
+
             return False
         
         raise LineError("comparison must be between Line objects")
     
     def __key__(self):
-        return (self._pt1, self._pt2)
+        return (self._pt1, self._pt2, self._intensity)
     
     def __hash__(self):
         return hash(self.__key__())
@@ -269,30 +290,61 @@ class Line:
             if self._type != other.type:
                 return False
 
-            if (self._pt1 == other.pt1) and \
-                (self._pt2 == other.pt2):
-                return True
+            if self._intensity != other.intensity:
+                return False
 
-            if (self._pt1 == other.pt2) and \
-                (self._pt2 == other.pt1):
-                return True
-            
-            return False  
-        
-        raise LineError(":ine object can't be equal to object of different type")
+            if not (self._pt1 == other.pt1) or \
+               not (self._pt2 == other.pt2):
+                return False
+
+            return True
+
+        return False 
 
     def __repr__(self):
-        return str("[{}, {}]".format(self._pt1.__repr__(), self._pt2.__repr__()))
+        return str("[{}, {}], {}".format(self._pt1.__repr__(), 
+                                         self._pt2.__repr__(), 
+                                         self._intensity))
 
     def __iter__(self):
         x1, y1 = self._pt1
         x2, y2 = self._pt2
-        return iter((x1,y1,x2,y2))
+        return iter((x1,y1,x2,y2,self._intensity))
 
-    def to_arr(self):
+    def calOpacity(self, l, h):
+        """
+        Calculate the line opacity based on its intensity value
+
+        0.2 -> lowest intensity
+        0.35-> highest intensity
+
+        """
+        if h==l:
+            return 0.35
+
+        return MIN_OPACITY + ((self._intensity-l)*(MAX_OPACITY-MIN_OPACITY))/(h-l)
+
+    # def calLineWidth(self, l, h):
+    #     """
+    #     Calculate the line width based on its intensity value
+
+    #     1.0 -> lowest intensity
+    #     1.75-> highest intensity
+
+    #     """
+    #     if h==l:
+    #         return 1.75
+
+    #     return 1.0 + ((self._intensity-l)*3)/(4.0*(h-l))
+
+
+
+    def to_dict(self):
         x1, y1 = self._pt1
         x2, y2 = self._pt2
-        return [(x1,y1),(x2,y2)]
+        return {'pt1': (x1,y1),
+                'pt2': (x2,y2), 
+                'int': self._intensity}
 
 class Index:
     '''
@@ -635,54 +687,57 @@ class diffPattern:
     def klines(self, kls):
         
         if not hasattr(kls, "__len__"):
-            raise DPError("klines must be an array of Point objects")
+            raise DPError("klines data invalid")
         
         self._klines = []
         for k in kls:
-            if not hasattr(k, "__len__") or len(k) != 2:
-                raise DPError("klines must be an array of two tuples")
+            try:
+                x1,y1,x2,y2,intensity = k
 
-            if not isinstance(k[0], tuple) or len(k[0]) != 2:
-                raise DPError("klines end points must be a tuple of floating points")
-            
-            if not isinstance(k[1], tuple) or len(k[1]) != 2:
-                raise DPError('klines end points must be a tuple of floating points')
+            except Exception as e:
+                raise DPError(f'kline data invalid: {e}')
 
-            pt1 = Point(k[0])
-            pt2 = Point(k[1])
+            else:
+                pt1 = Point(p=(x1,y1))
+                pt2 = Point(p=(x2,y2))
 
-            pt1 -= self._shift
-            pt2 -= self._shift
+                pt1 -= self._shift
+                pt2 -= self._shift
 
-            ln = Line(pt1, pt2)
+                ln = Line(pt1 = pt1, 
+                          pt2 = pt2, 
+                          intensity=intensity)
 
-            self._klines.append(ln)
+                self._klines.append(ln)
 
     @hlines.setter
     def hlines(self, hls):
         
         if not hasattr(hls, "__len__"):
-            raise DPError("hlines must be an array of Point objects")
+            raise DPError("hlines data invalid")
         
         self._hlines = []
         for h in hls:
-            if not hasattr(h, "__len__") or len(h) != 2:
-                raise DPError("hlines must be an array of two Point objects")
+            try:
+                x1,y1,x2,y2,intensity = h
 
-            if not isinstance(h[0], tuple) or len(h[0]) != 2:
-                raise DPError("hlines end points must be a tuple of floating points")
-            
-            if not isinstance(h[1], tuple) or len(h[1]) != 2:
-                raise DPError("hlines end points must be a tuple of floating points")
+            except Exception as e:
+                raise DPError(f'hlines data invalid: {e}')
+                
+            else:
+                pt1 = Point(p=(x1,y1))
+                pt2 = Point(p=(x2,y2))
 
-            pt1 = Point(h[0])
-            pt2 = Point(h[1])
-            pt1 -= self._shift
-            pt2 -= self._shift
 
-            ln = Line(pt1, pt2)
+                pt1 -= self._shift
+                pt2 -= self._shift
 
-            self._hlines.append(ln)
+                ln = Line(pt1 = pt1, 
+                          pt2 = pt2, 
+                          type = 2,
+                          intensity=intensity)
+
+                self._hlines.append(ln)
 
     @disks.setter
     def disks(self, dks):
@@ -843,8 +898,8 @@ class diffPattern:
     def to_dict(self):
         retdict = {}
         
-        retdict['klines'] = [kl.to_arr() for kl in self._klines]
-        retdict['hlines'] = [hl.to_arr() for hl in self._hlines]
+        retdict['klines'] = [kl.to_dict() for kl in self._klines]
+        retdict['hlines'] = [hl.to_dict() for hl in self._hlines]
         retdict['disks'] = [d.to_dict() for d in self._disks]
         return retdict
 
