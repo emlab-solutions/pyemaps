@@ -161,6 +161,13 @@ class Cell:
 
         raise CellDataError('Cell data validation failed')
 
+    def __call__(self, session_controls=None):
+        setattr(self, 'session_controls', session_controls)
+
+    @property
+    def session_controls(self):
+        return self._session_controls
+
     @property
     def a(self):
         ''' a cell length '''
@@ -278,6 +285,14 @@ class Cell:
 
         except ValueError as e:
             raise CellValueError("gamma")
+    
+    @session_controls.setter
+    def session_controls(self, sv=None):
+        from . import EMC
+        if sv is not None and isinstance(sv, EMC):
+            raise CrystalClassError('Invalid session controls')
+
+        self._session_controls = sv
 
     def __key__(self):
         return (self._a, self._b, self._c, self._alpha, self._beta, self._gamma)
