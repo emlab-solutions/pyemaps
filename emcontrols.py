@@ -295,25 +295,27 @@ class SIMControl:
         simcstrs = []
 
         if not self._isDefExcitation():
-            simcstrs.append('excitation=' + str(self._excitation))
+            simcstrs.append('excitation=' + '({:.2f},{:.2f})'.format(self._excitation[0], self._excitation[1]))
 
         if not self._isDefGmax():
-            simcstrs.append('gmax=' + str(self._gmax))
+            simcstrs.append('gmax=' + '{:.2f}'.format(self._gmax))
 
         if not self._isDefBmin():
-            simcstrs.append('bmin=' + str(self._bmin))
+            simcstrs.append('bmin=' + '{:.2f}'.format(self._bmin))
 
         if not self._isDefIntensity():
-            simcstrs.append('intensity=' + str(self._intensity))
+            simcstrs.append('intensity=' + '({:.2f},{:.2f})'.format(self._intensity[0], self._intensity[1]))
+
+            # simcstrs.append('intensity=' + str(self._intensity))
 
         if not self._isDefXaxis():
-            simcstrs.append('xaxis=' + str(self._xaxis))
+            simcstrs.append('xaxis=' + '({:d},{:d},{:d})'.format(self._xaxis[0],self._xaxis[1],self._xaxis[2]))
 
         if not self._isDefGctl():
-            simcstrs.append('gctl=' + str(self._gctl))
+            simcstrs.append('gctl=' + '{:.2f}'.format(self._gctl))
 
         if not self._isDefZctl():
-            simcstrs.append('zctl=' + str(self._zctl))
+            simcstrs.append('zctl=' + '{:.2f}'.format(self._zctl))
         
         return ';'.join(simcstrs)
 
@@ -558,19 +560,19 @@ class EMControl:
         """
         emcstrs = []
         if self._zone != DEF_ZONE:
-            emcstrs.append('zone=' + str(self._zone))
+            emcstrs.append('zone=' + '({:d},{:d},{:d})'.format(self._zone[0],self._zone[1],self._zone[2]))
 
         if self._tilt != DEF_TILT:
-            emcstrs.append('tilt=' + str(self._tilt))
+            emcstrs.append('tilt=' + '({:.2f},{:.2f})'.format(self._tilt[0], self._tilt[1]))
 
         if self._defl != DEF_DEFL:
-            emcstrs.append('defl=' + str(self._defl))
+            emcstrs.append('defl=' + '({:.2f},{:.2f})'.format(self._defl[0], self._defl[1]))
 
         if self._cl != DEF_CL:
-            emcstrs.append('cl=' + str(self._cl))
+            emcstrs.append('cl=' + '{:.2f}'.format(self._cl))
 
         if self._vt != DEF_KV:
-            emcstrs.append('vt=' + str(self._vt))
+            emcstrs.append('vt=' + '{:.2f}'.format(self._vt))
 
         cstr = ''
 

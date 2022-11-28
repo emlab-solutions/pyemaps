@@ -197,15 +197,15 @@ def add_dif(target):
         num_klines = dif.getknum()
         
         if (num_klines > 0):
-            klines_arr = farray(np.zeros((num_klines, 4)), dtype=np.double)
+            klines_arr = farray(np.zeros((num_klines, 5)), dtype=np.double)
             if dif.get_klines(klines_arr) == 0:
                 for i in range(num_klines):
                     j=i+1
-                    x1,y1,x2,y2=klines_arr[i][0:]
-                    line=[]
-                    line.append((x1,y1))
-                    line.append((x2,y2))
-                    klines.append(line)
+                    x1,y1,x2,y2,intensity=klines_arr[i][0:]
+                    # line=[]
+                    # line.append((x1,y1))
+                    # line.append((x2,y2))
+                    klines.append((x1,y1,x2,y2,intensity))
             else:
                 print(f"Error: retrieving klines!")
                 return 500, ({})
@@ -232,14 +232,14 @@ def add_dif(target):
             num_hlines = dif.gethnum()
             
             if (num_hlines > 0):
-                hlines_arr = farray(np.zeros((num_hlines, 4)), dtype=np.double)
+                hlines_arr = farray(np.zeros((num_hlines, 5)), dtype=np.double)
                 if dif.get_hlines(hlines_arr) == 0:
                     for i in range(num_hlines):
-                        x1,y1,x2,y2 = hlines_arr[i][0:]
-                        line=[]
-                        line.append((x1,y1))
-                        line.append((x2,y2))
-                        hlines.append(line)
+                        x1,y1,x2,y2,intensity = hlines_arr[i][0:]
+                        # line=[]
+                        # line.append((x1,y1))
+                        # line.append((x2,y2))
+                        hlines.append((x1,y1,x2,y2,intensity))
                 else:
                     print(f"Info: no hlines detected!")
                     return 500, ({})

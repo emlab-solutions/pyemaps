@@ -125,7 +125,6 @@ class DifPlotter:
             print(f'image saved to: {save_to}.png')
    
     def terminate(self):
-        # self.savePlot()
         plt.close(self.fig) #just close the current figure
             
     def plotKDif(self):
@@ -142,22 +141,34 @@ class DifPlotter:
         iax.set_ylim(-YMAX*PLOT_MULTIPLIER, YMAX*PLOT_MULTIPLIER)
         iax.set_axis_off()
         iax.set_aspect('equal')
-        # iax.set_title(self.name)
 
-        line_color = 'k' if kshow else 'w'
-        for kl in dp.klines:
-        
-            kl *=PLOT_MULTIPLIER
-            xx = [kl.pt1.x, kl.pt2.x]
-            yy = [kl.pt1.y, kl.pt2.y]
-        
-            iax.plot(xx, yy, line_color, alpha=0.35, linewidth=1.75)
+        if dp.nklines > 0:
+            intlist = [k.intensity for k in dp.klines]
+            lint, hint = min(intlist), max(intlist)
 
-        for hl in dp.hlines:
-            hl *=PLOT_MULTIPLIER
-            xx = [hl.pt1.x, hl.pt2.x]
-            yy = [hl.pt1.y, hl.pt2.y]
-            iax.plot(xx, yy, 'k', alpha=0.35, linewidth=1.75)
+            for kl in dp.klines:
+                
+                if not kshow:
+                    opacity = 0.0 
+                else: 
+                    opacity = kl.calOpacity(lint,hint)
+
+                kl *=PLOT_MULTIPLIER
+                xx = [kl.pt1.x, kl.pt2.x]
+                yy = [kl.pt1.y, kl.pt2.y]
+            
+                iax.plot(xx, yy, 'k', alpha=opacity, linewidth=1.75)
+        
+        if dp.nhlines > 0:
+            intlist = [h.intensity for h in dp.hlines]
+            lint, hint = min(intlist), max(intlist)
+
+            for hl in dp.hlines:
+                opacity = hl.calOpacity(lint, hint)
+                hl *=PLOT_MULTIPLIER
+                xx = [hl.pt1.x, hl.pt2.x]
+                yy = [hl.pt1.y, hl.pt2.y]
+                iax.plot(xx, yy, 'k', alpha=opacity, linewidth=1.75)
 
         for d in dp.disks:
             d *= PLOT_MULTIPLIER
