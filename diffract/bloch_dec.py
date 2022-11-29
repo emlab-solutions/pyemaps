@@ -184,8 +184,6 @@ def add_bloch(target):
         if ret != 0:
             raise BlochError('Failed to retrive sampling points used in scattering matrix run')
         
-        # print(f'# of sampling points: {nsampling}')
-        
         spoints = np.transpose(sampling_points)
 
         sp = [tuple(p) for p in spoints]
@@ -225,8 +223,8 @@ def add_bloch(target):
         :param bSave: True - save the output to a raw image file with extension of 'im3'
         :type bSave: bool, optional
 
-        :return: a 2x2 raw intensity array of double precision intensity
-        :rtype: array
+        :return: `BImgList <pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs>`_ object
+        :rtype: BImgList
 
         Default values:
 
@@ -284,15 +282,7 @@ def add_bloch(target):
                 raise BlochError('Error closing file')
 
             print(f'{det_size}x{det_size}x{dep} raw Bloch images has been successfully saved to: {imgfn}')
-            print(f'To view, import the file into `ImageJ <https://imagej.nih.gov/ij/>`_ or other tools')
-
-        # updating controls
-    #    self.session_controls(sample_thickness=sample_thickness)
-       
-
-    #    for bi in bimgl:
-            
-    #         bimgs.add(self.session_controls, bi)
+            print(f'To view, import the file into ImageJ or other raw image visualization tools')
 
        return bimgs
        
@@ -494,34 +484,6 @@ def add_bloch(target):
         
         return np.transpose(scm)
 
-    # @staticmethod
-    # def saveRawImages(self, imglist, det_size):
-        
-    #     imgfn, bfn, l = self.getBlochFN()
-    #     if bloch.openimgfile(det_size, bfn, l) != 0:
-    #         raise BlochError('Error opening file for write')
-
-    #     for img in imglist:
-            
-    #         # validating the image size, matching size input
-    #         if not isinstance(img[0], list) or \
-    #             not not isinstance(img[1], list):
-    #             raise BlochError('Invalid image data')
-            
-    #         if len(img[0]) != det_size or \
-    #             len(img[1]) != det_size:
-    #             raise BlochError('Image data dimension does not mtach input')
-
-    #         ri = farray(np.array(img), dtype=float)
-    #         if bloch.writerawimage(ri) != 0:
-    #             raise BlochError("Failed to write raw image")
-        
-    #     if (bloch.closeimgfile() != 0):
-    #         raise BlochError('Error closing file')
-
-    #     print(f'Raw Bloch images data has been successfully saved to: {imgfn}')
-    #     print(f'To view, import the file into ImageJ or other tools')
-
 
     def endBloch(self):
        """
@@ -615,22 +577,7 @@ def add_bloch(target):
         except:
             raise BlochError('Failed to generate dynamic simulation')
 
-        # adding more control parameters to em and sim controls objects
-        # em_controls(omega = omega, 
-        #             aperture = aperture, 
-        #             sample_thickness=sample_thickness
-        #             )
-
-        # em_controls.simc(sampling=sampling,
-        #                 pix_size=pix_size,
-        #                 det_szie=det_size
-        #                 )   
-
         self.endBloch()
-
-        # myBlochImgs = BImgList(self._name)
-        # for img in bimgs:
-        #     myBlochImgs.add(em_controls, img)
 
         return bimgs
 
