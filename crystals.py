@@ -287,9 +287,10 @@ class Cell:
             raise CellValueError("gamma")
     
     @session_controls.setter
-    def session_controls(self, sv=None):
+    def session_controls(self, sv):
         from . import EMC
-        if sv is not None and isinstance(sv, EMC):
+
+        if not isinstance(sv, EMC):
             raise CrystalClassError('Invalid session controls')
 
         self._session_controls = sv
