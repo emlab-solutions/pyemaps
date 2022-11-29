@@ -347,7 +347,7 @@ def add_bloch(target):
         and `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.
 
         :param ib_coords: Sampling point coordinates tuple
-        :type ib_coords: tuple
+        :type ib_coords: tuple, optional
 
         :param bPrint: True - print beams info on standard output
         :type bPrint: bool, optional
@@ -395,7 +395,7 @@ def add_bloch(target):
         :param ib_coords: Sampling point coordinates tuple
         :type ib_coords: tuple, optional, default (0,0)
 
-        :return: a list of complex numbers
+        :return: a list of complex eigen values
         :rtype: list
 
         Example of the eigen vales:
