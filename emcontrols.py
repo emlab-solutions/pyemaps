@@ -512,7 +512,7 @@ from pyemaps import (DEF_ZONE,
                     
 EM_CONTROLS_KEYS = ['zone','tilt','defl', 'cl', 'vt', 
                      'aperture', 'omega', 'sampling', 
-                     'sample_thickness']
+                     'sth']
 
 class EMControl:
     '''
@@ -553,7 +553,7 @@ class EMControl:
                     #     aperture=DEF_APERTURE, 
                     #    omega = DEF_OMEGA,
                     #    sampling=DEF_SAMPLING,
-                    #    sample_thickness=DEF_THICKNESS):
+                    #    sth=DEF_THICKNESS):
         for k, v in kwargs.items():
             if k not in EM_CONTROLS_KEYS:
                 print(f'key {k} is not in pyemaps microscope control keys, ignored')
@@ -561,7 +561,7 @@ class EMControl:
             setattr(self, k, v)
         # setattr(self, 'omega', omega)
         # setattr(self, 'sampling', sampling)
-        # setattr(self, 'sample_thickness', sample_thickness)
+        # setattr(self, 'sth', sth)
         
     @classmethod
     def from_dict(cls, emc_dict):
@@ -645,12 +645,12 @@ class EMControl:
         return self._sampling
 
     @property
-    def sample_thickness(self):
+    def sth(self):
         '''
         Samples thickness setting in tuple of three integers: (start, end, step)
 
         '''
-        return self._sample_thickness
+        return self._sth
 
     @zone.setter
     def zone(self, zv):
@@ -733,12 +733,19 @@ class EMControl:
         
         self._sampling = v
     
-    @sample_thickness.setter
-    def sample_thickness(self, sc):
-        if not isinstance(sc, tuple) or len(sc) != 3:
-           raise EMCError("Sample thickness must be three integer tuple")
+    @sth.setter
+    def sth(self, sv):
+        if not isinstance(sv, int):
+           raise EMCError("Sample thickness must be an integer")
         
-        self._sample_thickness = sc
+        self._sth = sv
+    
+    # @sth.setter
+    # def sth(self, sc):
+    #     if not isinstance(sc, tuple) or len(sc) != 3:
+    #        raise EMCError("Sample thickness must be three integer tuple")
+        
+    #     self._sth = sc
 
     def __eq__(self, other):
         if not isinstance(other, EMControl):
@@ -771,7 +778,7 @@ class EMControl:
         if other.sampling != self._sampling:
             return False 
 
-        if other.sample_thickness != self._sample_thickness:
+        if other.sth != self._sth:
             return False 
 
         return True
@@ -796,8 +803,8 @@ class EMControl:
         if self._sampling is not None:
             cstr.append('Aperture: ' + str(self._sampling))
 
-        if self._sample_thickness is not None:
-            cstr.append('Sample thickness: ' + str(self._sample_thickness))
+        if self._sth is not None:
+            cstr.append('Sample thickness: ' + str(self._sth))
 
         if not self._simc == SIMC():
             cstr.append('Simulation parameters: ' + str(self._simc))
@@ -842,11 +849,9 @@ class EMControl:
         if self._sampling is not None and self._sampling != DEF_SAMPLING:
             emcstrs.append('sampling=' + '{:.2f}'.format(self._sampling))
 
-        if self._sample_thickness and self._sample_thickness != DEF_THICKNESS:
-            emcstrs.append('sample_thickness=' + 
-                            '({:d},{:d},{:d})'.format(self._sample_thickness[0],
-                                                      self._sample_thickness[1],
-                                                      self._sample_thickness[2])
+        if self._sth and self._sth != DEF_THICKNESS:
+            emcstrs.append('sth=' + 
+                            '{:d}'.format(self._sth)
                           )
 
         cstr = ''

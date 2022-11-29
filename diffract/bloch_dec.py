@@ -213,17 +213,17 @@ def add_bloch(target):
         `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_. and 
         `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.   
         
-        :param thickness: Optional. sample thickness range and step in tuple of three integers (th_start, th_end, th_step)
-        :type thickness: int
+        :param thickness: sample thickness range and step in tuple of three integers (th_start, th_end, th_step)
+        :type thickness: int, optional
 
-        :param pix_size: Optional. Detector pixel size in microns
-        :type pix_size: int
+        :param pix_size: Detector pixel size in microns
+        :type pix_size: int, optional
 
-        :param det_size: Optional. Detector size or output image size
-        :type det_size: int
+        :param det_size: Detector size or output image size
+        :type det_size: int, optional
 
-        :param bSave: Optional. True - save the output to a raw image file with extension of 'im3'
-        :type bSave: bool
+        :param bSave: True - save the output to a raw image file with extension of 'im3'
+        :type bSave: bool, optional
 
         :return: a 2x2 raw intensity array of double precision intensity
         :rtype: array
@@ -237,6 +237,8 @@ def add_bloch(target):
             DEF_THICKNESS = (200, 200, 100)
 
        """
+       from copy import deepcopy
+
        th_start, th_end, th_step = sample_thickness
 
        if th_start > th_end or th_step <= 0 or \
@@ -263,7 +265,9 @@ def add_bloch(target):
             if bloch.openimgfile(det_size, dep, bfn, l) != 0:
                 raise BlochError('Error opening file for write')
             
-       bimgl = []
+       bimgs = BImgList(self.name)
+       self.session_controls.simc(pix_size=pix_size, det_size=det_size)
+       
        for th in thlist:
             bimg, ret = bloch.imagegen(th, 0, pix_size,
                                         det_size, bsave = bSave)
@@ -271,8 +275,9 @@ def add_bloch(target):
             if(ret != 0):
               self.endBloch()
               raise BlochError("bloch image generation failed!")
-
-            bimgl.append(bimg)
+            emc = deepcopy(self.session_controls)
+            emc(sth=th)
+            bimgs.add(emc, bimg)
 
        if bSave:
             if bloch.closeimgfile() != 0:
@@ -282,12 +287,12 @@ def add_bloch(target):
             print(f'To view, import the file into `ImageJ <https://imagej.nih.gov/ij/>`_ or other tools')
 
         # updating controls
-       self.session_controls(sample_thickness=sample_thickness)
-       self.session_controls.simc(pix_size=pix_size, det_size=det_size)
+    #    self.session_controls(sample_thickness=sample_thickness)
+       
 
-       bimgs = BImgList(self.name)
-       for bi in bimgl:
-            bimgs.add(self.session_controls, bi)
+    #    for bi in bimgl:
+            
+    #         bimgs.add(self.session_controls, bi)
 
        return bimgs
        
