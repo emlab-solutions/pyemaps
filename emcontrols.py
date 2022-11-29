@@ -189,11 +189,6 @@ class SIMControl:
        '''crystal horizontal axis in reciprical space'''
        return self._xaxis
 
-    # @property
-    # def sampling(self):
-    #    '''number of sampling points'''
-    #    return self._sampling
-
     @property
     def pix_size(self):
        '''Detector pixel size in microns'''
@@ -283,14 +278,6 @@ class SIMControl:
        
        self._xaxis = xv
   
-    # @sampling.setter
-    # def sampling(self, sv):
-
-    #    if not isinstance(sv, int):
-    #         raise EMCError('Sampling points must be integer')
-       
-    #    self._sampling = sv
-
     @pix_size.setter
     def pix_size(self, pv):
 
@@ -309,7 +296,6 @@ class SIMControl:
 
     @mode.setter
     def mode(self, mv):
-       print(f'mode set: {mv}')
        if not isinstance(mv, int) or \
           (mv != 1 and mv != 2):
             raise EMCError('mode must be integer of value 1 or 2')
@@ -350,9 +336,6 @@ class SIMControl:
        if self._zctl != other.zctl:
               return False
 
-    #    if self._sampling != other.sampling: 
-    #           return False
-
        if self._pix_size != other.pix_size:
               return False
 
@@ -371,6 +354,19 @@ class SIMControl:
        
        simulation = ['Simulation Controls Parameters:']
 
+
+       if hasattr(self, 'mode'):
+            smode = 'unknown'
+            if self._mode == 1:
+                smode = 'normal'
+            
+            if self._mode == 2:
+                smode = 'CBED'
+            simulation.append('Simulation mode: ' + smode)
+
+       if hasattr(self, 'dsize'):
+            simulation.append('Diffarcted beam size: ' + str(self._dsize))
+
        simulation.append('excitation error range: ' +  str(self._excitation))
        simulation.append('maximum recipricol vector length: ' + str(self._gmax))
        simulation.append('beta perturbation cutoff: ' + str(self._bmin))
@@ -379,14 +375,11 @@ class SIMControl:
        simulation.append('maximum index number for g-list: ' + str(self._gctl))
        simulation.append('maximum zone index number: ' + str(self._zctl))
 
-    #    if self._sampling is not None:
-    #         simulation.append('Number of sampling points: ' + str(self._sampling))
+       if hasattr(self, 'pix_size'):
+            simulation.append('Detector pixel size: ' + str(self._pix_size))
 
-       if self._pix_size is not None:
-            simulation.append('maximum index number for g-list: ' + str(self._pix_size))
-
-       if self._det_size:
-            simulation.append('maximum zone index number: ' + str(self._det_size))
+       if hasattr(self, 'det_size'):
+            simulation.append('Detector size: ' + str(self._det_size))
 
        return "\n ".join(simulation)
 
@@ -426,10 +419,17 @@ class SIMControl:
         '''
         simcstrs = []
 
-        if self._mode and self._mode != DEF_MODE:
-            simcstrs.append('mode=' + '{:d}'.format(self._mode))
+        if hasattr(self, 'mode') and self._mode and self._mode != DEF_MODE:
+            smode = 'unknown'
+            if self._mode == 1:
+                smode = 'normal'
+            
+            if self._mode == 2:
+                smode = 'CBED'
+            
+            simcstrs.append('mode=' + smode)
 
-        if self._dsize and self._dsize != DEF_CBED_DSIZE:
+        if hasattr(self, 'dsize') and self._dsize and self._dsize != DEF_CBED_DSIZE:
             simcstrs.append('dsize=' + '{:.2f}'.format(self._dsize))
 
         if not self._isDefExcitation():
@@ -453,13 +453,10 @@ class SIMControl:
         if not self._isDefZctl():
             simcstrs.append('zctl=' + '{:.2f}'.format(self._zctl))
 
-        # if self._sampling and self._sampling != DEF_SAMPLING:
-        #     simcstrs.append('sampling=' + '{:d}'.format(self._sampling))
-
-        if self._pix_size and self._pix_size != DEF_PIXSIZE:
+        if hasattr(self, 'pix_size') and self._pix_size != DEF_PIXSIZE:
             simcstrs.append('pix_size=' + '{:d}'.format(self._pix_size))
 
-        if self._det_size and self._det_size != DEF_DETSIZE:
+        if hasattr(self, 'det_size') and self._det_size != DEF_DETSIZE:
             simcstrs.append('det_size=' + '{:.2f}'.format(self._det_size))
         
         return ';'.join(simcstrs)
@@ -525,8 +522,14 @@ class EMControl:
     * **vt**: hight voltage in kilo-volts
     * **simc*: `SIMControl <pyemaps.emcontrols.html#pyemaps.emcontrols.SIMControl>`_ object
 
-    '''
+    Other control parameters:
 
+    * **aperture**: Objective len aperture
+    * **omega**: Diagnization cutoff value
+    * **sampling**: Number of sampling points
+    * **sth**: Sample thickness. 
+
+    '''
 
     def __init__(self, tilt = DEF_TILT, 
                        zone = DEF_ZONE, 
@@ -550,19 +553,13 @@ class EMControl:
         Additional class members added as simulation is run.
 
         """
-                    #     aperture=DEF_APERTURE, 
-                    #    omega = DEF_OMEGA,
-                    #    sampling=DEF_SAMPLING,
-                    #    sth=DEF_THICKNESS):
+        
         for k, v in kwargs.items():
             if k not in EM_CONTROLS_KEYS:
                 print(f'key {k} is not in pyemaps microscope control keys, ignored')
                 continue    
             setattr(self, k, v)
-        # setattr(self, 'omega', omega)
-        # setattr(self, 'sampling', sampling)
-        # setattr(self, 'sth', sth)
-        
+            
     @classmethod
     def from_dict(cls, emc_dict):
 
@@ -740,13 +737,6 @@ class EMControl:
         
         self._sth = sv
     
-    # @sth.setter
-    # def sth(self, sc):
-    #     if not isinstance(sc, tuple) or len(sc) != 3:
-    #        raise EMCError("Sample thickness must be three integer tuple")
-        
-    #     self._sth = sc
-
     def __eq__(self, other):
         if not isinstance(other, EMControl):
            raise EMCError("Comparison must be done with EMControl object")
@@ -794,17 +784,17 @@ class EMControl:
         cstr.append('Camera Length: ' + str(self._cl))
         cstr.append('Voltage: ' + str(self._vt))
 
-        if self._aperture is not None:
+        if hasattr(self, 'aperture'):
             cstr.append('Aperture: ' + str(self._aperture))
 
-        if self._omega is not None:
-            cstr.append('Aperture: ' + str(self._omega))
+        if hasattr(self, 'omega'):
+            cstr.append('Omega: ' + str(self._omega))
 
-        if self._sampling is not None:
-            cstr.append('Aperture: ' + str(self._sampling))
+        if hasattr(self, 'sampling'):
+            cstr.append('Sampling: ' + str(self._sampling))
 
-        if self._sth is not None:
-            cstr.append('Sample thickness: ' + str(self._sth))
+        if hasattr(self, 'sth'):
+            cstr.append('Thickness: ' + str(self._sth))
 
         if not self._simc == SIMC():
             cstr.append('Simulation parameters: ' + str(self._simc))
@@ -835,22 +825,22 @@ class EMControl:
                           )
 
         if self._cl != DEF_CL:
-            emcstrs.append('cl=' + '{:.2f}'.format(self._cl))
+            emcstrs.append('camlen=' + '{:.2f}'.format(self._cl))
 
         if self._vt != DEF_KV:
             emcstrs.append('vt=' + '{:.2f}'.format(self._vt))
 
-        if self._aperture is not None and self._aperture != DEF_APERTURE:
+        if hasattr(self, 'aperture') and self._aperture != DEF_APERTURE:
             emcstrs.append('aperture=' + '{:.2f}'.format(self._aperture))
 
-        if self._omega is not None and self._omega != DEF_OMEGA:
+        if hasattr(self, 'omega') and self._omega != DEF_OMEGA:
             emcstrs.append('omega=' + '{:.2f}'.format(self._omega))
 
-        if self._sampling is not None and self._sampling != DEF_SAMPLING:
+        if hasattr(self, 'sampling') and self._sampling != DEF_SAMPLING:
             emcstrs.append('sampling=' + '{:.2f}'.format(self._sampling))
 
-        if self._sth and self._sth != DEF_THICKNESS:
-            emcstrs.append('sth=' + 
+        if hasattr(self, 'sth') and self._sth != DEF_THICKNESS[0]:
+            emcstrs.append('thickness=' + 
                             '{:d}'.format(self._sth)
                           )
 

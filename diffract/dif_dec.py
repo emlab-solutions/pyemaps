@@ -98,7 +98,12 @@ def add_dif(target):
         zone = em_controls.zone
         sc = em_controls.simc
         
-        # self.set_simulation_controls()
+
+        if not mode:
+            mode = DEF_MODE
+
+        if mode == 2 and dsize is None:
+            dsize = DEF_CBED_DSIZE
 
         ret, diffp = self._get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize,sc)
         
@@ -107,9 +112,10 @@ def add_dif(target):
             raise DPError('failed to generate diffraction patterns')
 
         # update the controls
-        em_controls(dict(mode=mode))
+        
+        em_controls.simc(mode=mode)
         if mode == 2:
-            em_controls(dict(dsize=dsize))
+            em_controls.simc(dsize=dsize)
             
         return em_controls, DP(diffp)
 
@@ -145,8 +151,8 @@ def add_dif(target):
         """
         import copy
 
-        if not mode:
-            mode = DEF_MODE
+        # if not mode:
+        #     mode = DEF_MODE
         
         if mode != DEF_MODE and mode != DEF_MODE + 1:
             raise EMCError('Simulation mode is invalid: 1 = normal (default), 2 = CBED')
@@ -157,10 +163,12 @@ def add_dif(target):
         
         if mode == 2:
             dif.setmode(mode)
-            if dsize and isinstance(dsize, (int,float)) and dsize != DEF_CBED_DSIZE:
-                dif.setdisksize(float(dsize))
-            else:
-                dif.setdisksize(DEF_CBED_DSIZE)
+            try:
+                fd = float(dsize)
+            except ValueError:
+                raise EMCError('Invalid diffracted beams disk size')
+            else: 
+                dif.setdisksize(fd)
 
         if tx0 is not None and \
            ty0 is not None and \
@@ -207,9 +215,6 @@ def add_dif(target):
                 for i in range(num_klines):
                     j=i+1
                     x1,y1,x2,y2,intensity=klines_arr[i][0:]
-                    # line=[]
-                    # line.append((x1,y1))
-                    # line.append((x2,y2))
                     klines.append((x1,y1,x2,y2,intensity))
             else:
                 print(f"Error: retrieving klines!")
@@ -241,9 +246,6 @@ def add_dif(target):
                 if dif.get_hlines(hlines_arr) == 0:
                     for i in range(num_hlines):
                         x1,y1,x2,y2,intensity = hlines_arr[i][0:]
-                        # line=[]
-                        # line.append((x1,y1))
-                        # line.append((x2,y2))
                         hlines.append((x1,y1,x2,y2,intensity))
                 else:
                     print(f"Info: no hlines detected!")
