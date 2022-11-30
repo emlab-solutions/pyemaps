@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>pyemaps.kdiffs module &#8212; pyemaps 0.4.8 Beta documentation</title>
+    <title>pyemaps.kdiffs module &#8212; pyemaps 0.5.0 Beta documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -29,7 +29,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.4.8 Beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.5.0 Beta documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyemaps.kdiffs module</a></li> 
       </ul>
     </div>  
@@ -69,12 +69,12 @@ data. It is composed of Point, Line and Disk class objects.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pyemaps.kdiffs.Line">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.kdiffs.</span></span><span class="sig-name descname"><span class="pre">Line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pt1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Point()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Point()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.kdiffs.Line" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.kdiffs.</span></span><span class="sig-name descname"><span class="pre">Line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pt1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Point()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Point()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intensity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.kdiffs.Line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Kikuchi line representation in kinematic diffraction patterns.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.kdiffs.Line.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pt1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Point()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Point()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.kdiffs.Line.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pt1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Point()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pt2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Point()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intensity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.kdiffs.Line.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
@@ -95,9 +95,23 @@ data. It is composed of Point, Line and Disk class objects.</p>
 <dd><p>The type of a Line: Kikuchi line or HOLZ line</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.kdiffs.Line.intensity">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">intensity</span></span><a class="headerlink" href="#pyemaps.kdiffs.Line.intensity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Line intensity</p>
+</dd></dl>
+
 <dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.kdiffs.Line.to_arr">
-<span class="sig-name descname"><span class="pre">to_arr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.kdiffs.Line.to_arr" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyemaps.kdiffs.Line.calOpacity">
+<span class="sig-name descname"><span class="pre">calOpacity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">l</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.kdiffs.Line.calOpacity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the line opacity based on its intensity value</p>
+<p>0.2 -&gt; lowest intensity
+0.35-&gt; highest intensity</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.kdiffs.Line.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.kdiffs.Line.to_dict" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -318,7 +332,7 @@ kinematic diffraction patterns using this object.</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.4.8 Beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.5.0 Beta documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyemaps.kdiffs module</a></li> 
       </ul>
     </div>
