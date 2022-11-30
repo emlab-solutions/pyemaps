@@ -161,6 +161,10 @@ def add_bloch(target):
         dif.setemcontrols(cl, vt)        
         dif.setzone(z[0], z[1], z[2])
         
+        if hasattr(em_controls, 'xaxis'):
+            xa = em_controls.xaxis
+            dif.set_xaxis(1, xa[0], xa[1], xa[2])
+        
         ret = dif.diffract(1)
         if ret == 0:
             dif.diff_internaldelete(1)
@@ -189,12 +193,12 @@ def add_bloch(target):
         sp = [tuple(p) for p in spoints]
 
         # updating controls
-        em_controls(omega = omega, 
-                    aperture = aperture,
-                    sampling = sampling)                      
+        em_controls(mode = 2, 
+                    dsize = dbsize,
+                    aperture = aperture)                      
         
-        em_controls.simc(mode = 2, 
-                        dsize = dbsize
+        em_controls.simc(omega = omega, 
+                         sampling = sampling
                         )
 
         self.session_controls=em_controls
@@ -264,7 +268,7 @@ def add_bloch(target):
                 raise BlochError('Error opening file for write')
             
        bimgs = BImgList(self.name)
-       self.session_controls.simc(pix_size=pix_size, det_size=det_size)
+       self.session_controls(pix_size=pix_size, det_size=det_size)
        
        for th in thlist:
             bimg, ret = bloch.imagegen(th, 0, pix_size,
@@ -274,7 +278,7 @@ def add_bloch(target):
               self.endBloch()
               raise BlochError("bloch image generation failed!")
             emc = deepcopy(self.session_controls)
-            emc(sth=th)
+            emc.simc(sth=th)
             bimgs.add(emc, bimg)
 
        if bSave:
