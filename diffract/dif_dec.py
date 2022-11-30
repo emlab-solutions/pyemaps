@@ -97,7 +97,10 @@ def add_dif(target):
         cl, vt = em_controls.cl, em_controls.vt
         zone = em_controls.zone
         sc = em_controls.simc
-        
+        if hasattr(em_controls, 'xaxis'):
+            xa = em_controls.xaxis
+        else:
+            xa = None
 
         if not mode:
             mode = DEF_MODE
@@ -105,7 +108,7 @@ def add_dif(target):
         if mode == 2 and dsize is None:
             dsize = DEF_CBED_DSIZE
 
-        ret, diffp = self._get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize,sc)
+        ret, diffp = self._get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize,xa,sc)
         
         
         if ret != 200:
@@ -113,9 +116,9 @@ def add_dif(target):
 
         # update the controls
         
-        em_controls.simc(mode=mode)
+        em_controls(mode=mode)
         if mode == 2:
-            em_controls.simc(dsize=dsize)
+            em_controls(dsize=dsize)
             
         return em_controls, DP(diffp)
 
@@ -128,6 +131,7 @@ def add_dif(target):
                               cl = None,
                               vt = None, 
                               dsize = None,
+                              xa = None,
                               simc = None):
         """
         This routine returns raw diffraction data from emaps dif extension
@@ -151,9 +155,6 @@ def add_dif(target):
         """
         import copy
 
-        # if not mode:
-        #     mode = DEF_MODE
-        
         if mode != DEF_MODE and mode != DEF_MODE + 1:
             raise EMCError('Simulation mode is invalid: 1 = normal (default), 2 = CBED')
 
@@ -192,6 +193,8 @@ def add_dif(target):
 
         # setting simulation parameters
         self.set_sim_controls(simc)
+        if xa:
+            dif.set_xaxis(1, xa[0], xa[1], xa[2])
         
         self.load()
         
@@ -447,10 +450,6 @@ def add_dif(target):
         if not simc._isDefIntensity():
             intz0, intctl = simc.intensity
             dif.setintensities(intctl, intz0)
-
-        if not simc._isDefXaxis():
-            x0,x1,x2 = simc.xaxis
-            dif.set_xaxis(1, x0, x1, x2)
 
         if not simc._isDefGctl():
             dif.setgctl(simc.gctl)
