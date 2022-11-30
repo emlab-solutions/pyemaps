@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 
-# feat_list=['bloch']
+# feat_list=['stereo']
 feat_list=['dif', 'bloch', 'stereo', 'mxtal']
 
 def get_cifdata_dir():
@@ -25,7 +25,7 @@ def get_builtin_dir():
 def run_feat_list(cnflist, ty=1, bShow=True, bSave=False, feat_type='dif'):
     from pyemaps import Crystal as cr
     import time
-    from pyemaps import DPList,CrystalClassError, showBloch, showDif, showStereo
+    from pyemaps import DPList,CrystalClassError, EMC,showBloch, showDif, showStereo
     # from pyemaps import BlochImgs
 
     failure_cases=[]
@@ -62,7 +62,7 @@ def run_feat_list(cnflist, ty=1, bShow=True, bSave=False, feat_type='dif'):
                 if feat_type == 'dif':
                     showDif(dpl, bSave=bSave)
                 if feat_type == 'stereo':
-                    showStereo([emc, s], bSave=bSave)
+                    showStereo([(EMC(), s)], name='Silicon', bSave=bSave)
 
     return failure_count, failure_cases
 
@@ -137,7 +137,7 @@ if __name__ == '__main__':
     for f in feat_list:
         res[f]=[]
         for dt in range(1,3):
-            fc, fl = run_features_test(data_ty=dt, bShow = False, feat_type = f)
+            fc, fl = run_features_test(data_ty=dt, bShow = True, feat_type = f)
             res[f].append((fc, fl))
 
     print(f'\n\n\n<<<<<<<<<<<<<Summary of pyemaps Feature Sanity Runs>>>>>>>>>>>>>>>\n\n\n')
