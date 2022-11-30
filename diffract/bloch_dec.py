@@ -5,28 +5,28 @@ def add_bloch(target):
     ---------------------------------------------------- 
 
     .. data:: DEF_APERTURE
-        :value: = 1.0
+        :value: 1.0
 
     .. data:: DEF_OMEGA
-        :value: = 10
+        :value: 10
 
     .. data:: DEF_SAMPLING
-        :value: = 8
+        :value: 8
 
     .. data:: DEF_PIXSIZE
-        :value: = 25
+        :value: 25
 
     .. data:: DEF_DETSIZE
-        :value: = 512
+        :value: 512
 
     .. data:: DEF_CBED_DSIZE
-        :value: = 0.16
+        :value: 0.16
 
     .. data:: DEF_THICKNESS
-        :value: = (200, 200, 100)
+        :value: (200, 200, 100)
 
     .. data:: DEF_DSIZE_LIMITS
-        :value: = (0.01, 0.5)
+        :value: (0.01, 0.5)
 
     """
     from . import bloch, dif
