@@ -311,7 +311,7 @@ def add_dif(target):
         x, y, z = v
         rx, ry, rz = dif.drtrans(x, y, z, 0)
 
-        dif.crystaldelete()
+        # dif.crystaldelete()
         return rx, ry, rz
 
     def r2d(self, v = (0.0, 0.0, 0.0)):
@@ -331,7 +331,7 @@ def add_dif(target):
         x, y, z = v
         dx, dy, dz = dif.drtrans(x, y, z, 1)
 
-        dif.crystaldelete()
+        # dif.crystaldelete()
         return dx, dy, dz
 
     def angle(self, v1 =(1.0, 0.0, 0.0), \
@@ -367,7 +367,7 @@ def add_dif(target):
 
         a = dif.ang(x1, y1, z1, x2, y2, z2, ty)
 
-        dif.crystaldelete()
+        # dif.crystaldelete()
         return a
 
     def vlen(self, v = (1.0, 0.0, 0.0), ty = 0):
@@ -392,7 +392,7 @@ def add_dif(target):
         x, y, z = v
         ln = dif.vlen(x, y, z, ty)
 
-        dif.crystaldelete()
+        # dif.crystaldelete()
         return ln
 
     @staticmethod
