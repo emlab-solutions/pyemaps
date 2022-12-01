@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>pyemaps.crystals module &#8212; pyemaps 0.4.8 Beta documentation</title>
+    <title>pyemaps.crystals module &#8212; pyemaps 0.5.0 Beta documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -29,7 +29,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.4.8 Beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.5.0 Beta documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyemaps.crystals module</a></li> 
       </ul>
     </div>  
@@ -174,6 +174,11 @@ list object, as well as customization.</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gamma</span></span><a class="headerlink" href="#pyemaps.crystals.Cell.gamma" title="Permalink to this definition">¶</a></dt>
 <dd><p>gamma cell angle</p>
 </dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.crystals.Cell.session_controls">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">session_controls</span></span><a class="headerlink" href="#pyemaps.crystals.Cell.session_controls" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.crystals.Cell.prepare">
@@ -523,7 +528,7 @@ two reciprocal space vectors</p>
 <dt class="sig sig-object py" id="pyemaps.crystals.Crystal.beginBloch">
 <span class="sig-name descname"><span class="pre">beginBloch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aperture</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_APERTURE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_OMEGA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SAMPLING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dbsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_CBED_DSIZE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">em_controls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">EMC(cl=200,</span> <span class="pre">simc=SIMC(gmax=1.0,</span> <span class="pre">excitation=(0.3,</span> <span class="pre">1.0)))</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.beginBloch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Begins a dynamic diffraction (Bloch) simulation session. 
-The simulation results are retained between this and 
+The simulation results are retained in the session between this and 
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch call</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -632,7 +637,7 @@ calling :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DEF_APERTURE</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="n">DEF_OMEGA</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="n">DEF_SAMPLING</span> <span class="o">=</span> <span class="mi">8</span>
-<span class="n">DEF_CBED_DSIZE</span> <span class="o">-</span> <span class="mf">0.16</span>
+<span class="n">DEF_CBED_DSIZE</span> <span class="o">=</span> <span class="mf">0.16</span>
 <span class="n">DEF_DSIZE_LIMITS</span> <span class="o">=</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
 <span class="n">DEF_PIXSIZE</span> <span class="o">=</span> <span class="mi">25</span>
 <span class="n">DEF_DETSIZE</span> <span class="o">=</span> <span class="mi">512</span>
@@ -864,9 +869,15 @@ and <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.C
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ib_coords</strong> (<em>tuple</em>) – Optional. Sampling point coordinates tuple</p></li>
-<li><p><strong>bPrint</strong> (<em>bool</em>) – Optional. True - print beams info on standard output</p></li>
+<li><p><strong>ib_coords</strong> (<em>tuple</em><em>, </em><em>optional</em>) – Sampling point coordinates tuple</p></li>
+<li><p><strong>bPrint</strong> (<em>bool</em><em>, </em><em>optional</em>) – True - print beams info on standard output</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list of Miller Indexes.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -889,17 +900,17 @@ sessiom marked by
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>thickness</strong> (<em>int</em>) – Optional. sample thickness range abd step in tuple of three integers (th_start, th_end, th_step)</p></li>
-<li><p><strong>pix_size</strong> (<em>int</em>) – Optional. Detector pixel size in microns</p></li>
-<li><p><strong>det_size</strong> (<em>int</em>) – Optional. Detector size or output image size</p></li>
-<li><p><strong>bSave</strong> (<em>bool</em>) – Optional. True - save the output to a raw image file with extension of ‘im3’</p></li>
+<li><p><strong>thickness</strong> (<em>int</em><em>, </em><em>optional</em>) – sample thickness range and step in tuple of three integers (th_start, th_end, th_step)</p></li>
+<li><p><strong>pix_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Detector pixel size in microns</p></li>
+<li><p><strong>det_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Detector size or output image size</p></li>
+<li><p><strong>bSave</strong> (<em>bool</em><em>, </em><em>optional</em>) – True - save the output to a raw image file with extension of ‘im3’</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a 2x2 raw intensity array of double precision intensity</p>
+<dd class="field-even"><p><a class="reference external" href="pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs">BImgList</a> object</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array</p>
+<dd class="field-odd"><p>BImgList</p>
 </dd>
 </dl>
 <p>Default values:</p>
@@ -920,13 +931,13 @@ marked by
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ib_coords</strong> (<em>tuple</em>) – Optional. Sampling point coordinates tuple</p>
+<dd class="field-odd"><p><strong>ib_coords</strong> (<em>tuple</em><em>, </em><em>optional</em><em>, </em><em>default</em><em> (</em><em>0</em><em>,</em><em>0</em><em>)</em>) – Sampling point coordinates tuple</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a vector of complex numbers</p>
+<dd class="field-even"><p>a list of complex eigen values</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>array</p>
+<dd class="field-odd"><p>list</p>
 </dd>
 </dl>
 <p>Example of the eigen vales:</p>
@@ -1048,7 +1059,7 @@ marked by
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a>. and 
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch</a>.</p>
 <p>Information regarding the simulation session include sampling points and their
-associated tilts etc.</p>
+associated diffracted beam directions etc.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1438,7 +1449,7 @@ use this routine to determine the name of the crystal to load using
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.4.8 Beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.5.0 Beta documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyemaps.crystals module</a></li> 
       </ul>
     </div>

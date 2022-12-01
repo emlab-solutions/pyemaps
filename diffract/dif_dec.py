@@ -97,15 +97,29 @@ def add_dif(target):
         cl, vt = em_controls.cl, em_controls.vt
         zone = em_controls.zone
         sc = em_controls.simc
-        
-        # self.set_simulation_controls()
+        if hasattr(em_controls, 'xaxis'):
+            xa = em_controls.xaxis
+        else:
+            xa = None
 
-        ret, diffp = self._get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize,sc)
+        if not mode:
+            mode = DEF_MODE
+
+        if mode == 2 and dsize is None:
+            dsize = DEF_CBED_DSIZE
+
+        ret, diffp = self._get_diffraction(zone,mode,tx0,ty0,dx0,dy0,cl,vt,dsize,xa,sc)
         
         
         if ret != 200:
             raise DPError('failed to generate diffraction patterns')
 
+        # update the controls
+        
+        em_controls(mode=mode)
+        if mode == 2:
+            em_controls(dsize=dsize)
+            
         return em_controls, DP(diffp)
 
     def _get_diffraction(self, zone = None, 
@@ -117,6 +131,7 @@ def add_dif(target):
                               cl = None,
                               vt = None, 
                               dsize = None,
+                              xa = None,
                               simc = None):
         """
         This routine returns raw diffraction data from emaps dif extension
@@ -140,9 +155,6 @@ def add_dif(target):
         """
         import copy
 
-        if not mode:
-            mode = DEF_MODE
-        
         if mode != DEF_MODE and mode != DEF_MODE + 1:
             raise EMCError('Simulation mode is invalid: 1 = normal (default), 2 = CBED')
 
@@ -152,10 +164,12 @@ def add_dif(target):
         
         if mode == 2:
             dif.setmode(mode)
-            if dsize and isinstance(dsize, (int,float)) and dsize != DEF_CBED_DSIZE:
-                dif.setdisksize(float(dsize))
-            else:
-                dif.setdisksize(DEF_CBED_DSIZE)
+            try:
+                fd = float(dsize)
+            except ValueError:
+                raise EMCError('Invalid diffracted beams disk size')
+            else: 
+                dif.setdisksize(fd)
 
         if tx0 is not None and \
            ty0 is not None and \
@@ -179,6 +193,8 @@ def add_dif(target):
 
         # setting simulation parameters
         self.set_sim_controls(simc)
+        if xa:
+            dif.set_xaxis(1, xa[0], xa[1], xa[2])
         
         self.load()
         
@@ -202,9 +218,6 @@ def add_dif(target):
                 for i in range(num_klines):
                     j=i+1
                     x1,y1,x2,y2,intensity=klines_arr[i][0:]
-                    # line=[]
-                    # line.append((x1,y1))
-                    # line.append((x2,y2))
                     klines.append((x1,y1,x2,y2,intensity))
             else:
                 print(f"Error: retrieving klines!")
@@ -236,9 +249,6 @@ def add_dif(target):
                 if dif.get_hlines(hlines_arr) == 0:
                     for i in range(num_hlines):
                         x1,y1,x2,y2,intensity = hlines_arr[i][0:]
-                        # line=[]
-                        # line.append((x1,y1))
-                        # line.append((x2,y2))
                         hlines.append((x1,y1,x2,y2,intensity))
                 else:
                     print(f"Info: no hlines detected!")
@@ -301,7 +311,7 @@ def add_dif(target):
         x, y, z = v
         rx, ry, rz = dif.drtrans(x, y, z, 0)
 
-        dif.crystaldelete()
+        # dif.crystaldelete()
         return rx, ry, rz
 
     def r2d(self, v = (0.0, 0.0, 0.0)):
@@ -321,7 +331,7 @@ def add_dif(target):
         x, y, z = v
         dx, dy, dz = dif.drtrans(x, y, z, 1)
 
-        dif.crystaldelete()
+        # dif.crystaldelete()
         return dx, dy, dz
 
     def angle(self, v1 =(1.0, 0.0, 0.0), \
@@ -357,7 +367,7 @@ def add_dif(target):
 
         a = dif.ang(x1, y1, z1, x2, y2, z2, ty)
 
-        dif.crystaldelete()
+        # dif.crystaldelete()
         return a
 
     def vlen(self, v = (1.0, 0.0, 0.0), ty = 0):
@@ -382,7 +392,7 @@ def add_dif(target):
         x, y, z = v
         ln = dif.vlen(x, y, z, ty)
 
-        dif.crystaldelete()
+        # dif.crystaldelete()
         return ln
 
     @staticmethod
@@ -440,10 +450,6 @@ def add_dif(target):
         if not simc._isDefIntensity():
             intz0, intctl = simc.intensity
             dif.setintensities(intctl, intz0)
-
-        if not simc._isDefXaxis():
-            x0,x1,x2 = simc.xaxis
-            dif.set_xaxis(1, x0, x1, x2)
 
         if not simc._isDefGctl():
             dif.setgctl(simc.gctl)

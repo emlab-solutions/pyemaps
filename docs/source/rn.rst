@@ -96,4 +96,20 @@ Improvements
     
     .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png
         :target: https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png
-    
+
+
+
+Version 0.5.0 Beta
+------------------ 
+
+11-30-2022 
+~~~~~~~~~~
+
+Improvements
+~~~~~~~~~~~~
+
+- Documentation impreovements.
+- Kinematic diffraction pattern: Kikuchi and HOLZ lines intensities 
+  data added and rendered as opacities of the lines.
+- More control parameters added to EMControls as optional attributes.
+  See :doc:`pyemaps.emcontrols` for more details.
