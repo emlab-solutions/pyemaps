@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Welcome to pyemaps’ documentation! &#8212; pyemaps 0.4.8 Beta documentation</title>
+    <title>Welcome to pyemaps’ documentation! &#8212; pyemaps 0.5.0 Beta documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -33,7 +33,7 @@
         <li class="right" >
           <a href="overview.html" title="Overview"
              accesskey="N">next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">pyemaps 0.4.8 Beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="#">pyemaps 0.5.0 Beta documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Welcome to pyemaps’ documentation!</a></li> 
       </ul>
     </div>  
@@ -127,6 +127,11 @@
 <li class="toctree-l3"><a class="reference internal" href="rn.html#id6">Improvements</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="rn.html#version-0-5-0-beta">Version 0.5.0 Beta</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="rn.html#id7">11-30-2022</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rn.html#id8">Improvements</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules, Classes and Interfaces</a><ul>
@@ -139,6 +144,7 @@
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.crystals.Cell.alpha"><code class="docutils literal notranslate"><span class="pre">Cell.alpha</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.crystals.Cell.beta"><code class="docutils literal notranslate"><span class="pre">Cell.beta</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.crystals.Cell.gamma"><code class="docutils literal notranslate"><span class="pre">Cell.gamma</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.crystals.Cell.session_controls"><code class="docutils literal notranslate"><span class="pre">Cell.session_controls</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.crystals.Cell.prepare"><code class="docutils literal notranslate"><span class="pre">Cell.prepare()</span></code></a></li>
 </ul>
 </li>
@@ -213,7 +219,9 @@
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.DEF_INTENSITY"><code class="docutils literal notranslate"><span class="pre">DEF_INTENSITY</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.DEF_GCTL"><code class="docutils literal notranslate"><span class="pre">DEF_GCTL</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.DEF_ZCTL"><code class="docutils literal notranslate"><span class="pre">DEF_ZCTL</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.DEF_XAXIS"><code class="docutils literal notranslate"><span class="pre">DEF_XAXIS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.DEF_OMEGA"><code class="docutils literal notranslate"><span class="pre">DEF_OMEGA</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.DEF_SAMPLING"><code class="docutils literal notranslate"><span class="pre">DEF_SAMPLING</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.SAMPLE_THICKNESS"><code class="docutils literal notranslate"><span class="pre">SAMPLE_THICKNESS</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="modules.html#microscope-control-constants-and-default-values">Microscope Control Constants and Default Values:</a><ul>
@@ -222,6 +230,12 @@
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.DEF_DEFL"><code class="docutils literal notranslate"><span class="pre">DEF_DEFL</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.DEF_KV"><code class="docutils literal notranslate"><span class="pre">DEF_KV</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.DEF_CL"><code class="docutils literal notranslate"><span class="pre">DEF_CL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.DEF_APERTURE"><code class="docutils literal notranslate"><span class="pre">DEF_APERTURE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.DEF_XAXIS"><code class="docutils literal notranslate"><span class="pre">DEF_XAXIS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.DEF_PIXSIZE"><code class="docutils literal notranslate"><span class="pre">DEF_PIXSIZE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.DEF_DETSIZE"><code class="docutils literal notranslate"><span class="pre">DEF_DETSIZE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.DEF_MODE"><code class="docutils literal notranslate"><span class="pre">DEF_MODE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.DEF_CBED_DSIZE"><code class="docutils literal notranslate"><span class="pre">DEF_CBED_DSIZE</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="modules.html#pyemaps.emcontrols.EMCError"><code class="docutils literal notranslate"><span class="pre">EMCError</span></code></a><ul>
@@ -236,7 +250,9 @@
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.SIMControl.intensity"><code class="docutils literal notranslate"><span class="pre">SIMControl.intensity</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.SIMControl.gctl"><code class="docutils literal notranslate"><span class="pre">SIMControl.gctl</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.SIMControl.zctl"><code class="docutils literal notranslate"><span class="pre">SIMControl.zctl</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.SIMControl.xaxis"><code class="docutils literal notranslate"><span class="pre">SIMControl.xaxis</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.SIMControl.omega"><code class="docutils literal notranslate"><span class="pre">SIMControl.omega</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.SIMControl.sampling"><code class="docutils literal notranslate"><span class="pre">SIMControl.sampling</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.SIMControl.sth"><code class="docutils literal notranslate"><span class="pre">SIMControl.sth</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.SIMControl.plot_format"><code class="docutils literal notranslate"><span class="pre">SIMControl.plot_format()</span></code></a></li>
 </ul>
 </li>
@@ -248,7 +264,13 @@
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.EMControl.defl"><code class="docutils literal notranslate"><span class="pre">EMControl.defl</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.EMControl.cl"><code class="docutils literal notranslate"><span class="pre">EMControl.cl</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.EMControl.vt"><code class="docutils literal notranslate"><span class="pre">EMControl.vt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.EMControl.xaxis"><code class="docutils literal notranslate"><span class="pre">EMControl.xaxis</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.EMControl.simc"><code class="docutils literal notranslate"><span class="pre">EMControl.simc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.EMControl.aperture"><code class="docutils literal notranslate"><span class="pre">EMControl.aperture</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.EMControl.pix_size"><code class="docutils literal notranslate"><span class="pre">EMControl.pix_size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.EMControl.det_size"><code class="docutils literal notranslate"><span class="pre">EMControl.det_size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.EMControl.mode"><code class="docutils literal notranslate"><span class="pre">EMControl.mode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.EMControl.dsize"><code class="docutils literal notranslate"><span class="pre">EMControl.dsize</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.emcontrols.EMControl.plot_format"><code class="docutils literal notranslate"><span class="pre">EMControl.plot_format()</span></code></a></li>
 </ul>
 </li>
@@ -266,7 +288,9 @@
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.kdiffs.Line.pt1"><code class="docutils literal notranslate"><span class="pre">Line.pt1</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.kdiffs.Line.pt2"><code class="docutils literal notranslate"><span class="pre">Line.pt2</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.kdiffs.Line.type"><code class="docutils literal notranslate"><span class="pre">Line.type</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.kdiffs.Line.to_arr"><code class="docutils literal notranslate"><span class="pre">Line.to_arr()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.kdiffs.Line.intensity"><code class="docutils literal notranslate"><span class="pre">Line.intensity</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.kdiffs.Line.calOpacity"><code class="docutils literal notranslate"><span class="pre">Line.calOpacity()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="modules.html#pyemaps.kdiffs.Line.to_dict"><code class="docutils literal notranslate"><span class="pre">Line.to_dict()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="modules.html#pyemaps.kdiffs.Index"><code class="docutils literal notranslate"><span class="pre">Index</span></code></a><ul>
@@ -477,7 +501,7 @@
         <li class="right" >
           <a href="overview.html" title="Overview"
              >next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">pyemaps 0.4.8 Beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="#">pyemaps 0.5.0 Beta documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Welcome to pyemaps’ documentation!</a></li> 
       </ul>
     </div>

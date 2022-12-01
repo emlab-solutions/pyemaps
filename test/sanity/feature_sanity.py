@@ -4,8 +4,8 @@ import os
 from pathlib import Path
 
 
-# feat_list=['bloch']
-feat_list=['dif', 'bloch', 'stereo', 'mxtal']
+feat_list=['stereo']
+# feat_list=['dif', 'bloch', 'stereo', 'mxtal']
 
 def get_cifdata_dir():
 
@@ -25,7 +25,7 @@ def get_builtin_dir():
 def run_feat_list(cnflist, ty=1, bShow=True, bSave=False, feat_type='dif'):
     from pyemaps import Crystal as cr
     import time
-    from pyemaps import DPList,CrystalClassError, showBloch, showDif, showStereo
+    from pyemaps import DPList,CrystalClassError, EMC,showBloch, showDif, showStereo
     # from pyemaps import BlochImgs
 
     failure_cases=[]
@@ -62,7 +62,7 @@ def run_feat_list(cnflist, ty=1, bShow=True, bSave=False, feat_type='dif'):
                 if feat_type == 'dif':
                     showDif(dpl, bSave=bSave)
                 if feat_type == 'stereo':
-                    showStereo([emc, s], bSave=bSave)
+                    showStereo([(EMC(), s)], name=cf.name, bSave=bSave)
 
     return failure_count, failure_cases
 
@@ -109,7 +109,7 @@ def run_metrics():
     print(f'\nAngle in real space by vectors {v1} and {v2}: \n{real_a} \u00B0')
 
     #angle in reciprocal space
-    recip_a = si.angle(v1, v2, type = 1)
+    recip_a = si.angle(v1, v2, ty = 1)
     print(f'\nAngle in reciprocal space by vectors {v1} and {v2}: \n{recip_a} \u00B0')
 
     #vector length in real space
@@ -117,7 +117,7 @@ def run_metrics():
     print(f'\nLength in real space for vector {v}:\n{r_vlen} in \u212B')
 
     #vector length in reciprocal space
-    recip_vlen = si.vlen(v, type = 1)
+    recip_vlen = si.vlen(v, ty = 1)
     print(f'\nLength in reciprocal space for vector {v}:\n{recip_vlen} in 1/\u212B')
 
     #wave length with high voltage of 200 V
@@ -133,11 +133,12 @@ def print_filelist(fpl):
     
 if __name__ == '__main__':
 
+    run_metrics()
     res = {}
     for f in feat_list:
         res[f]=[]
         for dt in range(1,3):
-            fc, fl = run_features_test(data_ty=dt, bShow = False, feat_type = f)
+            fc, fl = run_features_test(data_ty=dt, bShow = True, feat_type = f)
             res[f].append((fc, fl))
 
     print(f'\n\n\n<<<<<<<<<<<<<Summary of pyemaps Feature Sanity Runs>>>>>>>>>>>>>>>\n\n\n')

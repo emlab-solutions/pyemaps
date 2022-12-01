@@ -5,28 +5,28 @@ def add_bloch(target):
     ---------------------------------------------------- 
 
     .. data:: DEF_APERTURE
-        :value: = 1.0
+        :value: 1.0
 
     .. data:: DEF_OMEGA
-        :value: = 10
+        :value: 10
 
     .. data:: DEF_SAMPLING
-        :value: = 8
+        :value: 8
 
     .. data:: DEF_PIXSIZE
-        :value: = 25
+        :value: 25
 
     .. data:: DEF_DETSIZE
-        :value: = 512
+        :value: 512
 
     .. data:: DEF_CBED_DSIZE
-        :value: = 0.16
+        :value: 0.16
 
     .. data:: DEF_THICKNESS
-        :value: = (200, 200, 100)
+        :value: (200, 200, 100)
 
     .. data:: DEF_DSIZE_LIMITS
-        :value: = (0.01, 0.5)
+        :value: (0.01, 0.5)
 
     """
     from . import bloch, dif
@@ -77,10 +77,14 @@ def add_bloch(target):
                          sampling = DEF_SAMPLING,
                          dbsize = DEF_CBED_DSIZE,
                          em_controls = EMC(cl=200, # set smaller that 1000 default value
-                                           simc = SIMC(gmax=1.0, excitation=(0.3,1.0)))):
+                                           simc = SIMC(gmax=1.0, 
+                                                       excitation=(0.3,1.0)
+                                                       )
+                                            )
+                    ):
         """
         Begins a dynamic diffraction (Bloch) simulation session. 
-        The simulation results are retained between this and 
+        The simulation results are retained in the session between this and 
         `endBloch call <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_. 
 
         :param aperture: Optional. Objective aperture
@@ -157,6 +161,10 @@ def add_bloch(target):
         dif.setemcontrols(cl, vt)        
         dif.setzone(z[0], z[1], z[2])
         
+        if hasattr(em_controls, 'xaxis'):
+            xa = em_controls.xaxis
+            dif.set_xaxis(1, xa[0], xa[1], xa[2])
+        
         ret = dif.diffract(1)
         if ret == 0:
             dif.diff_internaldelete(1)
@@ -180,39 +188,47 @@ def add_bloch(target):
         if ret != 0:
             raise BlochError('Failed to retrive sampling points used in scattering matrix run')
         
-        # print(f'# of sampling points: {nsampling}')
-        
         spoints = np.transpose(sampling_points)
 
         sp = [tuple(p) for p in spoints]
+
+        # updating controls
+        em_controls(mode = 2, 
+                    dsize = dbsize,
+                    aperture = aperture)                      
         
+        em_controls.simc(omega = omega, 
+                         sampling = sampling
+                        )
+
+        self.session_controls=em_controls
         return nsampling, sp
 
     def getBlochImages(self, 
-                      sample_thickness = DEF_THICKNESS,
-                      pix_size = DEF_PIXSIZE,
-                      det_size = DEF_DETSIZE,
-                      bSave = False):
+                        sample_thickness = DEF_THICKNESS,
+                        pix_size = DEF_PIXSIZE,
+                        det_size = DEF_DETSIZE,
+                        bSave = False):
        """
         Retrieves a set of dynamic diffraction image from the simulation 
         sessiom marked by
         `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_. and 
         `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.   
         
-        :param thickness: Optional. sample thickness range abd step in tuple of three integers (th_start, th_end, th_step)
-        :type thickness: int
+        :param thickness: sample thickness range and step in tuple of three integers (th_start, th_end, th_step)
+        :type thickness: int, optional
 
-        :param pix_size: Optional. Detector pixel size in microns
-        :type pix_size: int
+        :param pix_size: Detector pixel size in microns
+        :type pix_size: int, optional
 
-        :param det_size: Optional. Detector size or output image size
-        :type det_size: int
+        :param det_size: Detector size or output image size
+        :type det_size: int, optional
 
-        :param bSave: Optional. True - save the output to a raw image file with extension of 'im3'
-        :type bSave: bool
+        :param bSave: True - save the output to a raw image file with extension of 'im3'
+        :type bSave: bool, optional
 
-        :return: a 2x2 raw intensity array of double precision intensity
-        :rtype: array
+        :return: `BImgList <pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs>`_ object
+        :rtype: BImgList
 
         Default values:
 
@@ -223,6 +239,8 @@ def add_bloch(target):
             DEF_THICKNESS = (200, 200, 100)
 
        """
+       from copy import deepcopy
+
        th_start, th_end, th_step = sample_thickness
 
        if th_start > th_end or th_step <= 0 or \
@@ -249,7 +267,9 @@ def add_bloch(target):
             if bloch.openimgfile(det_size, dep, bfn, l) != 0:
                 raise BlochError('Error opening file for write')
             
-       bimgl = []
+       bimgs = BImgList(self.name)
+       self.session_controls(pix_size=pix_size, det_size=det_size)
+       
        for th in thlist:
             bimg, ret = bloch.imagegen(th, 0, pix_size,
                                         det_size, bsave = bSave)
@@ -257,17 +277,18 @@ def add_bloch(target):
             if(ret != 0):
               self.endBloch()
               raise BlochError("bloch image generation failed!")
-
-            bimgl.append(bimg)
+            emc = deepcopy(self.session_controls)
+            emc.simc(sth=th)
+            bimgs.add(emc, bimg)
 
        if bSave:
             if bloch.closeimgfile() != 0:
                 raise BlochError('Error closing file')
 
             print(f'{det_size}x{det_size}x{dep} raw Bloch images has been successfully saved to: {imgfn}')
-            print(f'To view, import the file into ImageJ or other tools')
+            print(f'To view, import the file into ImageJ or other raw image visualization tools')
 
-       return bimgl
+       return bimgs
        
     def printIBDetails(self):
         '''
@@ -277,7 +298,7 @@ def add_bloch(target):
         `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.   
 
         Information regarding the simulation session include sampling points and their
-        associated tilts etc.
+        associated diffracted beam directions etc.
 
         '''
         nib = bloch.get_nsampling()
@@ -329,11 +350,14 @@ def add_bloch(target):
         `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
         and `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.
 
-        :param ib_coords: Optional. Sampling point coordinates tuple
-        :type ib_coords: tuple
+        :param ib_coords: Sampling point coordinates tuple
+        :type ib_coords: tuple, optional
 
-        :param bPrint: Optional. True - print beams info on standard output
-        :type bPrint: bool
+        :param bPrint: True - print beams info on standard output
+        :type bPrint: bool, optional
+
+        :return: a list of Miller Indexes.
+        :rtype: list
 
         '''
         
@@ -372,11 +396,11 @@ def add_bloch(target):
         `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_ and 
         `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.   
 
-        :param ib_coords: Optional. Sampling point coordinates tuple
-        :type ib_coords: tuple
+        :param ib_coords: Sampling point coordinates tuple
+        :type ib_coords: tuple, optional, default (0,0)
 
-        :return: a vector of complex numbers
-        :rtype: array
+        :return: a list of complex eigen values
+        :rtype: list
 
         Example of the eigen vales:
 
@@ -464,34 +488,6 @@ def add_bloch(target):
         
         return np.transpose(scm)
 
-    # @staticmethod
-    # def saveRawImages(self, imglist, det_size):
-        
-    #     imgfn, bfn, l = self.getBlochFN()
-    #     if bloch.openimgfile(det_size, bfn, l) != 0:
-    #         raise BlochError('Error opening file for write')
-
-    #     for img in imglist:
-            
-    #         # validating the image size, matching size input
-    #         if not isinstance(img[0], list) or \
-    #             not not isinstance(img[1], list):
-    #             raise BlochError('Invalid image data')
-            
-    #         if len(img[0]) != det_size or \
-    #             len(img[1]) != det_size:
-    #             raise BlochError('Image data dimension does not mtach input')
-
-    #         ri = farray(np.array(img), dtype=float)
-    #         if bloch.writerawimage(ri) != 0:
-    #             raise BlochError("Failed to write raw image")
-        
-    #     if (bloch.closeimgfile() != 0):
-    #         raise BlochError('Error closing file')
-
-    #     print(f'Raw Bloch images data has been successfully saved to: {imgfn}')
-    #     print(f'To view, import the file into ImageJ or other tools')
-
 
     def endBloch(self):
        """
@@ -555,7 +551,7 @@ def add_bloch(target):
             DEF_APERTURE = 1.0
             DEF_OMEGA = 10
             DEF_SAMPLING = 8
-            DEF_CBED_DSIZE - 0.16
+            DEF_CBED_DSIZE = 0.16
             DEF_DSIZE_LIMITS =(0.01, 0.5)
             DEF_PIXSIZE = 25
             DEF_DETSIZE = 512
@@ -584,15 +580,10 @@ def add_bloch(target):
                 bSave = bSave)
         except:
             raise BlochError('Failed to generate dynamic simulation')
-        
-        
+
         self.endBloch()
 
-        myBlochImgs = BImgList(self._name)
-        for img in bimgs:
-            myBlochImgs.add(em_controls, img)
-
-        return myBlochImgs
+        return bimgs
 
     target.beginBloch = beginBloch
     target.getBlochFN = getBlochFN
