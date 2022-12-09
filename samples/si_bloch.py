@@ -54,7 +54,7 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
         sc = SIMC._from_random()
 
     for i in range(-3,3): 
-        emc=EMC(cl=200)
+        emc=EMC()
         if ckey == 'tilt':
            emc.tilt=(i*0.5, 0.0)
         
@@ -72,6 +72,7 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
             fs.append(e.submit(cr.generateBloch, 
                                disk_size=dsize, 
                                sampling = 20, 
+                               sample_thickness=(1750,1750,100),
                                em_controls = ec))
         
         bimgs = BImgList(name) 
@@ -87,7 +88,8 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
                 return bimgs
             else: 
                 bimgs.add(emc, img) 
-            
+    # sorting the images by theri associated controls
+    bimgs.sort()   
     return bimgs
 
 from pyemaps import showBloch
@@ -96,9 +98,10 @@ if __name__ == '__main__':
     
     # from sample_base import generate_bimages
     em_keys = ['tilt', 'zone']
+    
     for k in em_keys:
         imgs = generate_bloch_images(ckey=k)
-        showBloch(imgs)
+        showBloch(imgs, layout='table')
 
     for k in em_keys:
         imgs = generate_bloch_images(ckey=k, sim_rand=True)
