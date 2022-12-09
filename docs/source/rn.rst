@@ -84,14 +84,15 @@ Improvements
           as before.
 
     2. *cShow* option is also added to the display functions to show 
-       control parameters on the final figure if it is set to `True`.
-       Otherwise, no control parameters will be displayed. 
+       control parameters on the final figure if it is set to `True` 
+       which is also the default. Otherwise, no control parameters 
+       will be displayed. 
 
       .. note:: 
 
         Due to space constraints, control parameters with default values
         will be ommitted from the final rendering, even if cShow is set 
-        to True.
+        to `True`.
 
     
     .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png
@@ -152,4 +153,4 @@ Improvements
 
   Refer to *si_stereo.py*.
     
-- Bloch simulation memory management enhancements.
+- Enhanced Bloch simulation memory management and result accuracies.
