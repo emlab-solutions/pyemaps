@@ -4,8 +4,11 @@ import os
 from pathlib import Path
 
 
-feat_list=['stereo']
-# feat_list=['dif', 'bloch', 'stereo', 'mxtal']
+# feat_list=['stereo']
+feat_list=['dif', 
+           'bloch', 
+           'stereo', 
+           'mxtal']
 
 def get_cifdata_dir():
 

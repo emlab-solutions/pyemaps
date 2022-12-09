@@ -209,7 +209,7 @@ class SIMControl:
           not isinstance(excit[0], (int, float)) or \
           not isinstance(excit[1], (int, float)) or \
           excit[0] > excit[1]:
-            raise EMCError('Excitation values must be a tuple of two ordered numbers')
+            raise EMCError('Excitation values must be a tuple of two numbers in ascending order')
        self._excitation = excit
        
     @gmax.setter
@@ -258,7 +258,7 @@ class SIMControl:
     @omega.setter
     def omega(self, ov):
         if not isinstance(ov, (int,float)):
-           raise EMCError("Voltage must be a numberal")
+           raise EMCError("omega must be a numberal")
         
         self._omega = ov
     
@@ -277,7 +277,31 @@ class SIMControl:
            raise EMCError("Sample thickness must be an integer")
         
         self._sth = sv
-    
+    def __lt__(self, other):
+        return self.__key__() < other.__key__()
+    # def __lt__(self, other):
+    #     req = (self._excitation, 
+    #             self._gmax,
+    #             self._bmin,
+    #             self._intensity,
+    #             self._gctl,
+    #             self._zctl,
+    #             self._omega,
+    #             self._sampling,
+    #             self._sth)
+    #     oreq = (other.excitation, 
+    #             other.gmax,
+    #             other.bmin,
+    #             other.intensity,
+    #             other.gctl,
+    #             other.zctl,
+    #             other.omega,
+    #             other.sampling,
+    #             other._sth)
+    #     return req < oreq
+    def __key__(self):
+        data = self.__dict__
+        return [data[k] for k in data.keys()]
 
     def __eq__(self, other):
 
@@ -302,13 +326,13 @@ class SIMControl:
        if self._zctl != other.zctl:
               return False
 
-       if other.omega != self._omega:
+       if self._omega != other.omega:
             return False 
 
-       if other.sampling != self._sampling:
+       if self._sampling != other.sampling:
             return False 
 
-       if other.sth != self._sth:
+       if  self._sth != other.sth:
             return False 
 
        return True
@@ -709,6 +733,20 @@ class EMControl:
         '''Helper function to minimize trips to backend modules'''
         return self._xaxis == DEF_XAXIS
     
+    def __lt__(self, other):
+        return self.__key__() < other.__key__()
+
+    def __key__(self):
+        data = self.__dict__
+        td = []
+        for k in data:
+            if 'simc' not in k:
+                td.append(data[k])
+            else:
+                td.append(data[k].__key__())
+                
+        return td 
+
     def __eq__(self, other):
         if not isinstance(other, EMControl):
            raise EMCError("Comparison must be done with EMControl object")

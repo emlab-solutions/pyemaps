@@ -88,15 +88,27 @@ def generate_stereo(name = 'Silicon', ckey = 'tilt'):
                 exit(1)
             else:
                 slist.append((emc, stereo))
-                # print(f' successfully generated stereodiagram')        
-    
+                # print(f' successfully generated stereodiagram')    
+                    
+    #  sorting the list by controls
+    slist.sort(key=lambda x: x[0])
+
     return slist
 
 if __name__ == '__main__':
     from pyemaps import showStereo
 
-    em_keys = ['tilt', 'zone']
-    for k in em_keys:
-        stereoList = generate_stereo(ckey=k)
-        showStereo(stereoList, name='Silicon', iShow=True, zLimit = 1, bSave=True)
-        
+    # display in table format
+    stereoList = generate_stereo(ckey='tilt')
+    showStereo(stereoList, 
+               name='Silicon', 
+               layout='table',
+               iShow=True, 
+               zLimit = 1)
+
+    # display in individual syereodiagram
+    stereoList = generate_stereo(ckey='zone')
+    showStereo(stereoList, 
+               name='Silicon',
+               iShow=True, 
+               zLimit = 1)       

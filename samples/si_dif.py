@@ -38,6 +38,7 @@ MAX_PROCWORKERS = 4
 def generate_difs(name = 'Silicon', mode = DEF_MODE, ckey = 'tilt', sim_rand=False):
     '''
     This routine demonstrate how to use pyemaps dif module to generate kinematic diffraction paterns
+    
     : name: crystal name from builtin database
     : dsize: diffracted beams size
     : ckey: emcontrol key name
@@ -104,7 +105,10 @@ def generate_difs(name = 'Silicon', mode = DEF_MODE, ckey = 'tilt', sim_rand=Fal
             except Exception as e:
                 print('failed to generate diffraction patterns with  ' + str(e))
                 exit(1)
-            
+
+    # sort the diffraction patern list by controls
+    difs.sort()       
+
     return difs
 
 if __name__ == '__main__':
@@ -112,9 +116,10 @@ if __name__ == '__main__':
     from pyemaps import showDif
 
     em_keys = ['tilt', 'zone', 'defl', 'vt', 'cl']
+    
     for k in em_keys:
         dpl = generate_difs(ckey=k)
-        showDif(dpl)
+        showDif(dpl, layout='table')
 
     for k in em_keys:
         dpl = generate_difs(ckey=k, sim_rand=True)

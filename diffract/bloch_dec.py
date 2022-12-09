@@ -183,12 +183,14 @@ def add_bloch(target):
             raise BlochError('Error computing dynamic diffraction')
         
         nsampling = bloch.get_nsampling()
-        sampling_points, ret = bloch.get_samplingpoints(nsampling)
+        sampling_points = farray(np.zeros((2, nsampling)), dtype=int)
+        sampling_points, ret = bloch.get_samplingpoints(sampling_points)
 
         if ret != 0:
             raise BlochError('Failed to retrive sampling points used in scattering matrix run')
         
         spoints = np.transpose(sampling_points)
+        # spoints = sampling_points
 
         sp = [tuple(p) for p in spoints]
 
@@ -271,7 +273,9 @@ def add_bloch(target):
        self.session_controls(pix_size=pix_size, det_size=det_size)
        
        for th in thlist:
-            bimg, ret = bloch.imagegen(th, 0, pix_size,
+            bimg = farray(np.zeros((det_size, det_size), dtype=np.double))
+            
+            bimg, ret = bloch.getimage(bimg, th, 0, pix_size,
                                         det_size, bsave = bSave)
             
             if(ret != 0):
@@ -310,7 +314,12 @@ def add_bloch(target):
             self.endBloch()
             raise BlochError("No incidental beams found")
         
-        net, tilt, dimscm, ret = bloch.getibinfo(nib)
+        
+        net = farray(np.zeros((2, nib), dtype=int))
+        dimscm = farray(np.zeros(nib, dtype=int))
+        tilt = farray(np.zeros((3, nib), dtype=float))
+
+        net, tilt, dimscm, ret = bloch.getibinfo(net, tilt, dimscm)
         if ret != 0:
             self.endBloch()
             raise BlochError("failed to retrieve incidental beams info")
@@ -366,12 +375,15 @@ def add_bloch(target):
             self.endBloch()
             raise BlochError("Error finding corresponding scattering matrix, use printIBDetails to find potential input for ib_coords")
         
-        ev, ret = bloch.getbeams(ib_coords, scmdim)
+        
+        ev = farray(np.zeros((3, scmdim), dtype=int))
+        ev, ret = bloch.getbeams(ib_coords, ev)
 
-        if ret < 0 or ret != scmdim:
+        if ret < 0 or ret > scmdim:
             self.endBloch()
             raise BlochError("failed to retrieve incidental beams info")
         evv = np.transpose(ev) 
+        
         if bPrint:
             print(f'Total Diffracted Beams In Diagonalization: {scmdim}\n')
 
@@ -420,9 +432,10 @@ def add_bloch(target):
         if scmdim <= 0:
             self.endBloch()
             raise BlochError("Error finding corresponding scattering matrix, use printIBDetails to find potential input for ib_coords")
-  
-        ev, ret = bloch.geteigenvalues(ib_coords, scmdim)
-        if ret < 0 or ret != scmdim:
+        
+        ev = farray(np.zeros(scmdim, dtype=np.complex64))
+        ev, ret = bloch.geteigenvalues(ib_coords, ev)
+        if ret < 0 or ret > scmdim:
             self.endBloch()
             raise BlochError("failed to retrieve incidental beams info")
         
@@ -481,12 +494,14 @@ def add_bloch(target):
             self.endBloch()
             raise BlochError("Invalid R vector input, must be tuple of three floats")
 
-        scm, ret = bloch.getscm(ib_coords, sample_thickness, rvec, scmdim)
+        scm = farray(np.zeros((scmdim, scmdim)), dtype=np.complex64)
+
+        scm, ret = bloch.getscm(ib_coords, sample_thickness, rvec, scm)
         if ret <= 0:
             self.endBloch()
             raise BlochError('Error retieving scattering matrix, input matrix dimension too small, use printIBDetails to find extact dimentsion')
         
-        return np.transpose(scm)
+        return scm
 
 
     def endBloch(self):
