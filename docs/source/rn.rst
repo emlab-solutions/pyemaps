@@ -113,3 +113,43 @@ Improvements
   data added and rendered as opacities of the lines.
 - More control parameters added to EMControls as optional attributes.
   See :doc:`pyemaps.emcontrols` for more details.
+
+
+Version 0.6.0 Beta
+------------------ 
+
+12-09-2022 
+~~~~~~~~~~
+
+Improvements
+~~~~~~~~~~~~
+
+- Diffraction simulation result list objects: 
+  - `DPList <pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern>`_ and 
+  - `BImgList <pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs>`_ 
+    can now be sorted by its controls objects in their builtin 
+    sorting function.
+
+  .. code-block:: python
+    
+    from pyemaps import DPList
+
+    dpl = DPList(name) 
+     ....  # more code here
+    # sorting the images by their associated controls
+    dpl.sort()
+
+  See sample code *si_dif.py* and *si_bloch.py* for more details on how to
+  use the function and display them in the sorting order.
+
+  For stereodiagram results where there is no builtin result objects, users
+  can build a python list of control and result pair and apply python style 
+  sorting on the list as follows:
+
+  .. code-block:: python
+    
+    slist.sort(key=lambda x: x[0])
+
+  Refer to *si_stereo.py*.
+    
+- Bloch simulation memory management enhancements.

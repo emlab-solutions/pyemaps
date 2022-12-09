@@ -131,8 +131,8 @@ Kinematic Diffraction Simulation
     # Show Diffraction patterns by hiding Miller Indices
     showDif(dpl, ishow=False)
 
-Here crystal class method *generateDP* produces a 
-`kinmatic diffraction pattern <pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern>`_ (si_dp) 
+Here crystal class method *generateDP* produces a kinmatic diffraction pattern or
+`DPList <pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern>`_ (si_dp) 
 using all default control parameters . 
 
 Go to `generateDP <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateDP>`_ for a complete
