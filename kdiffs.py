@@ -955,13 +955,22 @@ class Diffraction:
 
     # Adding new diffraction patterns
     def add(self, emc, diffP):
+        '''
+        Append a new kenematic diffraction pattern with its associated 
+        controls
+        '''
         if not isinstance(diffP, diffPattern):
             raise DPListError('failed to add DP')
 
+
         self.diffList.append((emc, diffP))
+    
+    def sort(self):
+        ''' Sorting diffraction list by controls'''
+        self._diffList.sort(key=lambda x: x[0])
             
     def __eq__(self, other):
-
+        '''Test if two diffraction list is the same'''
         if not isinstance(other, Diffraction):
             return False
         

@@ -1000,7 +1000,7 @@ class Crystal:
                 else:
                     raise ValueError("Invalid Debye-Waller value")
         elif isinstance(v, int):
-            if v < iso.value or v < uij.value:
+            if v < iso.value or v > uij.value:
                 raise ValueError("Invalid Debye-Waller value")
             else:
                 self._dw = v
@@ -1044,6 +1044,11 @@ class Crystal:
 
         '''
         return self._dw == iso.value
+
+    def __del__(self):
+        
+        if self._loaded:
+            self.unload()
 
     def __eq__(self, other):
 

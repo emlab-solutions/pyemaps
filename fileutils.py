@@ -42,6 +42,41 @@ import re
 #             set by PYEMAPS_DATAHOME 
 #             -- location to retrieve data and put darta
 # 
+
+
+pyemaps_datahome = None
+
+def find_datahome():
+    bLegacy = False
+    if 'PYEMAPS_CRYSTALS' in os.environ:
+        bLegacy = True
+
+    env_name = 'PYEMAPS_CRYSTALS' if bLegacy else 'PYEMAPS_DATA'
+
+    # defaults to current working directory
+    datahome = os.getcwd()
+
+    # but find pyeamsp home if exists
+    if env_name in os.environ:
+        pyemaps_home = os.getenv(env_name)
+        
+        if Path(pyemaps_home).exists(): 
+            datahome = pyemaps_home
+        else:
+            try:
+                os.mkdir(pyemaps_home)
+
+            except OSError:
+                # can't create the directory, fall back to current directory
+                pass
+            else:
+                datahome = pyemaps_home
+    # print(f'pyemaps data home found: {datahome}')    
+    return datahome
+    #     print(f'pyemaps data home found: {pyemaps_home}')
+    # print(f'pyemaps data set: {pyemaps_home}')
+    # return pyemaps_datahome
+
 def auto_fn(cn):
     '''
     Auto-generate file name based on crystal name and time stamp
@@ -86,32 +121,36 @@ def find_pyemaps_datahome(home_type='crystals'):
 
     #
     # defaults to current working directory
-    bLegacy = False
-    if 'PYEMAPS_CRYSTALS' in os.environ:
-        bLegacy = True
+    # bLegacy = False
+    # if 'PYEMAPS_CRYSTALS' in os.environ:
+    #     bLegacy = True
     
-    env_name = 'PYEMAPS_CRYSTALS' if bLegacy else 'PYEMAPS_DATA'
+    # env_name = 'PYEMAPS_CRYSTALS' if bLegacy else 'PYEMAPS_DATA'
 
-    # defaults to current working directory
-    pyemaps_datahome = os.getcwd()
+    # # defaults to current working directory
+    # pyemaps_datahome = os.getcwd()
 
-    # but find pyeamsp home if exists
-    if env_name in os.environ:
-        pyemaps_home = os.getenv(env_name)
+    # # but find pyeamsp home if exists
+    # if env_name in os.environ:
+    #     pyemaps_home = os.getenv(env_name)
         
-        if Path(pyemaps_home).exists(): 
-            pyemaps_datahome = pyemaps_home
-        else:
-            try:
-                os.mkdir(pyemaps_home)
+    #     if Path(pyemaps_home).exists(): 
+    #         pyemaps_datahome = pyemaps_home
+    #     else:
+    #         try:
+    #             os.mkdir(pyemaps_home)
 
-            except OSError:
-                # can't create the directory, fall back to current directory
-                pass
-            else:
-                pyemaps_datahome = pyemaps_home
+    #         except OSError:
+    #             # can't create the directory, fall back to current directory
+    #             pass
+    #         else:
+    #             pyemaps_datahome = pyemaps_home
+    # from . import pyemaps_datahome
+    global pyemaps_datahome
+    if pyemaps_datahome is None:
+        pyemaps_datahome = find_datahome()
 
-    if bLegacy:
+    if 'PYEMAPS_CRYSTALS' in os.environ:
         return pyemaps_datahome # done when legacy
 
     # if the environment home folder does extists

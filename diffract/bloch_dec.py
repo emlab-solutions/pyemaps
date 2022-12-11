@@ -51,7 +51,7 @@ def add_bloch(target):
     MAX_BIMGFN = 256
     CBED_MODE = DEF_MODE + 1
 
-    def getBlochFN(self):
+    def _getBlochFN(self):
         '''
         Constructs a bloch image output file name.
         
@@ -102,7 +102,7 @@ def add_bloch(target):
         :param em_controls: Optional. electron `microscope control <pyemaps.emcontrols.html#module-pyemaps.emcontrols>`_ object. 
         :type em_controls: pyemaps.EMC
 
-        :return: a tuple (n, ns) where ns is a list of sampling points; n is the number of sampling point
+        :return: a tuple (n, ns) where ns is a list of sampling points; n is the number of sampling points
         :rtype: tuple 
 
         Default values:
@@ -138,8 +138,19 @@ def add_bloch(target):
                `getBeams <pyemaps.crystals.html#pyemaps.crystals.Crystal.getBeams>`_;
         
         """
-        if dbsize < DEF_DSIZE_LIMITS[0] or dbsize > DEF_DSIZE_LIMITS[1]:
-            raise BlochError('Diffracted beam size bust be in range {DEF_DSIZE_LIMITS}')
+        if aperture is None or not isinstance(aperture, (int, float)):
+            raise BlochError('Objective aperture must be valid numberal')
+
+        if omega is None or not isinstance(omega, int):
+            raise BlochError('Diagnization cutoff value must be valid numberal')
+
+        if dbsize is None or not isinstance(dbsize, (int,float)) or \
+            dbsize < DEF_DSIZE_LIMITS[0] or dbsize > DEF_DSIZE_LIMITS[1]:
+            raise BlochError(f'Diffracted beam size must be in range {DEF_DSIZE_LIMITS}')
+
+        if em_controls is None or not isinstance(em_controls, EMC): 
+            raise BlochError('Control object must be of EMControl type')
+
 
         dif.initcontrols()
         dif.setmode(CBED_MODE) # alway in CBED mode
@@ -175,24 +186,24 @@ def add_bloch(target):
         ret = bloch.dobloch(aperture,omega,sampling,0.0)
         
         if ret == 2:
-            self.endBloch()
             raise BlochError('Predefined Bloch computation resource limit reached')
 
         if ret != 0:
-            self.endBloch()
             raise BlochError('Error computing dynamic diffraction')
         
         nsampling = bloch.get_nsampling()
-        sampling_points, ret = bloch.get_samplingpoints(nsampling)
+        sampling_points = farray(np.zeros((2, nsampling)), dtype=int)
+        sampling_points, ret = bloch.get_samplingpoints(sampling_points)
 
         if ret != 0:
             raise BlochError('Failed to retrive sampling points used in scattering matrix run')
         
         spoints = np.transpose(sampling_points)
 
-        sp = [tuple(p) for p in spoints]
+        # convert the np array to a array of python native tuple
+        sp = [(list(p)[0].item(),list(p)[1].item()) for p in spoints]
 
-        # updating controls
+        # updating controls with input params as optional attributes for easy handling
         em_controls(mode = 2, 
                     dsize = dbsize,
                     aperture = aperture)                      
@@ -241,12 +252,20 @@ def add_bloch(target):
        """
        from copy import deepcopy
 
+       if pix_size is None or not isinstance(pix_size, int):
+            raise BlochListError('Pixel size input must be valid integert')
+
+       if det_size is None or not isinstance(det_size, int):
+            raise BlochListError('Pixel size input must be valid integert')
+
+       if sample_thickness is None or \
+          not all(isinstance(v, int) for v in sample_thickness) or \
+          len(sample_thickness) !=3:
+            raise BlochListError('Sample thickness input must be valid tuple of three integers')
+
        th_start, th_end, th_step = sample_thickness
 
-       if th_start > th_end or th_step <= 0 or \
-          not isinstance(th_start, int) or \
-          not isinstance(th_end, int) or \
-          not isinstance(th_step, int):
+       if th_start > th_end or th_step <= 0:
             raise BlochListError('Sample thickness input must be valid integers range')               
 
        thlist = []
@@ -263,22 +282,25 @@ def add_bloch(target):
 
        imgfn =''
        if bSave: 
-            imgfn, bfn, l = self.getBlochFN()
+            imgfn, bfn, l = self._getBlochFN()
             if bloch.openimgfile(det_size, dep, bfn, l) != 0:
-                raise BlochError('Error opening file for write')
+                raise BlochError('Error opening file for write, check if you have write permission')
             
        bimgs = BImgList(self.name)
+
+       # save the input as optional control attributes   
        self.session_controls(pix_size=pix_size, det_size=det_size)
        
        for th in thlist:
-            bimg, ret = bloch.imagegen(th, 0, pix_size,
+            bimg = farray(np.zeros((det_size, det_size), dtype=np.double))
+            
+            bimg, ret = bloch.getimage(bimg, th, 0, pix_size,
                                         det_size, bsave = bSave)
             
             if(ret != 0):
-              self.endBloch()
               raise BlochError("bloch image generation failed!")
             emc = deepcopy(self.session_controls)
-            emc.simc(sth=th)
+            emc.simc(sth=th) # save the thickness as optional simulation control attributes
             bimgs.add(emc, bimg)
 
        if bSave:
@@ -303,16 +325,18 @@ def add_bloch(target):
         '''
         nib = bloch.get_nsampling()
         if nib <=0:
-            self.endBloch()
             raise BlochError("Failed to retrieve number of incidental beams")
 
         if nib == 0:
-            self.endBloch()
             raise BlochError("No incidental beams found")
         
-        net, tilt, dimscm, ret = bloch.getibinfo(nib)
+        
+        net = farray(np.zeros((2, nib), dtype=int))
+        dimscm = farray(np.zeros(nib, dtype=int))
+        tilt = farray(np.zeros((3, nib), dtype=float))
+
+        net, tilt, dimscm, ret = bloch.getibinfo(net, tilt, dimscm)
         if ret != 0:
-            self.endBloch()
             raise BlochError("failed to retrieve incidental beams info")
         
         print(f'\n-------Dynamic Simulation Session for {self._name}---------\n')
@@ -345,7 +369,7 @@ def add_bloch(target):
 
     def getBeams(self, ib_coords=(0,0), bPrint=False):
         '''
-        Prints diffracted beams for given sample coordinates. It must be called 
+        Prints diffracted beams for given sample point location. It must be called 
         during a dynamic diffraction simulation session marked by 
         `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
         and `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.
@@ -356,22 +380,28 @@ def add_bloch(target):
         :param bPrint: True - print beams info on standard output
         :type bPrint: bool, optional
 
-        :return: a list of Miller Indexes.
-        :rtype: list
+        :return: a list of Miller Indexes at the specified sampling location
+        :rtype: numpy.ndarry of n x 3 dimensions
 
         '''
         
+        #  validate the input values
+
+        if ib_coords is None or not all(isinstance(v, int) for v in ib_coords) or len(ib_coords) != 2:
+            raise BlochError("Invalidincident beam coordinates input, must be tuple of two integers")
+
         scmdim = bloch.get_scmdim(ib_coords)
         if scmdim <= 0:
-            self.endBloch()
             raise BlochError("Error finding corresponding scattering matrix, use printIBDetails to find potential input for ib_coords")
         
-        ev, ret = bloch.getbeams(ib_coords, scmdim)
+        ev = farray(np.zeros((3, scmdim), dtype=int))
+        ev, ret = bloch.getbeams(ib_coords, ev)
 
-        if ret < 0 or ret != scmdim:
-            self.endBloch()
+        if ret < 0 or ret > scmdim:
             raise BlochError("failed to retrieve incidental beams info")
+
         evv = np.transpose(ev) 
+        
         if bPrint:
             print(f'Total Diffracted Beams In Diagonalization: {scmdim}\n')
 
@@ -399,8 +429,8 @@ def add_bloch(target):
         :param ib_coords: Sampling point coordinates tuple
         :type ib_coords: tuple, optional, default (0,0)
 
-        :return: a list of complex eigen values
-        :rtype: list
+        :return: a list of complex eigen values at sampling point location
+        :rtype: numpy.ndarray
 
         Example of the eigen vales:
 
@@ -416,14 +446,18 @@ def add_bloch(target):
             -0.72093237+0.00059052j -0.64608335-0.0001983j  -0.64607544-0.00019853j]
 
         '''
+        #  validate the input values
+
+        if ib_coords is None or not all(isinstance(v, int) for v in ib_coords) or len(ib_coords) != 2:
+            raise BlochError("Invalid incident beam coordinates input, must be tuple of two integers")
+
         scmdim = bloch.get_scmdim(ib_coords)
         if scmdim <= 0:
-            self.endBloch()
             raise BlochError("Error finding corresponding scattering matrix, use printIBDetails to find potential input for ib_coords")
-  
-        ev, ret = bloch.geteigenvalues(ib_coords, scmdim)
-        if ret < 0 or ret != scmdim:
-            self.endBloch()
+        
+        ev = farray(np.zeros(scmdim, dtype=np.complex64))
+        ev, ret = bloch.geteigenvalues(ib_coords, ev)
+        if ret < 0 or ret > scmdim:
             raise BlochError("failed to retrieve incidental beams info")
         
         return ev
@@ -431,7 +465,7 @@ def add_bloch(target):
     def getSCMatrix(self,
                     ib_coords = (0,0), 
                     sample_thickness = DEF_THICKNESS[0],
-                    rvec = None):
+                    rvec = (0.0,0.0,0.0)):
         '''
         Obtains scattering matrix at a given sampling point.
 
@@ -456,8 +490,8 @@ def add_bloch(target):
         :param rvec: R vector shifting atom coordinates in crystal, value between 0.0 and 1.0, defaults to (0.0,0.0,0.0)
         :type rvec: tuple of floats, optional
 
-        :return: scattering matrix at a given sampling point
-        :rtype: complex array
+        :return: scattering matrix at a given sampling point location
+        :rtype: numpy.ndarray of nxn dimensions
 
         Default values:
         
@@ -466,28 +500,31 @@ def add_bloch(target):
             DEF_THICKNESS[0] = 200
 
         '''
-        
-        # get the dimension of the scm
+
+        #  validate the input values
+
+        if ib_coords is None or len(ib_coords) != 2 or not all(isinstance(v, int) for v in ib_coords):  
+            raise BlochError("Invalid incident beam coordinates input, must be tuple of two integers2")   
+
+        if sample_thickness is None or not isinstance(sample_thickness, int):
+            raise BlochError("Sample thickness ")
+
+        if rvec is None or not all(isinstance(v, (int,float)) for v in rvec) or len(rvec) != 3:
+            raise BlochError("Invalid R-vector input, must be tuple of three floats")
+
+        # get the dimension of the scattering matrix
         scmdim = bloch.get_scmdim(ib_coords)
         
         if scmdim <= 0:
-            self.endBloch()
-            raise BlochError("Error finding corresponding scattering matrix,  to find potential input for ib_coords")
+            raise BlochError("Error finding corresponding scattering matrix")
 
-        if rvec is None:
-            rvec = (0.0,0.0,0.0)
+        scm = farray(np.zeros((scmdim, scmdim)), dtype=np.complex64)
 
-        elif not all(isinstance(v, (int,float)) for v in rvec) or len(rvec) != 3:
-            self.endBloch()
-            raise BlochError("Invalid R vector input, must be tuple of three floats")
-
-        scm, ret = bloch.getscm(ib_coords, sample_thickness, rvec, scmdim)
+        scm, ret = bloch.getscm(ib_coords, sample_thickness, rvec, scm)
         if ret <= 0:
-            self.endBloch()
             raise BlochError('Error retieving scattering matrix, input matrix dimension too small, use printIBDetails to find extact dimentsion')
         
-        return np.transpose(scm)
-
+        return scm
 
     def endBloch(self):
        """
@@ -544,6 +581,9 @@ def add_bloch(target):
         :param bSave: `True` - save the output to a raw image file (ext: im3)
         :type bSave: bool, optional
 
+        :return: BImgList object
+        :rtype: BImgList
+        
         Default values:
 
         ::
@@ -573,20 +613,43 @@ def add_bloch(target):
                             dbsize = disk_size,
                             em_controls=em_controls)
 
-            bimgs = self.getBlochImages(
-                sample_thickness = sample_thickness,
-                pix_size = pix_size,
-                det_size = det_size,
-                bSave = bSave)
-        except:
-            raise BlochError('Failed to generate dynamic simulation')
+        except BlochError:
+            # re-raise the same error, so that the caller can handle it
+            # print(f'Bloch simulation failed to start at {em_controls}')
+            raise
 
-        self.endBloch()
+        except Exception as e:
+            # Any other exception will be handled by the callers as BlochError from this point on
+            # print(f'Bloch simulation failed to start at {em_controls}')
+            raise BlochError(f'Something went wrong in starting bloch simulation') from e
+        
+        else:
+            try:
+                bimgs = self.getBlochImages(
+                    sample_thickness = sample_thickness,
+                    pix_size = pix_size,
+                    det_size = det_size,
+                    bSave = bSave)
 
-        return bimgs
+            except (BlochError, BlochListError) as e:
+                raise
+
+            except Exception as e:
+                raise BlochError(f'Something went wrong when retrieving bloch image') from e
+
+            else:
+                return bimgs
+
+            finally:
+                self.endBloch()
+
+        finally:
+            self.endBloch()
+
+                
 
     target.beginBloch = beginBloch
-    target.getBlochFN = getBlochFN
+    target._getBlochFN = _getBlochFN
 
     # ---These calls must be between the above and endSCMartix calls
     
