@@ -581,7 +581,7 @@ def add_bloch(target):
         :param bSave: `True` - save the output to a raw image file (ext: im3)
         :type bSave: bool, optional
 
-        :return: None if exception is raised; BImgList object
+        :return: BImgList object
         :rtype: BImgList
         
         Default values:
