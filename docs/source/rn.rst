@@ -119,7 +119,7 @@ Improvements
 Version 0.6.0 Beta
 ------------------ 
 
-12-09-2022 
+12-11-2022 
 ~~~~~~~~~~
 
 Improvements
@@ -129,7 +129,7 @@ Improvements
   - `DPList <pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern>`_ and 
   - `BImgList <pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs>`_ 
     can now be sorted by its controls objects in their builtin 
-    sorting function.
+    sorting function shown as following code snippet:
 
   .. code-block:: python
     
@@ -153,4 +153,5 @@ Improvements
 
   Refer to *si_stereo.py*.
     
-- Enhanced Bloch simulation memory management and result accuracies.
+- Enhanced Bloch simulation memory management, bloch simulation exception handling
+  and result accuracies.
