@@ -380,7 +380,7 @@ def add_bloch(target):
         :param bPrint: True - print beams info on standard output
         :type bPrint: bool, optional
 
-        :return: a list of Miller Indexes at the specified incident beam location
+        :return: a list of Miller Indexes at the specified sampling location
         :rtype: numpy.ndarry of n x 3 dimensions
 
         '''
