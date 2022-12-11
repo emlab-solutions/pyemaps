@@ -156,8 +156,8 @@ and calculations.</p>
 <span class="n">showDif</span><span class="p">(</span><span class="n">dpl</span><span class="p">,</span> <span class="n">ishow</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Here crystal class method <em>generateDP</em> produces a
-<a class="reference external" href="pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern">kinmatic diffraction pattern</a> (si_dp)
+<p>Here crystal class method <em>generateDP</em> produces a kinmatic diffraction pattern or
+<a class="reference external" href="pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern">DPList</a> (si_dp)
 using all default control parameters .</p>
 <p>Go to <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateDP">generateDP</a> for a complete
 list of control parameters.</p>
@@ -180,16 +180,15 @@ document.</p>
 <span class="c1"># Generate dynamic diffraction patterns using pyemaps&#39; bloch module</span>
 <span class="c1"># with all other default parameters except sampling</span>
 
-<span class="n">bloch_imgs_list</span> <span class="o">=</span> <span class="n">BImgList</span><span class="p">(</span><span class="n">c_name</span><span class="p">)</span>
-<span class="n">emc</span><span class="p">,</span> <span class="n">img</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">generateBloch</span><span class="p">(</span><span class="n">sampling</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+  <span class="n">bloch_imgs_list</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">generateBloch</span><span class="p">(</span><span class="n">sampling</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
 
-<span class="c1"># Create a dynamic diffraction image list</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+  <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-<span class="n">bloch_imgs_list</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">emc</span><span class="p">,</span> <span class="n">img</span><span class="p">)</span>
-
-<span class="c1"># Display the image with grey scale color map and #with predefined color map</span>
-<span class="n">showBloch</span><span class="p">(</span><span class="n">bloch_imgs_list</span><span class="p">)</span>
-<span class="n">showBloch</span><span class="p">(</span><span class="n">bloch_imgs_list</span><span class="p">,</span> <span class="n">bColor</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+  <span class="n">showBloch</span><span class="p">(</span><span class="n">bloch_imgs_list</span><span class="p">)</span> <span class="c1">#grey color map</span>
+  <span class="n">showBloch</span><span class="p">(</span><span class="n">bloch_imgs_list</span><span class="p">,</span> <span class="n">bColor</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1">#with predefined color map</span>
 </pre></div>
 </div>
 <p>The crystal method <em>generateBloch</em> starts a Bloch wave dynamic diffraction simulation with

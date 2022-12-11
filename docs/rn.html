@@ -133,15 +133,16 @@ as before.</p>
 </div>
 </li>
 <li><p><em>cShow</em> option is also added to the display functions to show
-control parameters on the final figure if it is set to <cite>True</cite>.
-Otherwise, no control parameters will be displayed.</p></li>
+control parameters on the final figure if it is set to <cite>True</cite>
+which is also the default. Otherwise, no control parameters
+will be displayed.</p></li>
 </ol>
 <blockquote>
 <div><div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Due to space constraints, control parameters with default values
 will be ommitted from the final rendering, even if cShow is set
-to True.</p>
+to <cite>True</cite>.</p>
 </div>
 </div></blockquote>
 <a class="reference external image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png" src="https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png" /></a>
@@ -164,6 +165,40 @@ to True.</p>
 data added and rendered as opacities of the lines.</p></li>
 <li><p>More control parameters added to EMControls as optional attributes.
 See <a class="reference internal" href="pyemaps.emcontrols.html"><span class="doc">pyemaps.emcontrols module</span></a> for more details.</p></li>
+</ul>
+</section>
+</section>
+<section id="version-0-6-0-beta">
+<h2>Version 0.6.0 Beta<a class="headerlink" href="#version-0-6-0-beta" title="Permalink to this heading">¶</a></h2>
+<section id="id9">
+<h3>12-11-2022<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="id10">
+<h3>Improvements<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h3>
+<ul>
+<li><p>Diffraction simulation result list objects <a class="reference external" href="pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern">DPList</a> and
+<a class="reference external" href="pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs">BImgList</a> can now be sorted by its controls objects in their builtin
+sorting function shown as following code snippet:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">DPList</span>
+
+<span class="n">dpl</span> <span class="o">=</span> <span class="n">DPList</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+ <span class="o">....</span>  <span class="c1"># more code here</span>
+<span class="c1"># sorting the images by their associated controls</span>
+<span class="n">dpl</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>See sample code <em>si_dif.py</em> and <em>si_bloch.py</em> for more details on how to
+use the function and display them in the sorting order.</p>
+<p>For stereodiagram results where there is no builtin result objects, users
+can build a python list of control and result pair and apply python style
+sorting on the list as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">slist</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Refer to <em>si_stereo.py</em>.</p>
+</li>
+<li><p>Enhanced Bloch simulation memory management, bloch simulation exception handling
+and result accuracies.</p></li>
 </ul>
 </section>
 </section>
@@ -203,6 +238,11 @@ See <a class="reference internal" href="pyemaps.emcontrols.html"><span class="do
 <li class="toctree-l2"><a class="reference internal" href="#version-0-5-0-beta">Version 0.5.0 Beta</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id7">11-30-2022</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id8">Improvements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-6-0-beta">Version 0.6.0 Beta</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id9">12-11-2022</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">Improvements</a></li>
 </ul>
 </li>
 </ul>

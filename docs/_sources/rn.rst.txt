@@ -84,14 +84,15 @@ Improvements
           as before.
 
     2. *cShow* option is also added to the display functions to show 
-       control parameters on the final figure if it is set to `True`.
-       Otherwise, no control parameters will be displayed. 
+       control parameters on the final figure if it is set to `True` 
+       which is also the default. Otherwise, no control parameters 
+       will be displayed. 
 
       .. note:: 
 
         Due to space constraints, control parameters with default values
         will be ommitted from the final rendering, even if cShow is set 
-        to True.
+        to `True`.
 
     
     .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png
@@ -113,3 +114,42 @@ Improvements
   data added and rendered as opacities of the lines.
 - More control parameters added to EMControls as optional attributes.
   See :doc:`pyemaps.emcontrols` for more details.
+
+
+Version 0.6.0 Beta
+------------------ 
+
+12-11-2022 
+~~~~~~~~~~
+
+Improvements
+~~~~~~~~~~~~
+
+- Diffraction simulation result list objects `DPList <pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern>`_ and 
+  `BImgList <pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs>`_ can now be sorted by its controls objects in their builtin 
+  sorting function shown as following code snippet:
+
+  .. code-block:: python
+    
+    from pyemaps import DPList
+
+    dpl = DPList(name) 
+     ....  # more code here
+    # sorting the images by their associated controls
+    dpl.sort()
+
+  See sample code *si_dif.py* and *si_bloch.py* for more details on how to
+  use the function and display them in the sorting order.
+
+  For stereodiagram results where there is no builtin result objects, users
+  can build a python list of control and result pair and apply python style 
+  sorting on the list as follows:
+
+  .. code-block:: python
+    
+    slist.sort(key=lambda x: x[0])
+
+  Refer to *si_stereo.py*.
+    
+- Enhanced Bloch simulation memory management, bloch simulation exception handling
+  and result accuracies.

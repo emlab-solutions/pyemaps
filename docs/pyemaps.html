@@ -546,7 +546,7 @@ The simulation results are retained in the session between this and
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a tuple (n, ns) where ns is a list of sampling points; n is the number of sampling point</p>
+<dd class="field-even"><p>a tuple (n, ns) where ns is a list of sampling points; n is the number of sampling points</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>tuple</p>
@@ -636,6 +636,12 @@ calling :</p>
 <li><p><strong>em_controls</strong> – Microscope controls object</p></li>
 <li><p><strong>bSave</strong> (<em>bool</em><em>, </em><em>optional</em>) – <cite>True</cite> - save the output to a raw image file (ext: im3)</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>BImgList object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>BImgList</p>
 </dd>
 </dl>
 <p>Default values:</p>
@@ -867,7 +873,7 @@ stabel production soon. Its replacement is:
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.crystals.Crystal.getBeams">
 <span class="sig-name descname"><span class="pre">getBeams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ib_coords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bPrint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.getBeams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prints diffracted beams for given sample coordinates. It must be called 
+<dd><p>Prints diffracted beams for given sample point location. It must be called 
 during a dynamic diffraction simulation session marked by 
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a>
 and <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch</a>.</p>
@@ -879,20 +885,12 @@ and <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.C
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a list of Miller Indexes.</p>
+<dd class="field-even"><p>a list of Miller Indexes at the specified sampling location</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list</p>
+<dd class="field-odd"><p>numpy.ndarry of n x 3 dimensions</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.crystals.Crystal.getBlochFN">
-<span class="sig-name descname"><span class="pre">getBlochFN</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.getBlochFN" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constructs a bloch image output file name.</p>
-<p>Refer to <a class="reference internal" href="usage.html#environment-variables"><span class="std std-ref">Environment Variables</span></a> 
-for how this file name is constructed.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -939,10 +937,10 @@ marked by
 <dd class="field-odd"><p><strong>ib_coords</strong> (<em>tuple</em><em>, </em><em>optional</em><em>, </em><em>default</em><em> (</em><em>0</em><em>,</em><em>0</em><em>)</em>) – Sampling point coordinates tuple</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a list of complex eigen values</p>
+<dd class="field-even"><p>a list of complex eigen values at sampling point location</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list</p>
+<dd class="field-odd"><p>numpy.ndarray</p>
 </dd>
 </dl>
 <p>Example of the eigen vales:</p>
@@ -960,7 +958,7 @@ marked by
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.crystals.Crystal.getSCMatrix">
-<span class="sig-name descname"><span class="pre">getSCMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ib_coords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_thickness</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_THICKNESS[0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rvec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.getSCMatrix" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">getSCMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ib_coords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_thickness</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_THICKNESS[0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rvec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.getSCMatrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Obtains scattering matrix at a given sampling point.</p>
 <p>To get a list of sampling points used in this dynamic simulation session,
 call <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails">printIBDetails</a></p>
@@ -979,10 +977,10 @@ call <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>scattering matrix at a given sampling point</p>
+<dd class="field-even"><p>scattering matrix at a given sampling point location</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>complex array</p>
+<dd class="field-odd"><p>numpy.ndarray of nxn dimensions</p>
 </dd>
 </dl>
 <p>Default values:</p>
@@ -1438,6 +1436,12 @@ use this routine to determine the name of the crystal to load using
 <dt class="sig sig-object py" id="pyemaps.ddiffs.BlochImgs.add">
 <span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.ddiffs.BlochImgs.add" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.ddiffs.BlochImgs.sort">
+<span class="sig-name descname"><span class="pre">sort</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.ddiffs.BlochImgs.sort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort the bloch simulation results by controls</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -2182,6 +2186,11 @@ output files.</p>
 <p>It also detects pyemaps data home environment variables and directs
 file i/o accoridng to the rule set in <a class="reference internal" href="usage.html#environment-variables"><span class="std std-ref">Environment Variables</span></a>.</p>
 <dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.fileutils.find_datahome">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">find_datahome</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.find_datahome" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="pyemaps.fileutils.auto_fn">
 <span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">auto_fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.auto_fn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Auto-generate file name based on crystal name and time stamp
@@ -2525,7 +2534,15 @@ kinematic diffraction patterns using this object.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.kdiffs.Diffraction.add">
 <span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diffP</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.kdiffs.Diffraction.add" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Append a new kenematic diffraction pattern with its associated 
+controls</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.kdiffs.Diffraction.sort">
+<span class="sig-name descname"><span class="pre">sort</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.kdiffs.Diffraction.sort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sorting diffraction list by controls</p>
+</dd></dl>
 
 </dd></dl>
 
