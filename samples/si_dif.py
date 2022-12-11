@@ -56,7 +56,6 @@ def generate_difs(name = 'Silicon', mode = DEF_MODE, ckey = 'tilt', sim_rand=Fal
         dsize = DEF_CBED_DSIZE
     else:
         dsize = None
-
     
     fs=[]
     # create an empty diffraction pattern list
@@ -118,8 +117,13 @@ if __name__ == '__main__':
     em_keys = ['tilt', 'zone', 'defl', 'vt', 'cl']
     
     for k in em_keys:
-        dpl = generate_difs(ckey=k)
-        showDif(dpl, layout='table')
+        dpl = generate_difs(ckey=k, mode=2)
+        showDif(dpl, 
+                layout='table' if k == 'tilt' or k == 'zone' else 'individual', 
+                kshow=False, 
+                ishow=False, 
+                bSave=(k=='zone')
+                )
 
     for k in em_keys:
         dpl = generate_difs(ckey=k, sim_rand=True)

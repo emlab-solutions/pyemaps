@@ -467,7 +467,7 @@ from pyemaps import (DEF_ZONE,
                     
 EM_CONTROLS_KEYS = ['zone','tilt','defl', 'cl', 'vt', 
                      'xaxis', 'pix_size', 'det_size', 
-                     'mode', 'dsize', 'aperture']
+                     'mode', 'dsize', 'aperture', 'simc']
 
 class EMControl:
     '''

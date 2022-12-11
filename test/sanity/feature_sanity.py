@@ -4,11 +4,12 @@ import os
 from pathlib import Path
 
 
-# feat_list=['stereo']
-feat_list=['dif', 
+feat_list=[
+            'dif', 
            'bloch', 
            'stereo', 
-           'mxtal']
+           'mxtal'
+           ]
 
 def get_cifdata_dir():
 
@@ -61,7 +62,12 @@ def run_feat_list(cnflist, ty=1, bShow=True, bSave=False, feat_type='dif'):
             print(f"-------generating {feat_type} for {cfn} succeeded with time: {toc - tic:0.4f}")
             if bShow:
                 if feat_type == 'bloch':
-                    showBloch(bimgs, bSave = bSave)
+                    if bimgs is not None:
+                        showBloch(bimgs, bSave = bSave)
+                    else:
+                        failure_count += 1
+                        failure_cases.append(cfn)
+                        print('Bloch image invalid')
                 if feat_type == 'dif':
                     showDif(dpl, bSave=bSave)
                 if feat_type == 'stereo':
