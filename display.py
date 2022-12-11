@@ -207,13 +207,11 @@ class DifPlotter:
         iax = self.axes[n1, n2]
         clrMap = gclrs #default to grey
         if color:
-            # clrMap=clrs
             clrMap = LinearSegmentedColormap.from_list("mycmap", clrs)
 
         iax.clear()
         iax.set_axis_off()
 
-        # iax.set_title(tag)
 
         iax.imshow(img, cmap=clrMap)
         if self.cShow:

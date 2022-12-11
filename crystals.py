@@ -1045,6 +1045,11 @@ class Crystal:
         '''
         return self._dw == iso.value
 
+    def __del__(self):
+        
+        if self._loaded:
+            self.unload()
+
     def __eq__(self, other):
 
         if not isinstance(other, Crystal):

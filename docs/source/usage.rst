@@ -160,17 +160,16 @@ document.
     # Generate dynamic diffraction patterns using pyemaps' bloch module
     # with all other default parameters except sampling
 
-    bloch_imgs_list = BImgList(c_name)
-    emc, img = si.generateBloch(sampling = 20) 
-    
-    # Create a dynamic diffraction image list
+    try:
+      bloch_imgs_list = si.generateBloch(sampling = 20) 
+      
+    except Exception as e:
+      print(f'Error: {e}')
 
-    bloch_imgs_list.add(emc, img) 
-    
-    # Display the image with grey scale color map and #with predefined color map
-    showBloch(bloch_imgs_list) 
-    showBloch(bloch_imgs_list, bColor=True) 
-
+    else:        
+      showBloch(bloch_imgs_list) #grey color map
+      showBloch(bloch_imgs_list, bColor=True) #with predefined color map
+   
 The crystal method *generateBloch* starts a Bloch wave dynamic diffraction simulation with 
 the sampling resolution of 20 pixels along the disk radius. 
 
