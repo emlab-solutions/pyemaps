@@ -277,28 +277,10 @@ class SIMControl:
            raise EMCError("Sample thickness must be an integer")
         
         self._sth = sv
+        
     def __lt__(self, other):
         return self.__key__() < other.__key__()
-    # def __lt__(self, other):
-    #     req = (self._excitation, 
-    #             self._gmax,
-    #             self._bmin,
-    #             self._intensity,
-    #             self._gctl,
-    #             self._zctl,
-    #             self._omega,
-    #             self._sampling,
-    #             self._sth)
-    #     oreq = (other.excitation, 
-    #             other.gmax,
-    #             other.bmin,
-    #             other.intensity,
-    #             other.gctl,
-    #             other.zctl,
-    #             other.omega,
-    #             other.sampling,
-    #             other._sth)
-    #     return req < oreq
+    
     def __key__(self):
         data = self.__dict__
         return [data[k] for k in data.keys()]
