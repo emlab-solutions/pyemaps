@@ -37,7 +37,7 @@ def runSCMTests():
     # -----generate scattering matrix on this crystal instance----- 
     #      controls set as follows. 
 
-    # -----For a list beams coordinates 
+    #      For a list beams coordinates 
     #      to generate more scattering matrix, run cr.printIBDetails()
     
     ec =EMC(cl=200,
@@ -52,14 +52,16 @@ def runSCMTests():
         ns, s = si.beginBloch(em_controls = ec, 
                         dbsize = ds)
 
-    except BlochError as e:
-        print(f'Failed to generate scattering matrix {e.message}')
+    except Exception as e:
+        print(f'Failed to generate scattering matrix {e}')
     else:
         # get the scattering matrix now
         try:
             si_scm = si.getSCMatrix(ib_coords = ib_coords)
         except BlochError as e:
             print(f'Failed to generate scattering matrix {e.message}')
+        except Exception as e:
+            print(f'Failed to generate scattering matrix {e}')
         else:
             print(f'----Sampling points in this scattering matrix calculation---:')
             print(f'{s}')
@@ -68,29 +70,48 @@ def runSCMTests():
             print(f' \n{si_scm}')
 
             print(f'----Eigen values at: {ib_coords}----')
-            print(si.getEigen(ib_coords = ib_coords))
+            
+            try:
+                eigen = si.getEigen(ib_coords = ib_coords)
+            except Exception as e:
+                print(f'Error: {e}')
+            else:
+                if eigen is not None:
+                    print(eigen)
 
             print(f'----Diffracted Beams in Miller Indexes at: {ib_coords}----: ')
-            si.getBeams(ib_coords = ib_coords, bPrint=True)
+            try:
+                si.getBeams(ib_coords = ib_coords, bPrint=True)
+            except Exception as e:
+                print(f'Error retrieving Miller Indexes at {ib_coords}: {e}')
 
             print(f'----Beam Tilts In Reciprical Space and misc. info') 
-            si.printIBDetails()
+            try:
+                si.printIBDetails()
+            except Exception as e:
+                print(f'Error retrieving misc. information for this bloch simulation: {e}')
 
             #       get a random sampling point from available list of
             #       sampling points and print the corresponding 
             #       scattering matrix
 
             import random
-            radnum = random.randrange(1, ns-1)
+            radnum = random.randrange(0, ns-1)
+            
             ib_coords = s[radnum]
-            
-            scm = si.getSCMatrix(ib_coords = ib_coords)
-            print(f'--Sacattering matrix at a random sampling point {ib_coords}----:')
-            print(f'{scm}')
-            
-
-    # cleanup 
-    si.endBloch()
+            try:
+                scm = si.getSCMatrix(ib_coords = ib_coords)
+            except Exception:
+                print(f'Error obtaining scattering matrix at random sampling points {ib_coords}')
+            else:
+                print(f'--Sacattering matrix at a random sampling point {ib_coords}----:')
+                print(f'{scm}')
+            finally:
+                # cleanup
+                si.endBloch()
+    finally:
+        # cleanup 
+        si.endBloch()
 
 if __name__ == "__main__":
     runSCMTests()

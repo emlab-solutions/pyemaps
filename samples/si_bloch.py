@@ -26,7 +26,7 @@ Date:       July 07, 2022
 
 """
 
-from pyemaps import EMC, EMCError, BlochError, DEF_CBED_DSIZE
+from pyemaps import EMC, DEF_CBED_DSIZE
 
 MAX_PROCWORKERS = 4
 
@@ -52,6 +52,8 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
 
     if sim_rand:
         sc = SIMC._from_random()
+    else:
+        sc = SIMC()
 
     for i in range(-3,3): 
         emc=EMC(cl=200)
@@ -64,6 +66,7 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
         if sim_rand:
             emc.simc = sc
 
+        emc(simc=sc)
         emclist.append(emc)
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
@@ -72,34 +75,42 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
             fs.append(e.submit(cr.generateBloch, 
                                disk_size=dsize, 
                                sampling = 20, 
+                               sample_thickness=(1750,1750,100),
                                em_controls = ec))
         
         bimgs = BImgList(name) 
         for f in concurrent.futures.as_completed(fs):
             try:
-               emc, img = f.result()[0]
-
-            except (BlochError, EMCError) as e:
-                print(f'{f} generated an exception: {e.message}, {emc}') 
-                return bimgs
+              imgs = f.result()
+              
             except Exception as e:
-                print(f'failed to generate diffraction patterns: {e}') 
-                return bimgs
+                print(f'Unable to obtain bloch image(s): {e}') 
+                return None
             else: 
-                bimgs.add(emc, img) 
-            
-    return bimgs
+                emc, img = imgs[0]
+                bimgs.add(emc, img)
+   
+        # sorting the images by their associated controls
+        bimgs.sort()   
+        return bimgs
 
 from pyemaps import showBloch
 
 if __name__ == '__main__':
     
-    # from sample_base import generate_bimages
     em_keys = ['tilt', 'zone']
+    
     for k in em_keys:
         imgs = generate_bloch_images(ckey=k)
-        showBloch(imgs)
+        if imgs is not None:
+            showBloch(imgs, layout='table', bSave=True)
+        else:
+            exit(1)
 
     for k in em_keys:
         imgs = generate_bloch_images(ckey=k, sim_rand=True)
-        showBloch(imgs)
+        if imgs is not None:
+            showBloch(imgs)
+        else:
+            exit(1)
+        

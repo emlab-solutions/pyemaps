@@ -214,6 +214,7 @@ def add_dif(target):
         
         if (num_klines > 0):
             klines_arr = farray(np.zeros((num_klines, 5)), dtype=np.double)
+            
             if dif.get_klines(klines_arr) == 0:
                 for i in range(num_klines):
                     j=i+1
