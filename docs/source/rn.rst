@@ -125,11 +125,9 @@ Version 0.6.0 Beta
 Improvements
 ~~~~~~~~~~~~
 
-- Diffraction simulation result list objects: 
-  - `DPList <pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern>`_ and 
-  - `BImgList <pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs>`_ 
-    can now be sorted by its controls objects in their builtin 
-    sorting function shown as following code snippet:
+- Diffraction simulation result list objects `DPList <pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern>`_ and 
+  `BImgList <pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs>`_ can now be sorted by its controls objects in their builtin 
+  sorting function shown as following code snippet:
 
   .. code-block:: python
     

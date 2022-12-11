@@ -70,7 +70,7 @@ with the following sample code:
                 except Exception as e:
                     print(f'{f} generated an exception: {e}')
                     exit(1)
-
+        difs.sort()
         return difs
 
     if __name__ == '__main__':
@@ -119,13 +119,15 @@ to render Bloch simulation images for *silicon* with:
             bimgs = cr.generateBloch(sampling = 40,
                                     em_controls = EMC(zone=(1,1,1),
                                     vt=vt,
+                                    cl=1000,
                                     simc=simc),
                                     sample_thickness = sth
                                     )
         except Exception as e:
                 print(f'Generated an exception: {e}') 
-                return bimgs
-        
+                return None
+                
+        bimgs.sort()
         return bimgs 
 
     if __name__ == '__main__':
@@ -133,7 +135,8 @@ to render Bloch simulation images for *silicon* with:
         from pyemaps import showBloch
 
         imgs = generate_bloch_images()
-        showBloch(imgs, cShow=True, layout='table', bSave = True)
+        if imgs is not None:
+            showBloch(imgs, cShow=True, layout='table', bSave = True)
 
 Stereodiagram
 ~~~~~~~~~~~~~
@@ -181,6 +184,7 @@ as demonstrated below:
                 else:
                     slist.append((emc, stereo))    
         
+        slist.sort(key=lambda x: x[0])
         return slist
 
     if __name__ == '__main__':
