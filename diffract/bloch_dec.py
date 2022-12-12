@@ -222,7 +222,8 @@ def add_bloch(target):
                         bSave = False):
        """
         Retrieves a set of dynamic diffraction image from the simulation 
-        sessiom marked by
+        sessiom marked by:
+
         `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_. and 
         `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.   
         
@@ -251,6 +252,10 @@ def add_bloch(target):
 
        """
        from copy import deepcopy
+
+       # check to see if control parameters passed in already in session control
+       # passed in 
+       # 
 
        if pix_size is None or not isinstance(pix_size, int):
             raise BlochListError('Pixel size input must be valid integert')
