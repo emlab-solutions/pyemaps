@@ -34,6 +34,8 @@ compile_args=['-Qm64',
               '-O2', #this option does not work with -fast
               '-libs:static',
               '-MT',
+              '-Qparallel',
+              '-Qopt-report:2',
               '-c']
               
 compile_args_lin= ['-m64',
