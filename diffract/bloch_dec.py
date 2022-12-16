@@ -1,3 +1,28 @@
+# def divWorks(sl, np):
+#     # numCPUs = mp.cpu_count()
+#     # if (numCPUs > len(nums)):
+#     #     numCPUs = len(nums)
+#     jobs = []
+#     slLength = sl
+
+#     jobRange = int(slLength / np)
+#     extra = slLength - (jobRange * np)
+
+#     prevEnd = 0
+#     for c in range(np):
+#         endIdx = (c * jobRange) + jobRange - 1
+#         if (c == (np-1)):
+#             endIdx += extra
+
+#         startIdx = prevEnd
+#         if ( (c > 0) and (startIdx+1 < slLength) ):
+#             startIdx += 1
+
+#         jobs.append( (startIdx, endIdx) )
+#         prevEnd = endIdx
+
+#     return jobs
+    
 def add_bloch(target):    
     """
     
@@ -86,48 +111,35 @@ def add_bloch(target):
         Begins a dynamic diffraction (Bloch) simulation session. 
         The simulation results are retained in the session between this and 
         `endBloch call <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_. 
-
         :param aperture: Optional. Objective aperture
         :type aperture: float
-
         :param omega: Optional. Diagnization cutoff value
         :type omega: float
-
         :param sampling: Optional. Number of sampling points
         :type sampling: int
-
         :param dbsize: Diffracted beams size.
         :type dbsize: float, optional
-
         :param em_controls: Optional. electron `microscope control <pyemaps.emcontrols.html#module-pyemaps.emcontrols>`_ object. 
         :type em_controls: pyemaps.EMC
-
         :return: a tuple (n, ns) where ns is a list of sampling points; n is the number of sampling points
         :rtype: tuple 
-
         Default values:
-
         ::
-
             DEF_APERTURE = 1.0
             DEF_OMEGA = 10
             DEF_SAMPLING = 8
             DEF_CBED_DSIZE - 0.16
             DEF_DSIZE_LIMITS =(0.01, 0.5)
-
         .. note:: 
-
             During the simulation session, results are retained in pyemaps 
             bloch module. The following methods are used to retrieve the
             result before the end of session:
-
             1. `getBlochimages <pyemaps.crystals.html#pyemaps.crystals.Crystal.getBlochImages>`_. 
                Retrieve a list of bloch images
             2. `getSCMatrix <pyemaps.crystals.html#pyemaps.crystals.Crystal.getSCMatrix>`_. 
                Retrieve a scattering matrix at a sampling point
         
         .. note:: 
-
             Other information available during the session:
             
             a. List of sampling points, diffraction beams tilts etc 
@@ -214,6 +226,7 @@ def add_bloch(target):
 
         self.session_controls=em_controls
         return nsampling, sp
+
 
     def getBlochImages(self, 
                         sample_thickness = DEF_THICKNESS,
@@ -663,6 +676,7 @@ def add_bloch(target):
     target.getBeams = getBeams
     target.getSCMatrix = getSCMatrix
     target.getBlochImages = getBlochImages
+
 
     # ---These calls must be between the above and endSCMartix calls
 
