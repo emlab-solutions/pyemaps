@@ -35,7 +35,7 @@ compile_args=['-Qm64',
               '-libs:static',
               '-MT',
               '-Qparallel',
-              '-Qopt-report:2',
+            #   '-Qopt-report:2',
               '-c']
               
 compile_args_lin= ['-m64',
