@@ -4,7 +4,7 @@ from pyemaps import EMC, SIMC, showBloch
 def test_local():
 
     emc=EMC(zone=(1,1,1), vt=100, tilt=(20.0,25), simc=SIMC(excitation=(0.3,1.0)))
-    _, _=si.beginBloch_new(aperture=1.0,sampling = 40, omega=10,em_controls=emc)
+    _, _=si.beginBloch(aperture=1.0,sampling = 40, omega=10,em_controls=emc)
     bimgs = si.getBlochImages(sample_thickness=(500,1750,250))
     si.endBloch()
     showBloch(bimgs)
