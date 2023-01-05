@@ -195,7 +195,7 @@ class SIMControl:
     @property
     def sth(self):
         '''
-        Samples thickness setting in tuple of three integers: (start, end, step)
+        Samples thickness, must be an integer
 
         '''
         return self._sth
@@ -273,7 +273,7 @@ class SIMControl:
     
     @sth.setter
     def sth(self, sv):
-        if not isinstance(sv, int):
+        if sv is None or not isinstance(sv, int):
            raise EMCError("Sample thickness must be an integer")
         
         self._sth = sv

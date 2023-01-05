@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>pyemaps package &#8212; pyemaps 0.6.0 Beta documentation</title>
+    <title>pyemaps package &#8212; pyemaps 0.6.1 Beta documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -29,7 +29,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.6.0 Beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.6.1 Beta documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyemaps package</a></li> 
       </ul>
     </div>  
@@ -534,25 +534,20 @@ two reciprocal space vectors</p>
 <span class="sig-name descname"><span class="pre">beginBloch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aperture</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_APERTURE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_OMEGA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SAMPLING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dbsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_CBED_DSIZE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">em_controls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">EMC(cl=200,</span> <span class="pre">simc=SIMC(gmax=1.0,</span> <span class="pre">excitation=(0.3,</span> <span class="pre">1.0)))</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.beginBloch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Begins a dynamic diffraction (Bloch) simulation session. 
 The simulation results are retained in the session between this and 
-<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch call</a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>aperture</strong> (<em>float</em>) – Optional. Objective aperture</p></li>
-<li><p><strong>omega</strong> (<em>float</em>) – Optional. Diagnization cutoff value</p></li>
-<li><p><strong>sampling</strong> (<em>int</em>) – Optional. Number of sampling points</p></li>
-<li><p><strong>dbsize</strong> (<em>float</em><em>, </em><em>optional</em>) – Diffracted beams size.</p></li>
-<li><p><strong>em_controls</strong> (<em>pyemaps.EMC</em>) – Optional. electron <a class="reference external" href="pyemaps.emcontrols.html#module-pyemaps.emcontrols">microscope control</a> object.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a tuple (n, ns) where ns is a list of sampling points; n is the number of sampling points</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>tuple</p>
-</dd>
-</dl>
-<p>Default values:</p>
+<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch call</a>. 
+:param aperture: Optional. Objective aperture
+:type aperture: float
+:param omega: Optional. Diagnization cutoff value
+:type omega: float
+:param sampling: Optional. Number of sampling points
+:type sampling: int
+:param dbsize: Diffracted beams size.
+:type dbsize: float, optional
+:param em_controls: Optional. electron <a class="reference external" href="pyemaps.emcontrols.html#module-pyemaps.emcontrols">microscope control</a> object. 
+:type em_controls: pyemaps.EMC
+:return: a tuple (n, ns) where ns is a list of sampling points; n is the number of sampling points
+:rtype: tuple 
+Default values:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DEF_APERTURE</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="n">DEF_OMEGA</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="n">DEF_SAMPLING</span> <span class="o">=</span> <span class="mi">8</span>
@@ -564,10 +559,12 @@ The simulation results are retained in the session between this and
 <p class="admonition-title">Note</p>
 <p>During the simulation session, results are retained in pyemaps 
 bloch module. The following methods are used to retrieve the
-result before the end of session:</p>
-<ol class="arabic simple">
-<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getBlochImages">getBlochimages</a>. 
-Retrieve a list of bloch images</p></li>
+result before the end of session:
+1. <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getBlochImages">getBlochimages</a>.</p>
+<blockquote>
+<div><p>Retrieve a list of bloch images</p>
+</div></blockquote>
+<ol class="arabic simple" start="2">
 <li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getSCMatrix">getSCMatrix</a>. 
 Retrieve a scattering matrix at a sampling point</p></li>
 </ol>
@@ -897,8 +894,8 @@ and <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.C
 <dt class="sig sig-object py" id="pyemaps.crystals.Crystal.getBlochImages">
 <span class="sig-name descname"><span class="pre">getBlochImages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_thickness</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_THICKNESS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pix_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_PIXSIZE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">det_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_DETSIZE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bSave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.getBlochImages" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieves a set of dynamic diffraction image from the simulation 
-sessiom marked by
-<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a>. and 
+sessiom marked by:</p>
+<p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a>. and 
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1760,7 +1757,7 @@ level and scale in (level, scale)</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.sth">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sth</span></span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.sth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Samples thickness setting in tuple of three integers: (start, end, step)</p>
+<dd><p>Samples thickness, must be an integer</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2613,7 +2610,7 @@ Date:       May 07, 2022</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.6.0 Beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.6.1 Beta documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyemaps package</a></li> 
       </ul>
     </div>
