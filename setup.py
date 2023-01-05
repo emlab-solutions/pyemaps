@@ -26,7 +26,8 @@ dpgen_cobj = 'write_dpbin.o'
 compile_args=['-Qm64',
               '-WB',
               '-heap-arrays',
-              '-Qopenmp',
+            #   '-Qopenmp',
+            #   '-Qopenmp-simd',
               '-GS', 
               '-4R8',
               '-fpp',
@@ -34,6 +35,9 @@ compile_args=['-Qm64',
               '-O2', #this option does not work with -fast
               '-libs:static',
               '-MT',
+            #   '-align:array32byte',
+            #   '-Qparallel',
+            #   '-Qopt-report:2',
               '-c']
               
 compile_args_lin= ['-m64',

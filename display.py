@@ -125,7 +125,8 @@ class DifPlotter:
             print(f'image saved to: {save_to}.png')
    
     def terminate(self):
-        plt.close(self.fig) #just close the current figure
+        pass
+        # plt.close(self.fig) #just close the current figure
             
     def plotKDif(self):
         idx, emc, dp, mode, kshow, ishow = self.difData
@@ -225,7 +226,6 @@ class DifPlotter:
         x0= x1 = 0.0
         y0= 0.0
 
-        # if self.type != TY_STEREO:
         x0, x1 = ax.get_xlim()
         y0, y1 = ax.get_ylim()
 
@@ -257,7 +257,6 @@ class DifPlotter:
         iax.clear()
         
         iax.set_axis_off()
-        # iax.set_title(self.name, color='blue')
 
         # adding a unit disk
         unitdis = patches.Circle((0.0, 0.0), 
@@ -295,9 +294,6 @@ class DifPlotter:
             # set the limits
         iax.set_xlim([-1.0, 1.0])
         iax.set_ylim([-1.0, 1.0])
-        
-        # tag = 'zone: ' + str(emc.zone)
-        # iax.set_title(tag)
 
         if self.cShow:
             self.plotControls(emc,iax)
@@ -402,7 +398,6 @@ class DifPlotter:
                 self.fig.canvas.set_window_title(pyemaps_title)
 
         self.fig.suptitle(self.name, va='top', fontsize=24)
-        # self.fig.tight_layout()
         
         timer = self.fig.canvas.new_timer(interval=1500)
         timer.add_callback(self.call_back)
@@ -526,7 +521,7 @@ def showBloch(bimgs,
 
     for i, cimg in enumerate(bimgs.blochList):
         c, img = cimg  
-        # tag = 'Sample Thickness: ' + str(500+i*250)
+        
         d = (i, c, img, bColor)
         pl.plot(data = d)
         time.sleep(1.0)
@@ -583,7 +578,6 @@ def showStereo(slist, name,
 
 def _getGridDims(n, nCol = 3):
    
-    # print(f'found grid input: {n}, {nCol}')
     nr = n % nCol
 
     nrows = n // nCol
@@ -594,7 +588,7 @@ def _getGridDims(n, nCol = 3):
     ncols = nr
     if n >= 3:
         ncols = 3
-    # print(f'found grid: {nrows}, {ncols}')
+        
     return nrows, ncols
 
 
