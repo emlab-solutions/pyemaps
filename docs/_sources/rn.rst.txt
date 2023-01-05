@@ -153,3 +153,16 @@ Improvements
     
 - Enhanced Bloch simulation memory management, bloch simulation exception handling
   and result accuracies.
+
+
+Version 0.6.1 Beta
+------------------ 
+
+01-05-2023 
+~~~~~~~~~~
+
+Improvements
+~~~~~~~~~~~~
+
+- Bug fixes.
+- Display will keep the figures windows open for each display. Users are now responsible to close them.
