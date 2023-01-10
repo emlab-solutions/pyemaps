@@ -442,8 +442,8 @@ class NBPlot:
 
 def showDif(dpl=None, 
             cShow=True,
-            kshow=True, 
-            ishow=True, 
+            kShow=True, 
+            iShow=True, 
             layout='individual',
             bSave = False):
    
@@ -454,10 +454,10 @@ def showDif(dpl=None,
     :type dpl: DPList
     :param cShow: Plot control annotation. `True` (default): plot the control parameters on lower left corner; `False` do not plot.
     :type cShow: bool, optional
-    :param kshow: Whether to display Kikuchi lines.
-    :type kshow: bool 
-    :param ishow: Whether to display Miller indexes.
-    :type ishow: bool 
+    :param kShow: Whether to display Kikuchi lines.
+    :type kShow: bool 
+    :param iShow: Whether to display Miller indexes.
+    :type iShow: bool 
     :param layout: layout format. individual (default): plotting one by one, table: plotting in a table of 3 columns  
     :type layout: str, optional 
     :param bSave: Whether to save the diplay into a .png image file.
@@ -478,7 +478,7 @@ def showDif(dpl=None,
     pl = NBPlot(TY_DIF, n, name, bSave, cShow, layout)
     for i, cdp in enumerate(dpl.diffList):
         c, dp = cdp  
-        d = (i, c, dp, mode, kshow, ishow)
+        d = (i, c, dp, mode, kShow, iShow)
         pl.plot(data = d)
         time.sleep(1.0)
     pl.plot()
@@ -532,7 +532,7 @@ def showBloch(bimgs,
     pl.plot(finished=True)
 
 def showStereo(slist, name, 
-               cShow= True,          #em_controls annotated or not
+               cShow= True,         #em_controls annotated or not
                iShow = False,       #display miller indexes or not
                zLimit = 2,          # miller indexes limit (absolute value)
                layout='individual', # individual or table display format
