@@ -1335,7 +1335,7 @@ class SIMControl:
 
     def _normalize(self):
         # pass
-        sim_dict = self.__dict__
+        sim_dict = self.__dict__.copy()
         for k in SIM_COMTROLS_KEYS:
             kname = '_' + k
             if k == 'omega':
@@ -1897,7 +1897,8 @@ class EMControl:
     #     else:
     #         return self._xaxis == DEF_XAXIS 
     def _normalize(self):
-        em_dict=self.__dict__
+        em_dict=self.__dict__.copy()
+        # print(f'em controls dict: {em_dict}')
         for k in EM_CONTROLS_KEYS:
             kname = '_'+k
             if k == 'simc':
@@ -1911,7 +1912,7 @@ class EMControl:
 
             if k == 'dsize':
                 if not hasattr(self, k):
-                    if self._mode == 2:
+                    if hasattr(self, 'mode') and self._mode == 2:
                         em_dict[kname] = DEF_CBED_DSIZE
                     else:
                         em_dict[kname] = -1
@@ -2050,7 +2051,9 @@ class EMControl:
         #         return False
         # elif hasattr(self, 'det_size') and not hasattr(other, 'det_size'):
         #     if self._det_size != DEF_DETSIZE:
-        #         return False
+        # #         return False
+        # curr_dict = self._normalize()
+        # other_dict = other._normalize()
         return self._normalize() == other._normalize()
         # return True
 
