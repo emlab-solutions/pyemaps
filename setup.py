@@ -35,6 +35,7 @@ compile_args=['-Qm64',
               '-O2', #this option does not work with -fast
               '-libs:static',
               '-MT',
+              '-assume:buffered_io',
             #   '-align:array32byte',
             #   '-Qparallel',
             #   '-Qopt-report:2',
