@@ -78,7 +78,7 @@ with the following sample code:
         from pyemaps import showDif
 
         dpl = generate_difs(mode = 2)
-        showDif(dpl, cShow = True, ishow=True, layout='table', bSave = True)
+        showDif(dpl, cShow = True, iShow=True, layout='table', bSave = True)
 
 
 Dynamic Diffraction Simulations
