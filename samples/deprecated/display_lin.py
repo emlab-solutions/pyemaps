@@ -108,7 +108,7 @@ class DifPlotter:
         plt.close(self.fig) #just close the current figure
             
     def plotKDif(self):
-        dp, mode, kshow, ishow = self.difData
+        dp, mode, kShow, iShow = self.difData
         
         self.ax.clear()
         
@@ -116,7 +116,7 @@ class DifPlotter:
         self.ax.set_aspect('equal')
         self.ax.set_title(self.name)
 
-        line_color = 'k' if kshow else 'w'
+        line_color = 'k' if kShow else 'w'
         for kl in dp.klines:
         
             kl *=PLOT_MULTIPLIER
@@ -364,8 +364,8 @@ def showDif(dpl=None, kshow=True, ishow=True, bSave = False):
 
     name:       name of the crystal
 
-    ishow:      showing hkl indeces or not
-    kshow:      showing Kikuchi lines or not
+    iShow:      showing hkl indeces or not
+    kShow:      showing Kikuchi lines or not
 
     bSave:      save the image as a file in pyemaps data home directory
     

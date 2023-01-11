@@ -53,7 +53,7 @@ def run_si_sample():
     showDif(dpl)
 
     #hide Kikuchi lines
-    showDif(dpl, kshow=False) 
+    showDif(dpl, kShow=False, bClose=True) 
 
     #plot the following two DP in CBED mode (mode = 2)
     dpl = DPList(c_name, mode = 2)
@@ -62,10 +62,10 @@ def run_si_sample():
     dpl.add(emc, si_dp) 
 
     #hide both Kukuchi line and Miller Indices
-    showDif(dpl, kshow=False, ishow=False) 
+    showDif(dpl, kShow=False, iShow=False, bClose=True) 
 
     #hide Miller Indices
-    showDif(dpl, ishow=False)
+    showDif(dpl, iShow=False, bClose=True)
 
     #Generate dynamic diffraction patterns using pyemaps' bloch module
     
@@ -76,5 +76,5 @@ def run_si_sample():
       print(f'Error: {e}')
 
     else:        
-      showBloch(bloch_imgs_list) #grey color map
-      showBloch(bloch_imgs_list, bColor=True) #with predefined color map
+      showBloch(bloch_imgs_list, bClose=True) #grey color map
+      showBloch(bloch_imgs_list, bColor=True, bClose=True) #with predefined color map

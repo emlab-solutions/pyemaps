@@ -103,14 +103,14 @@ if __name__ == '__main__':
     for k in em_keys:
         imgs = generate_bloch_images(ckey=k)
         if imgs is not None:
-            showBloch(imgs, layout='table', bSave=True)
+            showBloch(imgs, layout='table', bSave=True, bClose=True)
         else:
             exit(1)
 
     for k in em_keys:
         imgs = generate_bloch_images(ckey=k, sim_rand=True)
         if imgs is not None:
-            showBloch(imgs)
+            showBloch(imgs, bClose=True)
         else:
             exit(1)
         
