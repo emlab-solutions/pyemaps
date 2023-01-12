@@ -6,7 +6,7 @@ def add_dif(target):
 
     from . import dif
     from .. import EMC, DP
-    from .. import DEF_MODE, DEF_CBED_DSIZE
+    from .. import DEF_MODE, DEF_CBED_DSIZE, DEF_XAXIS
     from .. import EMCError,DPListError,CrystalClassError,DPError
 
     def load(self, cty=0):
@@ -97,7 +97,7 @@ def add_dif(target):
         cl, vt = em_controls.cl, em_controls.vt
         zone = em_controls.zone
         sc = em_controls.simc
-        if hasattr(em_controls, 'xaxis'):
+        if em_controls.xaxis != DEF_XAXIS:
             xa = em_controls.xaxis
         else:
             xa = None

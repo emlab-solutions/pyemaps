@@ -101,6 +101,8 @@ Microscope Control Constants and Default Values:
 """
 from . import  EMCError
 
+
+sdefault = ' [**default**]'
 from pyemaps import (
                     DEF_EXCITATION, 
                     DEF_GMAX, 
@@ -128,13 +130,17 @@ class SIMControl:
                        gctl = DEF_GCTL, \
                        zctl = DEF_ZCTL
                        ):
-# required simulation attributes:
+
         setattr(self, 'excitation', excitation)
         setattr(self, 'gmax', gmax)
         setattr(self, 'bmin', bmin)
         setattr(self, 'intensity', intensity)       
         setattr(self, 'gctl', gctl)
         setattr(self, 'zctl', zctl)
+        
+        setattr(self, 'sampling', DEF_SAMPLING)
+        setattr(self, 'omega', DEF_OMEGA)
+        setattr(self, 'sth', DEF_THICKNESS[0])
 
     def __call__(self, **kwargs):
         """
@@ -262,7 +268,6 @@ class SIMControl:
         
        self._zctl = zv
 
-# Optional attributes   
     @omega.setter
     def omega(self, ov):
         if ov is None or not isinstance(ov, (int,float)):
@@ -286,28 +291,6 @@ class SIMControl:
             
         self._sth = sv
 
-    def _normalize(self):
-        # pass
-        sim_dict = self.__dict__.copy()
-        for k in SIM_COMTROLS_KEYS:
-            kname = '_' + k
-            if k == 'omega':
-                if not hasattr(self, k):
-                    sim_dict[kname] = DEF_OMEGA
-                continue
-
-            if k == 'sampling':
-                if not hasattr(self, k):
-                    sim_dict[kname] = DEF_SAMPLING
-                continue
-
-            if k == 'sth':
-                if not hasattr(self, k):
-                    sim_dict[kname] = DEF_THICKNESS[0]
-                continue
-
-        return sim_dict
-
     def __lt__(self, other):
         return self.__key__() < other.__key__()
     
@@ -317,27 +300,38 @@ class SIMControl:
 
     def __eq__(self, other):
 
-        return self._normalize() == other._normalize()
+        return self.__dict__== other._dict__
     
     def __str__(self) -> str:
-       
+
        simulation = ['Simulation Controls Parameters:']
 
-       simulation.append('excitation error range: ' +  str(self._excitation))
-       simulation.append('maximum recipricol vector length: ' + str(self._gmax))
-       simulation.append('beta perturbation cutoff: ' + str(self._bmin))
-       simulation.append('kinematic diffraction intensity cutoff level and scale: '+ str(self._intensity))
-       simulation.append('maximum index number for g-list: ' + str(self._gctl))
-       simulation.append('maximum zone index number: ' + str(self._zctl))
+       simulation.append('excitation error range: ' +  
+            str(self._excitation) + (sdefault if self._excitation== DEF_EXCITATION else ''))
 
-       if hasattr(self,'omega'):
-            simulation.append('Omega: ' + str(self._omega))
+       simulation.append('maximum recipricol vector length: ' + 
+            str(self._gmax) + (sdefault if self._gmax == DEF_GMAX else ''))
 
-       if hasattr(self,'sampling'):
-            simulation.append('Sampling: ' + str(self._sampling))
+       simulation.append('beta perturbation cutoff: ' + 
+            str(self._bmin) + (sdefault if self._bmin == DEF_BMIN else ''))
 
-       if hasattr(self,'sth'):
-            simulation.append('Thickness: ' + str(self._sth))
+       simulation.append('kinematic diffraction intensity cutoff level and scale: ' + 
+            str(self._intensity) + (sdefault if self._intensity == DEF_INTENSITY else ''))
+
+       simulation.append('maximum index number for g-list: ' + 
+            str(self._gctl) + (sdefault if self._gctl == DEF_GCTL else ''))
+
+       simulation.append('maximum zone index number: ' + 
+            str(self._zctl) + (sdefault if self._zctl == DEF_ZCTL else ''))
+
+       simulation.append('Diagnization cutoff value: ' + 
+            str(self._omega) + (sdefault if self._omega == DEF_OMEGA else ''))
+       
+       simulation.append('Sampling: ' + 
+            str(self._sampling) + (sdefault if self._sampling == DEF_SAMPLING else ''))
+       
+       simulation.append('Sample Thickness: ' + 
+            str(self._sth) + (sdefault if self._sth == DEF_SAMPLING else ''))
 
        return "\n ".join(simulation)
 
@@ -391,13 +385,13 @@ class SIMControl:
         if not self._isDefZctl():
             simcstrs.append('zctl=' + '{:.2f}'.format(self._zctl))
 
-        if hasattr(self, 'omega') and self._omega != DEF_OMEGA:
+        if self._omega != DEF_OMEGA:
             simcstrs.append('omega=' + '{:.2f}'.format(self._omega))
 
-        if hasattr(self, 'sampling') and self._sampling != DEF_SAMPLING:
+        if self._sampling != DEF_SAMPLING:
             simcstrs.append('sampling=' + '{:.2f}'.format(self._sampling))
 
-        if hasattr(self, 'sth') and self._sth != DEF_THICKNESS[0]:
+        if self._sth != DEF_THICKNESS[0]:
             simcstrs.append('thickness=' + 
                             '{:d}'.format(self._sth)
                           )
@@ -490,6 +484,12 @@ class EMControl:
         
         setattr(self, 'simc', simc)
 
+        setattr(self, 'mode', DEF_MODE)
+        setattr(self, 'aperture', DEF_APERTURE)
+        setattr(self, 'dsize', DEF_CBED_DSIZE) #(not used mode == 1)
+        setattr(self, 'pix_size', DEF_PIXSIZE)
+        setattr(self, 'det_size', DEF_DETSIZE)
+        setattr(self, 'xaxis', DEF_XAXIS)
 
     def __call__(self, **kwargs):
         """
@@ -600,7 +600,7 @@ class EMControl:
     @property
     def mode(self):
        '''Simulation mode: 1-normal 2-CBED, optional- optional attributes 
-           of the emcontrols, set to default if not present
+           of the emcontrols, set to normal if not present
        '''
        return self._mode
 
@@ -664,7 +664,6 @@ class EMControl:
         
         self._vt = kv
 
-# optional attributes - defaults taken if not present
     @xaxis.setter
     def xaxis(self, xv):
        if xv is None:
@@ -687,7 +686,6 @@ class EMControl:
         
         self._simc = sc
     
-# optional attributes - defaults taken if not present
     @aperture.setter
     def aperture(self, av):
         if av is None:
@@ -698,7 +696,6 @@ class EMControl:
             
             self._aperture = av
 
-# optional attributes - defaults taken if not present
     @pix_size.setter
     def pix_size(self, pv):
        if pv is None:
@@ -709,7 +706,6 @@ class EMControl:
        
             self._pix_size = pv
 
-# optional attributes - defaults taken if not present
     @det_size.setter
     def det_size(self, dv):
        if dv is None:
@@ -720,11 +716,10 @@ class EMControl:
             
             self._det_size = dv   
 
-# optional attributes - defaults taken if not present
     @mode.setter
     def mode(self, mv):
        if mv is None:
-            self._mode = 1
+            self._mode = DEF_MODE
        else:
             if not isinstance(mv, int) or \
                 (mv != 1 and mv != 2):
@@ -732,7 +727,6 @@ class EMControl:
             
             self._mode = mv   
 
-# optional attributes - defaults taken if not present
     @dsize.setter
     def dsize(self, dv):
        if dv is None:
@@ -742,54 +736,6 @@ class EMControl:
                     raise EMCError('Detector size must be integer')
             
             self._dsize = dv   
-
-    def _normalize(self):
-        em_dict=self.__dict__.copy()
-        # print(f'em controls dict: {em_dict}')
-        for k in EM_CONTROLS_KEYS:
-            kname = '_'+k
-            if k == 'simc':
-                em_dict[kname] = self._simc._normalize()
-                continue
-
-            if k == 'mode':
-                if not hasattr(self, k):
-                    em_dict[kname] = DEF_MODE
-                continue
-
-            if k == 'dsize':
-                if not hasattr(self, k):
-                    if hasattr(self, 'mode') and self._mode == 2:
-                        em_dict[kname] = DEF_CBED_DSIZE
-                    else:
-                        em_dict[kname] = -1
-                continue
-
-            if k == 'xaxis':
-                if not hasattr(self, k):
-                    em_dict[kname] = DEF_XAXIS
-                continue
-
-            if k == 'aperture':
-                if not hasattr(self, k):
-                    em_dict[kname] = DEF_APERTURE
-                continue
-
-            if k == 'pix_size':
-                if not hasattr(self, k):
-                    em_dict[kname] = DEF_PIXSIZE
-                continue
-
-            if k == 'det_size':
-                if not hasattr(self, k):
-                    em_dict[kname] = DEF_DETSIZE
-                continue
-
-            if k == 'aperture':
-                if not hasattr(self, k):
-                    em_dict[kname] = DEF_APERTURE
-                continue
-        return em_dict
                 
     def __lt__(self, other):
         return self.__key__() < other.__key__()
@@ -810,54 +756,58 @@ class EMControl:
         if not isinstance(other, EMControl):
            raise EMCError("Comparison must be done with another EMControl object")
  
-        return self._normalize() == other._normalize()
-        # return True
+        return self.__dict__ == other.__dict__
 
     def __str__(self):
         from . import SIMC
 
         cstr = []
         
-        smode = 'unknown'
-        if hasattr(self, 'mode'):
-            if self._mode == 1:
-                smode = 'normal'
-            
-            if self._mode == 2:
-                smode = 'CBED'
+        if self._mode == 1:
+            cstr.append('Mode: Normal' + sdefault)
+            cstr.append('Diffraction beam size: Undefined, not used')
+        elif self._mode == 2:
+            cstr.append('Mode: CBED')
+            try:
+                ds = self._dsize
+            except AttributeError as e:
+                raise Exception from e
+            else:
+                cstr.append('Diffraction beam size: ' + 
+                    str(ds) + (sdefault if ds == DEF_CBED_DSIZE else ''))
         else:
-            smode = 'normal'
-    
+            cstr.append('Mode: Unknown (Error)')
+            cstr.append('Diffraction beam size: Undefined')
 
-        cstr.append('Mode: ' + smode)
+        cstr.append('Zone: ' + str(self._zone) + 
+            (sdefault if self._zone == DEF_ZONE else ''))
 
-        if hasattr(self, 'dsize'):
-            cstr.append('Diffarcted beam size: ' + str(self._dsize))
+        cstr.append('Tilt: ' + str(self._tilt) + 
+            (sdefault if self._tilt == DEF_TILT else ''))
 
-        cstr.append('Zone: ' + str(self._zone))
-        cstr.append('Tilt: ' + str(self._tilt))
-        cstr.append('Deflection: ' + str(self._defl))
-        cstr.append('Camera Length: ' + str(self._cl))
-        cstr.append('Voltage: ' + str(self._vt))
+        cstr.append('Deflection: ' + str(self._defl) + 
+            (sdefault if self._defl == DEF_DEFL else ''))
 
-        if hasattr(self, 'aperture'):
-            cstr.append('Aperture: ' + str(self._aperture))
+        cstr.append('Camera Length: ' + str(self._cl) + 
+            (sdefault if self._cl == DEF_CL else ''))
+
+        cstr.append('High Voltage: ' + str(self._vt) + 
+            (sdefault if self._vt == DEF_KV else ''))
+
+        cstr.append('Aperture: ' + str(self._aperture) +
+            (sdefault if self._aperture == DEF_APERTURE else ''))
+
+        cstr.append('Xaxis: ' + str(self._xaxis) +
+            (sdefault if self._xaxis == DEF_XAXIS else ''))
+
+        cstr.append('Detector pixel size: ' + str(self._pix_size) +
+            (sdefault if self._pix_size == DEF_PIXSIZE else ''))
         
-        if hasattr(self, 'xaxis'):
-            cstr.append('crystal horizontal axis in reciprical space: ' + 
-                         str(self._xaxis))
-
-        if hasattr(self, 'pix_size'):
-            cstr.append('Detector pixel size: ' + str(self._pix_size))
-
-        if hasattr(self, 'det_size'):
-            cstr.append('Detector size: ' + str(self._det_size))
-
-        # if not self._simc == SIMC():
-        # if hasattr(self, 'simc'):
+        cstr.append('Detector size: ' + str(self._det_size) + 
+            (sdefault if self._det_size == DEF_DETSIZE else ''))
+            
         cstr.append(str(self._simc))
-        # else:
-        #     cstr.append('Simulation parameters: ' + str(SIMC()))
+        
 
         return '\n'.join(cstr)
 
@@ -869,7 +819,6 @@ class EMControl:
         """
         emcstrs = []
 
-        # if hasattr(self, 'mode') and self._mode and self._mode != DEF_MODE:
         smode = 'normal'
         if hasattr(self, 'mode') and self._mode == 2:
             smode = 'CBED'
@@ -902,18 +851,18 @@ class EMControl:
         if self._vt != DEF_KV:
             emcstrs.append('vt=' + '{:.2f}'.format(self._vt))
 
-        if hasattr(self, 'xaxis') and not self._xaxis != DEF_XAXIS:
+        if self._xaxis != DEF_XAXIS:
             emcstrs.append('xaxis=' + '({:d},{:d},{:d})'.format(self._xaxis[0],
                                                                 self._xaxis[1],
                                                                 self._xaxis[2]))
 
-        if hasattr(self, 'aperture') and self._aperture != DEF_APERTURE:
+        if self._aperture != DEF_APERTURE:
             emcstrs.append('aperture=' + '{:.2f}'.format(self._aperture))
 
-        if hasattr(self, 'pix_size') and self._pix_size != DEF_PIXSIZE:
+        if self._pix_size != DEF_PIXSIZE:
             emcstrs.append('pix_size=' + '{:d}'.format(self._pix_size))
 
-        if hasattr(self, 'det_size') and self._det_size != DEF_DETSIZE:
+        if self._det_size != DEF_DETSIZE:
             emcstrs.append('det_size=' + '{:.2f}'.format(self._det_size))
 
         cstr = ''
