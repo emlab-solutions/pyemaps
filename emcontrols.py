@@ -137,7 +137,7 @@ class SIMControl:
         setattr(self, 'intensity', intensity)       
         setattr(self, 'gctl', gctl)
         setattr(self, 'zctl', zctl)
-        
+        #Setting optional control parameters if not set 
         setattr(self, 'sampling', DEF_SAMPLING)
         setattr(self, 'omega', DEF_OMEGA)
         setattr(self, 'sth', DEF_THICKNESS[0])
@@ -331,7 +331,7 @@ class SIMControl:
             str(self._sampling) + (sdefault if self._sampling == DEF_SAMPLING else ''))
        
        simulation.append('Sample Thickness: ' + 
-            str(self._sth) + (sdefault if self._sth == DEF_SAMPLING else ''))
+            str(self._sth) + (sdefault if self._sth == DEF_THICKNESS[0] else ''))
 
        return "\n ".join(simulation)
 
