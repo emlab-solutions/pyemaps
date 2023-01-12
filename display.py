@@ -560,8 +560,8 @@ def showStereo(slist, name,
     :type cShow: bool, optional
     :param iShow: Whether to display Miller indexes or not.
     :type iShow: bool, optional
-    :param zlimit: Miller indexes cutoff number.
-    :type zlimit: int, optional  
+    :param zLimit: Miller indexes cutoff number.
+    :type zLimit: int, optional  
     :param layout: layout format. individual (default): plotting one by one in sequence, table: plotting in a table of 3 columns  
     :type layout: str, optional 
     :param bSave: Whether to save the image into a .png image file.
