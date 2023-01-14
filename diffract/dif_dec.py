@@ -437,25 +437,26 @@ def add_dif(target):
         if not simc:
             # all defaults set in backend set by dif.initcontrols()
             return
-                    
-        if not simc._isDefExcitation():
+                     
+        if not simc._check_def('excitation'):
             sgmin, sgmax = simc.excitation
             dif.setexcitation(sgmin, sgmax)
 
-        if not simc._isDefGmax():
+        if not simc._check_def('gmax'):
             dif.setglen(simc.gmax)
 
-        if not simc._isDefBmin():
+        if not simc._check_def('bmin'):
             dif.setgcutoff(simc.bmin)
 
-        if not simc._isDefIntensity():
+        if not simc._check_def('intensity'):
             intz0, intctl = simc.intensity
             dif.setintensities(intctl, intz0)
 
-        if not simc._isDefGctl():
+        if simc._check_def('gctl'):
             dif.setgctl(simc.gctl)
 
-        if not simc._isDefZctl():
+        if simc._check_def('zctl'):
+            dif.setzctl(simc.zctl)
             dif.setzctl(simc.zctl)
 
     target.generateDP = generateDP

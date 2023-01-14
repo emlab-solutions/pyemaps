@@ -126,10 +126,10 @@ Kinematic Diffraction Simulation
     showDif(dpl, kshow=False) 
 
     # Show Diffraction patterns by hiding both Kukuchi line and Miller Indexes
-    showDif(dpl, kshow=False, ishow=False) 
+    showDif(dpl, kshow=False, iShow=False) 
 
     # Show Diffraction patterns by hiding Miller Indices
-    showDif(dpl, ishow=False)
+    showDif(dpl, iShow=False)
 
 Here crystal class method *generateDP* produces a kinmatic diffraction pattern or
 `DPList <pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern>`_ (si_dp) 
