@@ -166,3 +166,41 @@ Improvements
 
 - Bug fixes.
 - Display will keep the figures windows open for each display. Users are now responsible to close them.
+
+
+Version 0.6.2 Beta
+------------------ 
+
+01-12-2023 
+~~~~~~~~~~
+
+Improvements
+~~~~~~~~~~~~
+
+- Bug fixes.
+- Display function parameters naming changes to be more consistent. Specifically,
+  _ishow_ and _kshow_ parameters are now becoming _iShow_ and _kShow_.  
+
+  .. code-block:: python
+    
+    ...
+    showDif(.., iShow=True, kShow = True)
+
+  In additional each of the display functions 
+    * showDif 
+    * showBloch
+    * showStereo
+  gain another optional input parameter: _bClose_ with default boolean value of _False_.
+  this input controls whether the display windows close automatically or not. 
+  Default value if not set is False. In which case, users will must the display windows 
+  manuallly for each display, failure to do so may result in too many display windows.  
+
+  .. code-block:: python
+    
+    showBloch(.., bClose=True,..)
+
+  Setting _bClose_ to _True_ helps for using with python scripts where there are many
+  call to these display functions. 
+
+- The electronic micropscope control class - EMControl or EMC has now default attributes
+  if not set. 
