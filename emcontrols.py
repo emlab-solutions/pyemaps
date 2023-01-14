@@ -354,55 +354,7 @@ class SIMControl:
        for k in DEF_SIMC:       
             simulation.append(self._str_prop(k))
 
-    #    simulation.append(SIMC_DESC('gmax') + ' ' +
-    #         str(self._gmax) + (sdefault if self._gmax == DEF_GMAX else ''))
-
-    #    simulation.append(SIMC_DESC('bmin') + ' ' + 
-    #         str(self._bmin) + (sdefault if self._bmin == DEF_BMIN else ''))
-
-    #    simulation.append(SIMC_DESC('intensity') + ' ' + 
-    #         str(self._intensity) + (sdefault if self._intensity == DEF_INTENSITY else ''))
-
-    #    simulation.append(SIMC_DESC('gctl') + ' ' + 
-    #         str(self._gctl) + (sdefault if self._gctl == DEF_GCTL else ''))
-
-    #    simulation.append(SIMC_DESC('zctl') + ' ' + 
-    #         str(self._zctl) + (sdefault if self._zctl == DEF_ZCTL else ''))
-
-    #    simulation.append(SIMC_DESC('omega') + ' ' +
-    #         str(self._omega) + (sdefault if self._omega == DEF_OMEGA else ''))
-       
-    #    simulation.append(SIMC_DESC('sampling') + ' ' + 
-    #         str(self._sampling) + (sdefault if self._sampling == DEF_SAMPLING else ''))
-       
-    #    simulation.append(SIMC_DESC('sth') + ' ' + 
-    #         str(self._sth) + (sdefault if self._sth == DEF_THICKNESS[0] else ''))
-
        return "\n\t".join(simulation)
-
-    # def _isDefExcitation(self):
-    #     '''Helper function to minimize trips to backend modules'''
-    #     return self._excitation == DEF_EXCITATION
-
-    # def _isDefGmax(self):
-    #     '''Helper function to minimize trips to backend modules'''
-    #     return self._gmax == DEF_GMAX
-
-    # def _isDefBmin(self):
-    #     '''Helper function to minimize trips to backend modules'''
-    #     return self._bmin == DEF_BMIN
-
-    # def _isDefIntensity(self):
-    #     '''Helper function to minimize trips to backend modules'''
-    #     return self._intensity == DEF_INTENSITY
-
-    # def _isDefGctl(self):
-    #     '''Helper function to minimize trips to backend modules'''
-    #     return self._gctl == DEF_GCTL
-
-    # def _isDefZctl(self):
-    #     '''Helper function to minimize trips to backend modules'''
-    #     return self._zctl == DEF_ZCTL
 
     def plot_format(self):
         '''
@@ -477,17 +429,6 @@ class SIMControl:
             raise EMCError(str(e))
         else:
             return sc
-
-
-# from pyemaps import (DEF_ZONE, 
-#                     DEF_DEFL, 
-#                     DEF_TILT, 
-#                     DEF_CL, 
-#                     DEF_KV, 
-#                     DEF_APERTURE,
-#                     DEF_OMEGA, 
-#                     DEF_SAMPLING, 
-#                     DEF_THICKNESS)
                                 
 DEF_EMC = {
     'mode': {'defval': DEF_MODE, 'desc': 'Simulation mode'},
@@ -502,24 +443,7 @@ DEF_EMC = {
     'det_size': {'defval': DEF_DETSIZE, 'desc': 'Detector size in microns'},
     'aperture': {'defval': DEF_APERTURE, 'desc': 'Objective lense aperture'},
     'simc': {'defval': None, 'desc': 'Simulation Controls'}
-}                                           
-# DEF_DESC = {
-#     'zone': 'Starting zone axis',
-#     'tilt': 'Tilt in x and y directions (x,y)', 
-#     'defl': 'Shifts in x and y directions (x, y)',
-#     'cl': 'Cameral length',
-#     'vt': 'High voltage',
-#     'xaxis': 'Crystal horizontal axis in reciprical space',
-#     'pix_size': 'Detector pixel size in microns',
-#     'det_size': 'Detector size in microns',
-#     'mode': 'Simulation mode: 1 - normal, 2 - CBED',
-#     'dsize': 'Diffracted beam size, only used for CBED mode',
-#     'aperture': 'Objective lense aperture',
-#     'simc': None
-# }                               
-# EM_CONTROLS_KEYS = ['zone','tilt','defl', 'cl', 'vt', 
-#                      'xaxis', 'pix_size', 'det_size', 
-#                      'mode', 'dsize', 'aperture', 'simc']
+}  
 
 class EMControl:
     '''
@@ -863,52 +787,8 @@ class EMControl:
         The output will include all class attribute values and annotate
         those with default values with [**default**] string 
         '''
-        # from . import SIMC
 
         cstr = ['Electron Microscope Controls:',]
-        
-        # if self._mode == 1:
-        #     cstr.append('Mode: Normal' + sdefault)
-        #     cstr.append('Diffraction beam size: Undefined, not used')
-        # elif self._mode == 2:
-        #     cstr.append('Mode: CBED')
-        #     try:
-        #         ds = self._dsize
-        #     except AttributeError as e:
-        #         raise Exception from e
-        #     else:
-        #         cstr.append('Diffraction beam size: ' + 
-        #             str(ds) + (sdefault if ds == DEF_CBED_DSIZE else ''))
-        # else:
-        #     cstr.append('Mode: Unknown (Error)')
-        #     cstr.append('Diffraction beam size: Undefined')
-
-        # cstr.append('Zone: ' + str(self._zone) + 
-        #     (sdefault if self._zone == DEF_ZONE else ''))
-
-        # cstr.append('Tilt: ' + str(self._tilt) + 
-        #     (sdefault if self._tilt == DEF_TILT else ''))
-
-        # cstr.append('Deflection: ' + str(self._defl) + 
-        #     (sdefault if self._defl == DEF_DEFL else ''))
-
-        # cstr.append('Camera Length: ' + str(self._cl) + 
-        #     (sdefault if self._cl == DEF_CL else ''))
-
-        # cstr.append('High Voltage: ' + str(self._vt) + 
-        #     (sdefault if self._vt == DEF_KV else ''))
-
-        # cstr.append('Aperture: ' + str(self._aperture) +
-        #     (sdefault if self._aperture == DEF_APERTURE else ''))
-
-        # cstr.append('Xaxis: ' + str(self._xaxis) +
-        #     (sdefault if self._xaxis == DEF_XAXIS else ''))
-
-        # cstr.append('Detector pixel size: ' + str(self._pix_size) +
-        #     (sdefault if self._pix_size == DEF_PIXSIZE else ''))
-        
-        # cstr.append('Detector size: ' + str(self._det_size) + 
-        #     (sdefault if self._det_size == DEF_DETSIZE else ''))
 
         for k in DEF_EMC:
             if k != 'dsize' and k !='simc': #skip these attributes
@@ -991,75 +871,3 @@ class EMControl:
             return simstr
 
         return ';'.join(emcstrs)
-
-    # def plot_format(self):
-    #     """
-    #     Control string format for built-in display functions
-    #     Only non-default controls values are displayed
-
-    #     """
-    #     emcstrs = []
-
-    #     smode = 'normal'
-    #     if hasattr(self, 'mode') and self._mode == 2:
-    #         smode = 'CBED'
-        
-    #     emcstrs.append('mode=' + smode)
-
-    #     if hasattr(self, 'dsize'): # only print when in CBED mode
-    #         if self._mode == 2 and self._dsize != DEF_CBED_DSIZE:
-    #             emcstrs.append('dsize=' + '{:.2f}'.format(self._dsize))
-
-    #     if self._zone != DEF_ZONE:
-    #         emcstrs.append('zone=' + '({:d},{:d},{:d})'.format(self._zone[0],
-    #                                                            self._zone[1],
-    #                                                            self._zone[2])
-    #                       )
-
-    #     if self._tilt != DEF_TILT:
-    #         emcstrs.append('tilt=' + '({:.2f},{:.2f})'.format(self._tilt[0], 
-    #                                                           self._tilt[1])
-    #                       )
-
-    #     if self._defl != DEF_DEFL:
-    #         emcstrs.append('defl=' + '({:.2f},{:.2f})'.format(self._defl[0], 
-    #                                                           self._defl[1])
-    #                       )
-
-    #     if self._cl != DEF_CL:
-    #         emcstrs.append('camlen=' + '{:.2f}'.format(self._cl))
-
-    #     if self._vt != DEF_KV:
-    #         emcstrs.append('vt=' + '{:.2f}'.format(self._vt))
-
-    #     if self._xaxis != DEF_XAXIS:
-    #         emcstrs.append('xaxis=' + '({:d},{:d},{:d})'.format(self._xaxis[0],
-    #                                                             self._xaxis[1],
-    #                                                             self._xaxis[2]))
-
-    #     if self._aperture != DEF_APERTURE:
-    #         emcstrs.append('aperture=' + '{:.2f}'.format(self._aperture))
-
-    #     if self._pix_size != DEF_PIXSIZE:
-    #         emcstrs.append('pix_size=' + '{:d}'.format(self._pix_size))
-
-    #     if self._det_size != DEF_DETSIZE:
-    #         emcstrs.append('det_size=' + '{:.2f}'.format(self._det_size))
-
-    #     cstr = ''
-
-    #     if len(emcstrs) != 0:
-    #         cstr = cstr + ';'.join(emcstrs)
-
-    #     simstr = self._simc.plot_format()
-
-    #     if len(simstr) != 0 and len(cstr) != 0:
-    #         return cstr + '\n' + simstr
-
-    #     if len(simstr) == 0 and len(cstr) != 0:
-    #         return cstr
-
-    #     if len(simstr) != 0 and len(cstr) == 0:
-    #         return simstr
-        
-    #     return ''
