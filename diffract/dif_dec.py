@@ -6,7 +6,7 @@ def add_dif(target):
 
     from . import dif
     from .. import EMC, DP
-    from .. import DEF_MODE, DEF_CBED_DSIZE
+    from .. import DEF_MODE, DEF_CBED_DSIZE, DEF_XAXIS
     from .. import EMCError,DPListError,CrystalClassError,DPError
 
     def load(self, cty=0):
@@ -97,7 +97,7 @@ def add_dif(target):
         cl, vt = em_controls.cl, em_controls.vt
         zone = em_controls.zone
         sc = em_controls.simc
-        if hasattr(em_controls, 'xaxis'):
+        if em_controls.xaxis != DEF_XAXIS:
             xa = em_controls.xaxis
         else:
             xa = None
@@ -437,25 +437,26 @@ def add_dif(target):
         if not simc:
             # all defaults set in backend set by dif.initcontrols()
             return
-                    
-        if not simc._isDefExcitation():
+                     
+        if not simc._check_def('excitation'):
             sgmin, sgmax = simc.excitation
             dif.setexcitation(sgmin, sgmax)
 
-        if not simc._isDefGmax():
+        if not simc._check_def('gmax'):
             dif.setglen(simc.gmax)
 
-        if not simc._isDefBmin():
+        if not simc._check_def('bmin'):
             dif.setgcutoff(simc.bmin)
 
-        if not simc._isDefIntensity():
+        if not simc._check_def('intensity'):
             intz0, intctl = simc.intensity
             dif.setintensities(intctl, intz0)
 
-        if not simc._isDefGctl():
+        if simc._check_def('gctl'):
             dif.setgctl(simc.gctl)
 
-        if not simc._isDefZctl():
+        if simc._check_def('zctl'):
+            dif.setzctl(simc.zctl)
             dif.setzctl(simc.zctl)
 
     target.generateDP = generateDP

@@ -63,15 +63,15 @@ def run_feat_list(cnflist, ty=1, bShow=True, bSave=False, feat_type='dif'):
             if bShow:
                 if feat_type == 'bloch':
                     if bimgs is not None:
-                        showBloch(bimgs, bSave = bSave)
+                        showBloch(bimgs, bSave = bSave, bClose=True)
                     else:
                         failure_count += 1
                         failure_cases.append(cfn)
                         print('Bloch image invalid')
                 if feat_type == 'dif':
-                    showDif(dpl, bSave=bSave)
+                    showDif(dpl, bSave=bSave, bClose=True)
                 if feat_type == 'stereo':
-                    showStereo([(EMC(), s)], name=cf.name, bSave=bSave)
+                    showStereo([(EMC(), s)], name=cf.name, bSave=bSave, bClose=True)
 
     return failure_count, failure_cases
 

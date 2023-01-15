@@ -64,7 +64,8 @@ def add_bloch(target):
                    DEF_OMEGA, \
                    DEF_CBED_DSIZE, \
                    DEF_MODE, \
-                   DEF_DSIZE_LIMITS
+                   DEF_DSIZE_LIMITS, \
+                   DEF_XAXIS
     from .. import BImgList, EMC, SIMC
 
     from ..fileutils import compose_ofn
@@ -184,7 +185,7 @@ def add_bloch(target):
         dif.setemcontrols(cl, vt)        
         dif.setzone(z[0], z[1], z[2])
         
-        if hasattr(em_controls, 'xaxis'):
+        if em_controls.xaxis != DEF_XAXIS:
             xa = em_controls.xaxis
             dif.set_xaxis(1, xa[0], xa[1], xa[2])
         

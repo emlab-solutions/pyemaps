@@ -21,5 +21,7 @@ if "%1"=="local" (
     call python .\pyemaps_samples\si_stereo.py
     call python .\pyemaps_samples\si_scm.py
     python test\sanity\feature_sanity.py
+    @REM EMC SIMC class basic function tests
+     python test\unittests\emc\test1.py
     rm -rf pyemaps_samples
 )

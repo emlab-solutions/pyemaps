@@ -1001,6 +1001,13 @@ class Diffraction:
         Array like method for retrieving DP
         '''
         return self._diffList[key]
+            
+    def clear(self):
+        '''
+        Empty the DP list, leaving it as empty.
+        New diffraction patterns can be started
+        '''
+        self._diffList.clear()
 
     def _report_difference(self, other):
         """ internal testing call"""
