@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Getting Started &#8212; pyemaps 0.6.1 Beta documentation</title>
+    <title>Getting Started &#8212; pyemaps 0.6.2 Beta documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="requirements.html" title="Requirements"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.6.1 Beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.6.2 Beta documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Getting Started</a></li> 
       </ul>
     </div>  
@@ -56,6 +56,18 @@
 </pre></div>
 </div>
 <p>where .venv is the python virtual environment.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To prevent conflicts of pyemaps dependencies with your existing python
+libraries, it is recommended that pyemaps install in its own python environment
+such as that with Annaconda or Miniconda.</p>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda create -n &lt;env-name&gt; python=3.7</span>
+<span class="go">conda activate &lt;env-name&gt;</span>
+<span class="go">python -m pip install pyemaps</span>
+</pre></div>
+</div>
+<p>where &lt;env-name&gt; is the name of the new conda environment.</p>
 </section>
 <section id="enviroment-variables">
 <span id="environment-variables"></span><h2>Enviroment Variables<a class="headerlink" href="#enviroment-variables" title="Permalink to this heading">¶</a></h2>
@@ -150,10 +162,10 @@ and calculations.</p>
 <span class="n">showDif</span><span class="p">(</span><span class="n">dpl</span><span class="p">,</span> <span class="n">kshow</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Show Diffraction patterns by hiding both Kukuchi line and Miller Indexes</span>
-<span class="n">showDif</span><span class="p">(</span><span class="n">dpl</span><span class="p">,</span> <span class="n">kshow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ishow</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">showDif</span><span class="p">(</span><span class="n">dpl</span><span class="p">,</span> <span class="n">kshow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">iShow</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Show Diffraction patterns by hiding Miller Indices</span>
-<span class="n">showDif</span><span class="p">(</span><span class="n">dpl</span><span class="p">,</span> <span class="n">ishow</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">showDif</span><span class="p">(</span><span class="n">dpl</span><span class="p">,</span> <span class="n">iShow</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Here crystal class method <em>generateDP</em> produces a kinmatic diffraction pattern or
@@ -343,7 +355,7 @@ to the current working directory, run:</p>
         <li class="right" >
           <a href="requirements.html" title="Requirements"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.6.1 Beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.6.2 Beta documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Getting Started</a></li> 
       </ul>
     </div>

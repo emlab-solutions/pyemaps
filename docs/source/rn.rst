@@ -179,28 +179,28 @@ Improvements
 
 - Bug fixes.
 - Display function parameters naming changes to be more consistent. Specifically,
-  _ishow_ and _kshow_ parameters are now becoming _iShow_ and _kShow_.  
+  *ishow* and *kshow* parameters are now becoming *iShow* and *kShow* as show 
+  below:  
 
   .. code-block:: python
     
-    ...
     showDif(.., iShow=True, kShow = True)
 
   In additional each of the display functions 
-    * _showDif_ 
-    * _showBloch_
-    * _showStereo_
-  gain another optional input parameter: _bClose_ with default boolean value of _False_.
-  this input controls whether the display windows close automatically or not. 
-  Default value if not set is False. In which case, users will must the display windows 
+    * *showDif* 
+    * *showBloch*
+    * *showStereo*
+  gains an optional boolean input parameter *bClose* with default of *False*.
+  This input controls whether the display windows close or not after all displays are completed. 
+  Default value, if not set, is *False*. In which case, users must close the display windows 
   manuallly for each display, failure to do so may result in too many display windows.  
 
   .. code-block:: python
     
     showBloch(.., bClose=True,..)
 
-  Setting _bClose_ to _True_ helps for using with python scripts where there are many
-  calls to these display functions. 
+  Setting *bClose* to *True* is useful where the display functions are called to preventing
+  too many display windows open. 
 
 - The electronic micropscope control class - EMControl or EMC fills attributes with 
   default values if not set.  

@@ -418,6 +418,12 @@ class SIMControl:
         return ';'.join(simcstrs)
 
     @classmethod
+    def from_random(cls):
+
+        ''' For backward compatibility only'''
+        return cls._from_random()
+
+    @classmethod
     def _from_random(cls):
 
         ''' Design for internal testing purpose only'''
