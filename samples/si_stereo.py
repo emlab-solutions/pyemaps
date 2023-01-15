@@ -103,12 +103,14 @@ if __name__ == '__main__':
     showStereo(stereoList, 
                name='Silicon', 
                layout='table',
-               iShow=True, 
+               iShow=True,
+               bClose=True, 
                zLimit = 1)
 
     # display in individual syereodiagram
     stereoList = generate_stereo(ckey='zone')
     showStereo(stereoList, 
                name='Silicon',
-               iShow=True, 
+               iShow=True,
+               bClose=True, 
                zLimit = 1)       

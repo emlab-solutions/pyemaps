@@ -14,6 +14,20 @@ To use pyemaps, first install it using pip:
 
 where .venv is the python virtual environment.
 
+.. note::
+   
+   To prevent conflicts of pyemaps dependencies with your existing python
+   libraries, it is recommended that pyemaps install in its own python environment
+   such as that with Annaconda or Miniconda.
+
+.. code-block:: console
+
+   conda create -n <env-name> python=3.7
+   conda activate <env-name>
+   python -m pip install pyemaps
+
+where <env-name> is the name of the new conda environment.
+
 .. _Environment Variables:
 
 Enviroment Variables
@@ -126,10 +140,10 @@ Kinematic Diffraction Simulation
     showDif(dpl, kshow=False) 
 
     # Show Diffraction patterns by hiding both Kukuchi line and Miller Indexes
-    showDif(dpl, kshow=False, ishow=False) 
+    showDif(dpl, kshow=False, iShow=False) 
 
     # Show Diffraction patterns by hiding Miller Indices
-    showDif(dpl, ishow=False)
+    showDif(dpl, iShow=False)
 
 Here crystal class method *generateDP* produces a kinmatic diffraction pattern or
 `DPList <pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern>`_ (si_dp) 

@@ -120,11 +120,12 @@ if __name__ == '__main__':
         dpl = generate_difs(ckey=k, mode=2)
         showDif(dpl, 
                 layout='table' if k == 'tilt' or k == 'zone' else 'individual', 
-                kshow=False, 
-                ishow=False, 
-                bSave=(k=='zone')
+                kShow=False, 
+                iShow=False, 
+                bSave=(k=='zone'),
+                bClose=True
                 )
 
     for k in em_keys:
         dpl = generate_difs(ckey=k, sim_rand=True)
-        showDif(dpl)
+        showDif(dpl, bClose=True)

@@ -101,6 +101,8 @@ Microscope Control Constants and Default Values:
 """
 from . import  EMCError
 
+
+sdefault = ' [**default**]'
 from pyemaps import (
                     DEF_EXCITATION, 
                     DEF_GMAX, 
@@ -112,21 +114,63 @@ from pyemaps import (
                     DEF_PIXSIZE, 
                     DEF_DETSIZE,
                     DEF_CBED_DSIZE,
+                    DEF_DSIZE_LIMITS,
                     DEF_MODE)              
 
-SIM_COMTROLS_KEYS=['excitation', 'gmax', 'bmin', 'intensity', 
-                   'gctl', 'zctl', 'omega', 'sampling', 'sth']
+from pyemaps import (DEF_ZONE, 
+                    DEF_DEFL, 
+                    DEF_TILT, 
+                    DEF_CL, 
+                    DEF_KV, 
+                    DEF_APERTURE,
+                    DEF_OMEGA, 
+                    DEF_SAMPLING, 
+                    DEF_THICKNESS)
+
+DEF_SIMC = {
+    'excitation': DEF_EXCITATION,
+    'gmax': DEF_GMAX, 
+    'bmin': DEF_BMIN,
+    'intensity': DEF_INTENSITY,
+    'gctl': DEF_GCTL,
+    'zctl': DEF_ZCTL,
+    'omega': DEF_OMEGA,
+    'sampling': DEF_SAMPLING,
+    'sth': DEF_THICKNESS[0]
+}           
+SIMC_DESC = {
+    'excitation': 'Excitation error range in (min, max)',
+    'gmax': 'Maximum recipricol vector length', 
+    'bmin': 'Beta perturbation cutoff',
+    'intensity': 'Kinematic diffraction intensity cutoff level and scale in (level, scale)',
+    'gctl': 'Maximum index number for g-list',
+    'zctl': 'Maximum zone or Miller index index number',
+    'omega': 'Diagnization cutoff value',
+    'sampling': 'Number of sampling points',
+    'sth': 'Samples thickness'
+}
+
+def doc_dec_simc(k):
+    def doc_str(obj):
+        obj.__doc__ = obj.__doc__.format(SIMC_DESC[k])
+        return obj
+    return doc_str
+
+
+def _print_default(sdecs, dv):
+     return sdecs + ' [default=' + str(dv) + ']: '
+
 class SIMControl:
     '''
     Simulation controls, to be embedded in EMControl
 
     '''
-    def __init__(self, excitation = DEF_EXCITATION, \
-                       gmax = DEF_GMAX, \
-                       bmin = DEF_BMIN, \
-                       intensity = DEF_INTENSITY, \
-                       gctl = DEF_GCTL, \
-                       zctl = DEF_ZCTL
+    def __init__(self, excitation = DEF_SIMC['excitation'], \
+                       gmax = DEF_SIMC['gmax'], \
+                       bmin = DEF_SIMC['bmin'], \
+                       intensity = DEF_SIMC['intensity'], \
+                       gctl = DEF_SIMC['gctl'], \
+                       zctl = DEF_SIMC['zctl']
                        ):
 
         setattr(self, 'excitation', excitation)
@@ -135,70 +179,82 @@ class SIMControl:
         setattr(self, 'intensity', intensity)       
         setattr(self, 'gctl', gctl)
         setattr(self, 'zctl', zctl)
-
+        #Setting optional control parameters to defaults if not set 
+        setattr(self, 'sampling', DEF_SIMC['sampling'])
+        setattr(self, 'omega', DEF_SIMC['omega'])
+        setattr(self, 'sth', DEF_SIMC['sth'])
 
     def __call__(self, **kwargs):
         """
-        Adding more simulation control patameters during Bloch simulation
-        runtime.
+        Adding more simulation control patameters during Bloch 
+        or other simulations.
 
         """
         for k, v in kwargs.items():
-            if k not in SIM_COMTROLS_KEYS:
+            if k not in DEF_SIMC:
                 print(f'Key {k} does not belong to supported pyemaps simulation controls, ingored')
 
             setattr(self, k, v)
         
     @property
+    @doc_dec_simc('excitation')
     def excitation(self):
-       '''excitation error range in (min, max)'''
+       '''{0}'''
        return self._excitation
 
     @property
+    @doc_dec_simc('gmax')
     def gmax(self):
-       '''maximum recipricol vector length'''
+       '''{0}'''
        return self._gmax
 
     @property
+    @doc_dec_simc('bmin')
     def bmin(self):
-       '''beta perturbation cutoff'''
+       '''{0}'''
        return self._bmin
 
     @property
+    @doc_dec_simc('intensity')
     def intensity(self):
-       ''' 
-       kinematic diffraction intensity cutoff 
-       level and scale in (level, scale)
-       '''
+       '''{0}'''
        return self._intensity
 
     @property
+    @doc_dec_simc('gctl')
     def gctl(self):
-       '''maximum index number for g-list'''
+       '''{0}'''
+       
        return self._gctl
 
     @property
+    @doc_dec_simc('zctl')
     def zctl(self):
-       '''maximum zone or Miller index index number'''
+       '''{0}'''
        return self._zctl
     
     @property
+    @doc_dec_simc('omega')
     def omega(self):
-        '''Diagnization cutoff value'''
-        return self._omega
+       '''{0}'''
+       return self._omega
        
     @property
+    @doc_dec_simc('sampling')
     def sampling(self):
-        '''Number of sampling points'''
-        return self._sampling
+       '''{0}'''
+       return self._sampling
 
     @property
+    @doc_dec_simc('sth')
     def sth(self):
-        '''
-        Samples thickness, must be an integer
+       '''{0}'''
+        # '''
+        # Samples thickness, must be an integer - optional attributes 
+        # of the emcontrols, set to default if not present
+        # '''
 
-        '''
-        return self._sth
+       return self._sth
 
     @excitation.setter
     def excitation(self, excit):
@@ -216,7 +272,7 @@ class SIMControl:
     def gmax(self, gm):
 
        if not isinstance(gm, (int, float)):
-            raise EMCError('gmax values must be a tuple of tow numbers')
+            raise EMCError('gmax values must be a tuple of two numbers')
        
        self._gmax = gm
 
@@ -224,7 +280,7 @@ class SIMControl:
     def bmin(self, bm):
 
        if not isinstance(bm, (int, float)):
-            raise EMCError('bmin values must be a tuple of tow numbers')
+            raise EMCError('bmin values must be a tuple of two numbers')
        
        self._bmin = bm
 
@@ -255,11 +311,12 @@ class SIMControl:
             raise EMCError('zctl values must be a numeral')
         
        self._zctl = zv
+
     @omega.setter
     def omega(self, ov):
-        if not isinstance(ov, (int,float)):
-           raise EMCError("omega must be a numberal")
-        
+        if ov is None or not isinstance(ov, (int,float)):
+            raise EMCError("omega must be a numberal")
+            
         self._omega = ov
     
     @sampling.setter
@@ -273,11 +330,11 @@ class SIMControl:
     
     @sth.setter
     def sth(self, sv):
-        if sv is None or not isinstance(sv, int):
-           raise EMCError("Sample thickness must be an integer")
-        
+        if sv is None or not isinstance(sv, (int, float)):
+                raise EMCError("Sample thickness must be a numberal")
+            
         self._sth = sv
-        
+
     def __lt__(self, other):
         return self.__key__() < other.__key__()
     
@@ -287,83 +344,37 @@ class SIMControl:
 
     def __eq__(self, other):
 
-       if not isinstance(other, SIMControl):
-              return False
-
-       if self._excitation != other.excitation: 
-              return False
-
-       if self._gmax != other.gmax:
-              return False
-
-       if self._bmin != other.bmin:
-              return False
-
-       if self._intensity != other.intensity: 
-              return False
-
-       if self._gctl != other.gctl:
-              return False
-
-       if self._zctl != other.zctl:
-              return False
-
-       if self._omega != other.omega:
-            return False 
-
-       if self._sampling != other.sampling:
-            return False 
-
-       if  self._sth != other.sth:
-            return False 
-
-       return True
+        return self.__dict__== other.__dict__
     
+    def _str_prop(self, k) -> str:
+        '''internal - out formatted string for k attributes'''
+
+        if k not in SIMC_DESC or not hasattr(self, k):
+            return EMCError('internal error!')
+        
+        v = getattr(self, k)
+        
+        return _print_default(SIMC_DESC[k], DEF_SIMC[k]) + str(v)
+    
+    def _check_def(self, k) -> bool:
+        '''internal - checking if the attribute k is at default value'''
+        if k not in SIMC_DESC or not hasattr(self, k):
+            # return EMCError('internal error!')
+            print(f'Warning: simulation class does not have {k} attribute')
+            return False
+
+        v = getattr(self, k)
+
+        return v == DEF_SIMC[k]
+        
     def __str__(self) -> str:
-       
-       simulation = ['Simulation Controls Parameters:']
 
-       simulation.append('excitation error range: ' +  str(self._excitation))
-       simulation.append('maximum recipricol vector length: ' + str(self._gmax))
-       simulation.append('beta perturbation cutoff: ' + str(self._bmin))
-       simulation.append('kinematic diffraction intensity cutoff level and scale: '+ str(self._intensity))
-       simulation.append('maximum index number for g-list: ' + str(self._gctl))
-       simulation.append('maximum zone index number: ' + str(self._zctl))
+       simulation = ['Simulation Controls:']
 
-       if hasattr(self, 'omega'):
-            simulation.append('Omega: ' + str(self._omega))
+       for k in DEF_SIMC:       
+            simulation.append(self._str_prop(k))
 
-       if hasattr(self, 'sampling'):
-            simulation.append('Sampling: ' + str(self._sampling))
-
-       if hasattr(self, 'sth'):
-            simulation.append('Thickness: ' + str(self._sth))
-
-       return "\n ".join(simulation)
-
-    def _isDefExcitation(self):
-        '''Helper function to minimize trips to backend modules'''
-        return self._excitation == DEF_EXCITATION
-
-    def _isDefGmax(self):
-        '''Helper function to minimize trips to backend modules'''
-        return self._gmax == DEF_GMAX
-
-    def _isDefBmin(self):
-        '''Helper function to minimize trips to backend modules'''
-        return self._bmin == DEF_BMIN
-
-    def _isDefIntensity(self):
-        '''Helper function to minimize trips to backend modules'''
-        return self._intensity == DEF_INTENSITY
-
-    def _isDefGctl(self):
-        '''Helper function to minimize trips to backend modules'''
-        return self._gctl == DEF_GCTL
-
-    def _isDefZctl(self):
-        '''Helper function to minimize trips to backend modules'''
-        return self._zctl == DEF_ZCTL
+       return "\n\t".join(simulation)
 
     def plot_format(self):
         '''
@@ -373,36 +384,44 @@ class SIMControl:
         '''
         simcstrs = []
 
-        if not self._isDefExcitation():
-            simcstrs.append('excitation=' + '({:.2f},{:.2f})'.format(self._excitation[0], self._excitation[1]))
+        for k in DEF_SIMC:
+            
+            if self._check_def(k):
+                continue
 
-        if not self._isDefGmax():
-            simcstrs.append('gmax=' + '{:.2f}'.format(self._gmax))
+            format_str = k + '='
+            v = getattr(self, k)
 
-        if not self._isDefBmin():
-            simcstrs.append('bmin=' + '{:.2f}'.format(self._bmin))
+            if k == 'excitation':
+                format_str += '({:.2f},{:.2f})'.format(v[0], v[1])
+            elif k == 'gmax':
+                format_str += '{:.2f}'.format(v)
+            elif k == 'bim':
+                format_str += '{:.2f}'.format(v)
+            elif k == 'intensity':
+                format_str += '({:.2f},{:.2f})'.format(self._intensity[0], self._intensity[1])
+            elif k == 'gctl':
+                format_str += '{:f}'.format(v)
+            elif k == 'zctl':
+                format_str += '{:f}'.format(v)
+            elif k == 'omega':
+                format_str += '{:.2f}'.format(v)
+            elif k == 'sampling':
+                format_str += '{:d}'.format(v)
+            elif k == 'sth':
+                format_str += '{:.2f}'.format(v)
+            else:
+                continue
 
-        if not self._isDefIntensity():
-            simcstrs.append('intensity=' + '({:.2f},{:.2f})'.format(self._intensity[0], self._intensity[1]))
+            simcstrs.append(format_str)
 
-        if not self._isDefGctl():
-            simcstrs.append('gctl=' + '{:.2f}'.format(self._gctl))
-
-        if not self._isDefZctl():
-            simcstrs.append('zctl=' + '{:.2f}'.format(self._zctl))
-
-        if hasattr(self, 'omega') and self._omega != DEF_OMEGA:
-            simcstrs.append('omega=' + '{:.2f}'.format(self._omega))
-
-        if hasattr(self, 'sampling') and self._sampling != DEF_SAMPLING:
-            simcstrs.append('sampling=' + '{:.2f}'.format(self._sampling))
-
-        if hasattr(self, 'sth') and self._sth != DEF_THICKNESS[0]:
-            simcstrs.append('thickness=' + 
-                            '{:d}'.format(self._sth)
-                          )
-        
         return ';'.join(simcstrs)
+
+    @classmethod
+    def from_random(cls):
+
+        ''' For backward compatibility only'''
+        return cls._from_random()
 
     @classmethod
     def _from_random(cls):
@@ -436,20 +455,28 @@ class SIMControl:
             raise EMCError(str(e))
         else:
             return sc
+                                
+DEF_EMC = {
+    'mode': {'defval': DEF_MODE, 'desc': 'Simulation mode'},
+    'dsize': {'defval': DEF_CBED_DSIZE, 'desc': 'Diffracted beam size'},
+    'zone': {'defval': DEF_ZONE, 'desc': 'Starting zone axis'},
+    'tilt': {'defval': DEF_TILT, 'desc': 'Tilt in x and y directions (x,y)'},
+    'defl': {'defval': DEF_DEFL, 'desc': 'Shifts in x and y directions (x, y)'},
+    'cl': {'defval': DEF_CL, 'desc': 'Shifts in x and y directions (x, y)'},
+    'vt': {'defval': DEF_KV, 'desc': 'High voltage'},
+    'xaxis': {'defval': DEF_XAXIS, 'desc': 'Crystal horizontal axis in reciprical space'},
+    'pix_size': {'defval': DEF_PIXSIZE, 'desc': 'Detector pixel size in microns'},
+    'det_size': {'defval': DEF_DETSIZE, 'desc': 'Detector size in microns'},
+    'aperture': {'defval': DEF_APERTURE, 'desc': 'Objective lense aperture'},
+    'simc': {'defval': None, 'desc': 'Simulation Controls'}
+} 
 
-from pyemaps import (DEF_ZONE, 
-                    DEF_DEFL, 
-                    DEF_TILT, 
-                    DEF_CL, 
-                    DEF_KV, 
-                    DEF_APERTURE,
-                    DEF_OMEGA, 
-                    DEF_SAMPLING, 
-                    DEF_THICKNESS)
-                    
-EM_CONTROLS_KEYS = ['zone','tilt','defl', 'cl', 'vt', 
-                     'xaxis', 'pix_size', 'det_size', 
-                     'mode', 'dsize', 'aperture', 'simc']
+# can we use the above lookup for the property docstring?
+def doc_dec(k):
+    def doc_str(obj):
+        obj.__doc__ = obj.__doc__.format(DEF_EMC[k]['desc'])
+        return obj
+    return doc_str
 
 class EMControl:
     '''
@@ -488,8 +515,14 @@ class EMControl:
         for k, v in emc_dict.items():
             setattr(self, k, v)
         
-        # setattr(self, 'xaxis', xaxis)
         setattr(self, 'simc', simc)
+
+        setattr(self, 'mode', DEF_MODE)
+        setattr(self, 'aperture', DEF_APERTURE)
+        setattr(self, 'dsize', DEF_CBED_DSIZE) #(not used mode == 1)
+        setattr(self, 'pix_size', DEF_PIXSIZE)
+        setattr(self, 'det_size', DEF_DETSIZE)
+        setattr(self, 'xaxis', DEF_XAXIS)
 
     def __call__(self, **kwargs):
         """
@@ -498,7 +531,7 @@ class EMControl:
         """
         
         for k, v in kwargs.items():
-            if k not in EM_CONTROLS_KEYS:
+            if k not in DEF_EMC:
                 print(f'key {k} is not in pyemaps microscope control keys, ignored')
                 continue    
             setattr(self, k, v)
@@ -519,7 +552,7 @@ class EMControl:
 
         t = z = d = vt = c = None 
         for k, v in emc_dict.items():
-            if k not in EM_CONTROLS_KEYS:
+            if k not in DEF_EMC:
                 print(f'Invilid key {k} found in the input, ignored')
                 continue
             
@@ -536,67 +569,77 @@ class EMControl:
             sc = SIMControl()
 
         return cls(tilt = t, zone = z, defl = d, vt = vt, cl = c, simc = sc)
-        
+  
     @property
+    @doc_dec('zone')  
     def zone(self):
-        '''starting zone axis'''
+        """{0}"""
         return self._zone
     
     @property
+    @doc_dec('tilt')  
     def tilt(self):
-        '''tilt in x and y directions (x,y)'''
+        '''{0}'''
         return self._tilt
     
     @property
+    @doc_dec('defl')  
     def defl(self):
-        '''shifts in x and y directions (x, y)'''
+        '''{0}'''
         return self._defl
     
     @property
+    @doc_dec('cl')
     def cl(self):
-        '''cameral length'''
+        '''{0}'''
         return self._cl
     
     @property
+    @doc_dec('vt')
     def vt(self):
-        '''hight voltage in kilo-volts'''
+        '''{0}'''
         return self._vt
 
     @property
-    def xaxis(self):
-       '''crystal horizontal axis in reciprical space'''
-       return self._xaxis
-    
-    @property
+    @doc_dec('simc')
     def simc(self):
-        '''
-        `SIMControl <modules.html#pyemaps.emcontrols.SIMControl>`_ object
-        '''
+        '''{0}'''
         return self._simc
+
+    @property
+    @doc_dec('xaxis')
+    def xaxis(self):
+        '''{0}'''
+        return self._xaxis
     
     @property
+    @doc_dec('aperture')
     def aperture(self):
-        '''Objective len aperture'''
+        '''{0}'''
         return self._aperture
 
     @property
+    @doc_dec('pix_size')
     def pix_size(self):
-       '''Detector pixel size in microns'''
-       return self._pix_size
+        '''{0}'''
+        return self._pix_size
 
     @property
+    @doc_dec('det_size')
     def det_size(self):
-       '''crystal horizontal axis in reciprical space'''
+       '''{0}'''
        return self._det_size
 
     @property
+    @doc_dec('mode')
     def mode(self):
-       '''Simulation mode: 1-normal 2-CBED'''
-       return self._mode
+        '''{0}'''
+        return self._mode
 
     @property
+    @doc_dec('dsize')
     def dsize(self):
-       '''Simulation diffracted beam size, only used for CBED mode'''
+       '''{0}'''
        return self._dsize
 
 
@@ -653,16 +696,17 @@ class EMControl:
 
     @xaxis.setter
     def xaxis(self, xv):
-
-       if xv is None or \
-          not isinstance(xv, tuple) or \
-          len(xv) != 3 or \
-          not isinstance(xv[0], int) or \
-          not isinstance(xv[1], int) or \
-          not isinstance(xv[2], int):
-            raise EMCError('Invalid crystal horizon axis')
-       
-       self._xaxis = xv
+       if xv is None:
+            self._xaxis = DEF_XAXIS
+       else:
+        if not isinstance(xv, tuple) or \
+            len(xv) != 3 or \
+            not isinstance(xv[0], int) or \
+            not isinstance(xv[1], int) or \
+            not isinstance(xv[2], int):
+                raise EMCError('Invalid crystal horizon axis')
+        
+        self._xaxis = xv
   
     
     @simc.setter
@@ -674,52 +718,77 @@ class EMControl:
     
     @aperture.setter
     def aperture(self, av):
-        if not isinstance(av, (int,float)):
-           raise EMCError("Voltage must be a numberal")
-        
-        self._aperture = av
+        if av is None:
+            self._aperture = DEF_APERTURE
+        else:
+            if not isinstance(av, (int,float)):
+                raise EMCError("Voltage must be a numberal")
+            
+            self._aperture = av
 
     @pix_size.setter
     def pix_size(self, pv):
-
-       if not isinstance(pv, int):
-            raise EMCError('Detector pixel size in microns must be an integer')
+       if pv is None:
+            self._pix_size = DEF_PIXSIZE
+       else:
+            if not isinstance(pv, int):
+                raise EMCError('Detector pixel size in microns must be an integer')
        
-       self._pix_size = pv
+            self._pix_size = pv
 
     @det_size.setter
     def det_size(self, dv):
-
-       if not isinstance(dv, int):
-            raise EMCError('Detector size must be integer')
-       
-       self._det_size = dv   
+       if dv is None:
+            self._det_size = DEF_DETSIZE
+       else:
+            if not isinstance(dv, int):
+                    raise EMCError('Detector size must be integer')
+            
+            self._det_size = dv   
 
     @mode.setter
     def mode(self, mv):
-       if not isinstance(mv, int) or \
-          (mv != 1 and mv != 2):
-            raise EMCError('mode must be integer of value 1 or 2')
-       
-       self._mode = mv   
+       if mv is None:
+            self._mode = DEF_MODE
+       else:
+            if not isinstance(mv, int) or \
+                (mv != 1 and mv != 2):
+                    raise EMCError('mode must be integer of value 1 or 2')
+            # in case of disk size is set, validate, warn
+            if hasattr(self, 'dsize') and mv == 2:
+                ds = self._dsize
+                ds_min, ds_max = DEF_DSIZE_LIMITS
+                
+                if ds < ds_min or ds > ds_max:
+                    print(f'Warning: beam size is out of range {DEF_DSIZE_LIMITS}')
+                    print(f'Please reset the value of beam size before continuing')
+
+            self._mode = mv   
 
     @dsize.setter
     def dsize(self, dv):
+       if dv is None:
+            self._dsize = DEF_CBED_DSIZE
+       else:     
+            if not isinstance(dv, (int,float)):
+                    raise EMCError('Detector size must be integer')
+            
+            # in case of CBED mode, the disk size must be in DEF_DSIZE_LIMITS range
+            if self._mode == 2:
+                ds_min, ds_max = DEF_DSIZE_LIMITS
 
-       if not isinstance(dv, (int,float)):
-            raise EMCError('Detector size must be integer')
-       
-       self._dsize = dv   
-
-    def _isDefXaxis(self):
-        '''Helper function to minimize trips to backend modules'''
-        return self._xaxis == DEF_XAXIS
+                if dv < ds_min or dv > ds_max:
+                    raise EMCError(f'Beam size is out of range {DEF_DSIZE_LIMITS}')
+                
     
+            self._dsize = dv   
+                
     def __lt__(self, other):
         return self.__key__() < other.__key__()
 
     def __key__(self):
         data = self.__dict__
+        
         td = []
         for k in data:
             if 'simc' not in k:
@@ -731,143 +800,122 @@ class EMControl:
 
     def __eq__(self, other):
         if not isinstance(other, EMControl):
-           raise EMCError("Comparison must be done with EMControl object")
-        
-        if self._mode != other.mode:
-              return False
+           raise EMCError("Comparison must be done with another EMControl object")
+ 
+        return self.__dict__ == other.__dict__
 
-        if self._dsize != other.dsize:
-              return False
-
-        if other.zone != self._zone:
-            return False 
-
-        if other.tilt != self._tilt:
-            return False 
-
-        if other.defl != self._defl:
-            return False 
-
-        if self._xaxis != other.xaxis: 
-              return False
-
-        if other.cl != self._cl:
-            return False 
-
-        if other.vt != self._vt:
-            return False 
-
-        if other.simc != self._simc:
-            return False 
-
-        if other.aperture != self._aperture:
-            return False 
-
-        if self._pix_size != other.pix_size:
-              return False
-
-        if self._det_size != other.det_size:
-              return False
-        return True
-
-
-    def __str__(self):
-        from . import SIMC
-
-        cstr = []
-        if hasattr(self, 'mode'):
-            smode = 'unknown'
-            if self._mode == 1:
-                smode = 'normal'
+    def _str_prop(self, k) -> str:
+        '''internal'''
+        if k not in DEF_EMC or not hasattr(self, k):
+            return EMCError('internal error!')
             
-            if self._mode == 2:
-                smode = 'CBED'
-            cstr.append('Simulation mode: ' + smode)
+        v = getattr(self, k)
+        defv = DEF_EMC[k]['defval']
+        defdesc = DEF_EMC[k]['desc']
 
-        if hasattr(self, 'dsize'):
-            cstr.append('Diffarcted beam size: ' + str(self._dsize))
+        if k == 'mode':
+            cstr=[]
+            ds_def = DEF_EMC['dsize']['defval'] 
+            ds_desc = _print_default(DEF_EMC['dsize']['desc'], ds_def)
+            if v == defv:
+                cstr.append(defdesc + ' (default=Normal): Normal ')
+                cstr.append(ds_desc + ' Undefined, not used')
+            elif v == defv + 1:
+                cstr.append(defdesc + ': CBED')
+                try:
+                    ds = self._dsize
+                except AttributeError as e:
+                    raise Exception from e
+                else:
+                    if ds <= 0: 
+                        cstr.append(ds_desc + str(ds) + ' ERROR!')
+                    else:
+                        cstr.append(ds_desc + str(ds))
+            else:
+                cstr.append('Mode: Unknown (Error!)')
+                cstr.append('Diffraction beam size: Undefined')
+            return '\n'.join(cstr)
 
-        cstr.append('Zone: ' + str(self._zone))
-        cstr.append('Tilt: ' + str(self._tilt))
-        cstr.append('Deflection: ' + str(self._defl))
-        cstr.append('Camera Length: ' + str(self._cl))
-        cstr.append('Voltage: ' + str(self._vt))
+        if k == 'dsize':
+            return '' # do nothing, already taken care of
 
-        if hasattr(self, 'aperture'):
-            cstr.append('Aperture: ' + str(self._aperture))
+        sdef = _print_default(defdesc, defv)
+        return sdef + str(v)
         
-        if hasattr(self, 'xaxis'):
-            cstr.append('crystal horizontal axis in reciprical space: ' + 
-                         str(self._xaxis))
+    def __str__(self):
+        '''
+        Readable printout of the EMC class object.
+        The output will include all class attribute values and annotate
+        those with default values with [**default**] string 
+        '''
 
-        if hasattr(self, 'pix_size'):
-            cstr.append('Detector pixel size: ' + str(self._pix_size))
+        cstr = ['Electron Microscope Controls:',]
 
-        if hasattr(self, 'det_size'):
-            cstr.append('Detector size: ' + str(self._det_size))
-
-        if not self._simc == SIMC():
-            cstr.append('Simulation parameters: ' + str(self._simc))
+        for k in DEF_EMC:
+            if k != 'dsize' and k !='simc':
+                cstr.append(self._str_prop(k))
+            
+        cstr.append(str(self._simc))
 
         return '\n'.join(cstr)
 
-    def plot_format(self):
-        """
-        Control string format for built-in display functions
-        Only non-default controls values are displayed
+    
+    def _check_def(self, k) -> bool:
+        '''internal - checking if the attribute k is at default value'''
+        if k not in DEF_EMC or not hasattr(self, k):
+            # return EMCError('internal error!')
+            print(f'Warning: EMControl class does not have {k} attribute')
+            return False
+        
+        v = getattr(self, k)
 
-        """
+        if k == 'dsize':
+            if self._mode == 1:
+                return True
+            elif self._mode == 2 and v == DEF_EMC[k]['defval']:
+                return True
+            else:
+                return False
+
+        if k == 'simc':
+            return v == SIMControl()
+
+        return v == DEF_EMC[k]['defval']
+
+    def plot_format(self):
+        '''
+        Format simulation controls in builtin display functions
+        Only plot those parameter that are not defaults
+
+        '''
         emcstrs = []
 
-        if hasattr(self, 'mode') and self._mode and self._mode != DEF_MODE:
-            smode = 'unknown'
-            if self._mode == 1:
-                smode = 'normal'
+        for k in DEF_EMC:
             
-            if self._mode == 2:
-                smode = 'CBED'
-            
-            emcstrs.append('mode=' + smode)
+            if self._check_def(k):
+                continue
 
-        if hasattr(self, 'dsize') and self._dsize and self._dsize != DEF_CBED_DSIZE:
-            emcstrs.append('dsize=' + '{:.2f}'.format(self._dsize))
+            format_str = k + '='
+            v = getattr(self, k)
 
-        if self._zone != DEF_ZONE:
-            emcstrs.append('zone=' + '({:d},{:d},{:d})'.format(self._zone[0],
-                                                               self._zone[1],
-                                                               self._zone[2])
-                          )
+            if k == 'mode':
+                format_str += 'CBED'
+            elif k == 'dszie':
+                format_str += '{:.2f}'.format(v)
+            elif k == 'zone' or k == 'xaxis':
+                format_str += '({:d},{:d},{:d})'.format(v[0],v[1],v[2])
+            elif k == 'tilt' or k == 'defl':
+                format_str += '({:.2f},{:.2f})'.format(v[0],v[1])
+            elif k == 'cl' or k == 'vt':
+                format_str += '{:.2f}'.format(v)
+            elif k == 'aperture': 
+                format_str += '{:.2f}'.format(v)
+            elif k == 'pix_size' or k == 'det_size':
+                format_str += '{:f}'.format(v)
+            else:
+                continue
 
-        if self._tilt != DEF_TILT:
-            emcstrs.append('tilt=' + '({:.2f},{:.2f})'.format(self._tilt[0], 
-                                                              self._tilt[1])
-                          )
-
-        if self._defl != DEF_DEFL:
-            emcstrs.append('defl=' + '({:.2f},{:.2f})'.format(self._defl[0], 
-                                                              self._defl[1])
-                          )
-
-        if self._cl != DEF_CL:
-            emcstrs.append('camlen=' + '{:.2f}'.format(self._cl))
-
-        if self._vt != DEF_KV:
-            emcstrs.append('vt=' + '{:.2f}'.format(self._vt))
-
-        if hasattr(self, 'xaxis') and not self._isDefXaxis():
-            emcstrs.append('xaxis=' + '({:d},{:d},{:d})'.format(self._xaxis[0],
-                                                                self._xaxis[1],
-                                                                self._xaxis[2]))
-
-
-        if hasattr(self, 'aperture') and self._aperture != DEF_APERTURE:
-            emcstrs.append('aperture=' + '{:.2f}'.format(self._aperture))
-
-        if hasattr(self, 'pix_size') and self._pix_size != DEF_PIXSIZE:
-            emcstrs.append('pix_size=' + '{:d}'.format(self._pix_size))
-
-        if hasattr(self, 'det_size') and self._det_size != DEF_DETSIZE:
-            emcstrs.append('det_size=' + '{:.2f}'.format(self._det_size))
+            emcstrs.append(format_str)
 
         cstr = ''
 
@@ -884,5 +932,5 @@ class EMControl:
 
         if len(simstr) != 0 and len(cstr) == 0:
             return simstr
-        
-        return ''
+
+        return ';'.join(emcstrs)
