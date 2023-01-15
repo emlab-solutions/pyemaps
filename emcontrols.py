@@ -272,7 +272,7 @@ class SIMControl:
     def gmax(self, gm):
 
        if not isinstance(gm, (int, float)):
-            raise EMCError('gmax values must be a tuple of tow numbers')
+            raise EMCError('gmax values must be a tuple of two numbers')
        
        self._gmax = gm
 
@@ -280,7 +280,7 @@ class SIMControl:
     def bmin(self, bm):
 
        if not isinstance(bm, (int, float)):
-            raise EMCError('bmin values must be a tuple of tow numbers')
+            raise EMCError('bmin values must be a tuple of two numbers')
        
        self._bmin = bm
 
@@ -330,8 +330,8 @@ class SIMControl:
     
     @sth.setter
     def sth(self, sv):
-        if sv is None or not isinstance(sv, int):
-                raise EMCError("Sample thickness must be an integer")
+        if sv is None or not isinstance(sv, (int, float)):
+                raise EMCError("Sample thickness must be a numberal")
             
         self._sth = sv
 
@@ -354,7 +354,6 @@ class SIMControl:
         
         v = getattr(self, k)
         
-        # return SIMC_DESC[k] + ': ' + str(v) + (sdefault if v== DEF_SIMC[k] else '')
         return _print_default(SIMC_DESC[k], DEF_SIMC[k]) + str(v)
     
     def _check_def(self, k) -> bool:
@@ -402,15 +401,15 @@ class SIMControl:
             elif k == 'intensity':
                 format_str += '({:.2f},{:.2f})'.format(self._intensity[0], self._intensity[1])
             elif k == 'gctl':
-                format_str += '{:.2f}'.format(v)
+                format_str += '{:f}'.format(v)
             elif k == 'zctl':
-                format_str += '{:.2f}'.format(v)
+                format_str += '{:f}'.format(v)
             elif k == 'omega':
                 format_str += '{:.2f}'.format(v)
             elif k == 'sampling':
-                format_str += '{:.2f}'.format(v)
-            elif k == 'sth':
                 format_str += '{:d}'.format(v)
+            elif k == 'sth':
+                format_str += '{:.2f}'.format(v)
             else:
                 continue
 
@@ -906,7 +905,7 @@ class EMControl:
             elif k == 'aperture': 
                 format_str += '{:.2f}'.format(v)
             elif k == 'pix_size' or k == 'det_size':
-                format_str += '{:d}'.format(v)
+                format_str += '{:f}'.format(v)
             else:
                 continue
 
