@@ -469,7 +469,7 @@ def showDif(dpl=None,
     :type layout: str, optional 
     :param bSave: Whether to save the diplay into a .png image file.
     :type bSave: bool    
-    :param bClose: Whether to close plotting window. Default: False - users must close it. 
+    :param bClose: Whether to close plotting window when finished. Default: False - users must close it. 
     :type bClose: bool, optional  
     
     """
@@ -514,7 +514,7 @@ def showBloch(bimgs,
     :type layout: str, optional
     :param bSave: Optional. Whether to save the image into a .im3 image file.
     :type bSave: bool    
-    :param bClose: Whether to close plotting window. Default: False - users must close it. 
+    :param bClose: Whether to close plotting window when finished. Default: False - users must close it. 
     :type bClose: bool, optional  
     
     """
@@ -566,7 +566,7 @@ def showStereo(slist, name,
     :type layout: str, optional 
     :param bSave: Whether to save the image into a .png image file.
     :type bSave: bool, optional  
-    :param bClose: Whether to close plotting window. Default: False - users must close it. 
+    :param bClose: Whether to close plotting window when finished. Default: False - users must close it. 
     :type bClose: bool, optional  
 
 

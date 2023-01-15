@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>pyemaps.emcontrols module &#8212; pyemaps 0.6.1 Beta documentation</title>
+    <title>pyemaps.emcontrols module &#8212; pyemaps 0.6.2 Beta documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -29,7 +29,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.6.1 Beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.6.2 Beta documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyemaps.emcontrols module</a></li> 
       </ul>
     </div>  
@@ -151,51 +151,55 @@ simulation control is embedded as a member of a microscope controls class.</p>
 <dd></dd></dl>
 
 </section>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.doc_dec_simc">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">doc_dec_simc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.doc_dec_simc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">SIMControl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">excitation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_EXCITATION</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_GMAX</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_BMIN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intensity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_INTENSITY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gctl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_GCTL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zctl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_ZCTL</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">SIMControl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">excitation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['excitation']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['gmax']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['bmin']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intensity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['intensity']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gctl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['gctl']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zctl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['zctl']</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Simulation controls, to be embedded in EMControl</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">excitation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_EXCITATION</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_GMAX</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_BMIN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intensity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_INTENSITY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gctl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_GCTL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zctl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_ZCTL</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">excitation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['excitation']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['gmax']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['bmin']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intensity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['intensity']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gctl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['gctl']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zctl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['zctl']</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.excitation">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">excitation</span></span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.excitation" title="Permalink to this definition">¶</a></dt>
-<dd><p>excitation error range in (min, max)</p>
+<dd><p>Excitation error range in (min, max)</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.gmax">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gmax</span></span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.gmax" title="Permalink to this definition">¶</a></dt>
-<dd><p>maximum recipricol vector length</p>
+<dd><p>Maximum recipricol vector length</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.bmin">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bmin</span></span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.bmin" title="Permalink to this definition">¶</a></dt>
-<dd><p>beta perturbation cutoff</p>
+<dd><p>Beta perturbation cutoff</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.intensity">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">intensity</span></span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.intensity" title="Permalink to this definition">¶</a></dt>
-<dd><p>kinematic diffraction intensity cutoff 
-level and scale in (level, scale)</p>
+<dd><p>Kinematic diffraction intensity cutoff level and scale in (level, scale)</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.gctl">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gctl</span></span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.gctl" title="Permalink to this definition">¶</a></dt>
-<dd><p>maximum index number for g-list</p>
+<dd><p>Maximum index number for g-list</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.zctl">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">zctl</span></span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.zctl" title="Permalink to this definition">¶</a></dt>
-<dd><p>maximum zone or Miller index index number</p>
+<dd><p>Maximum zone or Miller index index number</p>
 </dd></dl>
 
 <dl class="py property">
@@ -213,7 +217,7 @@ level and scale in (level, scale)</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.sth">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sth</span></span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.sth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Samples thickness, must be an integer</p>
+<dd><p>Samples thickness</p>
 </dd></dl>
 
 <dl class="py method">
@@ -223,7 +227,18 @@ level and scale in (level, scale)</p>
 Only plot those parameter that are not defaults</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.from_random">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_random</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.from_random" title="Permalink to this definition">¶</a></dt>
+<dd><p>For backward compatibility only</p>
 </dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.doc_dec">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">doc_dec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.doc_dec" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl">
@@ -269,49 +284,49 @@ Only plot those parameter that are not defaults</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.zone">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">zone</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.zone" title="Permalink to this definition">¶</a></dt>
-<dd><p>starting zone axis</p>
+<dd><p>Starting zone axis</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.tilt">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tilt</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.tilt" title="Permalink to this definition">¶</a></dt>
-<dd><p>tilt in x and y directions (x,y)</p>
+<dd><p>Tilt in x and y directions (x,y)</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.defl">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">defl</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.defl" title="Permalink to this definition">¶</a></dt>
-<dd><p>shifts in x and y directions (x, y)</p>
+<dd><p>Shifts in x and y directions (x, y)</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.cl">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cl</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.cl" title="Permalink to this definition">¶</a></dt>
-<dd><p>cameral length</p>
+<dd><p>Shifts in x and y directions (x, y)</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.vt">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vt</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.vt" title="Permalink to this definition">¶</a></dt>
-<dd><p>hight voltage in kilo-volts</p>
+<dd><p>High voltage</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.xaxis">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">xaxis</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.xaxis" title="Permalink to this definition">¶</a></dt>
-<dd><p>crystal horizontal axis in reciprical space</p>
+<dd><p>Crystal horizontal axis in reciprical space</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.simc">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">simc</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.simc" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="modules.html#pyemaps.emcontrols.SIMControl">SIMControl</a> object</p>
+<dd><p>Simulation Controls</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.aperture">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">aperture</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.aperture" title="Permalink to this definition">¶</a></dt>
-<dd><p>Objective len aperture</p>
+<dd><p>Objective lense aperture</p>
 </dd></dl>
 
 <dl class="py property">
@@ -323,26 +338,26 @@ Only plot those parameter that are not defaults</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.det_size">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">det_size</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.det_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>crystal horizontal axis in reciprical space</p>
+<dd><p>Detector size in microns</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.mode">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mode</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.mode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Simulation mode: 1-normal 2-CBED</p>
+<dd><p>Simulation mode</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.dsize">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dsize</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.dsize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Simulation diffracted beam size, only used for CBED mode</p>
+<dd><p>Diffracted beam size</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.plot_format">
 <span class="sig-name descname"><span class="pre">plot_format</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.plot_format" title="Permalink to this definition">¶</a></dt>
-<dd><p>Control string format for built-in display functions
-Only non-default controls values are displayed</p>
+<dd><p>Format simulation controls in builtin display functions
+Only plot those parameter that are not defaults</p>
 </dd></dl>
 
 </dd></dl>
@@ -391,7 +406,7 @@ Only non-default controls values are displayed</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.6.1 Beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.6.2 Beta documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyemaps.emcontrols module</a></li> 
       </ul>
     </div>

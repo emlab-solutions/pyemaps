@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Release Notes &#8212; pyemaps 0.6.1 Beta documentation</title>
+    <title>Release Notes &#8212; pyemaps 0.6.2 Beta documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="license.html" title="Licence"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.6.1 Beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.6.2 Beta documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Release Notes</a></li> 
       </ul>
     </div>  
@@ -215,6 +215,44 @@ and result accuracies.</p></li>
 </ul>
 </section>
 </section>
+<section id="version-0-6-2-beta">
+<h2>Version 0.6.2 Beta<a class="headerlink" href="#version-0-6-2-beta" title="Permalink to this heading">¶</a></h2>
+<section id="id13">
+<h3>01-15-2023<a class="headerlink" href="#id13" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="id14">
+<h3>Improvements<a class="headerlink" href="#id14" title="Permalink to this heading">¶</a></h3>
+<ul>
+<li><p>Bug fixes.</p></li>
+<li><p>Display function parameters naming changes to be more consistent. Specifically,
+<em>ishow</em> and <em>kshow</em> parameters are now becoming <em>iShow</em> and <em>kShow</em> as show
+below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">showDif</span><span class="p">(</span><span class="o">..</span><span class="p">,</span> <span class="n">iShow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kShow</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>In additional each of the display functions</dt><dd><ul class="simple">
+<li><p><em>showDif</em></p></li>
+<li><p><em>showBloch</em></p></li>
+<li><p><em>showStereo</em></p></li>
+</ul>
+</dd>
+</dl>
+<p>gains an optional boolean input parameter <em>bClose</em> with default of <em>False</em>.
+This input controls whether the display windows close or not after all displays are completed.
+Default value, if not set, is <em>False</em>. In which case, users must close the display windows
+manuallly for each display, failure to do so may result in too many display windows.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">showBloch</span><span class="p">(</span><span class="o">..</span><span class="p">,</span> <span class="n">bClose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="o">..</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Setting <em>bClose</em> to <em>True</em> is useful where the display functions are called to preventing
+too many display windows open.</p>
+</li>
+<li><p>The electronic micropscope control class - EMControl or EMC fills attributes with
+default values if not set.</p></li>
+</ul>
+</section>
+</section>
 </section>
 
 
@@ -263,6 +301,11 @@ and result accuracies.</p></li>
 <li class="toctree-l3"><a class="reference internal" href="#id12">Improvements</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-6-2-beta">Version 0.6.2 Beta</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id13">01-15-2023</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id14">Improvements</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules, Classes and Interfaces</a></li>
@@ -307,7 +350,7 @@ and result accuracies.</p></li>
         <li class="right" >
           <a href="license.html" title="Licence"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.6.1 Beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.6.2 Beta documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Release Notes</a></li> 
       </ul>
     </div>

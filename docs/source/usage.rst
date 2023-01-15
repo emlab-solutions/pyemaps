@@ -14,6 +14,20 @@ To use pyemaps, first install it using pip:
 
 where .venv is the python virtual environment.
 
+.. note::
+   
+   To prevent conflicts of pyemaps dependencies with your existing python
+   libraries, it is recommended that pyemaps install in its own python environment
+   such as that with Annaconda or Miniconda.
+
+.. code-block:: console
+
+   conda create -n <env-name> python=3.7
+   conda activate <env-name>
+   python -m pip install pyemaps
+
+where <env-name> is the name of the new conda environment.
+
 .. _Environment Variables:
 
 Enviroment Variables
