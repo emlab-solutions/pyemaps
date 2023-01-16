@@ -124,8 +124,8 @@ powder_files =['powder_types.f90',
 spgra_files =['spgra.f90']
 
 # c_objs = ['blochimgs.o', 'write_dpbin.o']
-c_objs_win = ['blochimgs.obj']
-c_objs_lin = ['blochimgs.o']
+c_objs_win = ['blochimgs.obj', 'write_dpbin.obj']
+c_objs_lin = ['blochimgs.o', 'write_dpbin.o']
 
 
 sct_files =['scattering_sct.pyf', 'scattering.f90']  
@@ -182,9 +182,9 @@ def get_spg_sources():
     
     return src_list
 
-def get_diffract_sources():
+def get_diffract_sources(comp=None):
 
-    # comp = get_comp()
+    comp = get_comp()
     # print(f'----------building component: {comp}')
 
     src_list = []
@@ -192,13 +192,15 @@ def get_diffract_sources():
     #     pyf = ".".join([mod_name+'_dif','pyf'])
     #     src_list.append(pyf)
     #     src_list.extend(dif_source)
-
-    # if comp == 'dpgen':
-    #     pyf = ".".join([mod_name+'_dpgen','pyf'])
-    #     src_list.append(pyf)
-    #     src_list.extend(dif_source)
-    #     src_list.extend(dpgen_files)
-    #     # return comp, src_list
+    
+    emaps_dir = get_emaps_srcdir()
+    # if comp is not None:
+    #     if comp == 'dpgen':
+    #         pyf = ".".join([mod_name+'_dpgen','pyf'])
+    #         src_list.append(pyf)
+    #         src_list.extend(dif_source)
+    #         src_list.extend(dpgen_files)
+        # return comp, src_list
 
     # if comp == 'csf':
     #     pyf = ".".join([mod_name+'_csf','pyf'])
@@ -231,6 +233,7 @@ def get_diffract_sources():
     #     src_list.extend(powder_files)
     #     src_list.extend(bloch_files)
     #     src_list.extend(stereo_files)
+    # else:
 
     pyf = ".".join([mod_name,'pyf'])
     src_list.append(pyf)
@@ -238,12 +241,12 @@ def get_diffract_sources():
     src_list.extend(csf_files)
     src_list.extend(powder_files)
     src_list.extend(bloch_files)
-    # src_list.extend(dpgen_files)
+    src_list.extend(dpgen_files)
     
     src_list.extend(stereo_files)
     src_list.extend(mxtal_files)
+    
     print(f'source code list: {src_list}')
-    emaps_dir = get_emaps_srcdir()
     return [os.path.join(emaps_dir, srcfn) for srcfn in src_list]
 
 def get_cifreader_source():
