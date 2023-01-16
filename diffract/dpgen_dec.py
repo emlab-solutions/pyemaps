@@ -86,6 +86,10 @@ def add_dpgen(target):
         output_fn = self._getDPDBFN()
 
         ret = dpgen.do_dpgen(res, vertices, output_fn)
+        
+        #release the memory
+        dpgen.cleanup()
+
         if ret != 0:
             print(f'Error running generating diffraction patterns for {self.name}')
             return -1
@@ -95,10 +99,6 @@ def add_dpgen(target):
             print(f'Error running generating diffraction patterns for {self.name}')
             return -1
 
-        #release the memory
-        dif.diff_internaldelete(0)
-        dif.diff_delete()
-        
         final_fp= output_fn+'.' + DPDB_EXT
         print(f'output dpgen file: {final_fp}')
 
