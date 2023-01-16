@@ -86,36 +86,27 @@ else:
 
     DEF_DSIZE_LIMITS = (dmin, dmax)
     
-#---------------CIF & XTL crystal data import dependent modules
-#
-#
+#------------------------Pyemaps Helper Modules---------------------------------
+
 from .spg import spgseek
 from .scattering import sct
 
-#--------------optional modules in pyemaps----------------
-
-#fall through if dpgen is not found
-
-try:
-    from .diffract import dpgen
-except ImportError as e:
-    pass 
-
-#fall through if structure factor module is not found
+#------------------------Crystal Structure Factor Module------------------------
 try:
     from .diffract import csf
 
 except ImportError as e:
     pass
 
-#fall through if powder module is not found
+
+#------------------------Powder Diffraction Module------------------------------
 try:
     from .diffract import powder
 
 except ImportError as e:
     pass
 
-#fall through if blch module is not found
+#------------------------Dynamic Diffraction Module----------------------------
 try:
     from .diffract import bloch
     
@@ -123,27 +114,18 @@ except ImportError as e:
     raise Exception('No diffraction module found')
 else:
 
-#---------- defaults sampling setting ---------------------------
-    # sample thickness: DEF_THICKNESS (start, end, step)
     th_start, th_end, th_step = bloch.get_sam_defs()
     
     DEF_THICKNESS = (th_start, th_end, th_step)
-
-#---------- defaults simulation setting-------------------------
-    # sampling: DEF_SAMPLING
-    # pixsize: DEF_PIXSIZE
-    # detsize: DEF_DETSIZE
-    # default image slices number: DEF_DEPTH
-    # default omega: DEF_OMEGA
+  
     (DEF_SAMPLING, 
      DEF_PIXSIZE, 
      DEF_DETSIZE, 
      MAX_DEPTH, 
      DEF_OMEGA) = bloch.get_sim_defs()
-#----------  Microoscope setting default------------------------
     DEF_APERTURE = bloch.get_mic_defs()
 
-#fall through if blch module is not found
+#------------------------Stereodiagram Module--------------------------------
 try:
     from .diffract import stereo
     
@@ -152,6 +134,8 @@ except ImportError as e:
 else:
     pass
 
+
+#------------------Crystal Constructor Module--------------------------------
 try:
     from .diffract import mxtal
     
@@ -166,26 +150,34 @@ else:
     DEF_ORSHIFT = [0, 0, 0] #Origin shift
     DEF_LOCASPACE = [0, 0, 0] #location in A Space
 
+
+#------------------Diffraction Database Generator---------------------------
+try:
+    from .diffract import dpgen
     
+except ImportError as e:
+    raise Exception('No diffraction database module found')
+else:
+    pass
+
 #--------------Wrapper classes around diffraction extensions---------------
 from .errors import *
 
-# from .crystals import Crystal
-
-#Microscope control data classes handling data properties
+#---------Microscope control data classes handling data properties----------
 from .emcontrols import EMControl as EMC
 from .emcontrols import SIMControl as SIMC
 
-#diffraction classes handling diffraction pattern data
+#---------Diffraction classes handling diffraction pattern data-------------
 from .kdiffs import diffPattern as DP
 from .kdiffs import Diffraction as DPList
 from .ddiffs import BlochImgs as BImgList
 
+#--------------Crystal Classes and subclasses-------------------------------
 from .crystals import Cell, Atom, SPG, Crystal
 try:
     from .kdiffs import XMAX, YMAX
 except ImportError as e:
     print(f'Error importing kinematic constants: {e}')
     
-# display functions
+#--------------Pyemaps Display Functions-------------------------------------
 from .display import showDif, showBloch, showStereo

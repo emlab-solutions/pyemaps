@@ -1,6 +1,6 @@
 
 def add_dpgen(target):
-    def generateDPDB(self, res =1):
+    def generateDPDB(self, res = 1):
         """
         Generate a list diffraction paterns and save them in proprietory
         binary formatted database file.
@@ -28,6 +28,7 @@ def add_dpgen(target):
                         ('medium', 0.005),
                         ('large', 0.0025)]
 
+        print(f'input for generateDPDB: {res}')
         dif.initcontrols()
         
         self.load()
@@ -45,7 +46,7 @@ def add_dpgen(target):
         sres, fres = dp_res_lookup[res-1]
         output_fn = self.name +'_' + sres
 
-        print(f"input for do_gen: {vertices},{output_fn}")
+        # print(f"input for do_gen: {vertices},{output_fn}")
         ret = dpgen.do_dpgen(fres, vertices, output_fn)
         if ret != 0:
             print(f'Error running generating diffraction patterns for {self.name}')
@@ -59,6 +60,7 @@ def add_dpgen(target):
         #release the memory
         dif.diff_internaldelete(0)
         dif.diff_delete()
+        print(f'output dpgen file: {output_fn}')
 
         return 0
     

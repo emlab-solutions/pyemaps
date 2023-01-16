@@ -72,6 +72,7 @@ def add_stereo(target):
             stereo_list.append(item)
 
         return stereo_list
+        
     target.generateStereo = generateStereo
     
     return target
