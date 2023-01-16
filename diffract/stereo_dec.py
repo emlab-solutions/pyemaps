@@ -57,7 +57,7 @@ def add_stereo(target):
 
         sdata = farray(np.zeros((6, sl)), dtype=float)
       
-        sdata, ns, ret = stereo.dostereogram(sdata)
+        sdata, ns, ret = stereo.do_stereogram(sdata)
 
         if ret != 1:
             raise StereodiagramError('Stereodiagram generation failed')
@@ -71,6 +71,10 @@ def add_stereo(target):
             item['idx'] = (s[3], s[4],s[5])
             stereo_list.append(item)
 
+        #release the memory
+        dif.diff_internaldelete(0)
+        dif.diff_delete()
+        
         return stereo_list
         
     target.generateStereo = generateStereo
