@@ -11,12 +11,15 @@ def add_dpgen(target):
     
     import numpy as np
     from numpy import asfortranarray as farray
-    from .. import DEF_XAXIS
+    from .. import DEF_XAXIS, DEF_KV, DEF_ZONE, DEF_CL, \
+                   SIMC, EMC
 
     from .. import DPError
 
     DPDB_EXT = 'bin'
     MAX_DPDBFN = 256
+    DEF_VERTMAT = [[0,0,1],[1,1,1],[0,1,1]]
+
     def _getDPDBFN(self):
         '''
         Constructs a bloch image output file name.
@@ -41,7 +44,13 @@ def add_dpgen(target):
 
         return cfn
 
-    def generateDPDB(self, xa = DEF_XAXIS, res = LOW_RES):
+    def generateDPDB(self, 
+                     vt = DEF_KV,
+                     zone = DEF_ZONE,
+                     xa = DEF_XAXIS, 
+                     simc = SIMC(),
+                     res = LOW_RES,
+                     vertices = DEF_VERTMAT):
         
         """
         Generate a list diffraction paterns and save them in proprietory
@@ -63,25 +72,36 @@ def add_dpgen(target):
         #                 ('medium', 0.0025),
         #                 ('large', 0.001)]
         if (res > HIGH_RES) or (res < LOW_RES):
-            print(f'Resolution input {res}is out of range: ({LOW_RES}, {HIGH_RES})')
+            print(f'Resolution input {res} is out of range: ({LOW_RES}, {HIGH_RES})')
             return -1
 
+        self.load()
         dif.initcontrols()
         
-        self.load()
-        
+        if vt != DEF_KV:
+            dif.setemcontrols(DEF_CL, vt)
+
+        if zone != DEF_ZONE:
+            dif.setzone(zone[0], zone[1], zone[2])
+
         if xa != DEF_XAXIS:
             dif.set_xaxis(1, xa[0], xa[1], xa[2])
 
+        # TODO: some simulation controls are not used, set them to defaults
+        
+        self.set_sim_controls(simc=simc)
+
+
         # TODO: need to replace hard code of 2 here later
         ret = dif.diffract(2)
+        # dif.diff_printall(2)
+        # return 0
         
         if ret == 0:
             print('Error running dif module')
             return -1
-
-        vertices0 = np.array([[0,0,1],[1,1,1],[0,1,1]])
-        vertices = farray(vertices0, dtype=int)
+        vert = np.array(vertices).transpose()    
+        vertices = farray(vert, dtype=int)
         
         output_fn = self._getDPDBFN()
 
