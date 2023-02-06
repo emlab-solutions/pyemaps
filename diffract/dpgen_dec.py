@@ -4,7 +4,8 @@ def add_dpgen(target):
         from . import dif, dpgen
 
     except ImportError as e:               
-        print(f"Error: required module pyemaps.dpgen or pyemaps.dif not found")
+        # raise ModuleNotFoundError from e
+        return target
     else:
         LOW_RES = dpgen.get_lowres()
         HIGH_RES = dpgen.get_highres()
@@ -57,7 +58,8 @@ def add_dpgen(target):
         binary formatted database file.
 
         The database created will be used for diffraction pattern indexing
-        and recognition functions.
+
+        and recognition functions in our upcoming new product call EDIOM.
 
         This feature is accessible for paid customers only.
 
@@ -68,9 +70,6 @@ def add_dpgen(target):
         """
         import os
         
-        # dp_res_lookup = [('small', 0.01),
-        #                 ('medium', 0.0025),
-        #                 ('large', 0.001)]
         if (res > HIGH_RES) or (res < LOW_RES):
             print(f'Resolution input {res} is out of range: ({LOW_RES}, {HIGH_RES})')
             return -1
