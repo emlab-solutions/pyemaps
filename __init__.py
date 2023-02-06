@@ -151,13 +151,12 @@ else:
     DEF_LOCASPACE = [0, 0, 0] #location in A Space
 
 
-#------------------Diffraction Database Generator---------------------------
+# #------------------Diffraction Database Generator - paid package only---------------------------
 try:
     from .diffract import dpgen
     
 except ImportError as e:
-    raise Exception('No diffraction database module found')
-else:
+    # skip this in free package
     pass
 
 #--------------Wrapper classes around diffraction extensions---------------

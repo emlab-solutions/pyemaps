@@ -14,6 +14,9 @@ import os
 from pathlib import Path
 
 build_type = os.getenv('EMAPS_BTYPE')
+if build_type is None:
+    build_type = 'free'
+
 mod_name = "emaps"
 
 MKLROOT = os.getenv('MKLROOT')
@@ -123,9 +126,12 @@ powder_files =['powder_types.f90',
 
 spgra_files =['spgra.f90']
 
-# c_objs = ['blochimgs.o', 'write_dpbin.o']
-c_objs_win = ['blochimgs.obj', 'write_dpbin.obj']
-c_objs_lin = ['blochimgs.o', 'write_dpbin.o']
+# # c_objs = ['blochimgs.o', 'write_dpbin.o']
+# c_objs_win = ['blochimgs.obj', 'write_dpbin.obj']
+# c_objs_lin = ['blochimgs.o', 'write_dpbin.o']
+
+c_objs_free_win = ['blochimgs.obj']
+c_objs_free_lin = ['blochimgs.o']
 
 
 sct_files =['scattering_sct.pyf', 'scattering.f90']  
@@ -147,15 +153,24 @@ def get_extra_objects():
     import platform, os
 
     objs = []
-
     osname = platform.platform().lower()
     print(f'OS name found: {osname}')
+    
+    
     if  'windows' in osname:
-        objs = c_objs_win
+        objs = c_objs_free_win
     elif 'linux' in osname:
-        objs = c_objs_lin
+        objs = c_objs_free_lin
     else:
         raise Exception('Unsupported OS')
+
+    if build_type == "all":
+        if  'windows' in osname:
+            objs.append('write_dpbin.obj') 
+        elif 'linux' in osname:
+            objs.append('write_dpbin.o')
+        else:
+            raise Exception('Unsupported OS')
 
     emaps_dir = get_emaps_srcdir()
     objlist = [os.path.join(emaps_dir, o) for o in objs]
@@ -184,7 +199,7 @@ def get_spg_sources():
 
 def get_diffract_sources(comp=None):
 
-    comp = get_comp()
+    # comp = get_comp()
     # print(f'----------building component: {comp}')
 
     src_list = []
@@ -234,17 +249,22 @@ def get_diffract_sources(comp=None):
     #     src_list.extend(bloch_files)
     #     src_list.extend(stereo_files)
     # else:
+    
+    pyfname = mod_name
+    if build_type == 'all':
+        pyfname += '_dpgen'
 
-    pyf = ".".join([mod_name,'pyf'])
+    pyf = ".".join([pyfname,'pyf'])
     src_list.append(pyf)
     src_list.extend(dif_source)
     src_list.extend(csf_files)
     src_list.extend(powder_files)
     src_list.extend(bloch_files)
-    src_list.extend(dpgen_files)
-    
     src_list.extend(stereo_files)
     src_list.extend(mxtal_files)
+    if build_type == 'all':
+        src_list.extend(dpgen_files)
+    
     
     print(f'source code list: {src_list}')
     return [os.path.join(emaps_dir, srcfn) for srcfn in src_list]
@@ -318,9 +338,9 @@ def get_cdata(sdn = 'cdata'):
     sbase_files = os.path.join(samples_base_dir, '*.xtl')
     sfile_list = glob.glob(sbase_files)
     res = [os.path.join(sdn, os.path.basename(name)) for name in sfile_list]
-    print(f'******build type {build_type}')
-    if build_type != 'free':
-        return res
+    # print(f'******build type {build_type}')
+    # if build_type != 'free':
+    #     return res
 
     # if it is free package remove some crystals
     out =[]
@@ -409,7 +429,7 @@ def get_install_requires():
     
 def get_emaps_macros():
 
-    if build_type == 'full':
+    if build_type == 'all':
         # full version
         return ([('NPY_NO_DEPRECATED_API', 
                     'NPY_1_7_API_VERSION')

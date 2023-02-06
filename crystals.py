@@ -766,13 +766,13 @@ from .diffract.dif_dec import add_dif
 
 #---Dynamic Diffraction Simulations---
 from .diffract.bloch_dec import add_bloch
-
+ 
+@add_dpgen    
 @add_mxtal              
 @add_stereo              
 @add_bloch              
 @add_powder
-@add_csf    
-@add_dpgen      
+@add_csf     
 @add_dif   
 class Crystal:
     """
