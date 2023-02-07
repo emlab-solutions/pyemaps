@@ -1,7 +1,7 @@
 Release Notes
 =============
 
-Version 1.0.0
+Version 1.0.0 Stable
 ------------------ 
 
 02-07-2023 
