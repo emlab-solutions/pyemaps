@@ -326,7 +326,7 @@ def add_bloch(target):
             if bloch.closeimgfile() != 0:
                 raise BlochError('Error closing file')
 
-            print(f'{det_size}x{det_size}x{dep} raw Bloch images has been successfully saved to: {imgfn}')
+            print(f'The raw bloch image(s) of dimensions {det_size}x{det_size}x{dep} and an offset of 8 bytes successfully saved to: \n{imgfn}')
             print(f'To view, import the file into ImageJ or other raw image visualization tools')
 
        return bimgs
@@ -555,13 +555,13 @@ def add_bloch(target):
        bloch.cleanup()
        dif.diff_delete()
         
-    def generateBloch(self, aperture = DEF_APERTURE,                    #
-                            omega = DEF_OMEGA,                          # 10
-                            sampling = DEF_SAMPLING,                    # 8
-                            pix_size = DEF_PIXSIZE,                     # 100
-                            det_size = DEF_DETSIZE,                     # 512
-                            disk_size = DEF_CBED_DSIZE,                 # 0.16
-                            sample_thickness = DEF_THICKNESS,           #(200,1000,100)
+    def generateBloch(self, aperture = DEF_APERTURE,                    
+                            omega = DEF_OMEGA,                          
+                            sampling = DEF_SAMPLING,                    
+                            pix_size = DEF_PIXSIZE,                     
+                            det_size = DEF_DETSIZE,                     
+                            disk_size = DEF_CBED_DSIZE,                 
+                            sample_thickness = DEF_THICKNESS,           
                             em_controls = EMC(cl=200, # set smaller that 1000 default value
                                               simc = SIMC(gmax=1.0, excitation=(0.3,1.0))),
                             bSave = False):
