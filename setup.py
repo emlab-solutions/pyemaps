@@ -103,7 +103,7 @@ dif_source = [
 #               ]
 bloch_files = ['zg.f90',
                'bloch_mem.f90',
-               'files.f90',
+            #    'files.f90',
                'bloch.f90'
               ]
 stereo_files = ['stereo.f90']
