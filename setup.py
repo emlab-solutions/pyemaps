@@ -21,7 +21,6 @@ mod_name = "emaps"
 
 MKLROOT = os.getenv('MKLROOT')
 IFORTROOT = os.getenv('IFORTROOT')
-# BUILT_TYPE=None #default build type - free, 'uiuc' for uiuc, None, full version
 
 dpgen_cobj = 'write_dpbin.o'
 
@@ -74,8 +73,6 @@ lapack_lib = 'mkl_lapack95_lp64'
 install_requires_common = [
             'numpy >= 1.21.2',
             'matplotlib >= 3.2.1',
-            # 'intel-fortran-rt == 2022.1.0',
-            # 'mkl-service == 2.4.0'
             ]
 
 dif_source = [
@@ -97,13 +94,8 @@ dif_source = [
             'lafit.f90'
             ]
 
-# bloch_files = ['zg.f90',
-#                'bloch.f90',
-#                'bloch_mem.f90'
-#               ]
 bloch_files = ['zg.f90',
                'bloch_mem.f90',
-            #    'files.f90',
                'bloch.f90'
               ]
 stereo_files = ['stereo.f90']
@@ -125,10 +117,6 @@ powder_files =['powder_types.f90',
               ]
 
 spgra_files =['spgra.f90']
-
-# # c_objs = ['blochimgs.o', 'write_dpbin.o']
-# c_objs_win = ['blochimgs.obj', 'write_dpbin.obj']
-# c_objs_lin = ['blochimgs.o', 'write_dpbin.o']
 
 c_objs_free_win = ['blochimgs.obj']
 c_objs_free_lin = ['blochimgs.o']
@@ -199,57 +187,9 @@ def get_spg_sources():
 
 def get_diffract_sources(comp=None):
 
-    # comp = get_comp()
-    # print(f'----------building component: {comp}')
-
     src_list = []
-    # if comp == 'dif':
-    #     pyf = ".".join([mod_name+'_dif','pyf'])
-    #     src_list.append(pyf)
-    #     src_list.extend(dif_source)
-    
     emaps_dir = get_emaps_srcdir()
-    # if comp is not None:
-    #     if comp == 'dpgen':
-    #         pyf = ".".join([mod_name+'_dpgen','pyf'])
-    #         src_list.append(pyf)
-    #         src_list.extend(dif_source)
-    #         src_list.extend(dpgen_files)
-        # return comp, src_list
 
-    # if comp == 'csf':
-    #     pyf = ".".join([mod_name+'_csf','pyf'])
-    #     src_list.append(pyf)
-    #     src_list.extend(dif_source)
-    #     src_list.extend(csf_files)
-    #     # return comp, src_list
-
-    # if comp == 'powder':
-    #     pyf = ".".join([mod_name+'_powder','pyf'])
-    #     src_list.append(pyf)
-    #     src_list.extend(dif_source)
-    #     src_list.extend(csf_files)
-    #     src_list.extend(powder_files)
-    #     # return comp, src_list
-
-    # if comp == 'bloch':
-    #     pyf = ".".join([mod_name+'_bloch','pyf'])
-    #     src_list.append(pyf)
-    #     src_list.extend(dif_source)
-    #     src_list.extend(csf_files)
-    #     src_list.extend(powder_files)
-    #     src_list.extend(bloch_files)
-
-    # if comp == 'stereo':
-    #     pyf = ".".join([mod_name+'_stereo','pyf'])
-    #     src_list.append(pyf)
-    #     src_list.extend(dif_source)
-    #     src_list.extend(csf_files)
-    #     src_list.extend(powder_files)
-    #     src_list.extend(bloch_files)
-    #     src_list.extend(stereo_files)
-    # else:
-    
     pyfname = mod_name
     if build_type == 'all':
         pyfname += '_dpgen'
@@ -338,11 +278,7 @@ def get_cdata(sdn = 'cdata'):
     sbase_files = os.path.join(samples_base_dir, '*.xtl')
     sfile_list = glob.glob(sbase_files)
     res = [os.path.join(sdn, os.path.basename(name)) for name in sfile_list]
-    # print(f'******build type {build_type}')
-    # if build_type != 'free':
-    #     return res
-
-    # if it is free package remove some crystals
+   
     out =[]
     
     for rf in res:
@@ -351,14 +287,6 @@ def get_cdata(sdn = 'cdata'):
             out.append(rf)
         
     return out
-
-# def get_intel_redist():
-#     import os, glob
-#     intel_redistdir = os.path.join(os.getenv('IFORTROOT'), 'redist', 'intel64_win', 'compiler')
-#     sbase_files = os.path.join(intel_redistdir, '*.dll')
-#     ifile_list = glob.glob(sbase_files)
-    
-#     return ifile_list
 
 def get_library_dirs():
     
@@ -456,16 +384,12 @@ def get_emaps_macros():
 
 # ------------------- must set this before build -------------------
 pyemaps_build_defs, pyemaps_build_undefs= get_emaps_macros()
-# print(f'Defines for the build: {pyemaps_build_defs}')
-# print(f'Undefines for the build: {pyemaps_build_undefs}')
 
 pyemaps_dif = Extension("pyemaps.diffract.emaps",
         sources                = get_diffract_sources(),
         extra_f90_compile_args     = get_compiler_args(),
         define_macros          = pyemaps_build_defs,
         undef_macros           = pyemaps_build_undefs,
-        # extra_c_compile_args   = c_compile_args,
-        # language               = 'c11',
         extra_link_args        =["-static", ],
         libraries              = get_libraries(),
         library_dirs           = get_library_dirs(),
@@ -477,11 +401,8 @@ pyemaps_dif = Extension("pyemaps.diffract.emaps",
 pyemaps_scattering = Extension("pyemaps.scattering.scattering",
         sources                     = get_scattering_sources(),
         extra_f90_compile_args      = get_compiler_args(),
-        # extra_compile_args         = extra_compile_args,
-        # language               = 'c11',
         extra_link_args             =["-static", ],
         define_macros               = [('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION'),
-                                #   ('Py_LIMITED_API', '0x03070000'),
                                       ],
         f2py_options           = ["--quiet",]
 )
@@ -489,8 +410,6 @@ pyemaps_scattering = Extension("pyemaps.scattering.scattering",
 pyemaps_spg = Extension("pyemaps.spg.spg",
         sources                     = get_spg_sources(),
         extra_f90_compile_args      = get_compiler_args(),
-        # extra_compile_args         = extra_compile_args,
-        # language               = 'c11',
         extra_link_args        =["-static", ],
         define_macros          = [('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION')
                                  ],
@@ -567,6 +486,6 @@ setup(name                              ="pyemaps",
                                         'license.txt']),
                                         ('pyemaps/samples', get_samples()),
                                         ('pyemaps/cdata', get_cdata()),
-                                        # ('pyemaps/diffract', get_intel_redist()),
+
                                       ]
 )
