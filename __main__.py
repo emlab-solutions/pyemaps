@@ -21,7 +21,7 @@
 
 from copy import copy
 
-rel_stage = 'Beta'
+rel_stage = 'Stable'
 pyemaps_samples_dir = 'pyemaps_samples'
 
 def copy_samples():
@@ -106,7 +106,7 @@ if __name__ == '__main__':
     scopyrit = '\n'.join(copyrit)
 
     if args.sample:
-        copyrit.append('Version  ' + ver)
+        copyrit.append('Version ' + ver)
         print('\n'.join(copyrit))
         run_si_sample()
         exit(0)

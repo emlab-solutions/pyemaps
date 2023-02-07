@@ -12,7 +12,8 @@ MAKE_LOOKUP = dict(
     stereo = 'STEREOPYF',
     spg = 'SPGSEEKPYF',
     scattering = 'SCTPYF',
-    all = 'EMAPSPYF'
+    free = 'EMAPSPYF',
+    all = 'EMAPSDPGENPYF' 
 )
 
 test_pypi_url = "https://test.pypi.org"
@@ -79,6 +80,7 @@ def make_pyf(comp):
     os.system("make clean")
 
     pyf_fname = 'emaps_'
+
     makestr = "make EMAPSALLMODULES"
     if comp in MAKE_LOOKUP:
         makestr += ' '
@@ -89,7 +91,8 @@ def make_pyf(comp):
         raise ValueError("Error: build pyemaps build type")
     
     os.system("make clean")
-
+    # print(f'Make command string: {makestr}')
+    # exit()
     os.system(makestr)
 
     # build spg standalone spg module
@@ -263,17 +266,24 @@ def copy_configuration():
 
     return dst_file
 
-def build_package(comp = 'dif', repo_test = True):
+def build_package(repo_test = True):
     '''
     Build the package
     Conponent configuration via PYEMAPS_JSON env variable
     '''
     import os, sys
     
+    build_type = os.getenv('EMAPS_BTYPE')
+    
+    if build_type != 'free' and build_type != 'all':
+        print(f'Unrecognised build type')
+        exit(1)
+        
     clean()
-    make_pyf(comp)
+    
+    make_pyf(build_type)
 
-    print(f"####Begin building pyemaps package for {comp}...")
+    print(f"####Begin building pyemaps package for {build_type}...")
 
     hideEMAPSPYFiles()
     setupf = copy_configuration()
@@ -401,7 +411,7 @@ if __name__ == "__main__":
     import argparse
     import time
     parser = argparse.ArgumentParser(description="Build and publish script for pyeamps")
-    parser.add_argument("-c", "--component", type=str, nargs="?", const="dif", default="dif", help="build pyemaps component, defaults to dif module", required=False)
+    # parser.add_argument("-c", "--component", type=str, nargs="?", const="dif", default="dif", help="build pyemaps component, defaults to dif module", required=False)
     parser.add_argument("-u", "--upload", action="store_true", help="upload the build or not", required=False)
     parser.add_argument("-t", "--test-repo", action="store_true", help="upload to the build to test repo test.pypi.org", required=False)
     parser.add_argument("-i", "--install", action="store_true", help="install the package from above repo", required=False)
@@ -416,11 +426,11 @@ if __name__ == "__main__":
     # set_benvs()
 
     args = parser.parse_args()
-    comp = args.component
+    # comp = args.component
 
-    if not comp:
-        # defaults to dif pyeamps module
-        comp = 'bloch'
+    # if not comp:
+    #     # defaults to dif pyeamps module
+    #     comp = 'bloch'
 
     ver = args.build_version
     if not ver or ver == '':
@@ -431,8 +441,7 @@ if __name__ == "__main__":
         vf.write('__version__ = \"' + ver + '\"')
 
     if not args.no_build:
-        os.environ['EMAPS_BTYPE'] = args.build_type
-        build_package(comp)
+        build_package()
 
     if args.install_local:
         install_local()

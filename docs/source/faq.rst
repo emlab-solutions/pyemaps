@@ -81,3 +81,39 @@ Follow the steps below to install and run pyemaps in Anaconda with Jupyter Noteb
     jupyter notebook
     
   Create a new notebook file to run pyemaps tasks.
+
+  
+What can I do to speedup dynamic diffraction simulations?
+---------------------------------------------------------
+
+**pyemaps** Bloch simulation, e. g. dynamic diffraction simulation costs
+significant computation resource and operations. As a result, it is much
+slower than that of kinematic simulation. 
+
+While pyemaps performance has improved significantly since its inception, 
+there are still rooms for enhancements and we are still looking for 
+opportunities to make constant progress.
+
+Meanwhile, you can also add to this effort in your simulation with 
+**pyemaps** by taking advantages of python features such as parallell 
+processing. 
+
+For example:
+
+- Using python mutiprocessing if your simulation involves multiple controls input.
+
+.. code-block:: python
+
+  with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
+
+        for ec in emclist:
+            fs.append(e.submit(cr.generateBloch, 
+                               disk_size=dsize, 
+                               sampling = 20, 
+                               sample_thickness=(1750,1750,100),
+                               em_controls = ec))
+
+The above code snippet can be found in *samples* folder in *si_bloch.py*.
+
+- Assisting simulation computation by setting %TMPDIR% environment to a file location 
+  where file I/O performance is much higher than that of the normal folder. 
