@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Release Notes &#8212; pyemaps 0.6.2 Beta documentation</title>
+    <title>Release Notes &#8212; pyemaps 1.0.0 Stable documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="license.html" title="Licence"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.6.2 Beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Release Notes</a></li> 
       </ul>
     </div>  
@@ -49,74 +49,131 @@
             
   <section id="release-notes">
 <h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this heading">¶</a></h1>
-<section id="version-0-4-7-beta">
-<h2>Version 0.4.7 Beta<a class="headerlink" href="#version-0-4-7-beta" title="Permalink to this heading">¶</a></h2>
+<section id="version-1-0-0-stable">
+<h2>Version 1.0.0 Stable<a class="headerlink" href="#version-1-0-0-stable" title="Permalink to this heading">¶</a></h2>
 <section id="id1">
-<h3>11-14-2022<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
-</section>
-<section id="new">
-<h3>New<a class="headerlink" href="#new" title="Permalink to this heading">¶</a></h3>
-<p>Reorganized dynamic diffraction simulation into sessions with:</p>
-<ol class="arabic simple">
-<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a>. Starts a Bloch wave dynamic diffraction session.</p></li>
-<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch</a>. Ends a dynamic diffraction session.</p></li>
-</ol>
-<p>These methods enable pyemaps to retain simulation in memory while preventing repeatitive computations, making
-pyemaps more efficient. Dynamic simulation data can be retrieved during session include:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getBlochImages">getBlochImages</a>. Retrieves bloch images and/or save the images into raw image files.</p></li>
-<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getEigen">getSCMatrix</a>. Gets scattering matrix at a selected sampling point.</p></li>
-<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getSCMatrix">getEigen</a>. Gets eigen values at a selected sampling point.</p></li>
-<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getBeams">getBeams</a>. Retrieves diagnization Miller indexes at each sampling point.</p></li>
-<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails">printIBDetails</a>. Prints miscellenous data such as incidental beams and a list of sampling points etc.</p></li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateBloch">generateBloch</a> is kept for backward compatibility purposes.
-This function is now equivalent to calling:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a></p></li>
-<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getBlockImages">getBlockImages</a></p></li>
-<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch</a></p></li>
-</ul>
-</div>
-</section>
-</section>
-<section id="version-0-4-8-beta">
-<h2>Version 0.4.8 Beta<a class="headerlink" href="#version-0-4-8-beta" title="Permalink to this heading">¶</a></h2>
-<section id="id4">
-<h3>11-19-2022<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
+<h3>02-07-2023<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
+<p>The first stable version!</p>
 </section>
 <section id="improvements">
 <h3>Improvements<a class="headerlink" href="#improvements" title="Permalink to this heading">¶</a></h3>
 <ul>
-<li><p>Crystal volume limit increased to 1200.</p></li>
-<li><p>Dynamic diffraction simulation expanded to handle larger number of
-diffracted beams up to 5000.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The increase can result in much longer simulation time. In some cases
-with large diffracted beams numbers near the limit, it may mean
-30 minutes or longer. The simulation time varies depending your system.</p>
-</div>
+<li><p>Bug fixes in dynamic diffraction simulations. The temporary file name
+collision issue discovered during some multiprocess executions is now
+fixed. We’d like to thank our users for reporting the issue.</p>
+<p>Send your suggestions and comments to <a class="reference external" href="mailto:support&#37;&#52;&#48;emlabsoftware&#46;com">support<span>&#64;</span>emlabsoftware<span>&#46;</span>com</a>.</p>
 </li>
-<li><p>More build-in crystal data added because of the above expansions. Additional
-built-in crystals:</p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;BiMnO3&#39;</span>
-<span class="s1">&#39;CoSb3_Skutterudite&#39;</span>
-<span class="s1">&#39;Pentacene&#39;</span>
+</section>
+</section>
+<section id="version-0-6-2-beta">
+<h2>Version 0.6.2 Beta<a class="headerlink" href="#version-0-6-2-beta" title="Permalink to this heading">¶</a></h2>
+<section id="id2">
+<h3>01-15-2023<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="id3">
+<h3>Improvements<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
+<ul>
+<li><p>Bug fixes.</p></li>
+<li><p>Display function parameters naming changes to be more consistent. Specifically,
+<em>ishow</em> and <em>kshow</em> parameters are now becoming <em>iShow</em> and <em>kShow</em> as show
+below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">showDif</span><span class="p">(</span><span class="o">..</span><span class="p">,</span> <span class="n">iShow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kShow</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
+<dl class="simple">
+<dt>In additional each of the display functions</dt><dd><ul class="simple">
+<li><p><em>showDif</em></p></li>
+<li><p><em>showBloch</em></p></li>
+<li><p><em>showStereo</em></p></li>
+</ul>
+</dd>
+</dl>
+<p>gains an optional boolean input parameter <em>bClose</em> with default of <em>False</em>.
+This input controls whether the display windows close or not after all displays are completed.
+Default value, if not set, is <em>False</em>. In which case, users must close the display windows
+manuallly for each display, failure to do so may result in too many display windows.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">showBloch</span><span class="p">(</span><span class="o">..</span><span class="p">,</span> <span class="n">bClose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="o">..</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Setting <em>bClose</em> to <em>True</em> is useful where the display functions are called to preventing
+too many display windows open.</p>
+</li>
+<li><p>The electronic micropscope control class - EMControl or EMC fills attributes with
+default values if not set.</p></li>
+</ul>
+</section>
+</section>
+<section id="version-0-6-1-beta">
+<h2>Version 0.6.1 Beta<a class="headerlink" href="#version-0-6-1-beta" title="Permalink to this heading">¶</a></h2>
+<section id="id4">
+<h3>01-05-2023<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="id5">
+<h3>Improvements<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Bug fixes.</p></li>
+<li><p>Display will keep the figures windows open for each display. Users are now responsible to close them.</p></li>
+</ul>
+</section>
+</section>
+<section id="version-0-6-0-beta">
+<h2>Version 0.6.0 Beta<a class="headerlink" href="#version-0-6-0-beta" title="Permalink to this heading">¶</a></h2>
+<section id="id6">
+<h3>12-11-2022<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="id7">
+<h3>Improvements<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h3>
+<ul>
+<li><p>Diffraction simulation result list objects <a class="reference external" href="pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern">DPList</a> and
+<a class="reference external" href="pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs">BImgList</a> can now be sorted by its controls objects in their builtin
+sorting function shown in the following code snippet:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">DPList</span>
+
+<span class="n">dpl</span> <span class="o">=</span> <span class="n">DPList</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+ <span class="o">....</span>  <span class="c1"># more code here</span>
+<span class="c1"># sorting the images by their associated controls</span>
+<span class="n">dpl</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>See sample code <em>si_dif.py</em> and <em>si_bloch.py</em> for more details on how to
+use the function and display them in the sorting order.</p>
+<p>For stereodiagram results where there is no builtin result objects, users
+can build a python list of control and result pair and apply python style
+sorting on the list as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">slist</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Refer to <em>si_stereo.py</em>.</p>
+</li>
+<li><p>Enhanced Bloch simulation memory management, bloch simulation exception handling
+and result accuracies.</p></li>
+</ul>
+</section>
+</section>
+<section id="version-0-5-0-beta">
+<h2>Version 0.5.0 Beta<a class="headerlink" href="#version-0-5-0-beta" title="Permalink to this heading">¶</a></h2>
+<section id="id8">
+<h3>11-30-2022<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="id9">
+<h3>Improvements<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Documentation impreovements.</p></li>
+<li><p>Kinematic diffraction pattern: Kikuchi and HOLZ lines intensities
+data added and rendered as opacities of the lines.</p></li>
+<li><p>More control parameters added to EMControls as optional attributes.
+See <a class="reference internal" href="pyemaps.emcontrols.html"><span class="doc">pyemaps.emcontrols module</span></a> for more details.</p></li>
+</ul>
 </section>
 </section>
 <section id="version-0-4-9-beta">
 <h2>Version 0.4.9 Beta<a class="headerlink" href="#version-0-4-9-beta" title="Permalink to this heading">¶</a></h2>
-<section id="id5">
-<h3>11-26-2022<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
+<section id="id10">
+<h3>11-26-2022<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h3>
 </section>
-<section id="id6">
-<h3>Improvements<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
+<section id="id11">
+<h3>Improvements<a class="headerlink" href="#id11" title="Permalink to this heading">¶</a></h3>
 <ul>
 <li><p>Bug fixes.</p></li>
 <li><dl>
@@ -152,105 +209,65 @@ to <cite>True</cite>.</p>
 </ul>
 </section>
 </section>
-<section id="version-0-5-0-beta">
-<h2>Version 0.5.0 Beta<a class="headerlink" href="#version-0-5-0-beta" title="Permalink to this heading">¶</a></h2>
-<section id="id7">
-<h3>11-30-2022<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h3>
-</section>
-<section id="id8">
-<h3>Improvements<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h3>
-<ul class="simple">
-<li><p>Documentation impreovements.</p></li>
-<li><p>Kinematic diffraction pattern: Kikuchi and HOLZ lines intensities
-data added and rendered as opacities of the lines.</p></li>
-<li><p>More control parameters added to EMControls as optional attributes.
-See <a class="reference internal" href="pyemaps.emcontrols.html"><span class="doc">pyemaps.emcontrols module</span></a> for more details.</p></li>
-</ul>
-</section>
-</section>
-<section id="version-0-6-0-beta">
-<h2>Version 0.6.0 Beta<a class="headerlink" href="#version-0-6-0-beta" title="Permalink to this heading">¶</a></h2>
-<section id="id9">
-<h3>12-11-2022<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h3>
-</section>
-<section id="id10">
-<h3>Improvements<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h3>
-<ul>
-<li><p>Diffraction simulation result list objects <a class="reference external" href="pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern">DPList</a> and
-<a class="reference external" href="pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs">BImgList</a> can now be sorted by its controls objects in their builtin
-sorting function shown in the following code snippet:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">DPList</span>
-
-<span class="n">dpl</span> <span class="o">=</span> <span class="n">DPList</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
- <span class="o">....</span>  <span class="c1"># more code here</span>
-<span class="c1"># sorting the images by their associated controls</span>
-<span class="n">dpl</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>See sample code <em>si_dif.py</em> and <em>si_bloch.py</em> for more details on how to
-use the function and display them in the sorting order.</p>
-<p>For stereodiagram results where there is no builtin result objects, users
-can build a python list of control and result pair and apply python style
-sorting on the list as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">slist</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</pre></div>
-</div>
-<p>Refer to <em>si_stereo.py</em>.</p>
-</li>
-<li><p>Enhanced Bloch simulation memory management, bloch simulation exception handling
-and result accuracies.</p></li>
-</ul>
-</section>
-</section>
-<section id="version-0-6-1-beta">
-<h2>Version 0.6.1 Beta<a class="headerlink" href="#version-0-6-1-beta" title="Permalink to this heading">¶</a></h2>
-<section id="id11">
-<h3>01-05-2023<a class="headerlink" href="#id11" title="Permalink to this heading">¶</a></h3>
-</section>
+<section id="version-0-4-8-beta">
+<h2>Version 0.4.8 Beta<a class="headerlink" href="#version-0-4-8-beta" title="Permalink to this heading">¶</a></h2>
 <section id="id12">
-<h3>Improvements<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h3>
-<ul class="simple">
-<li><p>Bug fixes.</p></li>
-<li><p>Display will keep the figures windows open for each display. Users are now responsible to close them.</p></li>
-</ul>
+<h3>11-19-2022<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h3>
 </section>
-</section>
-<section id="version-0-6-2-beta">
-<h2>Version 0.6.2 Beta<a class="headerlink" href="#version-0-6-2-beta" title="Permalink to this heading">¶</a></h2>
 <section id="id13">
-<h3>01-15-2023<a class="headerlink" href="#id13" title="Permalink to this heading">¶</a></h3>
-</section>
-<section id="id14">
-<h3>Improvements<a class="headerlink" href="#id14" title="Permalink to this heading">¶</a></h3>
+<h3>Improvements<a class="headerlink" href="#id13" title="Permalink to this heading">¶</a></h3>
 <ul>
-<li><p>Bug fixes.</p></li>
-<li><p>Display function parameters naming changes to be more consistent. Specifically,
-<em>ishow</em> and <em>kshow</em> parameters are now becoming <em>iShow</em> and <em>kShow</em> as show
-below:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">showDif</span><span class="p">(</span><span class="o">..</span><span class="p">,</span> <span class="n">iShow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kShow</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-</pre></div>
+<li><p>Crystal volume limit increased to 1200.</p></li>
+<li><p>Dynamic diffraction simulation expanded to handle larger number of
+diffracted beams up to 5000.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The increase can result in much longer simulation time. In some cases
+with large diffracted beams numbers near the limit, it may mean
+30 minutes or longer. The simulation time varies depending your system.</p>
 </div>
-<dl class="simple">
-<dt>In additional each of the display functions</dt><dd><ul class="simple">
-<li><p><em>showDif</em></p></li>
-<li><p><em>showBloch</em></p></li>
-<li><p><em>showStereo</em></p></li>
-</ul>
-</dd>
-</dl>
-<p>gains an optional boolean input parameter <em>bClose</em> with default of <em>False</em>.
-This input controls whether the display windows close or not after all displays are completed.
-Default value, if not set, is <em>False</em>. In which case, users must close the display windows
-manuallly for each display, failure to do so may result in too many display windows.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">showBloch</span><span class="p">(</span><span class="o">..</span><span class="p">,</span> <span class="n">bClose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="o">..</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Setting <em>bClose</em> to <em>True</em> is useful where the display functions are called to preventing
-too many display windows open.</p>
 </li>
-<li><p>The electronic micropscope control class - EMControl or EMC fills attributes with
-default values if not set.</p></li>
+<li><p>More build-in crystal data added because of the above expansions. Additional
+built-in crystals:</p></li>
 </ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;BiMnO3&#39;</span>
+<span class="s1">&#39;CoSb3_Skutterudite&#39;</span>
+<span class="s1">&#39;Pentacene&#39;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="version-0-4-7-beta">
+<h2>Version 0.4.7 Beta<a class="headerlink" href="#version-0-4-7-beta" title="Permalink to this heading">¶</a></h2>
+<section id="id14">
+<h3>11-14-2022<a class="headerlink" href="#id14" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="new">
+<h3>New<a class="headerlink" href="#new" title="Permalink to this heading">¶</a></h3>
+<p>Reorganized dynamic diffraction simulation into sessions with:</p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a>. Starts a Bloch wave dynamic diffraction session.</p></li>
+<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch</a>. Ends a dynamic diffraction session.</p></li>
+</ol>
+<p>These methods enable pyemaps to retain simulation in memory while preventing repeatitive computations, making
+pyemaps more efficient. Dynamic simulation data can be retrieved during session include:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getBlochImages">getBlochImages</a>. Retrieves bloch images and/or save the images into raw image files.</p></li>
+<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getEigen">getSCMatrix</a>. Gets scattering matrix at a selected sampling point.</p></li>
+<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getSCMatrix">getEigen</a>. Gets eigen values at a selected sampling point.</p></li>
+<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getBeams">getBeams</a>. Retrieves diagnization Miller indexes at each sampling point.</p></li>
+<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails">printIBDetails</a>. Prints miscellenous data such as incidental beams and a list of sampling points etc.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateBloch">generateBloch</a> is kept for backward compatibility purposes.
+This function is now equivalent to calling:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a></p></li>
+<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getBlockImages">getBlockImages</a></p></li>
+<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch</a></p></li>
+</ul>
+</div>
 </section>
 </section>
 </section>
@@ -271,39 +288,44 @@ default values if not set.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Release Notes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#version-0-4-7-beta">Version 0.4.7 Beta</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">11-14-2022</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#new">New</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#version-0-4-8-beta">Version 0.4.8 Beta</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id4">11-19-2022</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-1-0-0-stable">Version 1.0.0 Stable</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">02-07-2023</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#improvements">Improvements</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#version-0-4-9-beta">Version 0.4.9 Beta</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id5">11-26-2022</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id6">Improvements</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#version-0-5-0-beta">Version 0.5.0 Beta</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id7">11-30-2022</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id8">Improvements</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#version-0-6-0-beta">Version 0.6.0 Beta</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id9">12-11-2022</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id10">Improvements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-6-2-beta">Version 0.6.2 Beta</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">01-15-2023</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Improvements</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-6-1-beta">Version 0.6.1 Beta</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id11">01-05-2023</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id12">Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">01-05-2023</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Improvements</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#version-0-6-2-beta">Version 0.6.2 Beta</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id13">01-15-2023</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id14">Improvements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-6-0-beta">Version 0.6.0 Beta</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id6">12-11-2022</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Improvements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-5-0-beta">Version 0.5.0 Beta</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id8">11-30-2022</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">Improvements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-4-9-beta">Version 0.4.9 Beta</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id10">11-26-2022</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">Improvements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-4-8-beta">Version 0.4.8 Beta</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id12">11-19-2022</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">Improvements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#version-0-4-7-beta">Version 0.4.7 Beta</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id14">11-14-2022</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#new">New</a></li>
 </ul>
 </li>
 </ul>
@@ -350,7 +372,7 @@ default values if not set.</p></li>
         <li class="right" >
           <a href="license.html" title="Licence"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.6.2 Beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Release Notes</a></li> 
       </ul>
     </div>

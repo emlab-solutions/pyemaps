@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Frequently Asked Questions &#8212; pyemaps 0.6.2 Beta documentation</title>
+    <title>Frequently Asked Questions &#8212; pyemaps 1.0.0 Stable documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="visualization.html" title="Visualisation"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.6.2 Beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Frequently Asked Questions</a></li> 
       </ul>
     </div>  
@@ -118,6 +118,37 @@ deleting old environment and packages folders as old packages can cause dependen
 </li>
 </ul>
 </section>
+<section id="what-can-i-do-to-speedup-dynamic-diffraction-simulations">
+<h2>What can I do to speedup dynamic diffraction simulations?<a class="headerlink" href="#what-can-i-do-to-speedup-dynamic-diffraction-simulations" title="Permalink to this heading">¶</a></h2>
+<p><strong>pyemaps</strong> Bloch simulation, e. g. dynamic diffraction simulation costs
+significant computation resource and operations. As a result, it is much
+slower than that of kinematic simulation.</p>
+<p>While pyemaps performance has improved significantly since its inception,
+there are still rooms for enhancements and we are still looking for
+opportunities to make constant progress.</p>
+<p>Meanwhile, you can also add to this effort in your simulation with
+<strong>pyemaps</strong> by taking advantages of python features such as parallell
+processing.</p>
+<p>For example:</p>
+<ul class="simple">
+<li><p>Using python mutiprocessing if your simulation involves multiple controls input.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ProcessPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">MAX_PROCWORKERS</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+
+      <span class="k">for</span> <span class="n">ec</span> <span class="ow">in</span> <span class="n">emclist</span><span class="p">:</span>
+          <span class="n">fs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="n">cr</span><span class="o">.</span><span class="n">generateBloch</span><span class="p">,</span>
+                             <span class="n">disk_size</span><span class="o">=</span><span class="n">dsize</span><span class="p">,</span>
+                             <span class="n">sampling</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+                             <span class="n">sample_thickness</span><span class="o">=</span><span class="p">(</span><span class="mi">1750</span><span class="p">,</span><span class="mi">1750</span><span class="p">,</span><span class="mi">100</span><span class="p">),</span>
+                             <span class="n">em_controls</span> <span class="o">=</span> <span class="n">ec</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The above code snippet can be found in <em>samples</em> folder in <em>si_bloch.py</em>.</p>
+<ul class="simple">
+<li><p>Assisting simulation computation by setting %TMPDIR% environment to a file location
+where file I/O performance is much higher than that of the normal folder.</p></li>
+</ul>
+</section>
 </section>
 
 
@@ -136,6 +167,7 @@ deleting old environment and packages folders as old packages can cause dependen
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently Asked Questions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#what-s-likely-the-cause-of-installation-failure">What’s Likely the Cause of Installation Failure?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#how-do-i-install-and-run-pyemaps-in-anaconda-environment-with-jupyter-notebook">How Do I Install and Run <strong>pyemaps</strong> in Anaconda Environment With Jupyter Notebook?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-can-i-do-to-speedup-dynamic-diffraction-simulations">What can I do to speedup dynamic diffraction simulations?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
@@ -182,7 +214,7 @@ deleting old environment and packages folders as old packages can cause dependen
         <li class="right" >
           <a href="visualization.html" title="Visualisation"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 0.6.2 Beta documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Frequently Asked Questions</a></li> 
       </ul>
     </div>

@@ -55,7 +55,7 @@ Check out the :doc:`usage` section for further information, including how to
 
 .. note::
 
-   *pyemaps* is currently under active Beta development phase. 
+   *pyemaps* is currently under active production/stable development phase. 
 
 .. note::
 
