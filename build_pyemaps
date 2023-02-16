@@ -33,7 +33,7 @@ def clean():
     if os.path.exists(builddir) and os.path.isdir(builddir):
         shutil.rmtree(builddir)
 
-
+# remove distribution packages... For now we keep them
     # distdir = Path('dist')
     # print(f"Distribution dir: {distdir}")
     # if os.path.exists(distdir) and os.path.isdir(distdir):
@@ -91,8 +91,7 @@ def make_pyf(comp):
         raise ValueError("Error: build pyemaps build type")
     
     os.system("make clean")
-    # print(f'Make command string: {makestr}')
-    # exit()
+    
     os.system(makestr)
 
     # build spg standalone spg module
@@ -156,11 +155,9 @@ def get_bversion(btest = True):
 
     rels = jresp['releases']
 
-    # get the current release
+    # Increment to get the current release
     max_ver = '0.0.1'
     for k in rels.keys():
-        # major, minor, sub = int(re.split('.', k))
-        # if max_major
         if k > max_ver:
             max_ver = k
     # increment version number by 1
@@ -212,7 +209,7 @@ def hideEMAPSPYFiles():
     from pathlib import Path
     # first change working directory to emaps from here
     currdir = Path(os.path.abspath(__file__)).parent.absolute()
-    # currdir = os.path.dirname(os.path.realpath(__file__))
+    
     print(f'Current dir in hideEMAPSFiles: {os.path.abspath(__file__)}, {currdir}')
     emapsdir = os.path.join(currdir, 'emaps')
     
@@ -288,14 +285,14 @@ def build_package(repo_test = True):
     hideEMAPSPYFiles()
     setupf = copy_configuration()
     #  build the source distribution
-    # os.system('python -m build -s')
+    
     if sys.platform == 'win32':
         os.system('python -m build -s -n')
     else:
         os.system('python3 -m build -s -n') 
 
     #  build the wheel distribution (linrary build)
-    # os.system('python -m build -w')
+    
     if sys.platform == 'win32':
         os.system('python -m build -w -n')
     else:
@@ -376,7 +373,7 @@ def install_local():
             shutil.copy(src_file, sample_dest)
 
     # copy a couple of files into its parent dir
-    # sanity.bat
+    
     sanity_src_dir = os.path.join(pyemaps_dir, 'test')
     sanity_src_dir = os.path.join(sanity_src_dir, 'sanity')
 
@@ -388,7 +385,7 @@ def install_local():
                 shutil.copy(src_file, sample_dest)
 def set_benvs():
     import sys
-    # compilers
+    
     curr_dir = Path(os.path.abspath(__file__)).parent.absolute() 
     ONEAPIROOT = os.getenv('ONEAPI_ROOT')
     if sys.platform == 'win32': 
@@ -405,13 +402,12 @@ def set_benvs():
                             'compiler', 
                             '2022.1.0', 
                             sos)
-    # exit(0)
+                            
 
 if __name__ == "__main__":
     import argparse
     import time
     parser = argparse.ArgumentParser(description="Build and publish script for pyeamps")
-    # parser.add_argument("-c", "--component", type=str, nargs="?", const="dif", default="dif", help="build pyemaps component, defaults to dif module", required=False)
     parser.add_argument("-u", "--upload", action="store_true", help="upload the build or not", required=False)
     parser.add_argument("-t", "--test-repo", action="store_true", help="upload to the build to test repo test.pypi.org", required=False)
     parser.add_argument("-i", "--install", action="store_true", help="install the package from above repo", required=False)
@@ -419,18 +415,9 @@ if __name__ == "__main__":
     parser.add_argument("-il", "--install-local", action="store_true", help="no build", required=False)
     parser.add_argument("-v", "--build-version", type=str, nargs="?", const="", default="", help="build version input", required=False)
     parser.add_argument("-bt", "--build-type", type=str, nargs="?", const="free", default="free", help="build free pyemaps package, defaults to free", required=False)
-    # parser.add_argument("-a", "--add-dpgen", action="store_false", help="no build", required=False)
-    
-
-# ########## set envs ##################
-    # set_benvs()
+   
 
     args = parser.parse_args()
-    # comp = args.component
-
-    # if not comp:
-    #     # defaults to dif pyeamps module
-    #     comp = 'bloch'
 
     ver = args.build_version
     if not ver or ver == '':
@@ -450,7 +437,7 @@ if __name__ == "__main__":
     if not args.upload:
         exit(0)
 
-    # upload the package
+    # upload the package, do not 
     ret = upload_package(bRelease = not args.test_repo , ver = ver)
 
     if ret ==0:
