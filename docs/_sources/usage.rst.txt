@@ -116,34 +116,22 @@ Kinematic Diffraction Simulation
 
 .. code-block:: python
 
-    from pyemaps import Crystal as cr        # Crystal class
-    from pyemaps import DPList               # Kinematic diffraction patterns class
-    from pyemaps import showDif              # Builtin visualization helper class
-    
-    # create a crystal class object and load it with builtin silicon data
-    c_name = 'Silicon'
-    si = cr.from_builtin(c_name)
+   from pyemaps import Crystal            #----pyemaps crystal module
+   from pyemaps import DPList, showDif    #----Helper modules
+   
+   si = Crystal.from_builtin('Silicon')   #----loading Silicon crystal from builtin database
+   emc, si_dp = si.generateDP()           #----generate kinematic diffraction pattern
+                                          #----Output:
+                                          #----emc: associated microscope and 
+                                          #         simulation control object
+                                          #----si_dp: diffraction pattern generated
+   print(si_dp)                           #----raw representation of kinematic diffraction pattern 
 
-    # Simulate kinematic diffraction with the crystal instance 
-    # All controls input are default values
-    
-    dpl = DPList(c_name)
+   dpl = DPList('Silicon')                #----create a diffraction pattern list to hold the results
+   dpl.add(emc, si_dp)                    #----can add more if desired
 
-    emc, si_dp = si.generateDP()
-    dpl.add(emc, si_dp)    
+   showDif(dpl, bClose=False)             #----visual representation of diffraction pattern
 
-    # Plot and show the diffraction pattern using 
-    # pyemaps built-in plot function
-    showDif(dpl)
-
-    # Show Diffraction patterns by hiding Kikuchi lines
-    showDif(dpl, kshow=False) 
-
-    # Show Diffraction patterns by hiding both Kukuchi line and Miller Indexes
-    showDif(dpl, kshow=False, iShow=False) 
-
-    # Show Diffraction patterns by hiding Miller Indices
-    showDif(dpl, iShow=False)
 
 Here crystal class method *generateDP* produces a kinmatic diffraction pattern or
 `DPList <pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern>`_ (si_dp) 

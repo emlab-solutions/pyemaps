@@ -83,7 +83,7 @@ Follow the steps below to install and run pyemaps in Anaconda with Jupyter Noteb
   Create a new notebook file to run pyemaps tasks.
 
   
-What can I do to speedup dynamic diffraction simulations?
+What can I do to speed up dynamic diffraction simulations?
 ---------------------------------------------------------
 
 **pyemaps** Bloch simulation, e. g. dynamic diffraction simulation costs
