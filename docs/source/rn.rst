@@ -6,7 +6,6 @@ Version 1.0.1 Stable
 
 02-16-2023 
 ~~~~~~~~~~
-The first stable version!
 
 Improvements
 ~~~~~~~~~~~~
