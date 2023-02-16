@@ -283,8 +283,9 @@ def add_dif(target):
         :rtype: pyemaps.DPList.
 
         """
-        from . import DPList
-        
+        from .. import DPList
+        if mode is None:
+            mode = 1
         try:
             emc, cdp = self.generateDP(mode = mode, dsize=dsize, em_controls = em_controls)
             myDif = DPList(self._name, mode = mode)
