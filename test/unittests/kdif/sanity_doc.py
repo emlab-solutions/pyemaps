@@ -8,7 +8,7 @@ def run_kdiffraction():
     emc, si_dp = si.generateDP()            #----generate kinematic diffraction pattern
                                             #----Output:
                                             #----emc: associated microscope and 
-                                            #         simulation control object
+                                            #            simulation control object
                                             #----si_dp: diffraction pattern generated
     print(si_dp)                            #----raw representation of kinematic diffraction pattern 
 
