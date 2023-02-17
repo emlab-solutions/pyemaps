@@ -126,7 +126,6 @@ class DifPlotter:
             print(f'image saved to: {save_to}.png')
    
     def terminate(self):
-        
         if self.bClose:
             plt.close(self.fig) #just close the current figure
         # Otherwise:
@@ -134,7 +133,7 @@ class DifPlotter:
             
     def plotKDif(self):
         idx, emc, dp, mode, kshow, ishow = self.difData
-        
+
         if self.layout == 'table':
             n1, n2 = _getGridPos(idx, 3)
         else:
@@ -306,7 +305,7 @@ class DifPlotter:
         
         while self.pipe.poll():
             command = self.pipe.recv()
-            
+        
             if command is None:
                 self.terminate()
                 return False
@@ -359,7 +358,7 @@ class DifPlotter:
         self.layout = layout
         self.cShow = cShow
         self.bClose = bClose
-
+        
         if sys.platform == 'win32':
             curr_dpi = _find_dpi()
         else:
@@ -395,7 +394,6 @@ class DifPlotter:
             raise ValueError("Unsupported data type")
         
         self.type = type
-
         if hasDisplay:
             if self.fig.canvas.manager is not None:
                 self.fig.canvas.manager.set_window_title(pyemaps_title)
@@ -435,7 +433,7 @@ class NBPlot:
                   cShow, 
                   bClose,
                   layout), 
-            daemon=True)
+            daemon=False)
 
         self.plot_process.start()
 
