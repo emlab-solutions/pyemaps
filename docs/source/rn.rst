@@ -1,6 +1,20 @@
 Release Notes
 =============
 
+Version 1.0.1 Stable
+------------------ 
+
+02-16-2023 
+~~~~~~~~~~
+
+Improvements
+~~~~~~~~~~~~
+
+- Bug fixes in single simulation display functions and other incremental improvements. 
+
+  Send your suggestions and comments to support@emlabsoftware.com.
+
+
 Version 1.0.0 Stable
 ------------------ 
 

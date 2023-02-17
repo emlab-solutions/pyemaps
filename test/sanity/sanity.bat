@@ -23,5 +23,6 @@ if "%1"=="local" (
     python test\sanity\feature_sanity.py
     @REM EMC SIMC class basic function tests
      python test\unittests\emc\test1.py
+     python test\unittests\kdif\sanity_doc.py
     rm -rf pyemaps_samples
 )

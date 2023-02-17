@@ -45,8 +45,8 @@ if "%PACKAGE_TYPE%" == "test" (
     call python -m pip install dist\pyemaps-3.1.2-cp37-cp37m-win_amd64.whl
     @REM echo got here after test package build
 ) else (
-    call python build_pyemaps -v 1.0.0
-    call python -m pip install dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl
+    call python build_pyemaps -v 1.0.1
+    call python -m pip install dist\pyemaps-1.0.1-cp37-cp37m-win_amd64.whl
     @REM echo got here after production package build
 )
 
