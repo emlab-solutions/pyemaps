@@ -124,7 +124,55 @@ c_objs_free_lin = ['blochimgs.o']
 
 sct_files =['scattering_sct.pyf', 'scattering.f90']  
 
-spgra_files =['spg_spgseek.pyf', 'spgseek.f90', 'spgra.f90']            
+spgra_files =['spg_spgseek.pyf', 'spgseek.f90', 'spgra.f90']    
+
+# ------------- ediom -----------------
+ediomSRCFiles = ['imgutil_sub_mod.cpp', 
+            'DPIndex_mod.cpp', 
+            'nrutil_mod.cpp', 
+            'refine_mod.cpp',
+            'peak_mod.cpp',
+            'StackDP_mod.cpp', 
+            'simplxc_mod.cpp',
+            'symmetry_mod.cpp',
+            # 'ediom_wrap.c',
+            'ediom.i']
+# ------------- ediom -----------------
+
+
+def get_ediom_srcdir():
+
+    current_path = Path(os.path.abspath(__file__))
+
+    parent_path = current_path.parent.absolute()
+
+    return os.path.join(parent_path, 'ediom')
+
+def get_ediom_sources():
+
+    ediom_dir = get_ediom_srcdir()
+ 
+    src_list = []
+    for sf in ediomSRCFiles:
+        src_list.append(os.path.join(ediom_dir, sf))
+    print(f'Ediom source file list: {src_list}')
+    # exit()
+    return src_list   
+   
+def get_ediom_includes():
+    
+    import numpy as np
+    from sysconfig import get_paths
+    
+    includeDirs=[np.get_include()]
+    includeDirs.append(get_paths()['include'])
+    includeDirs.append(get_ediom_srcdir())
+
+    return includeDirs
+
+def get_ediom_libs():
+    from sysconfig import get_paths
+    return [os.path.join(get_paths()['data'], 'libs'),]
 
 def get_emaps_srcdir():
 
@@ -421,6 +469,21 @@ pyemaps_cifreader = Extension("pyemaps.CifFile.StarScan",
         sources                = get_cifreader_source()
 )
 
+
+pyemaps_ediom =  Extension(
+            'pyemaps.ediom._ediom',
+            sources                 =get_ediom_sources(),
+            extra_objects           =[],
+            include_dirs            =get_ediom_includes(),
+            library_dirs            =get_ediom_libs(),
+            libraries               =[],
+            define_macros           =[],
+            undef_macros            =[],
+            extra_compile_args      =[],
+            extra_link_args         =[],
+            swig_opts               =['-python']
+)
+
 def get_version(f):
     version = {}
     with open(f + ".py") as fp:
@@ -463,29 +526,45 @@ setup(name                              ="pyemaps",
       ext_modules                       = [pyemaps_dif, 
                                            pyemaps_scattering, 
                                            pyemaps_spg,
+                                           pyemaps_ediom,
                                            pyemaps_cifreader],
 
-      packages                          = [ 'pyemaps.diffract', 
+      packages                          = ['pyemaps.diffract', 
                                            'pyemaps.scattering', 
                                            'pyemaps.spg',
+                                           'pyemaps.ediom',
                                            'pyemaps.CifFile',
                                            'pyemaps.CifFile.drel'
                                            ],
       
       package_dir                       = {'pyemaps':'',
-                                            'pyemaps.CifFile':'CifFile/src'
+                                           'pyemaps.CifFile':'CifFile/src'
                                             },
-      install_requires              = get_install_requires(),
+      install_requires                  = get_install_requires(),
       
-      data_files                    = [('pyemaps', 
-                                        ['__config__.py',
-                                        '__main__.py',
-                                        '__version__.py',
-                                        'README.md',
-                                        'COPYING',
-                                        'license.txt']),
-                                        ('pyemaps/samples', get_samples()),
-                                        ('pyemaps/cdata', get_cdata()),
+      data_files                        = [('pyemaps', 
+                                            ['__config__.py',
+                                            '__main__.py',
+                                            '__version__.py',
+                                            'README.md',
+                                            'COPYING',
+                                            'license.txt']),
+                                            ('pyemaps/samples', get_samples()),
+                                            ('pyemaps/cdata', get_cdata()),
 
-                                      ]
+                                          ],
+      exclude_package_data              = {'pyemaps':['*.i', 
+                                                '*.cpp', 
+                                                '*.f90',
+                                                '*.pyd', 
+                                                '*.toml', 
+                                                '*.in', 
+                                                '__pycache__/*.pyc',
+                                                '*.egg-info/*'
+                                                ],
+                                            'pyemaps.ediom':['*.i', 
+                                                            '*.cpp',
+                                                            '__pycache__/*.pyc'
+                                                            ]
+                                            }
 )
