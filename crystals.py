@@ -757,6 +757,9 @@ from .diffract.powder_dec import add_powder
 #---Kinematic diffraction patterns database generation (upcoming) 
 from .diffract.dpgen_dec import add_dpgen
 
+#---diffraction pattern indexing----
+from .ediom.ediom_def import add_ediom
+
 #---Stereodiagram---
 from .diffract.stereo_dec import add_stereo
 #   generates and plots stereographic projections
@@ -766,7 +769,8 @@ from .diffract.dif_dec import add_dif
 
 #---Dynamic Diffraction Simulations---
 from .diffract.bloch_dec import add_bloch
- 
+
+@add_ediom
 @add_dpgen    
 @add_mxtal              
 @add_stereo              

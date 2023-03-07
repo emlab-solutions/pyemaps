@@ -5,6 +5,7 @@ def add_dpgen(target):
 
     except ImportError as e:               
         # raise ModuleNotFoundError from e
+        # return an empty target for free package
         return target
     else:
         LOW_RES = dpgen.get_lowres()
@@ -45,13 +46,11 @@ def add_dpgen(target):
 
         return cfn
 
-    def generateDPDB(self, 
-                     vt = DEF_KV,
-                     zone = DEF_ZONE,
-                     xa = DEF_XAXIS, 
-                     simc = SIMC(),
-                     res = LOW_RES,
-                     vertices = DEF_VERTMAT):
+    def generateDPDB(self, emc = EMC(),
+                           xa = DEF_XAXIS,
+                           res = LOW_RES,
+                           vertices = DEF_VERTMAT
+                    ):
         
         """
         Generate a list diffraction paterns and save them in proprietory
@@ -72,11 +71,16 @@ def add_dpgen(target):
         
         if (res > HIGH_RES) or (res < LOW_RES):
             print(f'Resolution input {res} is out of range: ({LOW_RES}, {HIGH_RES})')
-            return -1
+            return -1, None
 
         self.load()
         dif.initcontrols()
         
+        vt = emc.vt
+        zone = emc.zone
+        emc(xaxis=xa)
+        simc = emc.simc
+
         if vt != DEF_KV:
             dif.setemcontrols(DEF_CL, vt)
 
@@ -98,11 +102,13 @@ def add_dpgen(target):
         
         if ret == 0:
             print('Error running dif module')
-            return -1
+            return -1, None
         vert = np.array(vertices).transpose()    
         vertices = farray(vert, dtype=int)
         
         output_fn = self._getDPDBFN()
+        
+        final_fp= output_fn+'.' + DPDB_EXT
 
         ret = dpgen.do_dpgen(res, vertices, output_fn)
         
@@ -111,17 +117,17 @@ def add_dpgen(target):
 
         if ret != 0:
             print(f'Error running generating diffraction patterns for {self.name}')
-            return -1
+            return -1, final_fp
 
-        ret = dpgen.readbin_new(output_fn, DPDB_EXT)
-        if ret != 0: 
-            print(f'Error running generating diffraction patterns for {self.name}')
-            return -1
+        # ret = dpgen.readbin_new(output_fn, DPDB_EXT)
+        # if ret != 0: 
+        #     print(f'Error running generating diffraction patterns for {self.name}')
+        #     return -1, final_fp
 
-        final_fp= output_fn+'.' + DPDB_EXT
-        print(f'output dpgen file: {final_fp}')
+        # # final_fp= output_fn+'.' + DPDB_EXT
+        # print(f'output dpgen file: {final_fp}')
 
-        return 0
+        return 0, final_fp
     
     target.generateDPDB = generateDPDB
     target._getDPDBFN = _getDPDBFN
