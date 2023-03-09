@@ -568,3 +568,22 @@ setup(name                              ="pyemaps",
                                                             ]
                                             }
 )
+
+# ------------- using intel compiler------------------------- 
+# from setuptools import setup, Extension
+# import os
+
+# # Set the path to the Intel C Compiler executable
+# os.environ['CC'] = 'C:\\Program Files (x86)\\Intel\\oneAPI\\compiler\\latest\\windows\\bin\\intel64\\icl.exe'
+
+# # Set the necessary environment variables for the Intel C Compiler
+# os.environ['INTEL_LICENSE_FILE'] = 'C:\\Program Files (x86)\\Intel\\Licenses\\use.lic'
+# os.environ['INTEL_DEV_REDIST'] = 'C:\\Program Files (x86)\\Intel\\oneAPI\\redist\\intel64\\compiler'
+# os.environ['LIB'] = 'C:\\Program Files (x86)\\Intel\\oneAPI\\compiler\\latest\\windows\\compiler\\lib\\intel64;C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.28.29333\\ATLMFC\\lib\\x64;C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.28.29333\\lib\\x64;C:\\Windows\\System32;C:\\Windows\\SysWOW64'
+# os.environ['INCLUDE'] = 'C:\\Program Files (x86)\\Intel\\oneAPI\\compiler\\latest\\windows\\compiler\\include;C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.28.29333\\ATLMFC\\include;C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.28.29333\\include'
+
+# example_module = Extension('_example',
+#                            sources=['example.i', 'example.c'],
+#                            extra_compile_args=['/Qstd=c11', '/Wall', '/Wextra', '/QxHost', '/Qmarch=native', '/Qopenmp'],
+#                            swig_opts=['-py3'],
+#                            )
