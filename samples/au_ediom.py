@@ -30,6 +30,7 @@ def getIMSFn():
 
 def test_ediom(cname='Gold_FCC', xifn=None):
     from pyemaps import Crystal as cr
+    from pyemaps import ediom
     
     au = cr.from_builtin(cname)
 
@@ -43,12 +44,15 @@ def test_ediom(cname='Gold_FCC', xifn=None):
     #     return -1
     
     # locate the experimental image file
+    edc0=ediom.cvar.edc
+    edc0.set_center(65.0, 66.4)
+
     if xifn is None or not os.path.exists(xifn):
         print(f'Experimental image must be provided')
         return -1
 
     dbfn = getTestDBFN()
-    au.indexExpDP(dbfn, xifn, icenter=(65.0, 66.4), Sthreshold=0.8525)
+    au.indexExpDP(dbfn, xifn, edcp=edc0, Sthreshold=0.8525)
 
 if __name__ == '__main__':
     xifn0 = getIMSFn()
