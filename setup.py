@@ -200,13 +200,13 @@ def get_extra_objects():
     else:
         raise Exception('Unsupported OS')
 
-    if build_type == "all":
-        if  'windows' in osname:
-            objs.append('write_dpbin.obj') 
-        elif 'linux' in osname:
-            objs.append('write_dpbin.o')
-        else:
-            raise Exception('Unsupported OS')
+    # if build_type == "all":
+    if  'windows' in osname:
+        objs.append('write_dpbin.obj') 
+    elif 'linux' in osname:
+        objs.append('write_dpbin.o')
+    else:
+        raise Exception('Unsupported OS')
 
     emaps_dir = get_emaps_srcdir()
     objlist = [os.path.join(emaps_dir, o) for o in objs]
@@ -239,8 +239,8 @@ def get_diffract_sources(comp=None):
     emaps_dir = get_emaps_srcdir()
 
     pyfname = mod_name
-    if build_type == 'all':
-        pyfname += '_dpgen'
+    # if build_type == 'full':
+    # pyfname += '_dpgen'
 
     pyf = ".".join([pyfname,'pyf'])
     src_list.append(pyf)
@@ -250,8 +250,8 @@ def get_diffract_sources(comp=None):
     src_list.extend(bloch_files)
     src_list.extend(stereo_files)
     src_list.extend(mxtal_files)
-    if build_type == 'all':
-        src_list.extend(dpgen_files)
+    # if build_type == 'full':
+    src_list.extend(dpgen_files)
     
     
     print(f'source code list: {src_list}')
@@ -404,8 +404,9 @@ def get_install_requires():
         raise Exception('The OS is not supported')
     
 def get_emaps_macros():
-
-    if build_type == 'all':
+    # print(f'setup.py: build_type: {build_type}')
+    # exit()
+    if build_type == 'full':
         # full version
         return ([('NPY_NO_DEPRECATED_API', 
                     'NPY_1_7_API_VERSION')
@@ -477,8 +478,8 @@ pyemaps_ediom =  Extension(
             include_dirs            =get_ediom_includes(),
             library_dirs            =get_ediom_libs(),
             libraries               =[],
-            define_macros           =[],
-            undef_macros            =[],
+            define_macros           = pyemaps_build_defs,
+            undef_macros            = pyemaps_build_undefs,
             extra_compile_args      =[],
             extra_link_args         =[],
             swig_opts               =['-python']

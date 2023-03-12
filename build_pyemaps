@@ -12,8 +12,8 @@ MAKE_LOOKUP = dict(
     stereo = 'STEREOPYF',
     spg = 'SPGSEEKPYF',
     scattering = 'SCTPYF',
-    free = 'EMAPSPYF',
-    all = 'EMAPSDPGENPYF' 
+    all = 'EMAPSPYF'
+    # all = 'EMAPSDPGENPYF' 
 )
 
 test_pypi_url = "https://test.pypi.org"
@@ -64,7 +64,7 @@ def set_cfg(comp):
         raise ValueError(f"Error writing configuration file {json_cfg} for packaging")
 
 
-def make_pyf(comp):
+def make_pyf(comp='all'):
     '''
     make .pyf file according to comp name
     '''
@@ -272,13 +272,13 @@ def build_package(repo_test = True):
     
     build_type = os.getenv('EMAPS_BTYPE')
     
-    if build_type != 'free' and build_type != 'all':
-        print(f'Unrecognised build type')
-        exit(1)
+    # if build_type != 'free' and build_type != 'full':
+    #     print(f'Unrecognised build type')
+    #     exit(1)
         
     clean()
     
-    make_pyf(build_type)
+    make_pyf()
 
     print(f"####Begin building pyemaps package for {build_type}...")
 

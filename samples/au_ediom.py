@@ -35,24 +35,24 @@ def test_ediom(cname='Gold_FCC', xifn=None):
     au = cr.from_builtin(cname)
 
     # #  first generate a DP database file
-    # xa0=(2,0,0)
-    # res = 200
-    # # ret, dbfn = au.generateDPDB(emc=EMC(zone=(0,0,1)), res = res, xa = xa0)
+    xa0=(2,0,0)
+    res = 200
+    ret, dbfn = au.generateDPDB(emc=EMC(zone=(0,0,1)), res = res, xa = xa0)
 
-    # if ret != 0:
-    #     print(f'failed to generate a dp databaes')
-    #     return -1
-    
-    # locate the experimental image file
-    edc0=ediom.cvar.edc
-    edc0.set_center(65.0, 66.4)
-
-    if xifn is None or not os.path.exists(xifn):
-        print(f'Experimental image must be provided')
+    if ret != 0:
+        print(f'failed to generate a dp databaes')
         return -1
+    
+    # # locate the experimental image file
+    # edc0=ediom.cvar.edc
+    # edc0.set_center(65.0, 66.4)
 
-    dbfn = getTestDBFN()
-    au.indexExpDP(dbfn, xifn, edcp=edc0, Sthreshold=0.8525)
+    # if xifn is None or not os.path.exists(xifn):
+    #     print(f'Experimental image must be provided')
+    #     return -1
+
+    # dbfn = getTestDBFN()
+    # au.indexExpDP(dbfn, xifn, edcp=edc0, threshold=0.8525)
 
 if __name__ == '__main__':
     xifn0 = getIMSFn()

@@ -17,7 +17,7 @@ if "%EMAPS_BTYPE%" == "" (
 )
 
 if "%EMAPS_BTYPE%" NEQ "free" (
-    if "%1" NEQ "all" (
+    if "%1" NEQ "full" (
         echo Error: Build type incorrect, must be one of free or all
         goto:eof
     )
@@ -52,7 +52,7 @@ if "%PACKAGE_TYPE%" == "test" (
 
 
 set typename=%EMAPS_BTYPE%
-if "%EMAPS_BTYPE%" == "all" (
+if "%EMAPS_BTYPE%" == "full" (
     set typename=full
 )
 set packname=%PACKAGE_TYPE%

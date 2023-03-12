@@ -69,6 +69,7 @@ def add_dpgen(target):
         """
         import os
         
+        print(f'Resolution range: {LOW_RES}, {HIGH_RES}')
         if (res > HIGH_RES) or (res < LOW_RES):
             print(f'Resolution input {res} is out of range: ({LOW_RES}, {HIGH_RES})')
             return -1, None
