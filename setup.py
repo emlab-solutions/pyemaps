@@ -17,6 +17,11 @@ build_type = os.getenv('EMAPS_BTYPE')
 if build_type is None:
     build_type = 'free'
 
+if os.getenv('PYEMAPS_DEBUG') is not None:
+    pyemaps_debug = int(os.getenv('PYEMAPS_DEBUG'))
+else:
+    pyemaps_debug = 0
+
 mod_name = "emaps"
 
 MKLROOT = os.getenv('MKLROOT')
@@ -406,31 +411,40 @@ def get_install_requires():
 def get_emaps_macros():
     # print(f'setup.py: build_type: {build_type}')
     # exit()
+    
+    if build_type != 'uiuc' and build_type != 'full' and build_type != 'free':
+        raise ValueError("Error: build type not specified")
+
+    def_list = [('NPY_NO_DEPRECATED_API','NPY_1_7_API_VERSION')]
+    
+    undef_list = []
+
     if build_type == 'full':
         # full version
-        return ([('NPY_NO_DEPRECATED_API', 
-                    'NPY_1_7_API_VERSION')
-                ], 
-                ['__BFREE__', '__BUIUC__' ])
+        undef_list.append('__BFREE__')
+        undef_list.append('__BUIUC__')
 
     if build_type == 'free':
         # limited free version
-        return ([('__BFREE__', 1),
-                ('NPY_NO_DEPRECATED_API', 
-                'NPY_1_7_API_VERSION')
-                ], 
-                ['__BUIUC__'])
+        def_list.append(('__BFREE__', 1))
+        undef_list.append('__BUIUC__')
 
     if build_type == 'uiuc':
         # less limited free version
-        return ([('__BUIUC__', 1),
-                ('NPY_NO_DEPRECATED_API', 
-                'NPY_1_7_API_VERSION')
-                ], 
-                ['__BFREE__'])
-    
-    raise ValueError("Error: build type not specified")
+        def_list.append(('__BUIUC__', 1))
+        undef_list.append('__BFREE__')
 
+    if pyemaps_debug != 0:
+        # print(f'Build is debug build: {pyemaps_debug}')
+        def_list.append(('__BDEBUG__', 1))
+    else:
+        # print(f'Build is not a debug build: {pyemaps_debug}')
+        undef_list.append('__BDEBUG__')
+    
+    # print(f'defundef list: {def_list}, {undef_list}')
+    # exit()
+    return [def_list, undef_list]
+    
 # ------------------- must set this before build -------------------
 pyemaps_build_defs, pyemaps_build_undefs= get_emaps_macros()
 
@@ -570,6 +584,10 @@ setup(name                              ="pyemaps",
                                             }
 )
 
+if pyemaps_debug:
+    print(f'#######################Build is debug build')
+else:
+    print(f'#######################Build is debug build')
 # ------------- using intel compiler------------------------- 
 # from setuptools import setup, Extension
 # import os

@@ -24,5 +24,6 @@ if "%1"=="local" (
     @REM EMC SIMC class basic function tests
      python test\unittests\emc\test1.py
      python test\unittests\kdif\sanity_doc.py
+     python test\unittests\package_test\type_test.py
     rm -rf pyemaps_samples
 )

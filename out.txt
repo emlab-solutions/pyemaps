@@ -1,0 +1,1412 @@
+not a build set in batch
+Found existing installation: pyemaps 3.1.2
+Uninstalling pyemaps-3.1.2:
+  Successfully uninstalled pyemaps-3.1.2
+rm -rf build_emaps
+rm -rf emaps
+rm -rf emaps_dif
+rm -rf emaps_csf
+rm -rf emaps_powder
+rm -rf emaps_dpgen
+rm -rf spg_spgseek
+rm -rf scattering_sct
+rm -rf emaps_stereo
+rm -rf *.pyf *.o *.obj *.mod *.so
+rm -rf build_emaps
+rm -rf emaps
+rm -rf emaps_dif
+rm -rf emaps_csf
+rm -rf emaps_powder
+rm -rf emaps_dpgen
+rm -rf spg_spgseek
+rm -rf scattering_sct
+rm -rf emaps_stereo
+rm -rf *.pyf *.o *.obj *.mod *.so
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c scattering.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c spgra.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c emaps_consts.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c helper.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c diff_memalloc.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c crystal_mem.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c xtal0.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c diff_types.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c asf.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c diffract.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c bloch_mem.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c  bloch.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c csf_types.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c csf.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c powder_types.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c powder.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c spgseek.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c dp_types.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c dp_gen.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c stereo.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c mxtal_mem.f90
+ifort -free -Qm64 -WB -Qopenmp -Qmkl -GS -heap-arrays:768 -4R8 -fpp -warn:nointerfaces -O2 -I. -I"%MKLROOT%\include" -c mxtal.f90
+python -m numpy.f2py -m emaps -h emaps.pyf diffract.f90 csf.f90 powder.f90 bloch.f90 zg.f90 dp_gen.f90 stereo.f90 mxtal.f90 --overwrite-signature
+Reading fortran codes...
+	Reading file 'diffract.f90' (format:free)
+Line #2122 in diffract.f90:"      CHARACTER*10 intent(in) aarr"
+	updatevars: could not crack entity declaration "intent(in)aarr". Ignoring.
+Line #2123 in diffract.f90:"      INTEGER intent(hide),depend(aarr) :: na=len(aarr)"
+	updatevars: attempt to change the init expression of "na" ("shape(att,0)") to "len(aarr)". Ignoring.
+	Reading file 'csf.f90' (format:free)
+Line #84 in csf.f90:"      OPTIONAL, INTENT(IN) :: KV = 100"
+	analyzeline: cannot handle multiple attributes without type specification. Ignoring ' intent(in)'.
+Line #85 in csf.f90:"      OPTIONAL, INTENT(IN) :: SMAX = 0.5"
+	analyzeline: cannot handle multiple attributes without type specification. Ignoring ' intent(in)'.
+Line #86 in csf.f90:"      OPTIONAL, INTENT(IN) :: SFTYPE = 1"
+	analyzeline: cannot handle multiple attributes without type specification. Ignoring ' intent(in)'.
+Line #87 in csf.f90:"      OPTIONAL, INTENT(IN) :: IFLAG = 1"
+	analyzeline: cannot handle multiple attributes without type specification. Ignoring ' intent(in)'.
+	Reading file 'powder.f90' (format:free)
+Line #84 in powder.f90:"      OPTIONAL, INTENT(IN) :: ISBGDON=0"
+	analyzeline: cannot handle multiple attributes without type specification. Ignoring ' intent(in)'.
+	Reading file 'bloch.f90' (format:free)
+{'before': '', 'this': 'use', 'after': ', intrinsic :: iso_c_binding '}
+Line #2 in bloch.f90:"       USE, INTRINSIC :: ISO_C_BINDING "
+	analyzeline: Could not crack the use statement.
+{'before': '', 'this': 'use', 'after': ', intrinsic :: iso_c_binding, only : c_int, c_char '}
+Line #18 in bloch.f90:"        USE, INTRINSIC :: ISO_C_BINDING, ONLY : C_INT, C_CHAR "
+	analyzeline: Could not crack the use statement.
+{'before': '', 'this': 'use', 'after': ', intrinsic :: iso_c_binding, only : c_int, c_double, c_char '}
+Line #32 in bloch.f90:"        USE, INTRINSIC :: ISO_C_BINDING, ONLY : C_INT, C_DOUBLE, C_CHAR "
+	analyzeline: Could not crack the use statement.
+Line #77 in bloch.f90:"       PARAMETER     (DEF_APER = 1,                      DEF_ABS = 0.0,                      DEF_EXCITATION = 1.5,                      DEF_GCUTOFF = 1,                      DEF_BEAMSEL3 = 0,                      DEF_OMEGA = 10,                      DEF_SAMPLING= 8,                      DEF_PIXSIZE=25,                      DEF_DET = 512,                      DEF_THICKNESS = 200,                      MAX_DEPTH = 200,                      NSMAP = 1024**2,                      MAX_NBEAMS = 50000,                      MAX_FREE_NBEAMS = 5000) "
+	determineexprtype: could not determine expressions ('1024**2') type.
+{'before': '', 'this': 'use', 'after': ', intrinsic :: iso_c_binding, only : c_null_char, c_loc '}
+Line #96 in bloch.f90:"       USE, INTRINSIC :: ISO_C_BINDING, ONLY : C_NULL_CHAR, C_LOC "
+	analyzeline: Could not crack the use statement.
+Line #761 in bloch.f90:"      REAL, optional, intent(in) :: DETSIZE=512"
+	updatevars: attempt to change the type of "detsize" ("integer") to "real". Ignoring.
+	Reading file 'zg.f90' (format:free)
+	Reading file 'dp_gen.f90' (format:free)
+{'before': '', 'this': 'use', 'after': ', intrinsic :: iso_c_binding, only : c_int, c_double '}
+Line #2 in dp_gen.f90:"      USE, INTRINSIC :: ISO_C_BINDING, ONLY : C_INT, C_DOUBLE "
+	analyzeline: Could not crack the use statement.
+{'before': '', 'this': 'use', 'after': ', intrinsic :: iso_c_binding '}
+Line #31 in dp_gen.f90:"        USE, INTRINSIC :: ISO_C_BINDING "
+	analyzeline: Could not crack the use statement.
+{'before': '', 'this': 'use', 'after': ', intrinsic :: iso_c_binding '}
+Line #47 in dp_gen.f90:"        USE, INTRINSIC :: ISO_C_BINDING "
+	analyzeline: Could not crack the use statement.
+Line #58 in dp_gen.f90:"      INTEGER, PARAMETER :: RES_LOW = 100, RES_HIGH = FULL_RES_HIGH "
+	updatevars: attempt to change the init expression of "res_high" ("free_res_high") to "full_res_high". Ignoring.
+{'before': '', 'this': 'use', 'after': ', intrinsic :: iso_c_binding, only : c_null_char '}
+Line #104 in dp_gen.f90:"        USE, INTRINSIC :: ISO_C_BINDING, ONLY : C_NULL_CHAR "
+	analyzeline: Could not crack the use statement.
+{'before': '', 'this': 'use', 'after': ', intrinsic :: iso_c_binding, only : c_null_char '}
+Line #124 in dp_gen.f90:"          USE, INTRINSIC :: ISO_C_BINDING, ONLY : C_NULL_CHAR "
+	analyzeline: Could not crack the use statement.
+	Reading file 'stereo.f90' (format:fix)
+	Reading file 'mxtal.f90' (format:free)
+Post-processing...
+	Block: emaps
+			Block: dif
+In: :emaps:diffract.f90:dif
+get_useparameters: no module emaps_consts info used by dif
+				Block: diffract
+In: :emaps:diffract.f90:dif:diffract
+get_useparameters: no module emaps_consts info used by diffract
+In: :emaps:diffract.f90:dif:diffract
+get_useparameters: no module crystal info used by diffract
+In: :emaps:diffract.f90:dif:diffract
+get_useparameters: no module crystal_mem info used by diffract
+In: :emaps:diffract.f90:dif:diffract
+get_useparameters: no module emaps_mem info used by diffract
+In: :emaps:diffract.f90:dif:diffract
+get_useparameters: no module diff_types info used by diffract
+In: :emaps:diffract.f90:dif:diffract
+get_useparameters: no module helper info used by diffract
+				Block: getlin
+In: :emaps:diffract.f90:dif:getlin
+get_useparameters: no module emaps_consts info used by getlin
+				Block: xxy
+In: :emaps:diffract.f90:dif:xxy
+get_useparameters: no module emaps_consts info used by xxy
+				Block: yxy
+In: :emaps:diffract.f90:dif:yxy
+get_useparameters: no module emaps_consts info used by yxy
+				Block: xcirc
+In: :emaps:diffract.f90:dif:xcirc
+get_useparameters: no module emaps_consts info used by xcirc
+				Block: sfact0
+In: :emaps:diffract.f90:dif:sfact0
+get_useparameters: no module emaps_consts info used by sfact0
+In: :emaps:diffract.f90:dif:sfact0
+get_useparameters: no module emaps_mem info used by sfact0
+In: :emaps:diffract.f90:dif:sfact0
+get_useparameters: no module crystal info used by sfact0
+				Block: gethlist
+In: :emaps:diffract.f90:dif:gethlist
+get_useparameters: no module emaps_consts info used by gethlist
+In: :emaps:diffract.f90:dif:gethlist
+get_useparameters: no module emaps_mem info used by gethlist
+In: :emaps:diffract.f90:dif:gethlist
+	getarrlen:variable "beams" undefined
+				Block: getklist
+In: :emaps:diffract.f90:dif:getklist
+get_useparameters: no module emaps_consts info used by getklist
+In: :emaps:diffract.f90:dif:getklist
+get_useparameters: no module emaps_mem info used by getklist
+In: :emaps:diffract.f90:dif:getklist
+	getarrlen:variable "beams" undefined
+				Block: getdlist
+In: :emaps:diffract.f90:dif:getdlist
+get_useparameters: no module emaps_consts info used by getdlist
+In: :emaps:diffract.f90:dif:getdlist
+get_useparameters: no module emaps_mem info used by getdlist
+In: :emaps:diffract.f90:dif:getdlist
+	getarrlen:variable "beams" undefined
+In: :emaps:diffract.f90:dif:getdlist
+	getarrlen:variable "beams" undefined
+				Block: getdlist_dp
+In: :emaps:diffract.f90:dif:getdlist_dp
+get_useparameters: no module emaps_consts info used by getdlist_dp
+In: :emaps:diffract.f90:dif:getdlist_dp
+get_useparameters: no module emaps_mem info used by getdlist_dp
+In: :emaps:diffract.f90:dif:getdlist_dp
+	getarrlen:variable "beams" undefined
+In: :emaps:diffract.f90:dif:getdlist_dp
+	getarrlen:variable "beams" undefined
+				Block: lineq
+In: :emaps:diffract.f90:dif:lineq
+get_useparameters: no module emaps_consts info used by lineq
+				Block: getg
+In: :emaps:diffract.f90:dif:getg
+get_useparameters: no module emaps_consts info used by getg
+In: :emaps:diffract.f90:dif:getg
+get_useparameters: no module emaps_mem info used by getg
+				Block: setgls
+In: :emaps:diffract.f90:dif:setgls
+get_useparameters: no module emaps_consts info used by setgls
+In: :emaps:diffract.f90:dif:setgls
+get_useparameters: no module emaps_mem info used by setgls
+In: :emaps:diffract.f90:dif:setgls
+get_useparameters: no module crystal info used by setgls
+				Block: crule
+In: :emaps:diffract.f90:dif:crule
+get_useparameters: no module emaps_consts info used by crule
+				Block: getamt
+In: :emaps:diffract.f90:dif:getamt
+get_useparameters: no module emaps_consts info used by getamt
+				Block: getbmt
+In: :emaps:diffract.f90:dif:getbmt
+get_useparameters: no module emaps_consts info used by getbmt
+				Block: gselct
+In: :emaps:diffract.f90:dif:gselct
+get_useparameters: no module emaps_consts info used by gselct
+In: :emaps:diffract.f90:dif:gselct
+get_useparameters: no module emaps_mem info used by gselct
+In: :emaps:diffract.f90:dif:gselct
+get_useparameters: no module crystal_mem info used by gselct
+In: :emaps:diffract.f90:dif:gselct
+	getarrlen:variable "ntype" undefined
+				Block: beams_est
+In: :emaps:diffract.f90:dif:beams_est
+get_useparameters: no module emaps_consts info used by beams_est
+				Block: igcheck
+In: :emaps:diffract.f90:dif:igcheck
+get_useparameters: no module emaps_consts info used by igcheck
+				Block: excit
+In: :emaps:diffract.f90:dif:excit
+get_useparameters: no module emaps_consts info used by excit
+				Block: sortin
+In: :emaps:diffract.f90:dif:sortin
+get_useparameters: no module emaps_consts info used by sortin
+				Block: getzon
+In: :emaps:diffract.f90:dif:getzon
+get_useparameters: no module emaps_consts info used by getzon
+In: :emaps:diffract.f90:dif:getzon
+get_useparameters: no module emaps_mem info used by getzon
+In: :emaps:diffract.f90:dif:getzon
+	getarrlen:variable "liszn" undefined
+				Block: zonlis
+In: :emaps:diffract.f90:dif:zonlis
+get_useparameters: no module emaps_consts info used by zonlis
+In: :emaps:diffract.f90:dif:zonlis
+get_useparameters: no module emaps_mem info used by zonlis
+				Block: getknum
+In: :emaps:diffract.f90:dif:getknum
+get_useparameters: no module emaps_consts info used by getknum
+In: :emaps:diffract.f90:dif:getknum
+get_useparameters: no module diff_types info used by getknum
+				Block: getdnum
+In: :emaps:diffract.f90:dif:getdnum
+get_useparameters: no module emaps_consts info used by getdnum
+In: :emaps:diffract.f90:dif:getdnum
+get_useparameters: no module diff_types info used by getdnum
+				Block: gethnum
+In: :emaps:diffract.f90:dif:gethnum
+get_useparameters: no module emaps_consts info used by gethnum
+In: :emaps:diffract.f90:dif:gethnum
+get_useparameters: no module diff_types info used by gethnum
+				Block: get_kline
+In: :emaps:diffract.f90:dif:get_kline
+get_useparameters: no module emaps_consts info used by get_kline
+In: :emaps:diffract.f90:dif:get_kline
+get_useparameters: no module diff_types info used by get_kline
+				Block: get_klines
+In: :emaps:diffract.f90:dif:get_klines
+get_useparameters: no module emaps_consts info used by get_klines
+In: :emaps:diffract.f90:dif:get_klines
+get_useparameters: no module diff_types info used by get_klines
+				Block: get_hline
+In: :emaps:diffract.f90:dif:get_hline
+get_useparameters: no module emaps_consts info used by get_hline
+In: :emaps:diffract.f90:dif:get_hline
+get_useparameters: no module diff_types info used by get_hline
+				Block: get_hlines
+In: :emaps:diffract.f90:dif:get_hlines
+get_useparameters: no module emaps_consts info used by get_hlines
+In: :emaps:diffract.f90:dif:get_hlines
+get_useparameters: no module diff_types info used by get_hlines
+				Block: get_disk
+In: :emaps:diffract.f90:dif:get_disk
+get_useparameters: no module emaps_consts info used by get_disk
+In: :emaps:diffract.f90:dif:get_disk
+get_useparameters: no module diff_types info used by get_disk
+				Block: get_disks
+In: :emaps:diffract.f90:dif:get_disks
+get_useparameters: no module emaps_consts info used by get_disks
+In: :emaps:diffract.f90:dif:get_disks
+get_useparameters: no module diff_types info used by get_disks
+				Block: get_shifts
+In: :emaps:diffract.f90:dif:get_shifts
+get_useparameters: no module emaps_consts info used by get_shifts
+				Block: diff_delete
+In: :emaps:diffract.f90:dif:diff_delete
+get_useparameters: no module emaps_consts info used by diff_delete
+In: :emaps:diffract.f90:dif:diff_delete
+get_useparameters: no module diff_types info used by diff_delete
+				Block: setmode
+In: :emaps:diffract.f90:dif:setmode
+get_useparameters: no module emaps_consts info used by setmode
+				Block: setdisksize
+In: :emaps:diffract.f90:dif:setdisksize
+get_useparameters: no module emaps_consts info used by setdisksize
+				Block: getdisksize
+In: :emaps:diffract.f90:dif:getdisksize
+get_useparameters: no module emaps_consts info used by getdisksize
+				Block: setgctl
+In: :emaps:diffract.f90:dif:setgctl
+get_useparameters: no module emaps_consts info used by setgctl
+				Block: setzctl
+In: :emaps:diffract.f90:dif:setzctl
+get_useparameters: no module emaps_consts info used by setzctl
+				Block: setexcitation
+In: :emaps:diffract.f90:dif:setexcitation
+get_useparameters: no module emaps_consts info used by setexcitation
+				Block: setglen
+In: :emaps:diffract.f90:dif:setglen
+get_useparameters: no module emaps_consts info used by setglen
+				Block: setgcutoff
+In: :emaps:diffract.f90:dif:setgcutoff
+get_useparameters: no module emaps_consts info used by setgcutoff
+				Block: setintensities
+In: :emaps:diffract.f90:dif:setintensities
+get_useparameters: no module emaps_consts info used by setintensities
+				Block: setzone
+In: :emaps:diffract.f90:dif:setzone
+get_useparameters: no module emaps_consts info used by setzone
+				Block: setemcontrols
+In: :emaps:diffract.f90:dif:setemcontrols
+get_useparameters: no module emaps_consts info used by setemcontrols
+				Block: setsamplecontrols
+In: :emaps:diffract.f90:dif:setsamplecontrols
+get_useparameters: no module emaps_consts info used by setsamplecontrols
+				Block: set_xaxis
+In: :emaps:diffract.f90:dif:set_xaxis
+get_useparameters: no module emaps_consts info used by set_xaxis
+				Block: get_sim_defs
+In: :emaps:diffract.f90:dif:get_sim_defs
+get_useparameters: no module emaps_consts info used by get_sim_defs
+				Block: get_sam_defs
+In: :emaps:diffract.f90:dif:get_sam_defs
+get_useparameters: no module emaps_consts info used by get_sam_defs
+				Block: get_mic_defs
+In: :emaps:diffract.f90:dif:get_mic_defs
+get_useparameters: no module emaps_consts info used by get_mic_defs
+				Block: drtrans
+In: :emaps:diffract.f90:dif:drtrans
+get_useparameters: no module emaps_consts info used by drtrans
+In: :emaps:diffract.f90:dif:drtrans
+get_useparameters: no module helper info used by drtrans
+				Block: ang
+In: :emaps:diffract.f90:dif:ang
+get_useparameters: no module emaps_consts info used by ang
+				Block: vlen
+In: :emaps:diffract.f90:dif:vlen
+get_useparameters: no module emaps_consts info used by vlen
+				Block: initcontrols
+In: :emaps:diffract.f90:dif:initcontrols
+get_useparameters: no module emaps_consts info used by initcontrols
+				Block: loadcrystal
+In: :emaps:diffract.f90:dif:loadcrystal
+get_useparameters: no module emaps_consts info used by loadcrystal
+In: :emaps:diffract.f90:dif:loadcrystal
+get_useparameters: no module crystal info used by loadcrystal
+				Block: crystaldelete
+In: :emaps:diffract.f90:dif:crystaldelete
+get_useparameters: no module emaps_consts info used by crystaldelete
+In: :emaps:diffract.f90:dif:crystaldelete
+get_useparameters: no module crystal_mem info used by crystaldelete
+				Block: crystal_printall
+In: :emaps:diffract.f90:dif:crystal_printall
+get_useparameters: no module emaps_consts info used by crystal_printall
+In: :emaps:diffract.f90:dif:crystal_printall
+get_useparameters: no module helper info used by crystal_printall
+In: :emaps:diffract.f90:dif:crystal_printall
+get_useparameters: no module crystal_mem info used by crystal_printall
+In: :emaps:diffract.f90:dif:crystal_printall
+get_useparameters: no module crystal info used by crystal_printall
+				Block: diff_printall
+In: :emaps:diffract.f90:dif:diff_printall
+get_useparameters: no module emaps_consts info used by diff_printall
+In: :emaps:diffract.f90:dif:diff_printall
+get_useparameters: no module helper info used by diff_printall
+In: :emaps:diffract.f90:dif:diff_printall
+get_useparameters: no module emaps_mem info used by diff_printall
+In: :emaps:diffract.f90:dif:diff_printall
+get_useparameters: no module crystal info used by diff_printall
+				Block: diff_internaldelete
+In: :emaps:diffract.f90:dif:diff_internaldelete
+get_useparameters: no module emaps_consts info used by diff_internaldelete
+In: :emaps:diffract.f90:dif:diff_internaldelete
+get_useparameters: no module emaps_mem info used by diff_internaldelete
+				Block: get_nbeams
+In: :emaps:diffract.f90:dif:get_nbeams
+get_useparameters: no module emaps_consts info used by get_nbeams
+In: :emaps:diffract.f90:dif:get_nbeams
+get_useparameters: no module emaps_mem info used by get_nbeams
+			Block: csf
+In: :emaps:csf.f90:csf
+get_useparameters: no module emaps_consts info used by csf
+In: :emaps:csf.f90:csf
+get_useparameters: no module crystal_mem info used by csf
+In: :emaps:csf.f90:csf
+get_useparameters: no module crystal info used by csf
+In: :emaps:csf.f90:csf
+get_useparameters: no module helper info used by csf
+In: :emaps:csf.f90:csf
+get_useparameters: no module csf_types info used by csf
+				Block: sfact_csf
+In: :emaps:csf.f90:csf:sfact_csf
+get_useparameters: no module emaps_consts info used by sfact_csf
+In: :emaps:csf.f90:csf:sfact_csf
+get_useparameters: no module crystal_mem info used by sfact_csf
+In: :emaps:csf.f90:csf:sfact_csf
+get_useparameters: no module crystal info used by sfact_csf
+In: :emaps:csf.f90:csf:sfact_csf
+get_useparameters: no module helper info used by sfact_csf
+In: :emaps:csf.f90:csf:sfact_csf
+get_useparameters: no module csf_types info used by sfact_csf
+				Block: generate_sf
+In: :emaps:csf.f90:csf:generate_sf
+get_useparameters: no module emaps_consts info used by generate_sf
+In: :emaps:csf.f90:csf:generate_sf
+get_useparameters: no module crystal_mem info used by generate_sf
+In: :emaps:csf.f90:csf:generate_sf
+get_useparameters: no module crystal info used by generate_sf
+In: :emaps:csf.f90:csf:generate_sf
+get_useparameters: no module helper info used by generate_sf
+In: :emaps:csf.f90:csf:generate_sf
+get_useparameters: no module csf_types info used by generate_sf
+				Block: get_sf
+In: :emaps:csf.f90:csf:get_sf
+get_useparameters: no module emaps_consts info used by get_sf
+In: :emaps:csf.f90:csf:get_sf
+get_useparameters: no module crystal_mem info used by get_sf
+In: :emaps:csf.f90:csf:get_sf
+get_useparameters: no module crystal info used by get_sf
+In: :emaps:csf.f90:csf:get_sf
+get_useparameters: no module helper info used by get_sf
+In: :emaps:csf.f90:csf:get_sf
+get_useparameters: no module csf_types info used by get_sf
+				Block: delete_sfmem
+In: :emaps:csf.f90:csf:delete_sfmem
+get_useparameters: no module emaps_consts info used by delete_sfmem
+In: :emaps:csf.f90:csf:delete_sfmem
+get_useparameters: no module crystal_mem info used by delete_sfmem
+In: :emaps:csf.f90:csf:delete_sfmem
+get_useparameters: no module crystal info used by delete_sfmem
+In: :emaps:csf.f90:csf:delete_sfmem
+get_useparameters: no module helper info used by delete_sfmem
+In: :emaps:csf.f90:csf:delete_sfmem
+get_useparameters: no module csf_types info used by delete_sfmem
+				Block: est_sfbeams
+In: :emaps:csf.f90:csf:est_sfbeams
+get_useparameters: no module emaps_consts info used by est_sfbeams
+In: :emaps:csf.f90:csf:est_sfbeams
+get_useparameters: no module crystal_mem info used by est_sfbeams
+In: :emaps:csf.f90:csf:est_sfbeams
+get_useparameters: no module crystal info used by est_sfbeams
+In: :emaps:csf.f90:csf:est_sfbeams
+get_useparameters: no module helper info used by est_sfbeams
+In: :emaps:csf.f90:csf:est_sfbeams
+get_useparameters: no module csf_types info used by est_sfbeams
+				Block: setsfgls
+In: :emaps:csf.f90:csf:setsfgls
+get_useparameters: no module emaps_consts info used by setsfgls
+In: :emaps:csf.f90:csf:setsfgls
+get_useparameters: no module crystal_mem info used by setsfgls
+In: :emaps:csf.f90:csf:setsfgls
+get_useparameters: no module crystal info used by setsfgls
+In: :emaps:csf.f90:csf:setsfgls
+get_useparameters: no module helper info used by setsfgls
+In: :emaps:csf.f90:csf:setsfgls
+get_useparameters: no module csf_types info used by setsfgls
+				Block: sfsortin
+In: :emaps:csf.f90:csf:sfsortin
+get_useparameters: no module emaps_consts info used by sfsortin
+In: :emaps:csf.f90:csf:sfsortin
+get_useparameters: no module crystal_mem info used by sfsortin
+In: :emaps:csf.f90:csf:sfsortin
+get_useparameters: no module crystal info used by sfsortin
+In: :emaps:csf.f90:csf:sfsortin
+get_useparameters: no module helper info used by sfsortin
+In: :emaps:csf.f90:csf:sfsortin
+get_useparameters: no module csf_types info used by sfsortin
+			Block: powder
+In: :emaps:powder.f90:powder
+get_useparameters: no module emaps_consts info used by powder
+In: :emaps:powder.f90:powder
+get_useparameters: no module crystal_mem info used by powder
+In: :emaps:powder.f90:powder
+get_useparameters: no module crystal info used by powder
+In: :emaps:powder.f90:powder
+get_useparameters: no module powder_types info used by powder
+				Block: sfact_powder
+In: :emaps:powder.f90:powder:sfact_powder
+get_useparameters: no module emaps_consts info used by sfact_powder
+In: :emaps:powder.f90:powder:sfact_powder
+get_useparameters: no module crystal_mem info used by sfact_powder
+In: :emaps:powder.f90:powder:sfact_powder
+get_useparameters: no module crystal info used by sfact_powder
+In: :emaps:powder.f90:powder:sfact_powder
+get_useparameters: no module powder_types info used by sfact_powder
+				Block: generate_powder
+In: :emaps:powder.f90:powder:generate_powder
+get_useparameters: no module emaps_consts info used by generate_powder
+In: :emaps:powder.f90:powder:generate_powder
+get_useparameters: no module crystal_mem info used by generate_powder
+In: :emaps:powder.f90:powder:generate_powder
+get_useparameters: no module crystal info used by generate_powder
+In: :emaps:powder.f90:powder:generate_powder
+get_useparameters: no module powder_types info used by generate_powder
+				Block: bkgd
+In: :emaps:powder.f90:powder:bkgd
+get_useparameters: no module emaps_consts info used by bkgd
+In: :emaps:powder.f90:powder:bkgd
+get_useparameters: no module crystal_mem info used by bkgd
+In: :emaps:powder.f90:powder:bkgd
+get_useparameters: no module crystal info used by bkgd
+In: :emaps:powder.f90:powder:bkgd
+get_useparameters: no module powder_types info used by bkgd
+				Block: est_pbeams
+In: :emaps:powder.f90:powder:est_pbeams
+get_useparameters: no module emaps_consts info used by est_pbeams
+In: :emaps:powder.f90:powder:est_pbeams
+get_useparameters: no module crystal_mem info used by est_pbeams
+In: :emaps:powder.f90:powder:est_pbeams
+get_useparameters: no module crystal info used by est_pbeams
+In: :emaps:powder.f90:powder:est_pbeams
+get_useparameters: no module powder_types info used by est_pbeams
+				Block: setpwdgls
+In: :emaps:powder.f90:powder:setpwdgls
+get_useparameters: no module emaps_consts info used by setpwdgls
+In: :emaps:powder.f90:powder:setpwdgls
+get_useparameters: no module crystal_mem info used by setpwdgls
+In: :emaps:powder.f90:powder:setpwdgls
+get_useparameters: no module crystal info used by setpwdgls
+In: :emaps:powder.f90:powder:setpwdgls
+get_useparameters: no module powder_types info used by setpwdgls
+				Block: sortphkl
+In: :emaps:powder.f90:powder:sortphkl
+get_useparameters: no module emaps_consts info used by sortphkl
+In: :emaps:powder.f90:powder:sortphkl
+get_useparameters: no module crystal_mem info used by sortphkl
+In: :emaps:powder.f90:powder:sortphkl
+get_useparameters: no module crystal info used by sortphkl
+In: :emaps:powder.f90:powder:sortphkl
+get_useparameters: no module powder_types info used by sortphkl
+			Block: bloch
+In: :emaps:bloch.f90:bloch
+get_useparameters: no module emaps_consts info used by bloch
+In: :emaps:bloch.f90:bloch
+get_useparameters: no module crystal info used by bloch
+In: :emaps:bloch.f90:bloch
+get_useparameters: no module ifport info used by bloch
+In: :emaps:bloch.f90:bloch:unknown_interface
+get_useparameters: no module emaps_consts info used by unknown_interface
+In: :emaps:bloch.f90:bloch:unknown_interface
+get_useparameters: no module crystal info used by unknown_interface
+In: :emaps:bloch.f90:bloch:unknown_interface
+get_useparameters: no module ifport info used by unknown_interface
+					Block: cwriteimgopen
+In: :emaps:bloch.f90:bloch:unknown_interface:cwriteimgopen
+get_useparameters: no module emaps_consts info used by cwriteimgopen
+In: :emaps:bloch.f90:bloch:unknown_interface:cwriteimgopen
+get_useparameters: no module crystal info used by cwriteimgopen
+In: :emaps:bloch.f90:bloch:unknown_interface:cwriteimgopen
+get_useparameters: no module ifport info used by cwriteimgopen
+					Block: cwriteimgdata
+In: :emaps:bloch.f90:bloch:unknown_interface:cwriteimgdata
+get_useparameters: no module emaps_consts info used by cwriteimgdata
+In: :emaps:bloch.f90:bloch:unknown_interface:cwriteimgdata
+get_useparameters: no module crystal info used by cwriteimgdata
+In: :emaps:bloch.f90:bloch:unknown_interface:cwriteimgdata
+get_useparameters: no module ifport info used by cwriteimgdata
+					Block: cwriteimgclose
+In: :emaps:bloch.f90:bloch:unknown_interface:cwriteimgclose
+get_useparameters: no module emaps_consts info used by cwriteimgclose
+In: :emaps:bloch.f90:bloch:unknown_interface:cwriteimgclose
+get_useparameters: no module crystal info used by cwriteimgclose
+In: :emaps:bloch.f90:bloch:unknown_interface:cwriteimgclose
+get_useparameters: no module ifport info used by cwriteimgclose
+				Block: openimgfile
+In: :emaps:bloch.f90:bloch:openimgfile
+get_useparameters: no module emaps_consts info used by openimgfile
+In: :emaps:bloch.f90:bloch:openimgfile
+get_useparameters: no module crystal info used by openimgfile
+In: :emaps:bloch.f90:bloch:openimgfile
+get_useparameters: no module ifport info used by openimgfile
+				Block: closeimgfile
+In: :emaps:bloch.f90:bloch:closeimgfile
+get_useparameters: no module emaps_consts info used by closeimgfile
+In: :emaps:bloch.f90:bloch:closeimgfile
+get_useparameters: no module crystal info used by closeimgfile
+In: :emaps:bloch.f90:bloch:closeimgfile
+get_useparameters: no module ifport info used by closeimgfile
+				Block: dobloch
+In: :emaps:bloch.f90:bloch:dobloch
+get_useparameters: no module emaps_consts info used by dobloch
+In: :emaps:bloch.f90:bloch:dobloch
+get_useparameters: no module crystal info used by dobloch
+In: :emaps:bloch.f90:bloch:dobloch
+get_useparameters: no module ifport info used by dobloch
+In: :emaps:bloch.f90:bloch:dobloch
+get_useparameters: no module emaps_mem info used by dobloch
+In: :emaps:bloch.f90:bloch:dobloch
+get_useparameters: no module bloch_mem info used by dobloch
+				Block: cnvtab
+In: :emaps:bloch.f90:bloch:cnvtab
+get_useparameters: no module emaps_consts info used by cnvtab
+In: :emaps:bloch.f90:bloch:cnvtab
+get_useparameters: no module crystal info used by cnvtab
+In: :emaps:bloch.f90:bloch:cnvtab
+get_useparameters: no module ifport info used by cnvtab
+				Block: retievebloch
+In: :emaps:bloch.f90:bloch:retievebloch
+get_useparameters: no module emaps_consts info used by retievebloch
+In: :emaps:bloch.f90:bloch:retievebloch
+get_useparameters: no module crystal info used by retievebloch
+In: :emaps:bloch.f90:bloch:retievebloch
+get_useparameters: no module ifport info used by retievebloch
+In: :emaps:bloch.f90:bloch:retievebloch
+get_useparameters: no module bloch_mem info used by retievebloch
+				Block: get_nsampling
+In: :emaps:bloch.f90:bloch:get_nsampling
+get_useparameters: no module emaps_consts info used by get_nsampling
+In: :emaps:bloch.f90:bloch:get_nsampling
+get_useparameters: no module crystal info used by get_nsampling
+In: :emaps:bloch.f90:bloch:get_nsampling
+get_useparameters: no module ifport info used by get_nsampling
+				Block: get_samplingpoints
+In: :emaps:bloch.f90:bloch:get_samplingpoints
+get_useparameters: no module emaps_consts info used by get_samplingpoints
+In: :emaps:bloch.f90:bloch:get_samplingpoints
+get_useparameters: no module crystal info used by get_samplingpoints
+In: :emaps:bloch.f90:bloch:get_samplingpoints
+get_useparameters: no module ifport info used by get_samplingpoints
+In: :emaps:bloch.f90:bloch:get_samplingpoints
+get_useparameters: no module bloch_mem info used by get_samplingpoints
+				Block: get_scmdim
+In: :emaps:bloch.f90:bloch:get_scmdim
+get_useparameters: no module emaps_consts info used by get_scmdim
+In: :emaps:bloch.f90:bloch:get_scmdim
+get_useparameters: no module crystal info used by get_scmdim
+In: :emaps:bloch.f90:bloch:get_scmdim
+get_useparameters: no module ifport info used by get_scmdim
+In: :emaps:bloch.f90:bloch:get_scmdim
+get_useparameters: no module bloch_mem info used by get_scmdim
+				Block: getibinfo
+In: :emaps:bloch.f90:bloch:getibinfo
+get_useparameters: no module emaps_consts info used by getibinfo
+In: :emaps:bloch.f90:bloch:getibinfo
+get_useparameters: no module crystal info used by getibinfo
+In: :emaps:bloch.f90:bloch:getibinfo
+get_useparameters: no module ifport info used by getibinfo
+In: :emaps:bloch.f90:bloch:getibinfo
+get_useparameters: no module bloch_mem info used by getibinfo
+				Block: getscm
+In: :emaps:bloch.f90:bloch:getscm
+get_useparameters: no module emaps_consts info used by getscm
+In: :emaps:bloch.f90:bloch:getscm
+get_useparameters: no module crystal info used by getscm
+In: :emaps:bloch.f90:bloch:getscm
+get_useparameters: no module ifport info used by getscm
+In: :emaps:bloch.f90:bloch:getscm
+get_useparameters: no module bloch_mem info used by getscm
+				Block: geteigenvalues
+In: :emaps:bloch.f90:bloch:geteigenvalues
+get_useparameters: no module emaps_consts info used by geteigenvalues
+In: :emaps:bloch.f90:bloch:geteigenvalues
+get_useparameters: no module crystal info used by geteigenvalues
+In: :emaps:bloch.f90:bloch:geteigenvalues
+get_useparameters: no module ifport info used by geteigenvalues
+In: :emaps:bloch.f90:bloch:geteigenvalues
+get_useparameters: no module bloch_mem info used by geteigenvalues
+				Block: getbeams
+In: :emaps:bloch.f90:bloch:getbeams
+get_useparameters: no module emaps_consts info used by getbeams
+In: :emaps:bloch.f90:bloch:getbeams
+get_useparameters: no module crystal info used by getbeams
+In: :emaps:bloch.f90:bloch:getbeams
+get_useparameters: no module ifport info used by getbeams
+In: :emaps:bloch.f90:bloch:getbeams
+get_useparameters: no module bloch_mem info used by getbeams
+				Block: getimage
+In: :emaps:bloch.f90:bloch:getimage
+get_useparameters: no module emaps_consts info used by getimage
+In: :emaps:bloch.f90:bloch:getimage
+get_useparameters: no module crystal info used by getimage
+In: :emaps:bloch.f90:bloch:getimage
+get_useparameters: no module ifport info used by getimage
+In: :emaps:bloch.f90:bloch:getimage
+get_useparameters: no module bloch_mem info used by getimage
+				Block: jctst
+In: :emaps:bloch.f90:bloch:jctst
+get_useparameters: no module emaps_consts info used by jctst
+In: :emaps:bloch.f90:bloch:jctst
+get_useparameters: no module crystal info used by jctst
+In: :emaps:bloch.f90:bloch:jctst
+get_useparameters: no module ifport info used by jctst
+				Block: tval
+In: :emaps:bloch.f90:bloch:tval
+get_useparameters: no module emaps_consts info used by tval
+In: :emaps:bloch.f90:bloch:tval
+get_useparameters: no module crystal info used by tval
+In: :emaps:bloch.f90:bloch:tval
+get_useparameters: no module ifport info used by tval
+In: :emaps:bloch.f90:bloch:tval
+get_useparameters: no module bloch_mem info used by tval
+				Block: tintp
+In: :emaps:bloch.f90:bloch:tintp
+get_useparameters: no module emaps_consts info used by tintp
+In: :emaps:bloch.f90:bloch:tintp
+get_useparameters: no module crystal info used by tintp
+In: :emaps:bloch.f90:bloch:tintp
+get_useparameters: no module ifport info used by tintp
+				Block: setugh
+In: :emaps:bloch.f90:bloch:setugh
+get_useparameters: no module emaps_consts info used by setugh
+In: :emaps:bloch.f90:bloch:setugh
+get_useparameters: no module crystal info used by setugh
+In: :emaps:bloch.f90:bloch:setugh
+get_useparameters: no module ifport info used by setugh
+In: :emaps:bloch.f90:bloch:setugh
+get_useparameters: no module emaps_mem info used by setugh
+In: :emaps:bloch.f90:bloch:setugh
+get_useparameters: no module bloch_mem info used by setugh
+				Block: eigen_cgeev
+In: :emaps:bloch.f90:bloch:eigen_cgeev
+get_useparameters: no module emaps_consts info used by eigen_cgeev
+In: :emaps:bloch.f90:bloch:eigen_cgeev
+get_useparameters: no module crystal info used by eigen_cgeev
+In: :emaps:bloch.f90:bloch:eigen_cgeev
+get_useparameters: no module ifport info used by eigen_cgeev
+In: :emaps:bloch.f90:bloch:eigen_cgeev
+get_useparameters: no module bloch_mem info used by eigen_cgeev
+In: :emaps:bloch.f90:bloch:eigen_cgeev
+get_useparameters: no module emaps_mem info used by eigen_cgeev
+In: :emaps:bloch.f90:bloch:eigen_cgeev
+	getarrlen:variable "nbeams" undefined
+In: :emaps:bloch.f90:bloch:eigen_cgeev
+	getarrlen:variable "nbeams" undefined
+				Block: bmchk
+In: :emaps:bloch.f90:bloch:bmchk
+get_useparameters: no module emaps_consts info used by bmchk
+In: :emaps:bloch.f90:bloch:bmchk
+get_useparameters: no module crystal info used by bmchk
+In: :emaps:bloch.f90:bloch:bmchk
+get_useparameters: no module ifport info used by bmchk
+In: :emaps:bloch.f90:bloch:bmchk
+get_useparameters: no module bloch_mem info used by bmchk
+In: :emaps:bloch.f90:bloch:bmchk
+	getarrlen:variable "nbeams" undefined
+In: :emaps:bloch.f90:bloch:bmchk
+	getarrlen:variable "nbeams" undefined
+				Block: get_sam_defs
+In: :emaps:bloch.f90:bloch:get_sam_defs
+get_useparameters: no module emaps_consts info used by get_sam_defs
+In: :emaps:bloch.f90:bloch:get_sam_defs
+get_useparameters: no module crystal info used by get_sam_defs
+In: :emaps:bloch.f90:bloch:get_sam_defs
+get_useparameters: no module ifport info used by get_sam_defs
+				Block: get_mic_defs
+In: :emaps:bloch.f90:bloch:get_mic_defs
+get_useparameters: no module emaps_consts info used by get_mic_defs
+In: :emaps:bloch.f90:bloch:get_mic_defs
+get_useparameters: no module crystal info used by get_mic_defs
+In: :emaps:bloch.f90:bloch:get_mic_defs
+get_useparameters: no module ifport info used by get_mic_defs
+				Block: get_sim_defs
+In: :emaps:bloch.f90:bloch:get_sim_defs
+get_useparameters: no module emaps_consts info used by get_sim_defs
+In: :emaps:bloch.f90:bloch:get_sim_defs
+get_useparameters: no module crystal info used by get_sim_defs
+In: :emaps:bloch.f90:bloch:get_sim_defs
+get_useparameters: no module ifport info used by get_sim_defs
+				Block: bloch_print
+In: :emaps:bloch.f90:bloch:bloch_print
+get_useparameters: no module emaps_consts info used by bloch_print
+In: :emaps:bloch.f90:bloch:bloch_print
+get_useparameters: no module crystal info used by bloch_print
+In: :emaps:bloch.f90:bloch:bloch_print
+get_useparameters: no module ifport info used by bloch_print
+In: :emaps:bloch.f90:bloch:bloch_print
+get_useparameters: no module helper info used by bloch_print
+				Block: bloch_print_inherit
+In: :emaps:bloch.f90:bloch:bloch_print_inherit
+get_useparameters: no module emaps_consts info used by bloch_print_inherit
+In: :emaps:bloch.f90:bloch:bloch_print_inherit
+get_useparameters: no module crystal info used by bloch_print_inherit
+In: :emaps:bloch.f90:bloch:bloch_print_inherit
+get_useparameters: no module ifport info used by bloch_print_inherit
+In: :emaps:bloch.f90:bloch:bloch_print_inherit
+get_useparameters: no module bloch_mem info used by bloch_print_inherit
+				Block: print_matrix
+In: :emaps:bloch.f90:bloch:print_matrix
+get_useparameters: no module emaps_consts info used by print_matrix
+In: :emaps:bloch.f90:bloch:print_matrix
+get_useparameters: no module crystal info used by print_matrix
+In: :emaps:bloch.f90:bloch:print_matrix
+get_useparameters: no module ifport info used by print_matrix
+				Block: cleanup
+In: :emaps:bloch.f90:bloch:cleanup
+get_useparameters: no module emaps_consts info used by cleanup
+In: :emaps:bloch.f90:bloch:cleanup
+get_useparameters: no module crystal info used by cleanup
+In: :emaps:bloch.f90:bloch:cleanup
+get_useparameters: no module ifport info used by cleanup
+In: :emaps:bloch.f90:bloch:cleanup
+get_useparameters: no module bloch_mem info used by cleanup
+			Block: emaps_zgeev
+In: :emaps:zg.f90:emaps_zgeev
+get_useparameters: no module emaps_consts info used by emaps_zgeev
+In: :emaps:zg.f90:emaps_zgeev
+get_useparameters: no module bloch_mem info used by emaps_zgeev
+			Block: inverse_eigenmatrix
+In: :emaps:zg.f90:inverse_eigenmatrix
+get_useparameters: no module bloch_mem info used by inverse_eigenmatrix
+			Block: dpgen
+In: :emaps:dp_gen.f90:dpgen
+get_useparameters: no module emaps_consts info used by dpgen
+In: :emaps:dp_gen.f90:dpgen
+get_useparameters: no module crystal_mem info used by dpgen
+In: :emaps:dp_gen.f90:dpgen
+get_useparameters: no module crystal info used by dpgen
+In: :emaps:dp_gen.f90:dpgen
+get_useparameters: no module emaps_mem info used by dpgen
+In: :emaps:dp_gen.f90:dpgen
+get_useparameters: no module asf_mem info used by dpgen
+In: :emaps:dp_gen.f90:dpgen
+get_useparameters: no module dp_types info used by dpgen
+In: :emaps:dp_gen.f90:dpgen
+get_useparameters: no module helper info used by dpgen
+In: :emaps:dp_gen.f90:dpgen
+get_parameters: got "name 'freeres' is not defined" on 'freeres'
+In: :emaps:dp_gen.f90:dpgen:unknown_interface
+get_useparameters: no module emaps_consts info used by unknown_interface
+In: :emaps:dp_gen.f90:dpgen:unknown_interface
+get_useparameters: no module crystal_mem info used by unknown_interface
+In: :emaps:dp_gen.f90:dpgen:unknown_interface
+get_useparameters: no module crystal info used by unknown_interface
+In: :emaps:dp_gen.f90:dpgen:unknown_interface
+get_useparameters: no module emaps_mem info used by unknown_interface
+In: :emaps:dp_gen.f90:dpgen:unknown_interface
+get_useparameters: no module asf_mem info used by unknown_interface
+In: :emaps:dp_gen.f90:dpgen:unknown_interface
+get_useparameters: no module dp_types info used by unknown_interface
+In: :emaps:dp_gen.f90:dpgen:unknown_interface
+get_useparameters: no module helper info used by unknown_interface
+					Block: cdpwritebin
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:cdpwritebin
+get_useparameters: no module emaps_consts info used by cdpwritebin
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:cdpwritebin
+get_useparameters: no module crystal_mem info used by cdpwritebin
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:cdpwritebin
+get_useparameters: no module crystal info used by cdpwritebin
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:cdpwritebin
+get_useparameters: no module emaps_mem info used by cdpwritebin
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:cdpwritebin
+get_useparameters: no module asf_mem info used by cdpwritebin
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:cdpwritebin
+get_useparameters: no module dp_types info used by cdpwritebin
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:cdpwritebin
+get_useparameters: no module helper info used by cdpwritebin
+					Block: cdpwritebin_new
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:cdpwritebin_new
+get_useparameters: no module emaps_consts info used by cdpwritebin_new
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:cdpwritebin_new
+get_useparameters: no module crystal_mem info used by cdpwritebin_new
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:cdpwritebin_new
+get_useparameters: no module crystal info used by cdpwritebin_new
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:cdpwritebin_new
+get_useparameters: no module emaps_mem info used by cdpwritebin_new
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:cdpwritebin_new
+get_useparameters: no module asf_mem info used by cdpwritebin_new
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:cdpwritebin_new
+get_useparameters: no module dp_types info used by cdpwritebin_new
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:cdpwritebin_new
+get_useparameters: no module helper info used by cdpwritebin_new
+					Block: readbinc
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:readbinc
+get_useparameters: no module emaps_consts info used by readbinc
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:readbinc
+get_useparameters: no module crystal_mem info used by readbinc
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:readbinc
+get_useparameters: no module crystal info used by readbinc
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:readbinc
+get_useparameters: no module emaps_mem info used by readbinc
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:readbinc
+get_useparameters: no module asf_mem info used by readbinc
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:readbinc
+get_useparameters: no module dp_types info used by readbinc
+In: :emaps:dp_gen.f90:dpgen:unknown_interface:readbinc
+get_useparameters: no module helper info used by readbinc
+				Block: get_highres
+In: :emaps:dp_gen.f90:dpgen:get_highres
+get_useparameters: no module emaps_consts info used by get_highres
+In: :emaps:dp_gen.f90:dpgen:get_highres
+get_useparameters: no module crystal_mem info used by get_highres
+In: :emaps:dp_gen.f90:dpgen:get_highres
+get_useparameters: no module crystal info used by get_highres
+In: :emaps:dp_gen.f90:dpgen:get_highres
+get_useparameters: no module emaps_mem info used by get_highres
+In: :emaps:dp_gen.f90:dpgen:get_highres
+get_useparameters: no module asf_mem info used by get_highres
+In: :emaps:dp_gen.f90:dpgen:get_highres
+get_useparameters: no module dp_types info used by get_highres
+In: :emaps:dp_gen.f90:dpgen:get_highres
+get_useparameters: no module helper info used by get_highres
+				Block: get_lowres
+In: :emaps:dp_gen.f90:dpgen:get_lowres
+get_useparameters: no module emaps_consts info used by get_lowres
+In: :emaps:dp_gen.f90:dpgen:get_lowres
+get_useparameters: no module crystal_mem info used by get_lowres
+In: :emaps:dp_gen.f90:dpgen:get_lowres
+get_useparameters: no module crystal info used by get_lowres
+In: :emaps:dp_gen.f90:dpgen:get_lowres
+get_useparameters: no module emaps_mem info used by get_lowres
+In: :emaps:dp_gen.f90:dpgen:get_lowres
+get_useparameters: no module asf_mem info used by get_lowres
+In: :emaps:dp_gen.f90:dpgen:get_lowres
+get_useparameters: no module dp_types info used by get_lowres
+In: :emaps:dp_gen.f90:dpgen:get_lowres
+get_useparameters: no module helper info used by get_lowres
+				Block: readbin_new
+In: :emaps:dp_gen.f90:dpgen:readbin_new
+get_useparameters: no module emaps_consts info used by readbin_new
+In: :emaps:dp_gen.f90:dpgen:readbin_new
+get_useparameters: no module crystal_mem info used by readbin_new
+In: :emaps:dp_gen.f90:dpgen:readbin_new
+get_useparameters: no module crystal info used by readbin_new
+In: :emaps:dp_gen.f90:dpgen:readbin_new
+get_useparameters: no module emaps_mem info used by readbin_new
+In: :emaps:dp_gen.f90:dpgen:readbin_new
+get_useparameters: no module asf_mem info used by readbin_new
+In: :emaps:dp_gen.f90:dpgen:readbin_new
+get_useparameters: no module dp_types info used by readbin_new
+In: :emaps:dp_gen.f90:dpgen:readbin_new
+get_useparameters: no module helper info used by readbin_new
+				Block: dpbin
+In: :emaps:dp_gen.f90:dpgen:dpbin
+get_useparameters: no module emaps_consts info used by dpbin
+In: :emaps:dp_gen.f90:dpgen:dpbin
+get_useparameters: no module crystal_mem info used by dpbin
+In: :emaps:dp_gen.f90:dpgen:dpbin
+get_useparameters: no module crystal info used by dpbin
+In: :emaps:dp_gen.f90:dpgen:dpbin
+get_useparameters: no module emaps_mem info used by dpbin
+In: :emaps:dp_gen.f90:dpgen:dpbin
+get_useparameters: no module asf_mem info used by dpbin
+In: :emaps:dp_gen.f90:dpgen:dpbin
+get_useparameters: no module dp_types info used by dpbin
+In: :emaps:dp_gen.f90:dpgen:dpbin
+get_useparameters: no module helper info used by dpbin
+				Block: dpbin_new
+In: :emaps:dp_gen.f90:dpgen:dpbin_new
+get_useparameters: no module emaps_consts info used by dpbin_new
+In: :emaps:dp_gen.f90:dpgen:dpbin_new
+get_useparameters: no module crystal_mem info used by dpbin_new
+In: :emaps:dp_gen.f90:dpgen:dpbin_new
+get_useparameters: no module crystal info used by dpbin_new
+In: :emaps:dp_gen.f90:dpgen:dpbin_new
+get_useparameters: no module emaps_mem info used by dpbin_new
+In: :emaps:dp_gen.f90:dpgen:dpbin_new
+get_useparameters: no module asf_mem info used by dpbin_new
+In: :emaps:dp_gen.f90:dpgen:dpbin_new
+get_useparameters: no module dp_types info used by dpbin_new
+In: :emaps:dp_gen.f90:dpgen:dpbin_new
+get_useparameters: no module helper info used by dpbin_new
+				Block: smeshg
+In: :emaps:dp_gen.f90:dpgen:smeshg
+get_useparameters: no module emaps_consts info used by smeshg
+In: :emaps:dp_gen.f90:dpgen:smeshg
+get_useparameters: no module crystal_mem info used by smeshg
+In: :emaps:dp_gen.f90:dpgen:smeshg
+get_useparameters: no module crystal info used by smeshg
+In: :emaps:dp_gen.f90:dpgen:smeshg
+get_useparameters: no module emaps_mem info used by smeshg
+In: :emaps:dp_gen.f90:dpgen:smeshg
+get_useparameters: no module asf_mem info used by smeshg
+In: :emaps:dp_gen.f90:dpgen:smeshg
+get_useparameters: no module dp_types info used by smeshg
+In: :emaps:dp_gen.f90:dpgen:smeshg
+get_useparameters: no module helper info used by smeshg
+				Block: do_dpgen
+In: :emaps:dp_gen.f90:dpgen:do_dpgen
+get_useparameters: no module emaps_consts info used by do_dpgen
+In: :emaps:dp_gen.f90:dpgen:do_dpgen
+get_useparameters: no module crystal_mem info used by do_dpgen
+In: :emaps:dp_gen.f90:dpgen:do_dpgen
+get_useparameters: no module crystal info used by do_dpgen
+In: :emaps:dp_gen.f90:dpgen:do_dpgen
+get_useparameters: no module emaps_mem info used by do_dpgen
+In: :emaps:dp_gen.f90:dpgen:do_dpgen
+get_useparameters: no module asf_mem info used by do_dpgen
+In: :emaps:dp_gen.f90:dpgen:do_dpgen
+get_useparameters: no module dp_types info used by do_dpgen
+In: :emaps:dp_gen.f90:dpgen:do_dpgen
+get_useparameters: no module helper info used by do_dpgen
+				Block: write_dp
+In: :emaps:dp_gen.f90:dpgen:write_dp
+get_useparameters: no module emaps_consts info used by write_dp
+In: :emaps:dp_gen.f90:dpgen:write_dp
+get_useparameters: no module crystal_mem info used by write_dp
+In: :emaps:dp_gen.f90:dpgen:write_dp
+get_useparameters: no module crystal info used by write_dp
+In: :emaps:dp_gen.f90:dpgen:write_dp
+get_useparameters: no module emaps_mem info used by write_dp
+In: :emaps:dp_gen.f90:dpgen:write_dp
+get_useparameters: no module asf_mem info used by write_dp
+In: :emaps:dp_gen.f90:dpgen:write_dp
+get_useparameters: no module dp_types info used by write_dp
+In: :emaps:dp_gen.f90:dpgen:write_dp
+get_useparameters: no module helper info used by write_dp
+				Block: inmask
+In: :emaps:dp_gen.f90:dpgen:inmask
+get_useparameters: no module emaps_consts info used by inmask
+In: :emaps:dp_gen.f90:dpgen:inmask
+get_useparameters: no module crystal_mem info used by inmask
+In: :emaps:dp_gen.f90:dpgen:inmask
+get_useparameters: no module crystal info used by inmask
+In: :emaps:dp_gen.f90:dpgen:inmask
+get_useparameters: no module emaps_mem info used by inmask
+In: :emaps:dp_gen.f90:dpgen:inmask
+get_useparameters: no module asf_mem info used by inmask
+In: :emaps:dp_gen.f90:dpgen:inmask
+get_useparameters: no module dp_types info used by inmask
+In: :emaps:dp_gen.f90:dpgen:inmask
+get_useparameters: no module helper info used by inmask
+				Block: write_dpheader
+In: :emaps:dp_gen.f90:dpgen:write_dpheader
+get_useparameters: no module emaps_consts info used by write_dpheader
+In: :emaps:dp_gen.f90:dpgen:write_dpheader
+get_useparameters: no module crystal_mem info used by write_dpheader
+In: :emaps:dp_gen.f90:dpgen:write_dpheader
+get_useparameters: no module crystal info used by write_dpheader
+In: :emaps:dp_gen.f90:dpgen:write_dpheader
+get_useparameters: no module emaps_mem info used by write_dpheader
+In: :emaps:dp_gen.f90:dpgen:write_dpheader
+get_useparameters: no module asf_mem info used by write_dpheader
+In: :emaps:dp_gen.f90:dpgen:write_dpheader
+get_useparameters: no module dp_types info used by write_dpheader
+In: :emaps:dp_gen.f90:dpgen:write_dpheader
+get_useparameters: no module helper info used by write_dpheader
+				Block: cleanup
+In: :emaps:dp_gen.f90:dpgen:cleanup
+get_useparameters: no module emaps_consts info used by cleanup
+In: :emaps:dp_gen.f90:dpgen:cleanup
+get_useparameters: no module crystal_mem info used by cleanup
+In: :emaps:dp_gen.f90:dpgen:cleanup
+get_useparameters: no module crystal info used by cleanup
+In: :emaps:dp_gen.f90:dpgen:cleanup
+get_useparameters: no module emaps_mem info used by cleanup
+In: :emaps:dp_gen.f90:dpgen:cleanup
+get_useparameters: no module asf_mem info used by cleanup
+In: :emaps:dp_gen.f90:dpgen:cleanup
+get_useparameters: no module dp_types info used by cleanup
+In: :emaps:dp_gen.f90:dpgen:cleanup
+get_useparameters: no module helper info used by cleanup
+			Block: stereo
+				Block: do_stereogram
+In: :emaps:stereo.f90:stereo:do_stereogram
+get_useparameters: no module emaps_mem info used by do_stereogram
+In: :emaps:stereo.f90:stereo:do_stereogram
+	getarrlen:variable "liszn" undefined
+In: :emaps:stereo.f90:stereo:do_stereogram
+	getarrlen:variable "liszn" undefined
+In: :emaps:stereo.f90:stereo:do_stereogram
+	getarrlen:variable "liszn" undefined
+In: :emaps:stereo.f90:stereo:do_stereogram
+	getarrlen:variable "liszn" undefined
+				Block: get_stereolimit
+In: :emaps:stereo.f90:stereo:get_stereolimit
+get_useparameters: no module emaps_mem info used by get_stereolimit
+			Block: mxtal
+In: :emaps:mxtal.f90:mxtal
+get_useparameters: no module crystal_mem info used by mxtal
+In: :emaps:mxtal.f90:mxtal
+get_useparameters: no module emaps_consts info used by mxtal
+In: :emaps:mxtal.f90:mxtal
+get_useparameters: no module crystal info used by mxtal
+In: :emaps:mxtal.f90:mxtal
+get_useparameters: no module mxtal_mem info used by mxtal
+				Block: init_mxtal
+In: :emaps:mxtal.f90:mxtal:init_mxtal
+get_useparameters: no module crystal_mem info used by init_mxtal
+In: :emaps:mxtal.f90:mxtal:init_mxtal
+get_useparameters: no module emaps_consts info used by init_mxtal
+In: :emaps:mxtal.f90:mxtal:init_mxtal
+get_useparameters: no module crystal info used by init_mxtal
+In: :emaps:mxtal.f90:mxtal:init_mxtal
+get_useparameters: no module mxtal_mem info used by init_mxtal
+				Block: mx_estimate
+In: :emaps:mxtal.f90:mxtal:mx_estimate
+get_useparameters: no module crystal_mem info used by mx_estimate
+In: :emaps:mxtal.f90:mxtal:mx_estimate
+get_useparameters: no module emaps_consts info used by mx_estimate
+In: :emaps:mxtal.f90:mxtal:mx_estimate
+get_useparameters: no module crystal info used by mx_estimate
+In: :emaps:mxtal.f90:mxtal:mx_estimate
+get_useparameters: no module mxtal_mem info used by mx_estimate
+				Block: transform
+In: :emaps:mxtal.f90:mxtal:transform
+get_useparameters: no module crystal_mem info used by transform
+In: :emaps:mxtal.f90:mxtal:transform
+get_useparameters: no module emaps_consts info used by transform
+In: :emaps:mxtal.f90:mxtal:transform
+get_useparameters: no module crystal info used by transform
+In: :emaps:mxtal.f90:mxtal:transform
+get_useparameters: no module mxtal_mem info used by transform
+				Block: mxtrans
+In: :emaps:mxtal.f90:mxtal:mxtrans
+get_useparameters: no module crystal_mem info used by mxtrans
+In: :emaps:mxtal.f90:mxtal:mxtrans
+get_useparameters: no module emaps_consts info used by mxtrans
+In: :emaps:mxtal.f90:mxtal:mxtrans
+get_useparameters: no module crystal info used by mxtrans
+In: :emaps:mxtal.f90:mxtal:mxtrans
+get_useparameters: no module mxtal_mem info used by mxtrans
+				Block: sortin
+In: :emaps:mxtal.f90:mxtal:sortin
+get_useparameters: no module crystal_mem info used by sortin
+In: :emaps:mxtal.f90:mxtal:sortin
+get_useparameters: no module emaps_consts info used by sortin
+In: :emaps:mxtal.f90:mxtal:sortin
+get_useparameters: no module crystal info used by sortin
+In: :emaps:mxtal.f90:mxtal:sortin
+get_useparameters: no module mxtal_mem info used by sortin
+				Block: squeeze
+In: :emaps:mxtal.f90:mxtal:squeeze
+get_useparameters: no module crystal_mem info used by squeeze
+In: :emaps:mxtal.f90:mxtal:squeeze
+get_useparameters: no module emaps_consts info used by squeeze
+In: :emaps:mxtal.f90:mxtal:squeeze
+get_useparameters: no module crystal info used by squeeze
+In: :emaps:mxtal.f90:mxtal:squeeze
+get_useparameters: no module mxtal_mem info used by squeeze
+				Block: box0
+In: :emaps:mxtal.f90:mxtal:box0
+get_useparameters: no module crystal_mem info used by box0
+In: :emaps:mxtal.f90:mxtal:box0
+get_useparameters: no module emaps_consts info used by box0
+In: :emaps:mxtal.f90:mxtal:box0
+get_useparameters: no module crystal info used by box0
+In: :emaps:mxtal.f90:mxtal:box0
+get_useparameters: no module mxtal_mem info used by box0
+				Block: box
+In: :emaps:mxtal.f90:mxtal:box
+get_useparameters: no module crystal_mem info used by box
+In: :emaps:mxtal.f90:mxtal:box
+get_useparameters: no module emaps_consts info used by box
+In: :emaps:mxtal.f90:mxtal:box
+get_useparameters: no module crystal info used by box
+In: :emaps:mxtal.f90:mxtal:box
+get_useparameters: no module mxtal_mem info used by box
+				Block: isinbox
+In: :emaps:mxtal.f90:mxtal:isinbox
+get_useparameters: no module crystal_mem info used by isinbox
+In: :emaps:mxtal.f90:mxtal:isinbox
+get_useparameters: no module emaps_consts info used by isinbox
+In: :emaps:mxtal.f90:mxtal:isinbox
+get_useparameters: no module crystal info used by isinbox
+In: :emaps:mxtal.f90:mxtal:isinbox
+get_useparameters: no module mxtal_mem info used by isinbox
+				Block: place
+In: :emaps:mxtal.f90:mxtal:place
+get_useparameters: no module crystal_mem info used by place
+In: :emaps:mxtal.f90:mxtal:place
+get_useparameters: no module emaps_consts info used by place
+In: :emaps:mxtal.f90:mxtal:place
+get_useparameters: no module crystal info used by place
+In: :emaps:mxtal.f90:mxtal:place
+get_useparameters: no module mxtal_mem info used by place
+				Block: get_xyzdata
+In: :emaps:mxtal.f90:mxtal:get_xyzdata
+get_useparameters: no module crystal_mem info used by get_xyzdata
+In: :emaps:mxtal.f90:mxtal:get_xyzdata
+get_useparameters: no module emaps_consts info used by get_xyzdata
+In: :emaps:mxtal.f90:mxtal:get_xyzdata
+get_useparameters: no module crystal info used by get_xyzdata
+In: :emaps:mxtal.f90:mxtal:get_xyzdata
+get_useparameters: no module mxtal_mem info used by get_xyzdata
+				Block: get_symdata
+In: :emaps:mxtal.f90:mxtal:get_symdata
+get_useparameters: no module crystal_mem info used by get_symdata
+In: :emaps:mxtal.f90:mxtal:get_symdata
+get_useparameters: no module emaps_consts info used by get_symdata
+In: :emaps:mxtal.f90:mxtal:get_symdata
+get_useparameters: no module crystal info used by get_symdata
+In: :emaps:mxtal.f90:mxtal:get_symdata
+get_useparameters: no module mxtal_mem info used by get_symdata
+				Block: get_nxyz
+In: :emaps:mxtal.f90:mxtal:get_nxyz
+get_useparameters: no module crystal_mem info used by get_nxyz
+In: :emaps:mxtal.f90:mxtal:get_nxyz
+get_useparameters: no module emaps_consts info used by get_nxyz
+In: :emaps:mxtal.f90:mxtal:get_nxyz
+get_useparameters: no module crystal info used by get_nxyz
+In: :emaps:mxtal.f90:mxtal:get_nxyz
+get_useparameters: no module mxtal_mem info used by get_nxyz
+				Block: get_cellconst
+In: :emaps:mxtal.f90:mxtal:get_cellconst
+get_useparameters: no module crystal_mem info used by get_cellconst
+In: :emaps:mxtal.f90:mxtal:get_cellconst
+get_useparameters: no module emaps_consts info used by get_cellconst
+In: :emaps:mxtal.f90:mxtal:get_cellconst
+get_useparameters: no module crystal info used by get_cellconst
+In: :emaps:mxtal.f90:mxtal:get_cellconst
+get_useparameters: no module mxtal_mem info used by get_cellconst
+				Block: do_mxtal
+In: :emaps:mxtal.f90:mxtal:do_mxtal
+get_useparameters: no module crystal_mem info used by do_mxtal
+In: :emaps:mxtal.f90:mxtal:do_mxtal
+get_useparameters: no module emaps_consts info used by do_mxtal
+In: :emaps:mxtal.f90:mxtal:do_mxtal
+get_useparameters: no module crystal info used by do_mxtal
+In: :emaps:mxtal.f90:mxtal:do_mxtal
+get_useparameters: no module mxtal_mem info used by do_mxtal
+				Block: cleanup
+In: :emaps:mxtal.f90:mxtal:cleanup
+get_useparameters: no module crystal_mem info used by cleanup
+In: :emaps:mxtal.f90:mxtal:cleanup
+get_useparameters: no module emaps_consts info used by cleanup
+In: :emaps:mxtal.f90:mxtal:cleanup
+get_useparameters: no module crystal info used by cleanup
+In: :emaps:mxtal.f90:mxtal:cleanup
+get_useparameters: no module mxtal_mem info used by cleanup
+Post-processing (stage 2)...
+	Block: emaps
+		Block: unknown_interface
+			Block: dif
+				Block: diffract
+				Block: getlin
+				Block: xxy
+				Block: yxy
+				Block: xcirc
+				Block: sfact0
+				Block: gethlist
+				Block: getklist
+				Block: getdlist
+				Block: getdlist_dp
+				Block: lineq
+				Block: getg
+				Block: setgls
+				Block: crule
+				Block: getamt
+				Block: getbmt
+				Block: gselct
+				Block: beams_est
+				Block: igcheck
+				Block: excit
+				Block: sortin
+				Block: getzon
+				Block: zonlis
+				Block: getknum
+				Block: getdnum
+				Block: gethnum
+				Block: get_kline
+				Block: get_klines
+				Block: get_hline
+				Block: get_hlines
+				Block: get_disk
+				Block: get_disks
+				Block: get_shifts
+				Block: diff_delete
+				Block: setmode
+				Block: setdisksize
+				Block: getdisksize
+				Block: setgctl
+				Block: setzctl
+				Block: setexcitation
+				Block: setglen
+				Block: setgcutoff
+				Block: setintensities
+				Block: setzone
+				Block: setemcontrols
+				Block: setsamplecontrols
+				Block: set_xaxis
+				Block: get_sim_defs
+				Block: get_sam_defs
+				Block: get_mic_defs
+				Block: drtrans
+				Block: ang
+				Block: vlen
+				Block: initcontrols
+				Block: loadcrystal
+				Block: crystaldelete
+				Block: crystal_printall
+				Block: diff_printall
+				Block: diff_internaldelete
+				Block: get_nbeams
+			Block: csf
+				Block: sfact_csf
+				Block: generate_sf
+				Block: get_sf
+				Block: delete_sfmem
+				Block: est_sfbeams
+				Block: setsfgls
+				Block: sfsortin
+			Block: powder
+				Block: sfact_powder
+				Block: generate_powder
+				Block: bkgd
+				Block: est_pbeams
+				Block: setpwdgls
+				Block: sortphkl
+			Block: bloch
+				Block: unknown_interface
+					Block: cwriteimgopen
+					Block: cwriteimgdata
+					Block: cwriteimgclose
+				Block: openimgfile
+				Block: closeimgfile
+				Block: dobloch
+				Block: cnvtab
+				Block: retievebloch
+				Block: get_nsampling
+				Block: get_samplingpoints
+				Block: get_scmdim
+				Block: getibinfo
+				Block: getscm
+				Block: geteigenvalues
+				Block: getbeams
+				Block: getimage
+				Block: jctst
+				Block: tval
+				Block: tintp
+				Block: setugh
+				Block: eigen_cgeev
+				Block: bmchk
+				Block: get_sam_defs
+				Block: get_mic_defs
+				Block: get_sim_defs
+				Block: bloch_print
+				Block: bloch_print_inherit
+				Block: print_matrix
+				Block: cleanup
+			Block: emaps_zgeev
+			Block: inverse_eigenmatrix
+			Block: dpgen
+				Block: unknown_interface
+					Block: cdpwritebin
+					Block: cdpwritebin_new
+					Block: readbinc
+				Block: get_highres
+				Block: get_lowres
+				Block: readbin_new
+				Block: dpbin
+				Block: dpbin_new
+				Block: smeshg
+				Block: do_dpgen
+				Block: write_dp
+				Block: inmask
+				Block: write_dpheader
+				Block: cleanup
+			Block: stereo
+				Block: do_stereogram
+				Block: get_stereolimit
+			Block: mxtal
+				Block: init_mxtal
+				Block: mx_estimate
+				Block: transform
+				Block: mxtrans
+				Block: sortin
+				Block: squeeze
+				Block: box0
+				Block: box
+				Block: isinbox
+				Block: place
+				Block: get_xyzdata
+				Block: get_symdata
+				Block: get_nxyz
+				Block: get_cellconst
+				Block: do_mxtal
+				Block: cleanup
+Saving signatures to file ".\emaps.pyf"
+cl -D__BDEBUG__ "C:\Apps\Intel\oneAPI\mkl\2022.1.0\include;C:\Apps\Intel\oneAPI\ipp\latest\include;C:\Apps\Intel\oneAPI\compiler\2022.1.0\windows\include;C:\Apps\Intel\oneAPI\compiler\2022.1.0\windows\compiler\include;C:\Apps\Intel\oneAPI\compiler\2022.1.0\windows\compiler\include\intel64;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\ATLMFC\include;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include;C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um;C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\ucrt;C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\shared;C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\um;C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\winrt;C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\cppwinrt" -c blochimgs.c
+blochimgs.c
+cl -D__BDEBUG__ "C:\Apps\Intel\oneAPI\mkl\2022.1.0\include;C:\Apps\Intel\oneAPI\ipp\latest\include;C:\Apps\Intel\oneAPI\compiler\2022.1.0\windows\include;C:\Apps\Intel\oneAPI\compiler\2022.1.0\windows\compiler\include;C:\Apps\Intel\oneAPI\compiler\2022.1.0\windows\compiler\include\intel64;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\ATLMFC\include;C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include;C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um;C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\ucrt;C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\shared;C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\um;C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\winrt;C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\cppwinrt" -c write_dpbin.c
+write_dpbin.c
+write_dpbin.c(182): warning C4477: 'sscanf' : format string '%d' requires an argument of type 'int *', but variadic argument 1 has type 'short *'
+write_dpbin.c(182): note: consider using '%hd' in the format string
+write_dpbin.c(182): warning C4477: 'sscanf' : format string '%d' requires an argument of type 'int *', but variadic argument 2 has type 'short *'
+write_dpbin.c(182): note: consider using '%hd' in the format string
+write_dpbin.c(182): warning C4477: 'sscanf' : format string '%f' requires an argument of type 'float *', but variadic argument 3 has type 'double *'
+write_dpbin.c(182): note: consider using '%lf' in the format string
+write_dpbin.c(182): warning C4477: 'sscanf' : format string '%f' requires an argument of type 'float *', but variadic argument 4 has type 'double *'
+write_dpbin.c(182): note: consider using '%lf' in the format string
+write_dpbin.c(182): warning C4477: 'sscanf' : format string '%f' requires an argument of type 'float *', but variadic argument 5 has type 'double *'
+write_dpbin.c(182): note: consider using '%lf' in the format string
+write_dpbin.c(182): warning C4477: 'sscanf' : format string '%f' requires an argument of type 'float *', but variadic argument 6 has type 'double *'
+write_dpbin.c(182): note: consider using '%lf' in the format string
+write_dpbin.c(182): warning C4477: 'sscanf' : format string '%f' requires an argument of type 'float *', but variadic argument 7 has type 'double *'
+write_dpbin.c(182): note: consider using '%lf' in the format string
+Build dir: build
+Egg info dir: pyemaps.egg-info
+pyemaps root dir: C:\Users\employee1\emaps_workspace\pyemaps_09282022root\pyemaps
+calling pyemaps non-debug build
+Processing c:\users\employee1\emaps_workspace\pyemaps_09282022root\pyemaps\dist\pyemaps-3.1.2-cp37-cp37m-win_amd64.whl
+Requirement already satisfied: numpy>=1.21.2 in c:\users\employee1\.conda\envs\pyemaps_build\lib\site-packages (from pyemaps==3.1.2) (1.21.6)
+Requirement already satisfied: intel-fortran-rt==2022.1.0 in c:\users\employee1\appdata\roaming\python\python37\site-packages (from pyemaps==3.1.2) (2022.1.0)
+Requirement already satisfied: matplotlib>=3.2.1 in c:\users\employee1\.conda\envs\pyemaps_build\lib\site-packages (from pyemaps==3.1.2) (3.5.3)
+Requirement already satisfied: mkl==2022.1.0 in c:\users\employee1\.conda\envs\pyemaps_build\lib\site-packages (from pyemaps==3.1.2) (2022.1.0)
+Requirement already satisfied: msvc-runtime==14.29.30133 in c:\users\employee1\appdata\roaming\python\python37\site-packages (from pyemaps==3.1.2) (14.29.30133)
+Requirement already satisfied: intel-cmplr-lic-rt==2022.1.0 in c:\users\employee1\appdata\roaming\python\python37\site-packages (from intel-fortran-rt==2022.1.0->pyemaps==3.1.2) (2022.1.0)
+Requirement already satisfied: intel-openmp==2022.1.0 in c:\users\employee1\appdata\roaming\python\python37\site-packages (from intel-fortran-rt==2022.1.0->pyemaps==3.1.2) (2022.1.0)
+Requirement already satisfied: impi-rt==2021.* in c:\users\employee1\appdata\roaming\python\python37\site-packages (from intel-fortran-rt==2022.1.0->pyemaps==3.1.2) (2021.6.0)
+Requirement already satisfied: intel-cmplr-lib-rt==2022.1.0 in c:\users\employee1\appdata\roaming\python\python37\site-packages (from intel-fortran-rt==2022.1.0->pyemaps==3.1.2) (2022.1.0)
+Requirement already satisfied: tbb==2021.* in c:\users\employee1\.conda\envs\pyemaps_build\lib\site-packages (from mkl==2022.1.0->pyemaps==3.1.2) (2021.6.0)
+Requirement already satisfied: pillow>=6.2.0 in c:\users\employee1\.conda\envs\pyemaps_build\lib\site-packages (from matplotlib>=3.2.1->pyemaps==3.1.2) (9.2.0)
+Requirement already satisfied: pyparsing>=2.2.1 in c:\users\employee1\.conda\envs\pyemaps_build\lib\site-packages (from matplotlib>=3.2.1->pyemaps==3.1.2) (3.0.9)
+Requirement already satisfied: cycler>=0.10 in c:\users\employee1\.conda\envs\pyemaps_build\lib\site-packages (from matplotlib>=3.2.1->pyemaps==3.1.2) (0.11.0)
+Requirement already satisfied: packaging>=20.0 in c:\users\employee1\.conda\envs\pyemaps_build\lib\site-packages (from matplotlib>=3.2.1->pyemaps==3.1.2) (21.3)
+Requirement already satisfied: kiwisolver>=1.0.1 in c:\users\employee1\.conda\envs\pyemaps_build\lib\site-packages (from matplotlib>=3.2.1->pyemaps==3.1.2) (1.4.4)
+Requirement already satisfied: python-dateutil>=2.7 in c:\users\employee1\.conda\envs\pyemaps_build\lib\site-packages (from matplotlib>=3.2.1->pyemaps==3.1.2) (2.8.2)
+Requirement already satisfied: fonttools>=4.22.0 in c:\users\employee1\.conda\envs\pyemaps_build\lib\site-packages (from matplotlib>=3.2.1->pyemaps==3.1.2) (4.37.2)
+Requirement already satisfied: typing-extensions in c:\users\employee1\.conda\envs\pyemaps_build\lib\site-packages (from kiwisolver>=1.0.1->matplotlib>=3.2.1->pyemaps==3.1.2) (4.3.0)
+Requirement already satisfied: six>=1.5 in c:\users\employee1\.conda\envs\pyemaps_build\lib\site-packages (from python-dateutil>=2.7->matplotlib>=3.2.1->pyemaps==3.1.2) (1.11.0)
+Installing collected packages: pyemaps
+Successfully installed pyemaps-3.1.2
+
+
+##############################################
+free test package build completed
+##############################################
+
+

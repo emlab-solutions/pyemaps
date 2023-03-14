@@ -3,6 +3,11 @@ import os
 from shutil import move
 from pathlib import Path
 
+if os.getenv('PYEMAPS_DEBUG') is not None:
+    pyemaps_debug = int(os.getenv('PYEMAPS_DEBUG'))
+else:
+    pyemaps_debug = 0
+
 MAKE_LOOKUP = dict(
     dif = 'DIFPYF',
     bloch = 'BLOCHPYF',
@@ -94,6 +99,8 @@ def make_pyf(comp='all'):
     
     os.system(makestr)
 
+    os.system("make COBJSBUILD")
+    # exit()
     # build spg standalone spg module
     os.system("make " + MAKE_LOOKUP['spg'])
     pyf_fname = 'spg_spgseek.pyf'
@@ -415,7 +422,7 @@ if __name__ == "__main__":
     parser.add_argument("-il", "--install-local", action="store_true", help="no build", required=False)
     parser.add_argument("-v", "--build-version", type=str, nargs="?", const="", default="", help="build version input", required=False)
     parser.add_argument("-bt", "--build-type", type=str, nargs="?", const="free", default="free", help="build free pyemaps package, defaults to free", required=False)
-   
+    # parser.add_argument("-d", "--debug", action="store_true", help="making debug build", required=False)
 
     args = parser.parse_args()
 
