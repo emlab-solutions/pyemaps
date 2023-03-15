@@ -53,8 +53,14 @@ def test_ediom(cname='Gold_FCC', xifn=None):
         return -1
 
     dbfn = getTestDBFN()
+    
     au.indexExpDP(dbfn, xifn, edcp=edc0, threshold=0.825)
+    
+    au.showMatchedDBDP()
+    au.printDetails()
 
+    au.release_ediom()
+#   
 if __name__ == '__main__':
     xifn0 = getIMSFn()
     test_ediom(xifn=xifn0)
