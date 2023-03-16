@@ -45,8 +45,8 @@ def test_ediom(cname='Gold_FCC', xifn=None):
     #     return -1
     
     # locate the experimental image file
-    edc0=ediom.cvar.edc
-    edc0.set_center(65.34, 67.01)
+    # edc0=ediom.cvar.edc
+    # edc0.set_center(65.34, 67.01)
 
     if xifn is None or not os.path.exists(xifn):
         print(f'Experimental image must be provided')
@@ -54,7 +54,7 @@ def test_ediom(cname='Gold_FCC', xifn=None):
 
     dbfn = getTestDBFN()
     
-    au.indexExpDP(dbfn, xifn, edcp=edc0, threshold=0.825)
+    au.indexExpDP(dbfn, xifn, img_center=(65.34, 67.01), threshold=0.825)
     
     au.showMatchedDBDP()
     au.printDetails()
