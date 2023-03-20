@@ -1,7 +1,7 @@
 
 def test_dpgen_al(cname='Aluminium'):
     from pyemaps import Crystal as cr
-    from pyemaps import EMC
+    from pyemaps import EMC, SIMC
     # import numpy as np
     import os
    
@@ -11,7 +11,7 @@ def test_dpgen_al(cname='Aluminium'):
     #  first generate a DP database file
     xa0=(2,0,0)
     res = 200
-    ret, dbfn = cryst.generateDPDB(emc=EMC(zone=(0,0,1)), res = res, xa = xa0)
+    ret, dbfn = cryst.generateDPDB(emc=EMC(zone=(0,0,1), simc=SIMC(gmax=3.9)), res = res, xa = xa0)
 
     if ret != 0:
         print(f'failed to generate a dp databaes')

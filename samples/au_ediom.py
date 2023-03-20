@@ -8,7 +8,7 @@ db_home = os.getenv('PYEMAPS_DATA')
 def getTestDBFN():
     # db_home = os.getenv('PYEMAPS_DATA')
     # return os.path.join(db_home, 'dpdb', 'Gold_FCC-20230220194314.bin')
-    return os.path.join(db_home, 'dpdb', 'Aluminium-20230319124039.bin')
+    return os.path.join(db_home, 'dpdb', 'Aluminium-20230320101605.bin')
 
 def getTestGoldDBFN():
     return os.path.join(db_home, 'dpdb', 'Gold_FCC-20230220194314.bin')
