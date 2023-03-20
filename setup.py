@@ -132,14 +132,14 @@ sct_files =['scattering_sct.pyf', 'scattering.f90']
 spgra_files =['spg_spgseek.pyf', 'spgseek.f90', 'spgra.f90']    
 
 # ------------- ediom -----------------
-ediomSRCFiles = ['imgutil_sub_mod.cpp', 
-            'DPIndex_mod.cpp', 
-            'nrutil_mod.cpp', 
-            'refine_mod.cpp',
-            'peak_mod.cpp',
-            'StackDP_mod.cpp', 
-            'simplxc_mod.cpp',
-            'symmetry_mod.cpp',
+ediomSRCFiles = ['imgutil_sub.cpp', 
+            'DPIndex.cpp', 
+            'nrutil.cpp', 
+            'refine.cpp',
+            'peak.cpp',
+            'StackDP.cpp', 
+            'simplxc.cpp',
+            'symmetry.cpp',
             # 'ediom_wrap.c',
             'ediom.i']
 # ------------- ediom -----------------

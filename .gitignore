@@ -182,3 +182,7 @@ fort.7
 
 # .dat file
 *.dat
+
+# ediom source dir
+ediom/
+emaps/
