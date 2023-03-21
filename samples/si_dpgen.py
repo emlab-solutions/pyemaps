@@ -1,5 +1,5 @@
 
-def test_dpgen_al(cname='Aluminium'):
+def si_dpdb(cname='Silicon'):
     from pyemaps import Crystal as cr
     from pyemaps import EMC, SIMC
     # import numpy as np
@@ -9,17 +9,16 @@ def test_dpgen_al(cname='Aluminium'):
     cryst = cr.from_builtin(cname)
 
     #  first generate a DP database file
-    xa0=(2,0,0)
-    res = 200
-    ret, dbfn = cryst.generateDPDB(emc=EMC(zone=(0,0,1), simc=SIMC(gmax=3.9)), res = res, xa = xa0)
+    xa0=(2,0,0)   # x-axis, will be folded into EMC object
+    res = 200     # 
+    ret, dbfn = cryst.generateDPDB(emc=EMC(zone=(0,0,1), 
+                                   simc=SIMC(gmax=3.9)), 
+                                   xa = xa0,
+                                   res = res)
 
     if ret != 0:
         print(f'failed to generate a dp databaes')
         return -1
-    
-    # locate the experimental image file
-    # edc0=ediom.cvar.edc
-    # edc0.set_center(65.34, 67.01)
 
     if dbfn is None or not os.path.exists(dbfn):
         print(f'Error finding generated DP database file')
@@ -27,4 +26,4 @@ def test_dpgen_al(cname='Aluminium'):
 
 
 if __name__ == '__main__':
-    test_dpgen_al()
+    si_dpdb()

@@ -141,7 +141,11 @@ def add_dpgen(target):
         # print(f'output dpgen file: {final_fp}')
 
 # --------------- Do not delete !!!!!!!!!!!!!!----------------------
-        
+        print('*******************************************************************************')
+        print(f'* The DP database for {self.name} has been generated successfully')
+        print(f'* and saved in:')
+        print(f'* {final_fp}')
+        print('*******************************************************************************')
         return 0, final_fp
     
     target.generateDPDB = generateDPDB
