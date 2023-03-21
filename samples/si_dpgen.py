@@ -10,7 +10,7 @@ def si_dpdb(cname='Silicon'):
 
     #  first generate a DP database file
     xa0=(2,0,0)   # x-axis, will be folded into EMC object
-    res = 200     # 
+    res = 200
     ret, dbfn = cryst.generateDPDB(emc=EMC(zone=(0,0,1), 
                                    simc=SIMC(gmax=3.9)), 
                                    xa = xa0,
