@@ -833,3 +833,28 @@ Feedback.  Should you provide Intel with comments, modifications, corrections, e
 Compliance with laws.  You agree to comply with all relevant laws and regulations governing your use, transfer, import or export (or prohibition thereof) of the Software.
 
 Governing law.  All disputes will be governed by the laws of the United States of America and the State of Delaware without reference to conflict of law principles and subject to the exclusive jurisdiction of the state or federal courts sitting in the State of Delaware, and each party agrees that it submits to the personal jurisdiction and venue of those courts and waives any objections. The United Nations Convention on Contracts for the International Sale of Goods (1980) is specifically excluded and will not apply to the Software.
+
+## SWIG Simplified BSD License
+
+SWIG is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version. See the LICENSE-GPL file for
+the full terms of the GNU General Public license version 3.
+
+Portions of SWIG are also licensed under the terms of the licenses
+in the file LICENSE-UNIVERSITIES. You must observe the terms of
+these licenses, as well as the terms of the GNU General Public License,
+when you distribute SWIG.
+
+The SWIG library and examples, under the Lib and Examples top level 
+directories, are distributed under the following terms:
+
+  You may copy, modify, distribute, and make derivative works based on
+  this software, in source code or object code form, without
+  restriction. If you distribute the software to others, you may do
+  so according to the terms of your choice. This software is offered as
+  is, without warranty of any kind.
+
+See the COPYRIGHT file for a list of contributors to SWIG and their
+copyright notices.

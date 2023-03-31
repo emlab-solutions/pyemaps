@@ -21,20 +21,20 @@ def test_dp_indexing(cname = 'Aluminium'):
     cryst = cr.from_builtin(cname)
 
     # ------------load existing DP database from file-----------------
-    dbfn = getDBFile()
+    # dbfn = getDBFile()
 
     # or 
         # ------------generate a new DP database file --------------
 
         #  first generate a DP database file
-        # xa0=(2,0,0)
-        # res = 200
-        # ret, dbfn = cryst.generateDPDB(emc=EMC(zone=(0,0,1)), res = res, xa = xa0)
+    xa0=(2,0,0)
+    res = 200
+    ret, dbfn = cryst.generateDPDB(emc=EMC(zone=(0,0,1)), res = res, xa = xa0)
 
-        # if ret != 0:
-        #     print(f'failed to generate a dp databaes')
-        #     return -1
-    
+    if ret != 0:
+        print(f'failed to generate a dp databaes')
+        return -1
+
 
     ret, mr, mc =cryst.loadDPDB(dbfn = dbfn, bShowDBMap=True)
     
