@@ -131,16 +131,6 @@ def add_dpgen(target):
             print(f'Error running generating diffraction patterns for {self.name}')
             return -1, final_fp
 
-# --------------- for debugging purposes only ----------------------
-        # ret = dpgen.readbin_new(output_fn, DPDB_EXT)
-        # if ret != 0: 
-        #     print(f'Error running generating diffraction patterns for {self.name}')
-        #     return -1, final_fp
-
-        # # final_fp= output_fn+'.' + DPDB_EXT
-        # print(f'output dpgen file: {final_fp}')
-
-# --------------- Do not delete !!!!!!!!!!!!!!----------------------
         print('*******************************************************************************')
         print(f'* The DP database for {self.name} has been generated successfully')
         print(f'* and saved in:')

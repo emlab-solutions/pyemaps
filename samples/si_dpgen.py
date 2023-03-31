@@ -2,7 +2,6 @@
 def si_dpdb(cname='Silicon'):
     from pyemaps import Crystal as cr
     from pyemaps import EMC, SIMC
-    # import numpy as np
     import os
    
     
