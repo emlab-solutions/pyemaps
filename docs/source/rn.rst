@@ -1,10 +1,10 @@
 Release Notes
 =============
 
-Version 1.0.1 Stable
+Version 1.0.2 Stable
 ------------------ 
 
-02-16-2023 
+03-31-2023 
 ~~~~~~~~~~
 
 Improvements
@@ -13,7 +13,18 @@ Improvements
 - Bug fixes in single simulation display functions and other incremental improvements. 
 
   Send your suggestions and comments to support@emlabsoftware.com.
+Version 1.0.1 Stable
+------------------ 
 
+02-16-2023 
+~~~~~~~~~~
+
+New
+~~~
+
+- In preview: 
+  - Diffraction pattern database builder
+  - Diffraction pattern indexing 
 
 Version 1.0.0 Stable
 ------------------ 

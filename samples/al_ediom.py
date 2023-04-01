@@ -59,8 +59,7 @@ def test_dp_indexing(cname = 'Aluminium'):
                      search_box         = 10.0,
                      scaling_option     = (1,2), 
                      filter_threshold   = 0.0,
-                     peak_threshold     = 0.8,
-                     bDebug=False)
+                     peak_threshold     = 0.8)
     
     # display diffractiom pattern in the database that best match the image pattern
     cryst.showMatchedDBDP()
