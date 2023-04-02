@@ -183,6 +183,9 @@ fort.7
 # .dat file
 *.dat
 
+# .inv file
+*.inv
+
 # ediom source dir
 ediom/
 emaps/
