@@ -758,7 +758,7 @@ from .diffract.powder_dec import add_powder
 from .diffract.dpgen_dec import add_dpgen
 
 #---diffraction pattern indexing----
-from .ediom.ediom_def import add_ediom
+from .ediom.ediom_dec import add_ediom
 
 #---Stereodiagram---
 from .diffract.stereo_dec import add_stereo
