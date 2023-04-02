@@ -37,16 +37,17 @@ Current features include:
    * Electron scattering Matrix
    * Electron dispersion
 
-**In preview (starting from Stable version 1.0.2)**
---------------
-   * Electron diffraction patterns database builder and explorer - DPGEN module
-   * Electron diffraction pattern indexing and crystal orientation - EDIOM module
+**New feature in preview** (starting from v1.0.2)
+
+   * Electron diffraction patterns database builder and explorer
+   * Electron diffraction pattern indexing
 
 In development
 --------------
    * Coherent convergent beam electron diffraction
    * Electron image simulation
    * Pendellösung calculation
+   * Electron diffraction orientation mapping
 
 Implementation
 --------------

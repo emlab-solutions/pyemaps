@@ -49,20 +49,20 @@ Welcome to pyemaps' documentation!
 .. _bloch2: https://github.com/emlab-solutions/imagepypy/raw/main/Si_bloch3.jpg
 
 
-.. |ediom_img1| image:: https://github.com/emlab-solutions/imagepypy/raw/main/ediom_img1.jpg
+.. |ediom_img1| image:: https://github.com/emlab-solutions/imagepypy/raw/main/ediom_img1.png
    :alt: Diffraction Pattern Indexing - EDIOM
    :height: 200
    :width: 200
-   :target: `edio1`_ 
-.. _edio1: https://github.com/emlab-solutions/imagepypy/raw/main/ediom_img1.jpg
+   :target: `ediom1`_ 
+.. _ediom1: https://github.com/emlab-solutions/imagepypy/raw/main/ediom_img1.png
 
 
-.. |ediom_img2| image:: https://github.com/emlab-solutions/imagepypy/raw/main/ediom_img2.jpg
+.. |ediom_img2| image:: https://github.com/emlab-solutions/imagepypy/raw/main/ediom_img2.png
    :alt: Diffraction Pattern Indexing - EDIOM fit map
    :height: 200
    :width: 200
-   :target: `edio2`_ 
-.. _edio2: https://github.com/emlab-solutions/imagepypy/raw/main/ediom_img2.jpg
+   :target: `ediom2`_ 
+.. _ediom2: https://github.com/emlab-solutions/imagepypy/raw/main/ediom_img2.png
 
 
 +-----------------------+---------------------+---------------------+--------------------------+

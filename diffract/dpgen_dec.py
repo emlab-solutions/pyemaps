@@ -54,7 +54,7 @@ def add_dpgen(target):
         and matchig functions in pyemaps EDIOM module.
         
         The generated database file is saved to directory pointed by environment variable
-        PYEMAPS_DATA or in current working directory.
+        *PYEMAPS_DATA* or in current working directory if *PYEMAPS_DATA* is not set.
 
         :param emc: Control parameters
         :type emc: EMControls, optional
@@ -62,22 +62,27 @@ def add_dpgen(target):
         :param xa: x-axis, optional
         :type xa: three integer tuple.
 
-        :param res: resolution of diffraction patterns to be generated ranges from 100 to 300, 
-                    The higher the resolution, the more diffraction patterns is generated. 
+        :param res: resolution of stereo projection map, ranging from *LOW_RES*=100 to *HIGH_RES*=300 that is
+                    the number of sampling points along the radius. The higher the resolution, the more 
+                    diffraction patterns are generated in the database file.
+
         :type res: integer, defaults to 100, optional.
 
-        :param vertices: an array of 3 or 4 vectors that form a closed polygon within which 
-                        the diffraction patterns are generated.
+        :param vertices: an array of 3 or 4 zone axis indexes that form an enclosed orientation 
+                    surface area within which the diffraction patterns are generated. See the following
+                    graphic illustration of the vertices input.
+
         :type vertices: three integer tuple, optional
         
         :return: a tuple of a status code and database file name
         :rtype: tuple of an integer and a string
         
 
-    .. note::
+        Input zone axis indexes define the vertices of the stereo projection map. The default
+        for a cubic crystal is *DEF_VERTMAT* = [[0,0,1],[1,1,1],[0,1,1]].
 
-        The vectors forming the vertices of a polygon region are indexes on the stereodiagram.
-        See this image for illustration for selecting these vertices.
+        .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png
+            :target: https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png
 
         The diffraction patterns database file produced will be consumed by pyemaps ediom module
         for experimental diffraction pattern serach adn indexing.

@@ -49,26 +49,27 @@ Welcome to pyemaps' documentation!
 .. _bloch2: https://github.com/emlab-solutions/imagepypy/raw/main/Si_bloch3.jpg
 
 
-.. |bloch_img3| image:: https://github.com/emlab-solutions/imagepypy/raw/main/Si_bloch2.jpg
-   :alt: Dynamic Diffraction for Silicon
+.. |ediom_img1| image:: https://github.com/emlab-solutions/imagepypy/raw/main/ediom_img1.png
+   :alt: Diffraction Pattern Indexing - EDIOM
    :height: 200
    :width: 200
-   :target: `bloch3`_ 
-.. _bloch3: https://github.com/emlab-solutions/imagepypy/raw/main/Si_bloch2.jpg
+   :target: `ediom1`_ 
+.. _ediom1: https://github.com/emlab-solutions/imagepypy/raw/main/ediom_img1.png
 
 
-.. |bloch_img4| image:: https://github.com/emlab-solutions/imagepypy/raw/main/si_block1.jpg
-   :alt: Dynamic Diffraction for Silicon
+.. |ediom_img2| image:: https://github.com/emlab-solutions/imagepypy/raw/main/ediom_img2.png
+   :alt: Diffraction Pattern Indexing - EDIOM fit map
    :height: 200
    :width: 200
-   :target: `bloch4`_ 
-.. _bloch4: https://github.com/emlab-solutions/imagepypy/raw/main/si_block1.jpg
+   :target: `ediom2`_ 
+.. _ediom2: https://github.com/emlab-solutions/imagepypy/raw/main/ediom_img2.png
+
 
 +-----------------------+---------------------+---------------------+--------------------------+
 |       |dif_img1|      |       |dif_img2|    |    |stereo_img|     |   |powder_img|           |
 +-----------------------+---------------------+---------------------+--------------------------+
 +-----------------------+---------------------+---------------------+--------------------------+
-|       |bloch_img1|    |       |bloch_img2|  |    |bloch_img3|     |   |bloch_img4|           |
+|       |bloch_img1|    |       |bloch_img2|  |    |ediom_img1|     |   |ediom_img2|           |
 +-----------------------+---------------------+---------------------+--------------------------+
 
 Contents

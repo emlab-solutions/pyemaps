@@ -65,10 +65,10 @@ def test_dp_indexing(cname = 'Aluminium'):
     cryst.showMatchedDBDP()
 
     # show stereo projection location that corresponds to the matched diffraction pattern
-    cryst.showHeatMap(mr, mc)
+    cryst.showMatchingIndexMap(mr, mc)
 
     # print match diffraction details
-    cryst.printDetails()
+    cryst.printDPIndexDetails()
 
     # release edio module memory.
     cryst.release_ediom()
