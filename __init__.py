@@ -159,6 +159,15 @@ except ImportError as e:
     # skip this in free package
     pass
 
+
+# #------------------Diffraction Pattern Indexing - paid package only---------------------------
+#  used only with dpgen module ablove
+
+try:
+    from .ediom import ediom
+except ImportError:
+    pass
+
 #--------------Wrapper classes around diffraction extensions---------------
 from .errors import *
 

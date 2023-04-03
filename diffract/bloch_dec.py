@@ -591,9 +591,9 @@ def add_bloch(target):
         :param disk_size: Diffracted beams size in range
         :type disk_size: float, optional
 
-        :param thickness: Sample thickness in (start, end, step) tuple
-        :type thickness: tuple of int, optional
-
+        :param sample_thickness: Sample thickness in (start, end, step) tuple
+        :type sample_thickness: tuple of int, optional
+        
         :param em_controls: Microscope controls object
         :type em_controls: `Microscope control <pyemaps.emcontrols.html#module-pyemaps.emcontrols>`_, optional
 

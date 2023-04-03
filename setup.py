@@ -17,6 +17,11 @@ build_type = os.getenv('EMAPS_BTYPE')
 if build_type is None:
     build_type = 'free'
 
+if os.getenv('PYEMAPS_DEBUG') is not None:
+    pyemaps_debug = int(os.getenv('PYEMAPS_DEBUG'))
+else:
+    pyemaps_debug = 0
+
 mod_name = "emaps"
 
 MKLROOT = os.getenv('MKLROOT')
@@ -124,7 +129,55 @@ c_objs_free_lin = ['blochimgs.o']
 
 sct_files =['scattering_sct.pyf', 'scattering.f90']  
 
-spgra_files =['spg_spgseek.pyf', 'spgseek.f90', 'spgra.f90']            
+spgra_files =['spg_spgseek.pyf', 'spgseek.f90', 'spgra.f90']    
+
+# ------------- ediom -----------------
+ediomSRCFiles = ['imgutil_sub.cpp', 
+            'DPIndex.cpp', 
+            'nrutil.cpp', 
+            'refine.cpp',
+            'peak.cpp',
+            'StackDP.cpp', 
+            'simplxc.cpp',
+            'symmetry.cpp',
+            # 'ediom_wrap.c',
+            'ediom.i']
+# ------------- ediom -----------------
+
+
+def get_ediom_srcdir():
+
+    current_path = Path(os.path.abspath(__file__))
+
+    parent_path = current_path.parent.absolute()
+
+    return os.path.join(parent_path, 'ediom')
+
+def get_ediom_sources():
+
+    ediom_dir = get_ediom_srcdir()
+ 
+    src_list = []
+    for sf in ediomSRCFiles:
+        src_list.append(os.path.join(ediom_dir, sf))
+    print(f'Ediom source file list: {src_list}')
+    # exit()
+    return src_list   
+   
+def get_ediom_includes():
+    
+    import numpy as np
+    from sysconfig import get_paths
+    
+    includeDirs=[np.get_include()]
+    includeDirs.append(get_paths()['include'])
+    includeDirs.append(get_ediom_srcdir())
+
+    return includeDirs
+
+def get_ediom_libs():
+    from sysconfig import get_paths
+    return [os.path.join(get_paths()['data'], 'libs'),]
 
 def get_emaps_srcdir():
 
@@ -152,13 +205,13 @@ def get_extra_objects():
     else:
         raise Exception('Unsupported OS')
 
-    if build_type == "all":
-        if  'windows' in osname:
-            objs.append('write_dpbin.obj') 
-        elif 'linux' in osname:
-            objs.append('write_dpbin.o')
-        else:
-            raise Exception('Unsupported OS')
+    # if build_type == "all":
+    if  'windows' in osname:
+        objs.append('write_dpbin.obj') 
+    elif 'linux' in osname:
+        objs.append('write_dpbin.o')
+    else:
+        raise Exception('Unsupported OS')
 
     emaps_dir = get_emaps_srcdir()
     objlist = [os.path.join(emaps_dir, o) for o in objs]
@@ -191,8 +244,8 @@ def get_diffract_sources(comp=None):
     emaps_dir = get_emaps_srcdir()
 
     pyfname = mod_name
-    if build_type == 'all':
-        pyfname += '_dpgen'
+    # if build_type == 'full':
+    # pyfname += '_dpgen'
 
     pyf = ".".join([pyfname,'pyf'])
     src_list.append(pyf)
@@ -202,8 +255,8 @@ def get_diffract_sources(comp=None):
     src_list.extend(bloch_files)
     src_list.extend(stereo_files)
     src_list.extend(mxtal_files)
-    if build_type == 'all':
-        src_list.extend(dpgen_files)
+    # if build_type == 'full':
+    src_list.extend(dpgen_files)
     
     
     print(f'source code list: {src_list}')
@@ -262,6 +315,8 @@ def get_samples(sdn = 'samples'):
     samples_base_dir = os.path.join(os.path.dirname(base_dir), sdn)
     sbase_files = os.path.join(samples_base_dir, '*.py')
     sfile_list = glob.glob(sbase_files)
+    sfile_list.append('al_db.bin')
+    sfile_list.append('al.img')
 
     return [os.path.join(sdn, os.path.basename(name)) for name in sfile_list]
 
@@ -356,32 +411,42 @@ def get_install_requires():
         raise Exception('The OS is not supported')
     
 def get_emaps_macros():
+    # print(f'setup.py: build_type: {build_type}')
+    # exit()
+    
+    if build_type != 'uiuc' and build_type != 'full' and build_type != 'free':
+        raise ValueError("Error: build type not specified")
 
-    if build_type == 'all':
+    def_list = [('NPY_NO_DEPRECATED_API','NPY_1_7_API_VERSION')]
+    
+    undef_list = []
+
+    if build_type == 'full':
         # full version
-        return ([('NPY_NO_DEPRECATED_API', 
-                    'NPY_1_7_API_VERSION')
-                ], 
-                ['__BFREE__', '__BUIUC__' ])
+        undef_list.append('__BFREE__')
+        undef_list.append('__BUIUC__')
 
     if build_type == 'free':
         # limited free version
-        return ([('__BFREE__', 1),
-                ('NPY_NO_DEPRECATED_API', 
-                'NPY_1_7_API_VERSION')
-                ], 
-                ['__BUIUC__'])
+        def_list.append(('__BFREE__', 1))
+        undef_list.append('__BUIUC__')
 
     if build_type == 'uiuc':
         # less limited free version
-        return ([('__BUIUC__', 1),
-                ('NPY_NO_DEPRECATED_API', 
-                'NPY_1_7_API_VERSION')
-                ], 
-                ['__BFREE__'])
-    
-    raise ValueError("Error: build type not specified")
+        def_list.append(('__BUIUC__', 1))
+        undef_list.append('__BFREE__')
 
+    if pyemaps_debug != 0:
+        # print(f'Build is debug build: {pyemaps_debug}')
+        def_list.append(('__BDEBUG__', 1))
+    else:
+        # print(f'Build is not a debug build: {pyemaps_debug}')
+        undef_list.append('__BDEBUG__')
+    
+    # print(f'defundef list: {def_list}, {undef_list}')
+    # exit()
+    return [def_list, undef_list]
+    
 # ------------------- must set this before build -------------------
 pyemaps_build_defs, pyemaps_build_undefs= get_emaps_macros()
 
@@ -419,6 +484,21 @@ pyemaps_spg = Extension("pyemaps.spg.spg",
 
 pyemaps_cifreader = Extension("pyemaps.CifFile.StarScan",
         sources                = get_cifreader_source()
+)
+
+
+pyemaps_ediom =  Extension(
+            'pyemaps.ediom._ediom',
+            sources                 =get_ediom_sources(),
+            extra_objects           =[],
+            include_dirs            =get_ediom_includes(),
+            library_dirs            =get_ediom_libs(),
+            libraries               =[],
+            define_macros           = pyemaps_build_defs,
+            undef_macros            = pyemaps_build_undefs,
+            extra_compile_args      =[],
+            extra_link_args         =[],
+            swig_opts               =['-python']
 )
 
 def get_version(f):
@@ -463,29 +543,68 @@ setup(name                              ="pyemaps",
       ext_modules                       = [pyemaps_dif, 
                                            pyemaps_scattering, 
                                            pyemaps_spg,
+                                           pyemaps_ediom,
                                            pyemaps_cifreader],
 
-      packages                          = [ 'pyemaps.diffract', 
+      packages                          = ['pyemaps.diffract', 
                                            'pyemaps.scattering', 
                                            'pyemaps.spg',
+                                           'pyemaps.ediom',
                                            'pyemaps.CifFile',
                                            'pyemaps.CifFile.drel'
                                            ],
       
       package_dir                       = {'pyemaps':'',
-                                            'pyemaps.CifFile':'CifFile/src'
+                                           'pyemaps.CifFile':'CifFile/src'
                                             },
-      install_requires              = get_install_requires(),
+      install_requires                  = get_install_requires(),
       
-      data_files                    = [('pyemaps', 
-                                        ['__config__.py',
-                                        '__main__.py',
-                                        '__version__.py',
-                                        'README.md',
-                                        'COPYING',
-                                        'license.txt']),
-                                        ('pyemaps/samples', get_samples()),
-                                        ('pyemaps/cdata', get_cdata()),
+      data_files                        = [('pyemaps', 
+                                            ['__config__.py',
+                                            '__main__.py',
+                                            '__version__.py',
+                                            'README.md',
+                                            'COPYING',
+                                            'license.txt']),
+                                            ('pyemaps/samples', get_samples()),
+                                            ('pyemaps/cdata', get_cdata()),
 
-                                      ]
+                                          ],
+      exclude_package_data              = {'pyemaps':['*.i', 
+                                                '*.cpp', 
+                                                '*.f90',
+                                                '*.pyd', 
+                                                '*.toml', 
+                                                '*.in', 
+                                                '__pycache__/*.pyc',
+                                                '*.egg-info/*'
+                                                ],
+                                            'pyemaps.ediom':['*.i', 
+                                                            '*.cpp',
+                                                            '__pycache__/*.pyc'
+                                                            ]
+                                            }
 )
+
+if pyemaps_debug:
+    print(f'#######################Build is debug build')
+else:
+    print(f'#######################Build is debug build')
+# ------------- using intel compiler------------------------- 
+# from setuptools import setup, Extension
+# import os
+
+# # Set the path to the Intel C Compiler executable
+# os.environ['CC'] = 'C:\\Program Files (x86)\\Intel\\oneAPI\\compiler\\latest\\windows\\bin\\intel64\\icl.exe'
+
+# # Set the necessary environment variables for the Intel C Compiler
+# os.environ['INTEL_LICENSE_FILE'] = 'C:\\Program Files (x86)\\Intel\\Licenses\\use.lic'
+# os.environ['INTEL_DEV_REDIST'] = 'C:\\Program Files (x86)\\Intel\\oneAPI\\redist\\intel64\\compiler'
+# os.environ['LIB'] = 'C:\\Program Files (x86)\\Intel\\oneAPI\\compiler\\latest\\windows\\compiler\\lib\\intel64;C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.28.29333\\ATLMFC\\lib\\x64;C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.28.29333\\lib\\x64;C:\\Windows\\System32;C:\\Windows\\SysWOW64'
+# os.environ['INCLUDE'] = 'C:\\Program Files (x86)\\Intel\\oneAPI\\compiler\\latest\\windows\\compiler\\include;C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.28.29333\\ATLMFC\\include;C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.28.29333\\include'
+
+# example_module = Extension('_example',
+#                            sources=['example.i', 'example.c'],
+#                            extra_compile_args=['/Qstd=c11', '/Wall', '/Wextra', '/QxHost', '/Qmarch=native', '/Qopenmp'],
+#                            swig_opts=['-py3'],
+#                            )

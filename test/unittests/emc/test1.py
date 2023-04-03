@@ -99,6 +99,18 @@ def doctring_test():
 
 
 if __name__ == '__main__':
-    basic()
-    doctring_test()
-    print('unit test for EMC and SIMC class basics successful')
+    try:
+        basic()
+    except AssertionError as e:
+        print(f'Basic test failed: {e}')
+    else:
+        print(f'basic test succeeded')
+
+    try:
+        doctring_test()
+    except AssertionError as e:
+        print(f'Docstring test failed: {e}')
+    else:
+        print(f'Docstring test succeeded')
+
+    print('unit test for EMC and SIMC class basics completed')
