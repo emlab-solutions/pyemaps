@@ -632,10 +632,10 @@ def add_bloch(target):
                             dbsize = disk_size,
                             em_controls=em_controls)
 
-        except BlochError:
+        except BlochError as e:
             # re-raise the same error, so that the caller can handle it
             # print(f'Bloch simulation failed to start at {em_controls}')
-            raise
+            raise e
 
         except Exception as e:
             # Any other exception will be handled by the callers as BlochError from this point on

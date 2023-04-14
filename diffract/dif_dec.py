@@ -55,7 +55,7 @@ def add_dif(target):
         
         if ret != 0:
             self.unload() #remove any memory from backend module
-            raise CrystalClassError('Failed to load cystal to backend module')
+            raise CrystalClassError('Failed to load crystal')
 
         self._loaded = True
         self._ltype = cty
