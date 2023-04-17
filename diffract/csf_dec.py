@@ -24,7 +24,7 @@ def add_csf(target):
 
     def printCSF(self, sfs):
         """
-        Format and print structure factors to standard output.
+        Formats and prints structure factors to standard output.
 
         :param sfs: structure factor data generated from 
          `generateCSF <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateCSF>`_.
@@ -105,8 +105,18 @@ def add_csf(target):
 
             print(f"{sh}{sk}{sl}{ssw}{sds}{ssf1}{ssf2}")    
 
-        print('\n')          
+        print('\n')      
 
+    def cleanCSF(self):
+        """
+        Cleans up memories used by structure factor calculation. 
+        This also includes the crystal data loaded into pyemaps'
+        backend simulation module.
+
+        """
+        csf.delete_sfmem()
+        self.unload()
+                
     def generateCSF(self, kv = 100, smax = 0.5, sftype = 1, aptype = 0):
         """
         Calculates structure factors.
@@ -157,9 +167,10 @@ def add_csf(target):
         self.load()
 
         nb, ret = csf.generate_sf(kv, smax, sftype, aptype)
-        print('after backend call')
+        
         if ret != 0 and nb <= 0:
             print(f'Error running generating structure factor for {self.name}')
+            self.cleanCSF()
             return sfs
 
         for i in range(2, nb+1):
@@ -167,6 +178,7 @@ def add_csf(target):
             ret,h,k,l,s,d,sf1,sf2 = csf.get_sf(i)
             if ret != 0: 
                 print(f'Error running generating sructure factor for {self.name}')
+                self.cleanCSF()
                 return sfs
             
             sf = dict(hkl = (h,k,l),
@@ -178,11 +190,12 @@ def add_csf(target):
             sfs.append(sf)    
 
         #release the memory
-        csf.delete_sfmem()
+        self.cleanCSF()
 
         return sfs
     
     target.generateCSF = generateCSF
     target.printCSF = printCSF
+    target.cleanCSF = cleanCSF
 
     return target
