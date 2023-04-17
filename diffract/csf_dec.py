@@ -40,7 +40,7 @@ def add_csf(target):
             s-w                : Sin(ϴ)/Wavelength <= 1.0
             d-s                : D-Spacing
 
-            h   k    l        s-w             d-s          amplitude         phase
+            h   k   l        s-w             d-s          amplitude         phase
 
             1   1   1    0.1594684670    3.1354161069    58.89618        180.000000
             0   0   2    0.1841383247    2.7153500000    6.565563e-31    0.000000
@@ -157,7 +157,7 @@ def add_csf(target):
         self.load()
 
         nb, ret = csf.generate_sf(kv, smax, sftype, aptype)
-
+        print('after backend call')
         if ret != 0 and nb <= 0:
             print(f'Error running generating structure factor for {self.name}')
             return sfs

@@ -217,11 +217,17 @@ class Line:
 
     @intensity.setter
     def intensity(self, intense):
-        if not isinstance(intense, (int, float)):
-            raise LineError("intensity must be integer or float")
+        # print(f'setting intensity value: {intense}, {type(intense)}')
+        # if not isinstance(intense, (int, float)):
+        #     raise LineError("intensity must be integer or float")
 
-        self._intensity = intense
-
+        # self._intensity = intense
+        self._intensity = 0
+        try:
+            self._intensity = int(intense)
+        except ValueError as e:
+            raise LineError("intensity must be integer or float") from e
+        
     def __lt__(self, other):
 
         if isinstance(other, Line):
@@ -489,11 +495,11 @@ class Disk:
 
     @r.setter
     def r(self, rv):
-        
-        if not isinstance(rv, float):
-            raise DiskError('disk radius must be of float type')
-        
-        self._r = rv
+        self._r = 0.0
+        try:
+            self._r = float(rv)
+        except ValueError as e:
+            raise DiskError('disk radius must be real number')
 
     @idx.setter
     def idx(self, iv):
@@ -750,11 +756,10 @@ class diffPattern:
             if not "c" in d or len(d['c']) != 2:
                 raise DPError("disks must have a center of Point type")
             
-            if not "r" in d or not isinstance(d['r'], float):
+            if not "r" in d:
                 raise DPError("disks must have a radius")
 
-            if not "idx" in d or len(d['idx']) != 3 or \
-                list(map(type, d['idx'])) != [int, int, int]:
+            if not "idx" in d or len(d['idx']) != 3:
                 raise DPError("disks must be an index of three integers")
 
             ctr = Point(d['c'])

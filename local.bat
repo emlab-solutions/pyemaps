@@ -19,8 +19,10 @@ if "%EMAPS_BTYPE%" == "" (
 
 if "%EMAPS_BTYPE%" NEQ "free" (
     if "%1" NEQ "full" (
-        echo Error: Build type incorrect, must be one of free or all
-        goto:eof
+        if "%1" NEQ "uiuc" (
+            echo Error: Build type incorrect, must be one of free or all
+            goto:eof
+        )
     )
 )
 
@@ -58,12 +60,18 @@ if "%PACKAGE_TYPE%" == "test" (
     @REM echo got here after production package build
 )
 
+@REM set default as free package
+set typename=free   
 
-set typename=%EMAPS_BTYPE%
 if "%EMAPS_BTYPE%" == "full" (
     set typename=full
 )
-set packname=%PACKAGE_TYPE%
+if "%EMAPS_BTYPE%" == "uiuc" (
+    set typename=uiuc
+)
+
+@REM set default package as test package
+set packname=test
 if "%PACKAGE_TYPE%" == "prod" (
     set packname=production
 )
