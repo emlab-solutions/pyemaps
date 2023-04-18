@@ -76,7 +76,7 @@ def test_dp_indexing(cname = 'Aluminium'):
     # print match diffraction details
     cryst.printDPIndexDetails()
 
-    # release edio module memory.
+    # release ediom module memory.
     cryst.release_ediom()
 
 
