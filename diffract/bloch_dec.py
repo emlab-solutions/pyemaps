@@ -311,7 +311,7 @@ def add_bloch(target):
        self.session_controls(pix_size=pix_size, det_size=det_size)
        
        for th in thlist:
-            bimg = farray(np.zeros((det_size, det_size), dtype=np.double))
+            bimg = farray(np.zeros((det_size, det_size), dtype=np.float32))
             
             bimg, ret = bloch.getimage(bimg, th, 0, pix_size,
                                         det_size, bsave = bSave)
