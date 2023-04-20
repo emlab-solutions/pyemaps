@@ -27,7 +27,8 @@ if "%1"=="local" (
      python test\sanity\run_perf_test.py -r all
     @REM unit test: EMC SIMC class basic function tests
      python test\unittests\emc\test1.py
-     python test\unittests\kdif\sanity_doc.py
      python test\unittests\package_test\type_test.py
+     python test\unittests\kdif\sanity_doc.py
+     python test\unittests\bloch\si_bloch_docs.py
     rm -rf pyemaps_samples
 )

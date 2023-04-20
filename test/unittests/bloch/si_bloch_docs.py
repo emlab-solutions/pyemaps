@@ -34,4 +34,4 @@ if __name__ == '__main__':
 
     imgs = generate_bloch_images()
     if imgs is not None:
-        showBloch(imgs, cShow=True, layout='table', bSave = True)
+        showBloch(imgs, cShow=True, layout='table', bSave = True, bClose=True)
