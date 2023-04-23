@@ -14,9 +14,9 @@ def si_dpdb(cname='Silicon'):
                                    simc=SIMC(gmax=3.9)), 
                                    xa = xa0,
                                    res = res)
-
+#   DP == Diffraction Pattern
     if ret != 0:
-        print(f'failed to generate a dp databaes')
+        print(f'failed to generate a DP databaes')
         return -1
 
     if dbfn is None or not os.path.exists(dbfn):

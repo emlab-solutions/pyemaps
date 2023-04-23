@@ -217,11 +217,7 @@ class Line:
 
     @intensity.setter
     def intensity(self, intense):
-        # print(f'setting intensity value: {intense}, {type(intense)}')
-        # if not isinstance(intense, (int, float)):
-        #     raise LineError("intensity must be integer or float")
-
-        # self._intensity = intense
+        
         self._intensity = 0
         try:
             self._intensity = int(intense)

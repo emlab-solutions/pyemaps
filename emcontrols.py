@@ -506,7 +506,7 @@ class EMControl:
                        vt = DEF_KV, 
                        cl = DEF_CL,
                        simc = SIMControl()):
-        # print(f'In EMC constructor: {cl} = {DEF_CL}')
+        
         emc_dict = dict(tilt = tilt, 
                        zone = zone, 
                        defl = defl,
@@ -684,7 +684,7 @@ class EMControl:
     def cl(self, clen):
         if not isinstance(clen, int) and not isinstance(clen, float):
            raise ValueError("Camera length must be of number")
-        # print(f'setting cl value: {clen}')
+        
         self._cl = clen
     
     @vt.setter
@@ -863,7 +863,7 @@ class EMControl:
     def _check_def(self, k) -> bool:
         '''internal - checking if the attribute k is at default value'''
         if k not in DEF_EMC or not hasattr(self, k):
-            # return EMCError('internal error!')
+            
             print(f'Warning: EMControl class does not have {k} attribute')
             return False
         

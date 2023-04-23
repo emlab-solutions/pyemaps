@@ -64,8 +64,6 @@ def add_csf(target):
         print(f"-----{subj}----- ")
         print(f"     crystal\t\t: {self.name}")
 
-        # print(f"     by EMLab Solutions, Inc.     \n")
-
         mi = "     h k l \t\t: Miller Index"
         print(mi)
         ssw = str(f"     s-w   \t\t: Sin(\u03F4)/Wavelength <= {sfs[0]['smax']}")

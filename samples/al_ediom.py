@@ -39,7 +39,7 @@ def test_dp_indexing(cname = 'Aluminium'):
     ret, dbfn = cryst.generateDPDB(emc=EMC(zone=(0,0,1)), res = res, xa = xa0)
 
     if ret != 0:
-        print(f'failed to generate a dp databaes')
+        print(f'failed to generate a diffraction patterns databaes')
         return -1
 
     ret, mr, mc =cryst.loadDPDB(dbfn = dbfn, bShowDBMap=True)

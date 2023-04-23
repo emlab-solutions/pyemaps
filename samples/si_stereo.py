@@ -87,8 +87,7 @@ def generate_stereo(name = 'Silicon', ckey = 'tilt'):
                 print('failed to generate stereodiagram with ' + str(e))
                 exit(1)
             else:
-                slist.append((emc, stereo))
-                # print(f' successfully generated stereodiagram')    
+                slist.append((emc, stereo))  
                     
     #  sorting the list by controls
     slist.sort(key=lambda x: x[0])
