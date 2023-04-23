@@ -4,9 +4,9 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Modules, Classes and Interfaces &#8212; pyemaps 1.0.2 Stable documentation</title>
+    <title>Modules, Classes and Interfaces &#8212; pyemaps 1.0.3 Stable documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -33,7 +33,7 @@
         <li class="right" >
           <a href="rn.html" title="Release Notes"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.2 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.3 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Modules, Classes and Interfaces</a></li> 
       </ul>
     </div>  
@@ -112,10 +112,10 @@ is:</p>
 <dd><p>This Cell constructor allows Cell construction with python dict and
 list object, as well as customization.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>data</strong> (<em>dict</em><em> or </em><em>list</em><em>, </em><em>optional</em>) – Cell constant python dictionary or list</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="pyemaps.errors.html#pyemaps.errors.CellValueError" title="pyemaps.errors.CellValueError"><strong>CellValueError</strong></a> – if cell data validations fail.</p>
 </dd>
 </dl>
@@ -239,13 +239,13 @@ pyemaps will default its occupancy data to 1.0</p>
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">iso.value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sym</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Atom.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Internal representation of single atom in a crystal object.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>a_type</strong> (<em>int</em><em>, </em><em>optional</em>) – Atom thermal factor type.</p></li>
 <li><p><strong>data</strong> (<em>dict</em><em> or </em><em>list</em><em>, </em><em>optional</em>) – Atoms positional and other data input.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="pyemaps.errors.html#pyemaps.errors.UCError" title="pyemaps.errors.UCError"><strong>UCError</strong></a> – if data validation fails.</p>
 </dd>
 </dl>
@@ -326,10 +326,10 @@ pyemaps will default its occupancy data to 1.0</p>
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.SPG.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>SPG object constructor.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>data</strong> (<em>dict</em><em> or </em><em>list</em><em>, </em><em>optional</em>) – Space group data input.</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="pyemaps.errors.html#pyemaps.errors.SPGInvalidDataInputError" title="pyemaps.errors.SPGInvalidDataInputError"><strong>SPGInvalidDataInputError</strong></a> – if cell data validations fail.</p>
 </dd>
 </dl>
@@ -446,13 +446,13 @@ the following data:</p>
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Diamond'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Default constructor for crystal object</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<em>string</em><em>, </em><em>optional</em>) – Name of the crystal or default to ‘Diamond’</p></li>
 <li><p><strong>data</strong> (<em>dict</em><em>, </em><em>optional</em>) – Other data of the crystal.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="pyemaps.errors.html#pyemaps.errors.CrystalClassError" title="pyemaps.errors.CrystalClassError"><strong>CrystalClassError</strong></a> – If data validations fail.</p>
 </dd>
 </dl>
@@ -490,17 +490,17 @@ the following data:</p>
 <dd><p>Calculates angle between two real space vectors or 
 two reciprocal space vectors</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>v1</strong> (<em>tuple</em><em>, </em><em>optional</em>) – A vector of float coordinates</p></li>
 <li><p><strong>v2</strong> (<em>tuple</em><em>, </em><em>optional</em>) – A vector of float coordinates</p></li>
 <li><p><strong>ty</strong> (<em>int</em><em>, </em><em>optional</em>) – 0 real space, 1 reciprocal space</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>an angle between v1 and v2.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
@@ -552,8 +552,7 @@ Retrieve a scattering matrix at a sampling point</p></li>
 <ol class="loweralpha simple">
 <li><p>List of sampling points, diffraction beams tilts etc 
 with <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails">printIBDetails</a>;</p></li>
-<li><p>Eigen values at each sampling points in 
-<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getEigen">getEigen</a>;</p></li>
+<li><p>getEigen function is folded into getSCMatrix call starting from Stable verion 1.0.3</p></li>
 <li><p>Diagnization Miller indexes at each sampling point: 
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getBeams">getBeams</a>;</p></li>
 </ol>
@@ -561,17 +560,25 @@ with <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.crystals.Crystal.cleanCSF">
+<span class="sig-name descname"><span class="pre">cleanCSF</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.cleanCSF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleans up memories used by structure factor calculation. 
+This also includes the crystal data loaded into pyemaps’
+backend simulation module.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.crystals.Crystal.d2r">
 <span class="sig-name descname"><span class="pre">d2r</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.d2r" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform vector from real to recriprocal space</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>v</strong> (<em>tuple</em><em>, </em><em>optional</em>) – A vector of float coordinates</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a transformed vector</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
@@ -598,7 +605,7 @@ calling :</p>
 <li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch</a></p></li>
 </ol>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>aperture</strong> (<em>float</em><em>, </em><em>optional</em>) – Objective aperture.</p></li>
 <li><p><strong>omega</strong> (<em>float</em><em>, </em><em>optional</em>) – Diagnization cutoff value, defaults to 10.</p></li>
@@ -611,10 +618,10 @@ calling :</p>
 <li><p><strong>bSave</strong> (<em>bool</em><em>, </em><em>optional</em>) – <cite>True</cite> - save the output to a raw image file (ext: im3)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>BImgList object</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>BImgList</p>
 </dd>
 </dl>
@@ -644,17 +651,17 @@ thickness specified by sample_thickness = (start, end, step) arguement:</p>
 <p>:param kv:Accelaration Voltage in Kilo-Volts, default value 100
 :type kv: int or float, optional</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>smax</strong> (<em>int</em><em> or </em><em>float</em><em>, </em><em>optional</em>) – Limit of Sin(theta)/Wave length, default value 0.5</p></li>
 <li><p><strong>sftype</strong> (<em>, </em><em>int</em><em>, </em><em>optional</em>) – Structure factor types to be generated, default value 1 - x-ray</p></li>
 <li><p><strong>aptype</strong> (<em>, </em><em>int</em><em>, </em><em>optional</em>) – Output format type, default value 0 - amplitude and phase</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a dict object with structure factor data</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
@@ -692,7 +699,7 @@ python dictionary format:</p>
 <span class="sig-name descname"><span class="pre">generateDP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">em_controls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.generateDP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Kinematic diffraction simulation.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>mode</strong> (<em>int</em><em>, </em><em>optional</em>) – Mode of kinemetic diffraction - normal(1) or CBED(2).</p></li>
 <li><p><strong>dsize</strong> (<em>float</em><em>, </em><em>optional</em>) – diffractted beam size, only applied to CBED mode.</p></li>
@@ -700,10 +707,10 @@ python dictionary format:</p>
 </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A tuple (emc, dp) where emc is the microscope control and dp is a <a class="reference external" href="pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern">diffPattern</a> object .</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple.</p>
 </dd>
 </dl>
@@ -719,7 +726,7 @@ and matchig functions in pyemaps EDIOM module.</p>
 <p>The generated database file is saved to directory pointed by environment variable
 <em>PYEMAPS_DATA</em> or in current working directory if <em>PYEMAPS_DATA</em> is not set.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>emc</strong> (<em>EMControls</em><em>, </em><em>optional</em>) – Control parameters</p></li>
 <li><p><strong>xa</strong> (<em>three integer tuple.</em>) – x-axis, optional</p></li>
@@ -731,10 +738,10 @@ surface area within which the diffraction patterns are generated. See the follow
 graphic illustration of the vertices input.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a tuple of a status code and database file name</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple of an integer and a string</p>
 </dd>
 </dl>
@@ -754,7 +761,7 @@ stabel production soon. Its replacement is:
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateDP">generateDP</a>.</p>
 </div></blockquote>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>mode</strong> (<em>int</em>) – mode of kinemetic diffraction - normal(1) or CBED(2).</p></li>
 <li><p><strong>dsize</strong> – diffractted beam size, only applied to CBED mode.</p></li>
@@ -762,10 +769,10 @@ stabel production soon. Its replacement is:
 <li><p><strong>em_controls</strong> (<em>pyemaps.EMC</em>) – electron microscope controls object.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>myDif.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pyemaps.DPList.</p>
 </dd>
 </dl>
@@ -776,7 +783,7 @@ stabel production soon. Its replacement is:
 <span class="sig-name descname"><span class="pre">generateMxtal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trMatrix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ID_MATRIX</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trShift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_TRSHIFT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cellbox</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_CELLBOX</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_XZ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orShift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_ORSHIFT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locASpace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_LOCASPACE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.generateMxtal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate the crystal atomic structure data in .xyz format.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>trMatrix</strong> (<em>array</em><em>, </em><em>optional</em>) – Transformation matrix</p></li>
 <li><p><strong>trShift</strong> (<em>array</em><em>, </em><em>optional</em>) – Transformation shift</p></li>
@@ -787,10 +794,10 @@ stabel production soon. Its replacement is:
 <li><p><strong>bound</strong> (<em>float</em><em>, </em><em>optional</em>) – Location in A Space.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a python dictionary object of cell constants and 3D coordinates of atoms</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
@@ -808,7 +815,7 @@ stabel production soon. Its replacement is:
 <span class="sig-name descname"><span class="pre">generatePowder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t2max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">absp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.35</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bgamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmfact</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.02</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.generatePowder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates powder diffraction.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>kv</strong> (<em>int</em><em> or </em><em>float</em><em>, </em><em>optional</em>) – Accelaration voltage in kilo-volts.</p></li>
 <li><p><strong>t2max</strong> (<em>float</em><em>, </em><em>optional</em>) – Maximum scattering angle.</p></li>
@@ -823,10 +830,10 @@ stabel production soon. Its replacement is:
 <li><p><strong>bmfact</strong> (<em>float</em><em>, </em><em>optional</em>) – Background exponential damping factor.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>an array of 2 x 1000 with the first row representing the scattering angle 2theta and the second the intensity</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>array</p>
 </dd>
 </dl>
@@ -837,17 +844,17 @@ stabel production soon. Its replacement is:
 <span class="sig-name descname"><span class="pre">generateStereo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xa</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">2,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tilt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.generateStereo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate stereodiagram.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>xa</strong> (<em>tuple</em><em> of </em><em>3 integers</em><em>, </em><em>optional</em>) – Crystal horizontal axis in reciprical space</p></li>
 <li><p><strong>tilt</strong> (<em>tuple</em><em>, </em><em>optional</em>) – Sample tilts in (x,y)</p></li>
 <li><p><strong>zone</strong> (<em>tuple</em><em>, </em><em>optional</em>) – Zone axis</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A list of stereodiagram elements represented by dict object</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list of dict object</p>
 </dd>
 </dl>
@@ -867,23 +874,21 @@ stabel production soon. Its replacement is:
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.crystals.Crystal.getBeams">
-<span class="sig-name descname"><span class="pre">getBeams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ib_coords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bPrint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.getBeams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prints diffracted beams for given sample point location. It must be called 
-during a dynamic diffraction simulation session marked by 
+<span class="sig-name descname"><span class="pre">getBeams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bPrint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.getBeams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints selected beams for current dynamic diffraction simulation 
+session marked by 
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a>
 and <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch</a>.</p>
+<p>This information is available right after beginBloch call.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ib_coords</strong> (<em>tuple</em><em>, </em><em>optional</em>) – Sampling point coordinates tuple</p></li>
-<li><p><strong>bPrint</strong> (<em>bool</em><em>, </em><em>optional</em>) – True - print beams info on standard output</p></li>
-</ul>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>bPrint</strong> (bool, optional, default <cite>False</cite>) – whether to print selected beams info on standard output</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a list of Miller Indexes at the specified sampling location</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The number of selected beams and the selected beams list in Miller indexes.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy.ndarry of n x 3 dimensions</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a python tuple.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -896,7 +901,7 @@ sessiom marked by:</p>
 <p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a>. and 
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch</a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>thickness</strong> (<em>int</em><em>, </em><em>optional</em>) – sample thickness range and step in tuple of three integers (th_start, th_end, th_step)</p></li>
 <li><p><strong>pix_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Detector pixel size in microns</p></li>
@@ -904,10 +909,10 @@ sessiom marked by:</p>
 <li><p><strong>bSave</strong> (<em>bool</em><em>, </em><em>optional</em>) – True - save the output to a raw image file with extension of ‘im3’</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs">BImgList</a> object</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>BImgList</p>
 </dd>
 </dl>
@@ -920,65 +925,31 @@ sessiom marked by:</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.crystals.Crystal.getEigen">
-<span class="sig-name descname"><span class="pre">getEigen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ib_coords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.getEigen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns eigen values for given sampling point.</p>
-<p>It must be called during a dynamic diffraction simulation session
-marked by
-<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a> and 
-<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch</a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ib_coords</strong> (<em>tuple</em><em>, </em><em>optional</em><em>, </em><em>default</em><em> (</em><em>0</em><em>,</em><em>0</em><em>)</em>) – Sampling point coordinates tuple</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a list of complex eigen values at sampling point location</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy.ndarray</p>
-</dd>
-</dl>
-<p>Example of the eigen vales:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Eigen values at: (0, 0):</span>
-<span class="go">[ 0.04684002-0.00218389j -0.2064669 -0.00147516j -0.30446348+0.00055009j</span>
-<span class="go">-0.27657617+0.00023512j -0.2765751 +0.00023515j  0.00539041-0.00382443j</span>
-<span class="go">-0.535879  -0.00023585j -0.5612881 +0.00045343j -0.55369247+0.00026236j</span>
-<span class="go">-0.55368818+0.00026249j -0.19093572+0.00066419j -0.1550311 +0.00045471j</span>
-<span class="go">-0.15503166+0.00045471j -0.58842399-0.00202841j -0.67850191+0.00042728j</span>
-<span class="go">-0.72713566+0.00060655j -0.70972681+0.00052279j -0.72092338+0.0005903j</span>
-<span class="go">-0.72093237+0.00059052j -0.64608335-0.0001983j  -0.64607544-0.00019853j]</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.crystals.Crystal.getSCMatrix">
 <span class="sig-name descname"><span class="pre">getSCMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ib_coords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_thickness</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_THICKNESS[0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rvec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.getSCMatrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Obtains scattering matrix at a given sampling point.</p>
-<p>To get a list of sampling points used in this dynamic simulation session,
-call <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails">printIBDetails</a></p>
-<p>or:</p>
-<p>capture the output from 
-<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a></p>
+<dd><p>Obtains scattering matrix at a given sampling point. To get a list of sampling 
+points used in this dynamic simulation session, call 
+<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails">printIBDetails</a>
+after <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a></p>
 <p>This call must be made during a dynamic simulation session marked by
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a> and   
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch</a></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ib_coords</strong> (<em>tuple</em><em>, </em><em>optional</em>) – Sampling point coordinates tuple, defaults to (0.0, 0.0)</p></li>
-<li><p><strong>thickness</strong> (<em>int</em><em>, </em><em>optional</em>) – Sample thickness. defaults to 200</p></li>
-<li><p><strong>rvec</strong> (<em>tuple</em><em> of </em><em>floats</em><em>, </em><em>optional</em>) – R vector shifting atom coordinates in crystal, value between 0.0 and 1.0, defaults to (0.0,0.0,0.0)</p></li>
+<li><p><strong>ib_coords</strong> (<em>tuple</em><em>, </em><em>optional</em><em>, </em><em>defaults to</em><em> (</em><em>0</em><em>, </em><em>0</em><em>)</em>) – Sampling point coordinates tuple</p></li>
+<li><p><strong>thickness</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>defaults to 200</em>) – Sample thickness</p></li>
+<li><p><strong>rvec</strong> (<em>tuple</em><em> of </em><em>3 floats</em><em>, </em><em>optional</em><em>, </em><em>defaults to</em><em> (</em><em>0.0</em><em>,</em><em>0.0</em><em>,</em><em>0.0</em><em>)</em>) – R vector shifting atom coordinates in crystal, each value between 0.0 and 1.0</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>scattering matrix at a given sampling point location</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>2D scattering matrix size and the complex scattering matrix and its associated eigen values.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>numpy.ndarray of nxn dimensions</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a tuple.</p>
 </dd>
 </dl>
-<p>Default values:</p>
+<p>Default values for sample_thickness:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DEF_THICKNESS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">200</span>
 </pre></div>
 </div>
@@ -990,16 +961,16 @@ call <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.
 <dd><p>Loads a python numpy array representation of diffraction pattern into <strong>pyemaps</strong> ediom module
 for peaks search and indexing.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>npy_arr</strong> (<em>numpy array</em><em>, </em><em>required</em>) – a numpy array of basic types that can be converted into float32 type.</p></li>
 <li><p><strong>bShow</strong> (boolean, optional. Default to <cite>False</cite>) – display the image or not after successful importing</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>status code, 0 for successful run</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
@@ -1013,7 +984,7 @@ for peaks search and indexing.</p>
 <p>where <em>dtype</em> can be any type from a list of numpy types that can be converted into numpy.float32.
 The list covers most of the numpy data types, except the complex types:</p>
 <ol class="arabic simple">
-<li><p><a href="#id30"><span class="problematic" id="id31">numpy.bool_</span></a></p></li>
+<li><p><a href="#id28"><span class="problematic" id="id29">numpy.bool_</span></a></p></li>
 <li><p>numpy.byte</p></li>
 <li><p>numpy.short</p></li>
 <li><p>numpy.ushort</p></li>
@@ -1050,7 +1021,7 @@ The list covers most of the numpy data types, except the complex types:</p>
 <dd><p>Loads a raw experimental image with diffraction patterns into <strong>pyemaps</strong> ediom module
 for peaks search and DP indexing.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>imgfn</strong> (<em>string</em><em>, </em><em>required</em>) – the raw image full path with file name.</p></li>
 <li><p><strong>offset</strong> (<em>integer</em><em>, </em><em>required</em>) – offset in bytes to image data. This is normally the size of image header in bytes</p></li>
@@ -1062,10 +1033,10 @@ for peaks search and DP indexing.</p>
 <li><p><strong>bShow</strong> (boolean, optional, default to <cite>False</cite>.) – weather to display the image after successful import</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>status code, 0 for successful run</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
@@ -1086,17 +1057,17 @@ for peaks search and DP indexing.</p>
 <dd><p>Loads a pyemaps proprietory experimental image with diffraction patterns into <strong>pyemaps</strong> ediom module
 for peaks search and indexing.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>imgfn</strong> (<em>string</em><em>, </em><em>required</em>) – the raw image file.</p></li>
 <li><p><strong>sel</strong> (<em>integer</em><em>, </em><em>optional</em><em>, </em><em>Default to 1.</em>) – the image stack or layer selection - ediom search on specific stack of a multiple stacks image</p></li>
 <li><p><strong>bShow</strong> (boolean, optional. Default to <cite>False</cite>.) – weather to display the image after successful import</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>status code. 0 successful.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
@@ -1133,14 +1104,19 @@ if the image id a proprietory formatted image file with a small header of 8 byte
 <p>In addition, a diffraction database also needs to be loaded by preceeding this call with
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB">loadDPDB</a></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dpdbfn</strong> – diffraction pattern database file name. The file is generated by pyemaps dp_gen module</p>
+</dd>
+</dl>
+<p>or database file name saved from previous runs.
+:type dpdbfn: string, required</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dpdbfn</strong> (<em>string</em><em>, </em><em>required</em>) – diffraction pattern database file name. The file is generated by pyemaps dp_gen module or database
-file name saved from previous runs.</p></li>
 <li><p><strong>cc</strong> (<em>float</em><em>, </em><em>optional</em>) – Camera constant in 1/Angstrom/pixel.</p></li>
 <li><p><strong>sigma</strong> (<em>float</em><em>, </em><em>optional.</em>) – Diffraction peak width - estimated image peak width.</p></li>
 <li><p><strong>img_center</strong> (<em>float tuple</em><em>, </em><em>optional</em>) – diffraction pattern center in (col, row) coordinate.</p></li>
-<li><p><strong>rmin</strong> (<em>float</em><em>, </em><em>optional</em>) – Low cutoff radius for excluding center beam and diffuse intensities.</p></li>
+<li><p><strong>rmin</strong> (<em>float</em><em>, </em><em>optional</em>) – low cutoff radius for excluding center beam and diffuse intensities.</p></li>
 <li><p><strong>search_box</strong> (<em>float</em><em>, </em><em>optional</em>) – Parameter in pixels used to define peak search. Recommended value 
 of 3 to 4 times of sigma value for selected area diffraction.</p></li>
 <li><p><strong>filter_threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Diffraction pattern screening threshold. Between 0.0 and 1.0 
@@ -1148,14 +1124,14 @@ use 0 to include all database patterns for search.</p></li>
 <li><p><strong>peak_threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Peak threshold. value between 0.0 and 1.0. used to remove noisy peaks.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>status code, 0 for successful run</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
-<p>The image control parameters cc - rmin above are all image meaurements controls. The accuraccies
+<p>The image control parameters cc - rmin above are image meaurements controls. The accuraccies
 of these measurements can greatly affect the peak search and eventually indexing results.</p>
 <p>The remaining input parameters directly control the search and indexing functions and its results.
 Use these parameters to tune your results.</p>
@@ -1163,21 +1139,21 @@ Use these parameters to tune your results.</p>
 <p>1. Once the DP database is loaded successfully, the steoreo projection map associated
 with the DP database will be shown.</p>
 <a class="reference external image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojmap.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojmap.png" src="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojmap.png" /></a>
-<p>2. Successful experimental DP image importing will also show the image. This allows users
-to verify the image:</p>
+<p>2. Successful experimental DP image importing will also show the image. This gives users
+the opportunity to verify the image:</p>
 <a class="reference external image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/expimagoriginal.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/expimagoriginal.png" src="https://github.com/emlab-solutions/imagepypy/raw/main/expimagoriginal.png" /></a>
 <p>3. Following the display of the experimental DP image and if <em>bDebug</em> is not set (by default), 
 the indexing result will be displayed on top of the experimental image:</p>
 <a class="reference external image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/expimgindexed.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/expimgindexed.png" src="https://github.com/emlab-solutions/imagepypy/raw/main/expimgindexed.png" /></a>
-<p>4. Once the indexing results are generated, users has the option to call other display
-<em>EDIOM</em> functions to show other results generated by this call. Such results
-are the matching database DP image and DP database matching index map:</p>
+<p>4. Once the indexing results are generated, users have the option to call more display
+<em>EDIOM</em> functions to show other results generated by this call. For examples, 
+the matching database DP image and DP database matching index map as shown below:</p>
 <a class="reference external image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/matchingDPDB.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/matchingDPDB.png" src="https://github.com/emlab-solutions/imagepypy/raw/main/matchingDPDB.png" /></a>
-<a class="reference external image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/matchingindexmap.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/matchingindexmap.png" src="https://github.com/emlab-solutions/imagepypy/raw/main/matchingindexmap.png" /></a>
-<p>The latter map presents the likely matching location between the DP in database which
-represent the theoretical diffraction patterns and the experimental DP image (in red).</p>
+<a class="reference external image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/matchingindexmap.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/matchingindexmap.png" class="align-center" src="https://github.com/emlab-solutions/imagepypy/raw/main/matchingindexmap.png" /></a>
+<p>The latter map presents the likely matching location  (in red) between the DP in database, 
+also considered the theoretical diffraction patterns, and the experimental DP image.</p>
 <p>5. Finally, in addition to the above visual representation of the run and results, 
-a more verbose indexed experimental DP results are also shown in standard output:</p>
+more verbose results are also shown in standard output:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Number of peaks found: 45</span>
 
 <span class="go">-----------------Diffraction Pattern(DP) Indexing Results--------------------</span>
@@ -1206,7 +1182,7 @@ a more verbose indexed experimental DP results are also shown in standard output
 </pre></div>
 </div>
 <p>where Reliability index greater than 5.0 is considered successful run. DP stands for
-diffraction pattern. If your results does not fit in a run, adjusting search and indexing paramemers
+diffraction pattern. If your results do not fit in a run, adjusting search and indexing paramemers
 such as filter_threshold and peak threshold can also help ediom module to search and match peaks.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -1229,7 +1205,7 @@ the shared silmulation modules, data races need to be avoided.</p>
 <p>One way to prevent data races is to guard all simulations for 
 one crystal object between its load() and unload() methods.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>cty</strong> (<em>int</em><em>, </em><em>optional</em>) – 0 - normal crystal loading, 1 - loading for crystal constructor</p>
 </dd>
 </dl>
@@ -1249,17 +1225,17 @@ directly.</p>
 pyemaps <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateDPDB">generateDPDB</a>.</p>
 <p>The database file can also be saved and reused.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dbfn</strong> (<em>string</em><em>, </em><em>required</em>) – DP database file name.</p></li>
 <li><p><strong>bShowDBMap</strong> (boolean, optional, default to <cite>False</cite>) – weather to display the stereodigram project map after successful 
 loading of the database file</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>status code, stereo projection map dimension - two integers tuple</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
@@ -1273,13 +1249,13 @@ loading of the database file</p></li>
 <dd><p>Looks up currently loaded DP database for the kinematic diffraction image at stereodiagram
 projection map location <em>loc</em>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>loc</strong> (<em>tuple</em><em>, </em><em>required</em>) – location represented by 2 integers on the stereo projection map.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>status code, stereo projection map dimension two integers tuple</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
@@ -1294,7 +1270,7 @@ Each of the diffraction patterns in the database is indexed by its map location.
 <dd><p>Show powder diffraction created from 
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generatePowder">generatePowder</a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>pw</strong> (<em>array</em><em>, </em><em>required</em>) – Powder diffraction data</p>
 </dd>
 </dl>
@@ -1303,9 +1279,9 @@ Each of the diffraction patterns in the database is indexed by its map location.
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.crystals.Crystal.printCSF">
 <span class="sig-name descname"><span class="pre">printCSF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sfs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.printCSF" title="Permalink to this definition">¶</a></dt>
-<dd><p>Format and print structure factors to standard output.</p>
+<dd><p>Formats and prints structure factors to standard output.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>sfs</strong> (<em>dict</em><em>, </em><em>required</em>) – structure factor data generated from 
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateCSF">generateCSF</a>.</p>
 </dd>
@@ -1317,7 +1293,7 @@ Each of the diffraction patterns in the database is indexed by its map location.
 <span class="go">s-w                : Sin(ϴ)/Wavelength &lt;= 1.0</span>
 <span class="go">d-s                : D-Spacing</span>
 
-<span class="go">h   k    l        s-w             d-s          amplitude         phase</span>
+<span class="go">h   k   l        s-w             d-s          amplitude         phase</span>
 
 <span class="go">1   1   1    0.1594684670    3.1354161069    58.89618        180.000000</span>
 <span class="go">0   0   2    0.1841383247    2.7153500000    6.565563e-31    0.000000</span>
@@ -1335,10 +1311,10 @@ Each of the diffraction patterns in the database is indexed by its map location.
 <dd><blockquote>
 <div><p>Ediom helper function displaying more details of the matched peak indexes.</p>
 <dl class="field-list simple">
-<dt class="field-odd">return</dt>
+<dt class="field-odd">return<span class="colon">:</span></dt>
 <dd class="field-odd"><p>status code, 0 for successful run</p>
 </dd>
-<dt class="field-even">rtype</dt>
+<dt class="field-even">rtype<span class="colon">:</span></dt>
 <dd class="field-even"><p>int</p>
 </dd>
 </dl>
@@ -1375,6 +1351,7 @@ marked by
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch</a>.</p>
 <p>Information regarding the simulation session include sampling points and their
 associated diffracted beam directions etc.</p>
+<p>The information is available right after beginBloch call.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1384,7 +1361,7 @@ associated diffracted beam directions etc.</p>
 Refer to <a class="reference external" href="https://wiki.jmol.org/index.php/File_formats/Formats/XYZ">XYZ format</a>
 for its definition and usage.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>xyzdict</strong> (<em>dict</em><em>, </em><em>required</em>) – Crystal structure data.</p>
 </dd>
 </dl>
@@ -1409,13 +1386,13 @@ SI           3.3941875000   0.6788375000   3.3941875000
 <span class="sig-name descname"><span class="pre">r2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.r2d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform vector from recriprocal to real space</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>v</strong> (<em>tuple</em><em>, </em><em>optional</em>) – A vector of float coordinates</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Tranformed vector</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple of floats</p>
 </dd>
 </dl>
@@ -1437,13 +1414,13 @@ SI           3.3941875000   0.6788375000   3.3941875000
 simulation module by skipping the call to the backend if
 default values are given.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>simc</strong> (<em>pyemaps.SIMC</em><em>, </em><em>optional</em>) – <a class="reference external" href="pyemaps.emcontrols.html#pyemaps.emcontrols.SIMControl">Simulation control</a> objects</p>
 </dd>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><a href="#id20"><span class="problematic" id="id21">*</span></a>pyemaps” assumes that attributes in sim_control class are
+<p><a href="#id18"><span class="problematic" id="id19">*</span></a>pyemaps” assumes that attributes in sim_control class are
 rarely changed.</p>
 </div>
 </dd></dl>
@@ -1464,7 +1441,7 @@ pattern. See sample code <em>al_ediom.py</em> for usage of this function.</p>
 heat map with the peak indicates the orientation in which experimental and 
 database diffraction patterns best match.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>fr</strong> (<em>int</em><em>, </em><em>required</em>) – <p>stereo projection map height. This number is obtained from 
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB">loadDPDB</a> call.</p>
@@ -1474,13 +1451,13 @@ database diffraction patterns best match.</p>
 </p></li>
 </ul>
 </dd>
-<dt class="field-even">Type</dt>
+<dt class="field-even">Type<span class="colon">:</span></dt>
 <dd class="field-even"><p>int, required</p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>status code</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>int</p>
 </dd>
 </dl>
@@ -1498,17 +1475,17 @@ database diffraction patterns best match.</p>
 <dd><p>Helper function in ediom module to display experimental diffraction database 
 diffraction pattern currently loaded.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>peakDP</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – kinematic diffraction with miller index.</p></li>
 <li><p><strong>Indexed</strong> (boolean, optional, default to <cite>False</cite>) – show the kinematic patterns after indexing is completed.</p></li>
 <li><p><strong>iShow</strong> (boolean, optional, default to <cite>False</cite>) – whether to show miller indexes</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p></p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>None</p>
 </dd>
 </dl>
@@ -1525,16 +1502,16 @@ display is turned on only by <em>bDebug</em> flag in
 <dd><p>Calculates vector length real space vectors or in reciprocal 
 space vectors.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>v</strong> (<em>tuple</em><em>, </em><em>optional</em>) – A vector of float coordinates</p></li>
 <li><p><strong>ty</strong> (<em>int</em><em>, </em><em>optional</em>) – 0 real space, 1 reciprocal space</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>vector length in reciprical space or in reciprocal space</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
@@ -1545,7 +1522,7 @@ space vectors.</p>
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wavelength</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.wavelength" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates electron wavelength.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>kv</strong> (<em>float</em><em> or </em><em>int</em><em>, </em><em>optional</em>) – High voltage</p>
 </dd>
 </dl>
@@ -1608,10 +1585,10 @@ view its content.</p>
 <dd><p>Check to see if crystal data is loaded into simulation module
 or not.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><cite>True</cite> - loaded; otherwise <cite>False</cite></p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>bool</p>
 </dd>
 </dl>
@@ -1623,10 +1600,10 @@ or not.</p>
 <dd><p>Create a crystal by importing data from pyemaps build-in 
 crystal database</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>cn</strong> (<em>string</em><em>, </em><em>optional</em>) – Name of the crystal in pyemaps’s builtin database.</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="pyemaps.errors.html#pyemaps.errors.CrystalClassError" title="pyemaps.errors.CrystalClassError"><strong>CrystalClassError</strong></a> – If reading database fails or any of its components 
 fail to validate.</p>
 </dd>
@@ -1643,10 +1620,10 @@ Crystal.list_all_builtin_crystals() method</p>
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_xtl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.from_xtl" title="Permalink to this definition">¶</a></dt>
 <dd><p>To create a crystal object by importing data from xtl formtted file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>fn</strong> (<em>string</em><em>, </em><em>required</em>) – Crystal data file name in pyemaps propietory format.</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="pyemaps.errors.html#pyemaps.errors.CrystalClassError" title="pyemaps.errors.CrystalClassError"><strong>CrystalClassError</strong></a> – file reading fails or any of its components fail to validate.</p>
 </dd>
 </dl>
@@ -1687,10 +1664,10 @@ of (x,y,x,d-w,occ) where occ defaults to 1.00 if not provided.</p></li>
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_cif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.from_cif" title="Permalink to this definition">¶</a></dt>
 <dd><p>import crystal data from a cif (Crystallographic Information File).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>fn</strong> (<em>string</em><em>, </em><em>required</em>) – Crystal data file name in JSON format.</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="pyemaps.errors.html#pyemaps.errors.CrystalClassError" title="pyemaps.errors.CrystalClassError"><strong>CrystalClassError</strong></a> – If file reading fails or any of its components 
 (cell, atoms, spg) fail to validate.</p>
 </dd>
@@ -1702,10 +1679,10 @@ of (x,y,x,d-w,occ) where occ defaults to 1.00 if not provided.</p></li>
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jfn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.from_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import crystal data from a .json file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>jfn</strong> (<em>string</em><em>, </em><em>required</em>) – Crystal data file name in JSON format.</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="pyemaps.errors.html#pyemaps.errors.CrystalClassError" title="pyemaps.errors.CrystalClassError"><strong>CrystalClassError</strong></a> – If file reading fails or any of its components fail to validate.</p>
 </dd>
 </dl>
@@ -1745,10 +1722,10 @@ of (x,y,x,d-w,occ) where occ defaults to 1.00 if not provided.</p></li>
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cdict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.from_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import crystal data from a python dictionary object.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>cdict</strong> (<em>dict</em><em>, </em><em>required</em>) – Crystal data file name in as a python dictionary object.</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="pyemaps.errors.html#pyemaps.errors.CrystalClassError" title="pyemaps.errors.CrystalClassError"><strong>CrystalClassError</strong></a> – If any of its components import fails.</p>
 </dd>
 </dl>
@@ -1966,7 +1943,7 @@ simulation control is embedded as a member of a microscope controls class.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.zctl">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">zctl</span></span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.zctl" title="Permalink to this definition">¶</a></dt>
-<dd><p>Maximum zone or Miller index index number</p>
+<dd><p>Maximum zone or Miller index number</p>
 </dd></dl>
 
 <dl class="py property">
@@ -2018,7 +1995,7 @@ Only plot those parameter that are not defaults</p>
 <li><p><strong>defl</strong>: shifts in x and y direction (x, y)</p></li>
 <li><p><strong>cl</strong>: cameral length</p></li>
 <li><p><strong>vt</strong>: hight voltage in kilo-volts</p></li>
-<li><p><a href="#id27"><span class="problematic" id="id28">**</span></a>simc*: <a class="reference external" href="pyemaps.emcontrols.html#pyemaps.emcontrols.SIMControl">SIMControl</a> object</p></li>
+<li><p><a href="#id25"><span class="problematic" id="id26">**</span></a>simc*: <a class="reference external" href="pyemaps.emcontrols.html#pyemaps.emcontrols.SIMControl">SIMControl</a> object</p></li>
 </ul>
 <p>Other optional emcontrol parameters:</p>
 <ul class="simple">
@@ -2039,10 +2016,10 @@ Only plot those parameter that are not defaults</p>
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emc_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.from_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an EMControl object from a python dict object</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>emc_dict</strong> (<em>dict</em><em>, </em><em>required</em>) – Microscope control dict object</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p>EMCError, if validation fails</p>
 </dd>
 </dl>
@@ -2069,7 +2046,7 @@ Only plot those parameter that are not defaults</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.cl">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cl</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.cl" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shifts in x and y directions (x, y)</p>
+<dd><p>Camera length</p>
 </dd></dl>
 
 <dl class="py property">
@@ -2286,7 +2263,7 @@ kinematic diffraction patterns using this object.</p>
 <dt class="sig sig-object py" id="pyemaps.kdiffs.diffPattern.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diff_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.kdiffs.diffPattern.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>diff_dict</strong> (<em>dict</em><em>, </em><em>required</em>) – Only accepts output from pyemaps kinematic diffraction run.</p>
 </dd>
 </dl>
@@ -2416,7 +2393,7 @@ visualization methods rendering pyemaps simulations results.</p>
 <span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">showDif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dpl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'individual'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bSave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bClose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.showDif" title="Permalink to this definition">¶</a></dt>
 <dd><p>Render kinematic diffraction pattern generated by pyemaps.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dpl</strong> (<em>DPList</em>) – Kinematic difraction pattern object list <a class="reference external" href="pyemaps.kdiffs.html#pyemaps.kdiffs.DPList">DPList</a></p></li>
 <li><p><strong>cShow</strong> (<em>bool</em><em>, </em><em>optional</em>) – Plot control annotation. <cite>True</cite> (default): plot the control parameters on lower left corner; <cite>False</cite> do not plot.</p></li>
@@ -2435,7 +2412,7 @@ visualization methods rendering pyemaps simulations results.</p>
 <span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">showBloch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bimgs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bColor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'individual'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bSave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bClose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.showBloch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Render dynamic diffraction pattern generated by pyemaps.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>bimgs</strong> (<a class="reference internal" href="pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs" title="pyemaps.ddiffs.BlochImgs"><em>BlochImgs</em></a>) – <p>Optional. Dynamic difraction pattern object list <a class="reference external" href="pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs">BImgList</a></p>
 </p></li>
@@ -2454,7 +2431,7 @@ visualization methods rendering pyemaps simulations results.</p>
 <span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">showStereo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'individual'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bSave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bClose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.showStereo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Render stereodiagram generated by pyemaps.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>slist</strong> (<em>list</em><em>, </em><em>required</em>) – Stereodiagram output from <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateStereo">generateStereo</a>.</p></li>
 <li><p><strong>cShow</strong> (<em>bool</em><em>, </em><em>optional</em>) – Plot control annotation. <cite>True</cite> (default): plot the control parameters on lower left corner; <cite>False</cite> do not plot.</p></li>
@@ -2493,10 +2470,10 @@ file i/o accoridng to the rule set in <a class="reference internal" href="usage.
 when file is generated from pyemaps simulations.</p>
 <p>This can be modified to tune the output to any other specific needs.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>cn</strong> (<em>string</em><em>, </em><em>required</em>) – A crystal name.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>file name composed of crytsal name and time stamp in yyyymmddmmss format</p>
 </dd>
 </dl>
@@ -2509,13 +2486,13 @@ when file is generated from pyemaps simulations.</p>
 <dd><p>Detects enviroment variable set by PYEMAPS_DATA and return the
 diretcory set by the variable or return current working directory.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>home_type</strong> (<em>string</em><em>, </em><em>optional</em>) – Type of home directory</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>data home path.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>string</p>
 </dd>
 </dl>
@@ -2539,16 +2516,16 @@ diretcory set by the variable or return current working directory.</p>
 <span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">loadCrystalCIFData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.loadCrystalCIFData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads a .cif file for crystal data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>fn</strong> – cif file name</p>
 </dd>
-<dt class="field-even">Type</dt>
+<dt class="field-even">Type<span class="colon">:</span></dt>
 <dd class="field-even"><p>string, required</p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple of crystal name and crystal data as dict object</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>dict</p>
 </dd>
 </dl>
@@ -2563,22 +2540,22 @@ diretcory set by the variable or return current working directory.</p>
 <span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">loadCrystalData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.loadCrystalData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reading built-in datbase or a .xtl file for crystal data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>fn</strong> – XTL formatted Crystal file name</p></li>
 <li><p><strong>cn</strong> – Crystal name</p></li>
 </ul>
 </dd>
-<dt class="field-even">Type</dt>
+<dt class="field-even">Type<span class="colon">:</span></dt>
 <dd class="field-even"><p>string, required</p>
 </dd>
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>string, optional</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>tuple of crystal name and crystal data as dict object</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
@@ -2994,7 +2971,7 @@ Dfffracted beams object creation.</p>
         <li class="right" >
           <a href="rn.html" title="Release Notes"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.2 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.3 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Modules, Classes and Interfaces</a></li> 
       </ul>
     </div>

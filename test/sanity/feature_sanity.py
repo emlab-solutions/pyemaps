@@ -35,7 +35,7 @@ def run_feat_list(cnflist, ty=1, bShow=True, bSave=False, feat_type='dif'):
     failure_cases=[]
     failure_count = 0
     
-    for cfn in cnflist:   
+    for cfn in cnflist: 
         tic = time.perf_counter()
         try:    
             cf = cr.from_xtl(cfn) if ty==1 else cr.from_cif(cfn)                  
@@ -54,6 +54,11 @@ def run_feat_list(cnflist, ty=1, bShow=True, bSave=False, feat_type='dif'):
                 mx = cf.generateMxtal()
 
             toc = time.perf_counter()
+        except CrystalClassError as e:
+            print(f'Error loading crystal {cfn}')
+            failure_count += 1
+            failure_cases.append(cfn)
+            continue
         except Exception:
                 failure_count += 1
                 failure_cases.append(cfn)
@@ -142,7 +147,7 @@ def print_filelist(fpl):
     
 if __name__ == '__main__':
 
-    run_metrics()
+    # run_metrics()
     res = {}
     for f in feat_list:
         res[f]=[]

@@ -29,23 +29,37 @@ IFORTROOT = os.getenv('IFORTROOT')
 
 dpgen_cobj = 'write_dpbin.o'
 
+# removing 4R8 option - returning to 4 bytes real
+# compile_args=['-Qm64',
+#               '-WB',
+#               '-heap-arrays',
+#             #   '-Qopenmp',
+#             #   '-Qopenmp-simd',
+#               '-GS', 
+#               '-4R8',
+#               '-fpp',
+#               '-warn:nointerfaces',
+#               '-O2', #this option does not work with -fast
+#               '-libs:static',
+#               '-MT',
+#               '-assume:buffered_io',
+#               '-traceback',
+#             #   '-align:array32byte',
+#             #   '-Qparallel',
+#             #   '-Qopt-report:2',
+#               '-c']
 
 compile_args=['-Qm64',
               '-WB',
               '-heap-arrays',
-            #   '-Qopenmp',
-            #   '-Qopenmp-simd',
               '-GS', 
-              '-4R8',
               '-fpp',
               '-warn:nointerfaces',
               '-O2', #this option does not work with -fast
               '-libs:static',
               '-MT',
               '-assume:buffered_io',
-            #   '-align:array32byte',
-            #   '-Qparallel',
-            #   '-Qopt-report:2',
+            #   '-traceback',
               '-c']
               
 compile_args_lin= ['-m64',
@@ -326,7 +340,10 @@ def get_cdata(sdn = 'cdata'):
     '''
     import glob
 
-    free_xtl_remove = ['SiAlONa.xtl']
+
+    free_xtl_remove = []
+    if build_type == 'free':
+        free_xtl_remove = ['SiAlONa.xtl']
 
     base_dir = os.path.realpath(__file__)
     samples_base_dir = os.path.join(os.path.dirname(base_dir), sdn)
@@ -587,9 +604,9 @@ setup(name                              ="pyemaps",
 )
 
 if pyemaps_debug:
-    print(f'#######################Build is debug build')
+    print(f'#######################Build is a debug build')
 else:
-    print(f'#######################Build is debug build')
+    print(f'#######################Build is not a debug build')
 # ------------- using intel compiler------------------------- 
 # from setuptools import setup, Extension
 # import os

@@ -83,5 +83,5 @@ class BlochImgs:
         '''
         Array like method for retrieving DP
         '''
-        # print(f'key in teh image: {key}')
+        
         return self._blochList[key]

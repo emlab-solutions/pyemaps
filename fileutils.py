@@ -71,11 +71,9 @@ def find_datahome():
                 pass
             else:
                 datahome = pyemaps_home
-    # print(f'pyemaps data home found: {datahome}')    
+                   
     return datahome
-    #     print(f'pyemaps data home found: {pyemaps_home}')
-    # print(f'pyemaps data set: {pyemaps_home}')
-    # return pyemaps_datahome
+
 
 def auto_fn(cn):
     '''

@@ -1,6 +1,30 @@
 Release Notes
 =============
 
+Version 1.0.3 Stable
+------------------ 
+
+04-23-2023 
+~~~~~~~~~~
+
+Improvements
+~~~~~~~~~~~~
+
+- A major memory improvement in dynamic diffraction simulation(Bloch), 
+  resulting a large performance improvement in Bloch simulation.
+- Bloch simulation functions related to scattering matrix calculation 
+  and its associated computations re-organized as follows:
+
+  - `getSCMatrix <pyemaps.crystals.html#pyemaps.crystals.Crystal.getSCMatrix>`_ 
+  - `getBeams <pyemaps.crystals.html#pyemaps.crystals.Crystal.getBeams>`_
+  - *getEigen* function is folded into getSCMatrix call starting 
+    from Stable verion 1.0.3 
+
+  See documents for details of the changes for each functions. Also, the sample code
+  *si_scm.py* shows the usage changes.
+
+- More performance improvement are coming up, stay tuned.
+
 Version 1.0.2 Stable
 ------------------ 
 

@@ -144,7 +144,7 @@ SIMC_DESC = {
     'bmin': 'Beta perturbation cutoff',
     'intensity': 'Kinematic diffraction intensity cutoff level and scale in (level, scale)',
     'gctl': 'Maximum index number for g-list',
-    'zctl': 'Maximum zone or Miller index index number',
+    'zctl': 'Maximum zone or Miller index number',
     'omega': 'Diagnization cutoff value',
     'sampling': 'Number of sampling points',
     'sth': 'Samples thickness'
@@ -462,7 +462,7 @@ DEF_EMC = {
     'zone': {'defval': DEF_ZONE, 'desc': 'Starting zone axis'},
     'tilt': {'defval': DEF_TILT, 'desc': 'Tilt in x and y directions (x,y)'},
     'defl': {'defval': DEF_DEFL, 'desc': 'Shifts in x and y directions (x, y)'},
-    'cl': {'defval': DEF_CL, 'desc': 'Shifts in x and y directions (x, y)'},
+    'cl': {'defval': DEF_CL, 'desc': 'Camera length'},
     'vt': {'defval': DEF_KV, 'desc': 'High voltage'},
     'xaxis': {'defval': DEF_XAXIS, 'desc': 'Crystal horizontal axis in reciprical space'},
     'pix_size': {'defval': DEF_PIXSIZE, 'desc': 'Detector pixel size in microns'},
@@ -506,7 +506,7 @@ class EMControl:
                        vt = DEF_KV, 
                        cl = DEF_CL,
                        simc = SIMControl()):
-
+        
         emc_dict = dict(tilt = tilt, 
                        zone = zone, 
                        defl = defl,
@@ -684,7 +684,7 @@ class EMControl:
     def cl(self, clen):
         if not isinstance(clen, int) and not isinstance(clen, float):
            raise ValueError("Camera length must be of number")
-
+        
         self._cl = clen
     
     @vt.setter
@@ -863,7 +863,7 @@ class EMControl:
     def _check_def(self, k) -> bool:
         '''internal - checking if the attribute k is at default value'''
         if k not in DEF_EMC or not hasattr(self, k):
-            # return EMCError('internal error!')
+            
             print(f'Warning: EMControl class does not have {k} attribute')
             return False
         

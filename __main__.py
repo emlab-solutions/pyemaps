@@ -80,7 +80,7 @@ if __name__ == '__main__':
     try:
         from .samples.si_pyemaps import run_si_sample
     except ImportError as e:
-        print(f"Error importing builtin sample: {e}")
+        print(f"Error importing built-in sample: {e}")
         
     import argparse
     import datetime

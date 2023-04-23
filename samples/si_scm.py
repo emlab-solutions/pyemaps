@@ -31,6 +31,8 @@ def runSCMTests():
 
     from pyemaps import Crystal as cr
     from pyemaps import BlochError, EMC, SIMC
+    import random
+    
     si = cr.from_builtin(c_name)
     
     print(si)
@@ -45,7 +47,7 @@ def runSCMTests():
             simc = SIMC(gmax=2.0, excitation=(1.0,2.0))
             )
     ds = 0.25
-    ib_coords = (0,0)
+    ib_coords = (0, 0)
     
     try:
         
@@ -55,59 +57,48 @@ def runSCMTests():
     except Exception as e:
         print(f'Failed to generate scattering matrix {e}')
     else:
-        # get the scattering matrix now
+        
+        print(f'----Sampling points in this dynamic diffraction session---:')
+        print(f'Number of sampling points: {ns}')
+        print(f'{s}')
+
+        print(f'----Selected Beams in Miller Indexes----: ')
+        _, _ = si.getBeams(bPrint = True)
+
+        # get the scattering matrix and associated eigen values now
         try:
-            si_scm = si.getSCMatrix(ib_coords = ib_coords)
+            nd, si_scm, si_ev = si.getSCMatrix(ib_coords = ib_coords)
         except BlochError as e:
             print(f'Failed to generate scattering matrix {e.message}')
         except Exception as e:
             print(f'Failed to generate scattering matrix {e}')
         else:
-            print(f'----Sampling points in this scattering matrix calculation---:')
-            print(f'{s}')
-
-            print(f'----Sacattering matrix at sampling point {ib_coords}----:')
+            print(f'----Scattering matrix at sampling point {ib_coords}----:')
+            print(f'Size of the scattering matrix: {nd}x{nd}')
             print(f' \n{si_scm}')
 
             print(f'----Eigen values at: {ib_coords}----')
+            print(si_ev)
+
+            print(f'----More details associated with scattering matrix calculation') 
+            si.printIBDetails()
             
-            try:
-                eigen = si.getEigen(ib_coords = ib_coords)
-            except Exception as e:
-                print(f'Error: {e}')
-            else:
-                if eigen is not None:
-                    print(eigen)
-
-            print(f'----Diffracted Beams in Miller Indexes at: {ib_coords}----: ')
-            try:
-                si.getBeams(ib_coords = ib_coords, bPrint=True)
-            except Exception as e:
-                print(f'Error retrieving Miller Indexes at {ib_coords}: {e}')
-
-            print(f'----Beam Tilts In Reciprical Space and misc. info') 
-            try:
-                si.printIBDetails()
-            except Exception as e:
-                print(f'Error retrieving misc. information for this bloch simulation: {e}')
-
-            #       get a random sampling point from available list of
-            #       sampling points and print the corresponding 
-            #       scattering matrix
-
-            import random
-            radnum = random.randrange(0, ns-1)
+            # select a random sampling point from s
+            randnum = random.randrange(0, ns-1)
             
-            ib_coords = s[radnum]
+            ib_coords = s[randnum]
             try:
-                scm = si.getSCMatrix(ib_coords = ib_coords)
+                nd, si_scm, si_ev = si.getSCMatrix(ib_coords = ib_coords)
             except Exception:
                 print(f'Error obtaining scattering matrix at random sampling points {ib_coords}')
             else:
-                print(f'--Sacattering matrix at a random sampling point {ib_coords}----:')
-                print(f'{scm}')
+                print(f'--Scattering matrix at a randomly selected sampling point {ib_coords}----:')
+                print(f'Size of the scattering matrix: {nd}x{nd}')
+                print(f'{si_scm}')
+                print(f'----Eigen values at: {ib_coords}----')
+                print(si_ev)
+
             finally:
-                # cleanup
                 si.endBloch()
     finally:
         # cleanup 

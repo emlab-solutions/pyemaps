@@ -145,8 +145,7 @@ def add_bloch(target):
             
             a. List of sampling points, diffraction beams tilts etc 
                with `printIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails>`_;
-            b. Eigen values at each sampling points in 
-               `getEigen <pyemaps.crystals.html#pyemaps.crystals.Crystal.getEigen>`_;
+            b. getEigen function is folded into getSCMatrix call starting from Stable verion 1.0.3
             c. Diagnization Miller indexes at each sampling point: 
                `getBeams <pyemaps.crystals.html#pyemaps.crystals.Crystal.getBeams>`_;
         
@@ -311,7 +310,7 @@ def add_bloch(target):
        self.session_controls(pix_size=pix_size, det_size=det_size)
        
        for th in thlist:
-            bimg = farray(np.zeros((det_size, det_size), dtype=np.double))
+            bimg = farray(np.zeros((det_size, det_size), dtype=np.float32))
             
             bimg, ret = bloch.getimage(bimg, th, 0, pix_size,
                                         det_size, bsave = bSave)
@@ -341,6 +340,8 @@ def add_bloch(target):
         Information regarding the simulation session include sampling points and their
         associated diffracted beam directions etc.
 
+        The information is available right after beginBloch call.
+
         '''
         nib = bloch.get_nsampling()
         if nib <=0:
@@ -351,30 +352,28 @@ def add_bloch(target):
         
         
         net = farray(np.zeros((2, nib), dtype=int))
-        dimscm = farray(np.zeros(nib, dtype=int))
         tilt = farray(np.zeros((3, nib), dtype=float))
 
-        net, tilt, dimscm, ret = bloch.getibinfo(net, tilt, dimscm)
+        net, tilt, ret = bloch.getibinfo(net, tilt)
         if ret != 0:
             raise BlochError("failed to retrieve incidental beams info")
         
-        print(f'\n-------Dynamic Simulation Session for {self._name}---------\n')
+        print(f'\n-------Dynamic Diffraction Simulation Session for {self._name}---------\n')
         print(f'Total Number of sampling points: {nib}\n')
 
         smp = "Sampling"
         stilt = "Beam Tilts In Reciprical Space"
-        sscdim = "Scattering Matrix Dimensions"
-        print(f"{smp:^11}{stilt:^48}{sscdim:^4}")
+        
+        print(f"{smp:^11}{stilt:^48}")
         print(f"{'Points':^11}\n")
         
         ibnet = np.transpose(net)
         ibtilt = np.transpose(tilt)
-        ibnscm = np.transpose(dimscm)
+        
 
         for i in range(1, nib+1, 1):
             net1, net2 = ibnet[i-1]
             t1,t2,t3 = ibtilt[i-1]
-            d=ibnscm[i-1]
         
             sn1 = '{0: < #06d}'. format(int(net1))
             sn2 = '{0: < #06d}'. format(int(net2))
@@ -382,48 +381,37 @@ def add_bloch(target):
             st2 = '{0: < #016.10f}'. format(float(t2))
             st3 = '{0: < #016.7g}'. format(float(t3))
 
-            sd = '{0: < #04d}'. format(int(d))
+            print(f"{sn1}{sn2}{st1}{st2}{st3}")   
 
-            print(f"{sn1}{sn2}{st1}{st2}{st3}{sd}")   
-
-    def getBeams(self, ib_coords=(0,0), bPrint=False):
+    def getBeams(self, bPrint=False):
         '''
-        Prints diffracted beams for given sample point location. It must be called 
-        during a dynamic diffraction simulation session marked by 
+        Prints selected beams for current dynamic diffraction simulation 
+        session marked by 
         `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
         and `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.
-
-        :param ib_coords: Sampling point coordinates tuple
-        :type ib_coords: tuple, optional
-
-        :param bPrint: True - print beams info on standard output
-        :type bPrint: bool, optional
-
-        :return: a list of Miller Indexes at the specified sampling location
-        :rtype: numpy.ndarry of n x 3 dimensions
-
-        '''
         
-        #  validate the input values
+        This information is available right after beginBloch call.
 
-        if ib_coords is None or not all(isinstance(v, int) for v in ib_coords) or len(ib_coords) != 2:
-            raise BlochError("Invalidincident beam coordinates input, must be tuple of two integers")
+        :param bPrint: whether to print selected beams info on standard output
+        :type bPrint: bool, optional, default `False`
 
-        scmdim = bloch.get_scmdim(ib_coords)
-        if scmdim <= 0:
-            raise BlochError("Error finding corresponding scattering matrix, use printIBDetails to find potential input for ib_coords")
-        
-        ev = farray(np.zeros((3, scmdim), dtype=int))
-        ev, ret = bloch.getbeams(ib_coords, ev)
+        :return: The number of selected beams and the selected beams list in Miller indexes.
+        :rtype: a python tuple.
 
-        if ret < 0 or ret > scmdim:
+        '''    
+        nmidx = bloch.get_nbeams()
+        if nmidx <= 0:
+            raise BlochError("failed to retrieve diffracted beams info")
+
+        ev = farray(np.zeros((3, nmidx), dtype=int))
+        ev, ret = bloch.getbeams(ev)
+
+        if ret != 0:
             raise BlochError("failed to retrieve incidental beams info")
 
         evv = np.transpose(ev) 
         
         if bPrint:
-            print(f'Total Diffracted Beams In Diagonalization: {scmdim}\n')
-
             shkl = "h   K   l"
             print(f"{shkl:^12}")
 
@@ -434,85 +422,77 @@ def add_bloch(target):
                 sl = '{0: < #04d}'. format(int(l))
 
                 print(f"{sh}{sk}{sl}") 
-        return evv   
 
-    def getEigen(self, ib_coords=(0,0)):
-        '''
-        Returns eigen values for given sampling point.
+        return nmidx, evv  
+     
+# ----------------deprecated and folded into getSCMatrix call----------------
+    # def getEigen(self, ib_coords=(0,0)):
+    #     '''
+    #     Returns eigen values for given sampling point.
+    #     It must be called during a dynamic diffraction simulation session
+    #     marked by
+    #     `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_ and 
+    #     `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.   
+    #     :param ib_coords: Sampling point coordinates tuple
+    #     :type ib_coords: tuple, optional, default (0,0)
+    #     :return: a list of complex eigen values at sampling point location
+    #     :rtype: numpy.ndarray
+    #     Example of the eigen vales:
+    #     .. code-block:: console
+    #         Eigen values at: (0, 0):
+    #         [ 0.04684002-0.00218389j -0.2064669 -0.00147516j -0.30446348+0.00055009j
+    #         -0.27657617+0.00023512j -0.2765751 +0.00023515j  0.00539041-0.00382443j
+    #         -0.535879  -0.00023585j -0.5612881 +0.00045343j -0.55369247+0.00026236j
+    #         -0.55368818+0.00026249j -0.19093572+0.00066419j -0.1550311 +0.00045471j
+    #         -0.15503166+0.00045471j -0.58842399-0.00202841j -0.67850191+0.00042728j
+    #         -0.72713566+0.00060655j -0.70972681+0.00052279j -0.72092338+0.0005903j
+    #         -0.72093237+0.00059052j -0.64608335-0.0001983j  -0.64607544-0.00019853j]
+    #     '''
+    #     #  validate the input values
 
-        It must be called during a dynamic diffraction simulation session
-        marked by
-        `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_ and 
-        `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.   
+    #     if ib_coords is None or not all(isinstance(v, int) for v in ib_coords) or len(ib_coords) != 2:
+    #          raise BlochError("Invalid incident beam coordinates input, must be tuple of two integers")
 
-        :param ib_coords: Sampling point coordinates tuple
-        :type ib_coords: tuple, optional, default (0,0)
-
-        :return: a list of complex eigen values at sampling point location
-        :rtype: numpy.ndarray
-
-        Example of the eigen vales:
-
-        .. code-block:: console
-
-            Eigen values at: (0, 0):
-            [ 0.04684002-0.00218389j -0.2064669 -0.00147516j -0.30446348+0.00055009j
-            -0.27657617+0.00023512j -0.2765751 +0.00023515j  0.00539041-0.00382443j
-            -0.535879  -0.00023585j -0.5612881 +0.00045343j -0.55369247+0.00026236j
-            -0.55368818+0.00026249j -0.19093572+0.00066419j -0.1550311 +0.00045471j
-            -0.15503166+0.00045471j -0.58842399-0.00202841j -0.67850191+0.00042728j
-            -0.72713566+0.00060655j -0.70972681+0.00052279j -0.72092338+0.0005903j
-            -0.72093237+0.00059052j -0.64608335-0.0001983j  -0.64607544-0.00019853j]
-
-        '''
-        #  validate the input values
-
-        if ib_coords is None or not all(isinstance(v, int) for v in ib_coords) or len(ib_coords) != 2:
-            raise BlochError("Invalid incident beam coordinates input, must be tuple of two integers")
-
-        scmdim = bloch.get_scmdim(ib_coords)
-        if scmdim <= 0:
-            raise BlochError("Error finding corresponding scattering matrix, use printIBDetails to find potential input for ib_coords")
+    #     scmdim = bloch.get_scmdim(ib_coords)
+    #     if scmdim <= 0:
+    #         raise BlochError("Error finding corresponding scattering matrix, use printIBDetails to find potential input for ib_coords")
         
-        ev = farray(np.zeros(scmdim, dtype=np.complex64))
-        ev, ret = bloch.geteigenvalues(ib_coords, ev)
-        if ret < 0 or ret > scmdim:
-            raise BlochError("failed to retrieve incidental beams info")
+    #     ev = farray(np.zeros(scmdim, dtype=np.complex64))
+    #     ev, ret = bloch.geteigenvalues(ib_coords, ev)
+    #     if ret < 0 or ret > scmdim:
+    #         raise BlochError("failed to retrieve incidental beams info")
         
-        return ev
+    #     return ev
 
     def getSCMatrix(self,
                     ib_coords = (0,0), 
                     sample_thickness = DEF_THICKNESS[0],
-                    rvec = (0.0,0.0,0.0)):
+                    rvec = (0.0,0.0,0.0)
+                    ):
         '''
-        Obtains scattering matrix at a given sampling point.
-
-        To get a list of sampling points used in this dynamic simulation session,
-        call `printIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails>`_
-
-        or:
-
-        capture the output from 
-        `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
+        
+        Obtains scattering matrix at a given sampling point. To get a list of sampling 
+        points used in this dynamic simulation session, call 
+        `printIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails>`_
+        after `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
         
         This call must be made during a dynamic simulation session marked by
         `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_ and   
         `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_
 
-        :param ib_coords: Sampling point coordinates tuple, defaults to (0.0, 0.0)
-        :type ib_coords: tuple, optional
+        :param ib_coords: Sampling point coordinates tuple
+        :type ib_coords: tuple, optional, defaults to (0, 0)
 
-        :param thickness: Sample thickness. defaults to 200
-        :type thickness: int, optional
+        :param thickness: Sample thickness
+        :type thickness: int, optional, defaults to 200
 
-        :param rvec: R vector shifting atom coordinates in crystal, value between 0.0 and 1.0, defaults to (0.0,0.0,0.0)
-        :type rvec: tuple of floats, optional
+        :param rvec: R vector shifting atom coordinates in crystal, each value between 0.0 and 1.0
+        :type rvec: tuple of 3 floats, optional, defaults to (0.0,0.0,0.0)
 
-        :return: scattering matrix at a given sampling point location
-        :rtype: numpy.ndarray of nxn dimensions
+        :return: 2D scattering matrix size and the complex scattering matrix and its associated eigen values.
+        :rtype: a tuple. 
 
-        Default values:
+        Default values for sample_thickness:
         
         ::
 
@@ -521,7 +501,6 @@ def add_bloch(target):
         '''
 
         #  validate the input values
-
         if ib_coords is None or len(ib_coords) != 2 or not all(isinstance(v, int) for v in ib_coords):  
             raise BlochError("Invalid incident beam coordinates input, must be tuple of two integers2")   
 
@@ -532,18 +511,18 @@ def add_bloch(target):
             raise BlochError("Invalid R-vector input, must be tuple of three floats")
 
         # get the dimension of the scattering matrix
-        scmdim = bloch.get_scmdim(ib_coords)
+        scmdim, RET = bloch.compute_scm([ib_coords[0], ib_coords[1]])
         
-        if scmdim <= 0:
+        if RET != 0 or scmdim <= 0:
             raise BlochError("Error finding corresponding scattering matrix")
 
         scm = farray(np.zeros((scmdim, scmdim)), dtype=np.complex64)
-
-        scm, ret = bloch.getscm(ib_coords, sample_thickness, rvec, scm)
-        if ret <= 0:
+        ev = farray(np.zeros(scmdim), dtype=np.complex64)
+        scm, ev, ret = bloch.getscm(sample_thickness, rvec, scm, ev)
+        if ret != 0:
             raise BlochError('Error retieving scattering matrix, input matrix dimension too small, use printIBDetails to find extact dimentsion')
-        
-        return scm
+
+        return scmdim, scm, ev
 
     def endBloch(self):
        """
@@ -552,8 +531,8 @@ def add_bloch(target):
        to mark the end of a dynamic simulation session.
 
        """
-       bloch.cleanup()
        dif.diff_delete()
+       bloch.free_bloch()
         
     def generateBloch(self, aperture = DEF_APERTURE,                    
                             omega = DEF_OMEGA,                          
@@ -632,14 +611,12 @@ def add_bloch(target):
                             dbsize = disk_size,
                             em_controls=em_controls)
 
-        except BlochError:
+        except BlochError as e:
             # re-raise the same error, so that the caller can handle it
-            # print(f'Bloch simulation failed to start at {em_controls}')
-            raise
+            raise e
 
         except Exception as e:
             # Any other exception will be handled by the callers as BlochError from this point on
-            # print(f'Bloch simulation failed to start at {em_controls}')
             raise BlochError(f'Something went wrong in starting bloch simulation') from e
         
         else:
@@ -670,16 +647,12 @@ def add_bloch(target):
     target.beginBloch = beginBloch
     target._getBlochFN = _getBlochFN
 
-    # ---These calls must be between the above and endSCMartix calls
-    
+    # ---These calls must be between beginBloch and endBloch calls
     target.printIBDetails = printIBDetails
-    target.getEigen = getEigen
     target.getBeams = getBeams
     target.getSCMatrix = getSCMatrix
     target.getBlochImages = getBlochImages
-
-
-    # ---These calls must be between the above and endSCMartix calls
+    # ---These calls must be between beginBloch and endBloch calls
 
     target.endBloch = endBloch
 

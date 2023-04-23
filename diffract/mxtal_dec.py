@@ -91,7 +91,6 @@ def add_mxtal(target):
                     sz = '{0: < #014.10f}'. format(float(z))
                     
                     slines.append(str(f'{s:<10}\t{sx} {sy} {sz}'))
-                # print(f'writing data: {slines}')
                 f.writelines('\n'.join(slines))
         except (FileNotFoundError, IOError, PermissionError) as e:
             print(f'Error writing xyz data file {fn}')

@@ -37,8 +37,18 @@ def runCSFTests():
     v = 100
     sm = 1.0
 
-    for i in [1,2,3,4]:
-        for j in [1, 0]:
+    sfl = [1,2,3,4] # structure factor type list
+    # 1 -----X-ray Structure Factors
+    # 2 -----Electron Strcture Factors in kV
+    # 3 -----Electron Structure Factor in 1/Å
+    # 4 -----Electron Absorption Structure Factor in 1/Å^2
+
+    ampl = [1, 0] # structure factor format
+    # 1 -----amplitude and phase
+    # 0 -----real and imaginary
+
+    for i in sfl:
+        for j in ampl:
             
             sfs = si.generateCSF(kv = v, smax = sm, sftype = i, aptype = j)
             

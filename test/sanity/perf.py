@@ -86,18 +86,19 @@ def run_perf(ty = 'dif', bBaseline = False):
             base = float(jBaseline[n])
             vv = float(v)
             diff = abs(vv-base)
+            percent= 100.0 * (diff/base)
             
 
             if diff < 0.001:
-                print(f'Performance of {ty} stays the same for {n}')
+                print(f'{ty} = {n}: stays the same for {n}')
                 continue
 
             if vv > base:
-                print(f'Performance of {ty} is degraded by {diff} for {n}')
+                print(f'{ty} - {n}: by {diff} or {percent}%')
                 continue
 
             if vv < base:
-                print(f'Performance of {ty} is improved by {diff} for {n}')
+                print(f'{ty} + {n}: by {diff} or {percent}%')
                 continue
         
         

@@ -92,7 +92,7 @@ def add_powder(target):
         
         self.load()
           
-        rawP = farray(np.zeros((2,1000), dtype=np.double))
+        rawP = farray(np.zeros((2,1000), dtype=np.float32))
        
         ret = powder.generate_powder(rawP, kv=kv, t2max=t2max, 
                 smax = smax, eta=eta, gamma=gamma, isab = absp, 

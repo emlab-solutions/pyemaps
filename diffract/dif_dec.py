@@ -55,7 +55,7 @@ def add_dif(target):
         
         if ret != 0:
             self.unload() #remove any memory from backend module
-            raise CrystalClassError('Failed to load cystal to backend module')
+            raise CrystalClassError('Failed to load crystal')
 
         self._loaded = True
         self._ltype = cty
@@ -86,7 +86,7 @@ def add_dif(target):
  
         """
 
-        if not em_controls:
+        if em_controls is None:
             em_controls =EMC()
 
         # if not sim_controls:
@@ -213,7 +213,7 @@ def add_dif(target):
         num_klines = dif.getknum()
         
         if (num_klines > 0):
-            klines_arr = farray(np.zeros((num_klines, 5)), dtype=np.double)
+            klines_arr = farray(np.zeros((num_klines, 5)), dtype=np.single)
             
             if dif.get_klines(klines_arr) == 0:
                 for i in range(num_klines):
@@ -227,15 +227,23 @@ def add_dif(target):
         disks=[]
         num_disks = dif.getdnum()
         if (num_disks > 0):
-            disks_arr = farray(np.zeros((num_disks, 6)), dtype=np.double)
+            disks_arr = farray(np.zeros((num_disks, 6)), dtype=np.single)
             if dif.get_disks(disks_arr) == 0:
-                for i in range(num_disks):
-                    x1,y1,r,i1,i2,i3=disks_arr[i][0:]
+                # for i in range(num_disks):
+                #     x1,y1,r,i1,i2,i3=disks_arr[i][0:]
+                #     disk={}
+                #     disk['c']=(x1,y1)
+                #     disk['r']=r
+                #     disk['idx']=(int(i1),int(i2),int(i3))
+                #     disks.append(disk)
+                for d in disks_arr:
+                    x1,y1,r,i1,i2,i3=d
                     disk={}
                     disk['c']=(x1,y1)
                     disk['r']=r
                     disk['idx']=(int(i1),int(i2),int(i3))
                     disks.append(disk)
+
             else:
                 print(f"Error: retrieving disks!")
                 return 500, ({})
@@ -246,7 +254,7 @@ def add_dif(target):
             num_hlines = dif.gethnum()
             
             if (num_hlines > 0):
-                hlines_arr = farray(np.zeros((num_hlines, 5)), dtype=np.double)
+                hlines_arr = farray(np.zeros((num_hlines, 5)), dtype=np.single)
                 if dif.get_hlines(hlines_arr) == 0:
                     for i in range(num_hlines):
                         x1,y1,x2,y2,intensity = hlines_arr[i][0:]
