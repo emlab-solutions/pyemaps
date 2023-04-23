@@ -1,7 +1,9 @@
-# cname = 'Boron_Tetra'
-cname = 'SiAlONa'
+cname = 'BiMnO3'
+# cname = 'SiAlONa'
 MAX_PROCWORKERS = 2
 import time
+# def getxtl(cname):
+
 def bt_bloch():
     import concurrent.futures
     from pyemaps import Crystal as cryst
@@ -33,8 +35,8 @@ def bt_bloch():
                       em_controls = ec, 
                       omega = omega, 
                       disk_size = 0.05,
-                      sampling = 8, 
-                      bSave=True))
+                      sampling = 20, 
+                      bSave=False))
         
         for f in concurrent.futures.as_completed(fs):
             try:

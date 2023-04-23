@@ -145,8 +145,7 @@ def add_bloch(target):
             
             a. List of sampling points, diffraction beams tilts etc 
                with `printIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails>`_;
-            b. Eigen values at each sampling points in 
-               `getEigen <pyemaps.crystals.html#pyemaps.crystals.Crystal.getEigen>`_;
+            b. getEigen function is folded into getSCMatrix call starting from Stable verion 1.0.3
             c. Diagnization Miller indexes at each sampling point: 
                `getBeams <pyemaps.crystals.html#pyemaps.crystals.Crystal.getBeams>`_;
         
@@ -393,10 +392,10 @@ def add_bloch(target):
         
         This information is available right after beginBloch call.
 
-        :param bPrint: True - print beams info on standard output
+        :param bPrint: whether to print selected beams info on standard output
         :type bPrint: bool, optional, default `False`
 
-        :return: the number of selected beams and the selected beams list.
+        :return: The number of selected beams and the selected beams list in Miller indexes.
         :rtype: a python tuple.
 
         '''    
@@ -424,7 +423,8 @@ def add_bloch(target):
 
                 print(f"{sh}{sk}{sl}") 
 
-        return nmidx, evv   
+        return nmidx, evv  
+     
 # ----------------deprecated and folded into getSCMatrix call----------------
     # def getEigen(self, ib_coords=(0,0)):
     #     '''
@@ -470,33 +470,29 @@ def add_bloch(target):
                     rvec = (0.0,0.0,0.0)
                     ):
         '''
-        Obtains scattering matrix at a given sampling point.
-
-        To get a list of sampling points used in this dynamic simulation session,
-        call `printIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails>`_
-
-        or:
-
-        capture the output from 
-        `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
+        
+        Obtains scattering matrix at a given sampling point. To get a list of sampling 
+        points used in this dynamic simulation session, call 
+        `printIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails>`_
+        after `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
         
         This call must be made during a dynamic simulation session marked by
         `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_ and   
         `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_
 
-        :param ib_coords: Sampling point coordinates tuple, defaults to (0.0, 0.0)
-        :type ib_coords: tuple, optional
+        :param ib_coords: Sampling point coordinates tuple
+        :type ib_coords: tuple, optional, defaults to (0, 0)
 
-        :param thickness: Sample thickness. defaults to 200
-        :type thickness: int, optional
+        :param thickness: Sample thickness
+        :type thickness: int, optional, defaults to 200
 
         :param rvec: R vector shifting atom coordinates in crystal, each value between 0.0 and 1.0
         :type rvec: tuple of 3 floats, optional, defaults to (0.0,0.0,0.0)
 
-        :return: 2D scattering matrix size and the complex scttering matrix and its associated eigen vector.
+        :return: 2D scattering matrix size and the complex scattering matrix and its associated eigen values.
         :rtype: a tuple. 
 
-        Default values for sample_thickeckness:
+        Default values for sample_thickness:
         
         ::
 
