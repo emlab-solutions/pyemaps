@@ -59,7 +59,7 @@ compile_args=['-Qm64',
               '-libs:static',
               '-MT',
               '-assume:buffered_io',
-              '-traceback',
+            #   '-traceback',
               '-c']
               
 compile_args_lin= ['-m64',
