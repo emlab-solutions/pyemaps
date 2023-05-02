@@ -1,5 +1,7 @@
-cname = 'BiMnO3'
+# cname = 'BiMnO3'
 # cname = 'SiAlONa'
+cname = 'Silicon'
+
 MAX_PROCWORKERS = 2
 import time
 # def getxtl(cname):
