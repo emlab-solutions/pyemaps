@@ -15,7 +15,7 @@ def bt_bloch():
     
     # zlist = [(1, 0, 0), (1, 0, 1), (0, 0, 1)]
     zlist = [(0, 0, 1)]
-    gmax = 2.0
+    gmax = 3.5
     sgmin = 0.3
     sgmax = 1.0
     omega = 20
@@ -36,8 +36,8 @@ def bt_bloch():
                       sample_thickness = sth, 
                       em_controls = ec, 
                       omega = omega, 
-                      disk_size = 0.05,
-                      sampling = 20, 
+                      disk_size = 0.1,
+                      sampling = 15, 
                       bSave=False))
         
         for f in concurrent.futures.as_completed(fs):

@@ -48,19 +48,35 @@ dpgen_cobj = 'write_dpbin.o'
 #             #   '-Qparallel',
 #             #   '-Qopt-report:2',
 #               '-c']
-
+# --------------- production options--------------
 compile_args=['-Qm64',
               '-WB',
-              '-heap-arrays',
-              '-GS', 
+              '-heap-arrays:1024',
+              '-GS:partial', 
               '-fpp',
               '-warn:nointerfaces',
-              '-O2', #this option does not work with -fast
+              '-O3', #this option does not work with -fast
               '-libs:static',
               '-MT',
               '-assume:buffered_io',
-            #   '-traceback',
               '-c']
+
+# --------debugging options-----------
+# compile_args=['-Qm64',
+#               '-WB',
+#               '-heap-arrays:1024',
+#               '-check:all',
+#               'Qfp-stack-check',
+#               '-Qopenmp',
+#               '-GS:partial', 
+#               '-fpp',
+#               '-warn:nointerfaces',
+#             #   '-O2', #this option does not work with -fast
+#             #   '-libs:static',
+#               '-MT',
+#               '-assume:buffered_io',
+#               '-traceback',
+#               '-c']
               
 compile_args_lin= ['-m64',
                    '-WB', 

@@ -62,47 +62,47 @@ def runSCMTests():
         print(f'Number of sampling points: {ns}')
         print(f'{s}')
 
-        print(f'----Selected Beams in Miller Indexes----: ')
-        _, _ = si.getBeams(bPrint = True)
-
         # get the scattering matrix and associated eigen values now
         try:
-            nd, si_scm, si_ev = si.getSCMatrix(ib_coords = ib_coords)
+            ndim, si_scm, si_ev, si_beams = si.getSCMatrix(ib_coords = ib_coords)
         except BlochError as e:
             print(f'Failed to generate scattering matrix {e.message}')
         except Exception as e:
             print(f'Failed to generate scattering matrix {e}')
         else:
-            print(f'----Scattering matrix at sampling point {ib_coords}----:')
-            print(f'Size of the scattering matrix: {nd}x{nd}')
+            print(f'\n----Scattering matrix at sampling point {ib_coords}----:')
+            print(f'Size of the scattering matrix: {ndim}x{ndim}')
             print(f' \n{si_scm}')
 
-            print(f'----Eigen values at: {ib_coords}----')
+            print(f'\n----Eigen values at: {ib_coords}----')
             print(si_ev)
 
-            print(f'----More details associated with scattering matrix calculation') 
+            print(f'\n----Diffracted beams at: {ib_coords}----')
+            print(si_beams)
+
+            print(f'\n----More details associated with scattering matrix calculation') 
             si.printIBDetails()
             
-            # select a random sampling point from s
+            # select a random sampling point from s and calculate scattering matrix
             randnum = random.randrange(0, ns-1)
             
             ib_coords = s[randnum]
             try:
-                nd, si_scm, si_ev = si.getSCMatrix(ib_coords = ib_coords)
+                nd, si_scm, si_ev, si_beams = si.getSCMatrix(ib_coords = ib_coords)
             except Exception:
                 print(f'Error obtaining scattering matrix at random sampling points {ib_coords}')
             else:
-                print(f'--Scattering matrix at a randomly selected sampling point {ib_coords}----:')
+                print(f'\n----Scattering matrix at a randomly selected sampling point {ib_coords}----:')
                 print(f'Size of the scattering matrix: {nd}x{nd}')
                 print(f'{si_scm}')
-                print(f'----Eigen values at: {ib_coords}----')
+                print(f'\n----Eigen values at: {ib_coords}----')
                 print(si_ev)
+                print(f'\n----Diffracted beams at: {ib_coords}----')
+                print(si_beams)
 
-            finally:
-                si.endBloch()
-    finally:
-        # cleanup 
-        si.endBloch()
+    
+    # cleanup 
+    si.endBloch()
 
 if __name__ == "__main__":
     runSCMTests()
