@@ -1,6 +1,6 @@
-# cname = 'BiMnO3'
+cname = 'BiMnO3'
 # cname = 'SiAlONa'
-cname = 'Silicon'
+# cname = 'Silicon'
 
 MAX_PROCWORKERS = 2
 import time
@@ -15,7 +15,7 @@ def bt_bloch():
     
     # zlist = [(1, 0, 0), (1, 0, 1), (0, 0, 1)]
     zlist = [(0, 0, 1)]
-    gmax = 3.5
+    gmax = 2.0
     sgmin = 0.3
     sgmax = 1.0
     omega = 20

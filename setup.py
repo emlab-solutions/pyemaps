@@ -29,33 +29,35 @@ IFORTROOT = os.getenv('IFORTROOT')
 
 dpgen_cobj = 'write_dpbin.o'
 
-# removing 4R8 option - returning to 4 bytes real
-# compile_args=['-Qm64',
-#               '-WB',
-#               '-heap-arrays',
-#             #   '-Qopenmp',
-#             #   '-Qopenmp-simd',
-#               '-GS', 
-#               '-4R8',
-#               '-fpp',
-#               '-warn:nointerfaces',
-#               '-O2', #this option does not work with -fast
-#               '-libs:static',
-#               '-MT',
-#               '-assume:buffered_io',
-#               '-traceback',
-#             #   '-align:array32byte',
-#             #   '-Qparallel',
-#             #   '-Qopt-report:2',
-#               '-c']
+compile_args_debug=['-Qm64',
+              '-WB',
+              '-heap-arrays:1024',
+              '-Qopenmp',
+              '-Qmkl',
+            #   '-Qopenmp-simd',
+              '-GS:partial', 
+              '-fpp',
+              '-warn:nointerfaces',
+            #   '-O2', #this option does not work with -fast
+              '-libs:static',
+              '-MT',
+              '-assume:buffered_io',
+              '-traceback',
+              '-check:all',
+            #   '-align:array32byte',
+            #   '-Qparallel',
+            #   '-Qopt-report:2',
+              '-c']
 # --------------- production options--------------
 compile_args=['-Qm64',
               '-WB',
               '-heap-arrays:1024',
+              '-Qopenmp',
+              '-Qmkl',
               '-GS:partial', 
               '-fpp',
               '-warn:nointerfaces',
-              '-O3', #this option does not work with -fast
+              '-O2', #this option does not work with -fast
               '-libs:static',
               '-MT',
               '-assume:buffered_io',
@@ -423,7 +425,7 @@ def get_libraries():
 def get_compiler_args():
     import sys
     if sys.platform == 'win32': 
-        return compile_args
+        return compile_args if pyemaps_debug == 0 else compile_args_debug
     elif sys.platform == 'linux':
         return compile_args_lin
     else:
