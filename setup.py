@@ -38,7 +38,7 @@ compile_args_debug=['-Qm64',
             #   '-Qopenmp-simd',
             #   '-GS:partial', 
               '-fpp',
-              '-warn:nointerfaces',
+              '-warn:all',
             #   '-O2', #this option does not work with -fast
             #   '-libs:static',
             #   '-MT',
@@ -57,7 +57,7 @@ compile_args=['-Qm64',
               '-Qmkl',
               '-GS:partial', 
               '-fpp',
-              '-warn:nointerfaces',
+              '-warn:all',
               '-O2', #this option does not work with -fast
               '-libs:static',
               '-MT',
@@ -389,6 +389,7 @@ def get_library_dirs():
     import platform
 
     lib_folder = ''
+    mkl_folder = 'intel64'
 
     osname = platform.platform().lower()
     print(f'OS name found: {osname}')
@@ -401,7 +402,7 @@ def get_library_dirs():
 
     libdir = []
     libdir.append(os.path.join(IFORTROOT, 'compiler', 'lib', lib_folder)) #intel openmp libdir
-    libdir.append(os.path.join(MKLROOT, 'lib', lib_folder))
+    libdir.append(os.path.join(MKLROOT, 'lib', mkl_folder))
     
     return libdir
 
