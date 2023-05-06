@@ -36,7 +36,7 @@ and calculations.
 from enum import Enum
 import os
 import json
-from tkinter import N
+# from tkinter import N
     
 import numpy as np
 from numpy import asfortranarray as farray

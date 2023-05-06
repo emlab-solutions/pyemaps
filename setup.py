@@ -30,20 +30,21 @@ IFORTROOT = os.getenv('IFORTROOT')
 dpgen_cobj = 'write_dpbin.o'
 
 compile_args_debug=['-Qm64',
+                    '-Od',
               '-WB',
               '-heap-arrays:1024',
               '-Qopenmp',
               '-Qmkl',
             #   '-Qopenmp-simd',
-              '-GS:partial', 
+            #   '-GS:partial', 
               '-fpp',
               '-warn:nointerfaces',
             #   '-O2', #this option does not work with -fast
-              '-libs:static',
-              '-MT',
-              '-assume:buffered_io',
-              '-traceback',
-              '-check:all',
+            #   '-libs:static',
+            #   '-MT',
+            #   '-assume:buffered_io',
+            #   '-traceback',
+            #   '-check:all',
             #   '-align:array32byte',
             #   '-Qparallel',
             #   '-Qopt-report:2',
@@ -199,11 +200,14 @@ def get_ediom_sources():
     return src_list   
    
 def get_ediom_includes():
-    
+    #  for ccompiler cl arguement too long issue
+    # see https://github.com/pypa/setuptools/pull/3775/commits/dd03b731045d5bb0b47648554f9a1a7429ef306a
+    # temporary fix
     import numpy as np
     from sysconfig import get_paths
     
     includeDirs=[np.get_include()]
+    # python's include
     includeDirs.append(get_paths()['include'])
     includeDirs.append(get_ediom_srcdir())
 
@@ -448,8 +452,6 @@ def get_install_requires():
         raise Exception('The OS is not supported')
     
 def get_emaps_macros():
-    # print(f'setup.py: build_type: {build_type}')
-    # exit()
     
     if build_type != 'uiuc' and build_type != 'full' and build_type != 'free':
         raise ValueError("Error: build type not specified")
@@ -485,8 +487,13 @@ def get_emaps_macros():
     return [def_list, undef_list]
     
 # ------------------- must set this before build -------------------
-pyemaps_build_defs, pyemaps_build_undefs= get_emaps_macros()
 
+# from distutils import ccompiler
+# cc = ccompiler.new_compiler()
+# cc.set_include_dirs([])
+
+
+pyemaps_build_defs, pyemaps_build_undefs= get_emaps_macros()
 pyemaps_dif = Extension("pyemaps.diffract.emaps",
         sources                = get_diffract_sources(),
         extra_f90_compile_args     = get_compiler_args(),
@@ -533,7 +540,6 @@ pyemaps_ediom =  Extension(
             libraries               =[],
             define_macros           = pyemaps_build_defs,
             undef_macros            = pyemaps_build_undefs,
-            extra_compile_args      =[],
             extra_link_args         =[],
             swig_opts               =['-python']
 )
