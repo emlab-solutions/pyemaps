@@ -475,23 +475,24 @@ def add_bloch(target):
         Obtains scattering matrix at a given sampling point. To get a list of sampling 
         points used in this dynamic simulation session, call 
         `printIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails>`_
-        after `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
+        after `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_.
+        In addition to the scattering matrix, it also generates associated eigen values
+        and diffracted beams.
         
         This call must be made during a dynamic simulation session marked by
         `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_ and   
-        `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_
+        `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.
 
-        :param ib_coords: Sampling point coordinates tuple
+        :param ib_coords: Sampling point coordinates tuple.
         :type ib_coords: tuple, optional, defaults to (0, 0)
 
-        :param thickness: Sample thickness
+        :param thickness: Sample thickness.
         :type thickness: int, optional, defaults to 200
 
-        :param rvec: R vector shifting atom coordinates in crystal, each value between 0.0 and 1.0
+        :param rvec: R vector shifting atom coordinates in crystal, each value between 0.0 and 1.0.
         :type rvec: tuple of 3 floats, optional, defaults to (0.0,0.0,0.0)
 
-        :return: 2D scattering matrix size, the complex scattering matrix and its associated eigen values
-                 and diffracted beams
+        :return: scattering matrix size; scattering matrix; eigen values; diffracted beams.
         :rtype: a tuple. 
 
         Default values for sample_thickness:
