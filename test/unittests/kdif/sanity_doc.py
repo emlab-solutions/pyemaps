@@ -16,5 +16,5 @@ def run_kdiffraction():
 
     showDif(dpl, bClose=False)              #----visual representation of diffraction pattern
     
-if __name__ == '__main__q':
+if __name__ == '__main__':
     run_kdiffraction()

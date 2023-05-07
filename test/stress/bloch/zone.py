@@ -1,6 +1,6 @@
 # cname = 'BiMnO3'
-# cname = 'SiAlONa'
-cname = 'Silicon'
+cname = 'SiAlONa'
+# cname = 'Silicon'
 
 MAX_PROCWORKERS = 2
 import time
@@ -19,6 +19,14 @@ def stdout_redirector(stream):
         sys.stdout = old_stdout
 
 # def getxtl(cname):
+def find_stress_crystal(cn):
+    import os
+    from pathlib import Path
+    current_path = Path(os.path.abspath(__file__))
+
+    tp_path = current_path.parent.parent.parent.parent.absolute()
+    return os.path.join(tp_path, 'cdata', cn+'.xtl')
+    
 
 def bt_bloch():
     from pyemaps import Crystal as cryst
@@ -32,8 +40,10 @@ def bt_bloch():
     now = datetime.now()
     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
 
-    cr = cryst.from_builtin(cname)
-    
+    cn = find_stress_crystal(cname)
+# !    cr = cryst.from_builtin(cname)
+    print(f'stress test crystal file name found: {cn}')
+    cr = cryst.from_xtl(cn)    
 #     zlist = [(1, 0, 0), (1, 0, 1), (0, 0, 1), (1, 1, 0)]
     zlist = [(1, 1, 0)]
     gmax = 2.0
@@ -72,8 +82,8 @@ def bt_bloch():
                      bimg = cr.generateBloch(sample_thickness = sth, 
                             em_controls = ec, 
                             omega = omega, 
-                            disk_size = 0.1,
-                            sampling = 15, 
+                            disk_size = 0.05,
+                            sampling = 10, 
                             bSave=False)
               
               except (BlochError, EMCError) as e:

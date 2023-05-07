@@ -482,6 +482,7 @@ def get_emaps_macros():
     else:
         # print(f'Build is not a debug build: {pyemaps_debug}')
         undef_list.append('__BDEBUG__')
+        undef_list.append('__INIT0__')
     
     # print(f'defundef list: {def_list}, {undef_list}')
     # exit()
