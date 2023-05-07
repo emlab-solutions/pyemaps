@@ -1,6 +1,21 @@
 Release Notes
 =============
 
+Version 1.0.4 Stable
+------------------ 
+
+05-07-2023 
+~~~~~~~~~~
+
+Improvements
+~~~~~~~~~~~~
+
+- Incremental memory performance improvement in Bloch simulation.
+- *getBeams* function folded into  
+  `getSCMatrix <pyemaps.crystals.html#pyemaps.crystals.Crystal.getSCMatrix>`_ 
+  as one of its return elements. See sample code *si_scm.py* for demonstration of the usage changes.
+- Bug fixes.
+
 Version 1.0.3 Stable
 ------------------ 
 
@@ -37,8 +52,7 @@ New
 In preview:
 
 - Diffraction pattern database builder.
-- Diffraction pattern indexing.
-- Check out the :doc:`usage` section for their basic usage.
+- :ref:`Electron diffraction pattern indexing <usage:experimental diffraction pattern indexing>`
 
 Version 1.0.1 Stable
 ------------------ 
