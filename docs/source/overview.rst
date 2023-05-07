@@ -37,10 +37,10 @@ Current features include:
    * Electron scattering Matrix
    * Electron dispersion
 
-**New feature in preview** (starting from v1.0.2)
+**New features in PREVIEW** (starting from v1.0.2)
 
    * Electron diffraction patterns database builder and explorer
-   * Electron diffraction pattern indexing
+   * :ref:`Electron diffraction pattern indexing <usage:experimental diffraction pattern indexing>`
 
 In development
 --------------
@@ -53,7 +53,7 @@ Implementation
 --------------
 
 *pyemaps* is implemented as the object-oriented python modules supported 
-by compiled Fortran-95 libraries that handle the backend computations. 
+by compiled Fortran 90 libraries that handle the backend computations. 
 
 Check out the :doc:`usage` section for further information, including how to
 :ref:`install <installation>` pyemaps package.

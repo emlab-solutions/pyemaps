@@ -1,5 +1,7 @@
 cname = 'BiMnO3'
 # cname = 'SiAlONa'
+# cname = 'Silicon'
+
 MAX_PROCWORKERS = 2
 import time
 # def getxtl(cname):
@@ -11,7 +13,7 @@ def bt_bloch():
 
     cr = cryst.from_builtin(cname)
     
-    # zlist = [(1, 0, 0), (1, 0, 1), (0, 0, 1)]
+    # zlist = [(1, 0, 0), (1, 0, 1), (0, 0, 1), (1, 1, 0)]
     zlist = [(0, 0, 1)]
     gmax = 2.0
     sgmin = 0.3
@@ -34,8 +36,8 @@ def bt_bloch():
                       sample_thickness = sth, 
                       em_controls = ec, 
                       omega = omega, 
-                      disk_size = 0.05,
-                      sampling = 20, 
+                      disk_size = 0.1,
+                      sampling =8, 
                       bSave=False))
         
         for f in concurrent.futures.as_completed(fs):

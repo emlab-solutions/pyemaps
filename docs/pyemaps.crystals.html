@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>pyemaps.crystals module &#8212; pyemaps 1.0.3 Stable documentation</title>
+    <title>pyemaps.crystals module &#8212; pyemaps 1.0.4 Stable documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -29,7 +29,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.3 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.4 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyemaps.crystals module</a></li> 
       </ul>
     </div>  
@@ -891,27 +891,6 @@ stabel production soon. Its replacement is:
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.crystals.Crystal.getBeams">
-<span class="sig-name descname"><span class="pre">getBeams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bPrint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.getBeams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prints selected beams for current dynamic diffraction simulation 
-session marked by 
-<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a>
-and <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch</a>.</p>
-<p>This information is available right after beginBloch call.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>bPrint</strong> (bool, optional, default <cite>False</cite>) – whether to print selected beams info on standard output</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The number of selected beams and the selected beams list in Miller indexes.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a python tuple.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.crystals.Crystal.getBlochImages">
 <span class="sig-name descname"><span class="pre">getBlochImages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_thickness</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_THICKNESS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pix_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_PIXSIZE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">det_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_DETSIZE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bSave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.getBlochImages" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieves a set of dynamic diffraction image from the simulation 
@@ -948,20 +927,22 @@ sessiom marked by:</p>
 <dd><p>Obtains scattering matrix at a given sampling point. To get a list of sampling 
 points used in this dynamic simulation session, call 
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails">printIBDetails</a>
-after <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a></p>
+after <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a>.
+In addition to the scattering matrix, it also generates associated eigen values
+and diffracted beams.</p>
 <p>This call must be made during a dynamic simulation session marked by
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a> and   
-<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch</a></p>
+<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ib_coords</strong> (<em>tuple</em><em>, </em><em>optional</em><em>, </em><em>defaults to</em><em> (</em><em>0</em><em>, </em><em>0</em><em>)</em>) – Sampling point coordinates tuple</p></li>
-<li><p><strong>thickness</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>defaults to 200</em>) – Sample thickness</p></li>
-<li><p><strong>rvec</strong> (<em>tuple</em><em> of </em><em>3 floats</em><em>, </em><em>optional</em><em>, </em><em>defaults to</em><em> (</em><em>0.0</em><em>,</em><em>0.0</em><em>,</em><em>0.0</em><em>)</em>) – R vector shifting atom coordinates in crystal, each value between 0.0 and 1.0</p></li>
+<li><p><strong>ib_coords</strong> (<em>tuple</em><em>, </em><em>optional</em><em>, </em><em>defaults to</em><em> (</em><em>0</em><em>, </em><em>0</em><em>)</em>) – Sampling point coordinates tuple.</p></li>
+<li><p><strong>thickness</strong> (<em>int</em><em>, </em><em>optional</em><em>, </em><em>defaults to 200</em>) – Sample thickness.</p></li>
+<li><p><strong>rvec</strong> (<em>tuple</em><em> of </em><em>3 floats</em><em>, </em><em>optional</em><em>, </em><em>defaults to</em><em> (</em><em>0.0</em><em>,</em><em>0.0</em><em>,</em><em>0.0</em><em>)</em>) – R vector shifting atom coordinates in crystal, each value between 0.0 and 1.0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>2D scattering matrix size and the complex scattering matrix and its associated eigen values.</p>
+<dd class="field-even"><p>scattering matrix size; scattering matrix; eigen values; diffracted beams.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>a tuple.</p>
@@ -969,6 +950,17 @@ after <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals
 </dl>
 <p>Default values for sample_thickness:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DEF_THICKNESS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">200</span>
+</pre></div>
+</div>
+<p>Example of the eigen vales:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Eigen values at: (0, 0):</span>
+<span class="go">[ 0.04684002-0.00218389j -0.2064669 -0.00147516j -0.30446348+0.00055009j</span>
+<span class="go">-0.27657617+0.00023512j -0.2765751 +0.00023515j  0.00539041-0.00382443j</span>
+<span class="go">-0.535879  -0.00023585j -0.5612881 +0.00045343j -0.55369247+0.00026236j</span>
+<span class="go">-0.55368818+0.00026249j -0.19093572+0.00066419j -0.1550311 +0.00045471j</span>
+<span class="go">-0.15503166+0.00045471j -0.58842399-0.00202841j -0.67850191+0.00042728j</span>
+<span class="go">-0.72713566+0.00060655j -0.70972681+0.00052279j -0.72092338+0.0005903j</span>
+<span class="go">-0.72093237+0.00059052j -0.64608335-0.0001983j  -0.64607544-0.00019853j]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1002,7 +994,7 @@ for peaks search and indexing.</p>
 <p>where <em>dtype</em> can be any type from a list of numpy types that can be converted into numpy.float32.
 The list covers most of the numpy data types, except the complex types:</p>
 <ol class="arabic simple">
-<li><p><a href="#id24"><span class="problematic" id="id25">numpy.bool_</span></a></p></li>
+<li><p><a href="#id22"><span class="problematic" id="id23">numpy.bool_</span></a></p></li>
 <li><p>numpy.byte</p></li>
 <li><p>numpy.short</p></li>
 <li><p>numpy.ushort</p></li>
@@ -1438,7 +1430,7 @@ default values are given.</p>
 </dl>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><a href="#id18"><span class="problematic" id="id19">*</span></a>pyemaps” assumes that attributes in sim_control class are
+<p><a href="#id16"><span class="problematic" id="id17">*</span></a>pyemaps” assumes that attributes in sim_control class are
 rarely changed.</p>
 </div>
 </dd></dl>
@@ -1832,12 +1824,12 @@ use this routine to determine the name of the crystal to load using
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.3 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.4 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyemaps.crystals module</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2022, EMLab Solutions, Inc..
+        &#169; Copyright 2022-2023, EMLab Solutions, Inc..
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>

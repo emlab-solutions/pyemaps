@@ -383,47 +383,47 @@ def add_bloch(target):
 
             print(f"{sn1}{sn2}{st1}{st2}{st3}")   
 
-    def getBeams(self, bPrint=False):
-        '''
-        Prints selected beams for current dynamic diffraction simulation 
-        session marked by 
-        `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
-        and `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.
+    # def getBeams(self, bPrint=False):
+    #     '''
+    #     Prints selected beams for current dynamic diffraction simulation 
+    #     session marked by 
+    #     `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
+    #     and `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.
         
-        This information is available right after beginBloch call.
+    #     This information is available right after beginBloch call.
 
-        :param bPrint: whether to print selected beams info on standard output
-        :type bPrint: bool, optional, default `False`
+    #     :param bPrint: whether to print selected beams info on standard output
+    #     :type bPrint: bool, optional, default `False`
 
-        :return: The number of selected beams and the selected beams list in Miller indexes.
-        :rtype: a python tuple.
+    #     :return: The number of selected beams and the selected beams list in Miller indexes.
+    #     :rtype: a python tuple.
 
-        '''    
-        nmidx = bloch.get_nbeams()
-        if nmidx <= 0:
-            raise BlochError("failed to retrieve diffracted beams info")
+    #     '''    
+    #     nmidx = bloch.get_nbeams()
+    #     if nmidx <= 0:
+    #         raise BlochError("failed to retrieve diffracted beams info")
 
-        ev = farray(np.zeros((3, nmidx), dtype=int))
-        ev, ret = bloch.getbeams(ev)
+    #     ev = farray(np.zeros((3, nmidx), dtype=int))
+    #     ev, ret = bloch.getbeams(ev)
 
-        if ret != 0:
-            raise BlochError("failed to retrieve incidental beams info")
+    #     if ret != 0:
+    #         raise BlochError("failed to retrieve incidental beams info")
 
-        evv = np.transpose(ev) 
+    #     evv = np.transpose(ev) 
         
-        if bPrint:
-            shkl = "h   K   l"
-            print(f"{shkl:^12}")
+    #     if bPrint:
+    #         shkl = "h   K   l"
+    #         print(f"{shkl:^12}")
 
-            for e in evv:
-                h,k,l = e
-                sh = '{0: < #04d}'. format(int(h))
-                sk = '{0: < #04d}'. format(int(k))
-                sl = '{0: < #04d}'. format(int(l))
+    #         for e in evv:
+    #             h,k,l = e
+    #             sh = '{0: < #04d}'. format(int(h))
+    #             sk = '{0: < #04d}'. format(int(k))
+    #             sl = '{0: < #04d}'. format(int(l))
 
-                print(f"{sh}{sk}{sl}") 
+    #             print(f"{sh}{sk}{sl}") 
 
-        return nmidx, evv  
+    #     return nmidx, evv  
      
 # ----------------deprecated and folded into getSCMatrix call----------------
     # def getEigen(self, ib_coords=(0,0)):
@@ -437,6 +437,7 @@ def add_bloch(target):
     #     :type ib_coords: tuple, optional, default (0,0)
     #     :return: a list of complex eigen values at sampling point location
     #     :rtype: numpy.ndarray
+
     #     Example of the eigen vales:
     #     .. code-block:: console
     #         Eigen values at: (0, 0):
@@ -474,22 +475,24 @@ def add_bloch(target):
         Obtains scattering matrix at a given sampling point. To get a list of sampling 
         points used in this dynamic simulation session, call 
         `printIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails>`_
-        after `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
+        after `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_.
+        In addition to the scattering matrix, it also generates associated eigen values
+        and diffracted beams.
         
         This call must be made during a dynamic simulation session marked by
         `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_ and   
-        `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_
+        `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.
 
-        :param ib_coords: Sampling point coordinates tuple
+        :param ib_coords: Sampling point coordinates tuple.
         :type ib_coords: tuple, optional, defaults to (0, 0)
 
-        :param thickness: Sample thickness
+        :param thickness: Sample thickness.
         :type thickness: int, optional, defaults to 200
 
-        :param rvec: R vector shifting atom coordinates in crystal, each value between 0.0 and 1.0
+        :param rvec: R vector shifting atom coordinates in crystal, each value between 0.0 and 1.0.
         :type rvec: tuple of 3 floats, optional, defaults to (0.0,0.0,0.0)
 
-        :return: 2D scattering matrix size and the complex scattering matrix and its associated eigen values.
+        :return: scattering matrix size; scattering matrix; eigen values; diffracted beams.
         :rtype: a tuple. 
 
         Default values for sample_thickness:
@@ -497,6 +500,19 @@ def add_bloch(target):
         ::
 
             DEF_THICKNESS[0] = 200
+
+        Example of the eigen vales:
+
+        .. code-block:: console
+
+            Eigen values at: (0, 0):
+            [ 0.04684002-0.00218389j -0.2064669 -0.00147516j -0.30446348+0.00055009j
+            -0.27657617+0.00023512j -0.2765751 +0.00023515j  0.00539041-0.00382443j
+            -0.535879  -0.00023585j -0.5612881 +0.00045343j -0.55369247+0.00026236j
+            -0.55368818+0.00026249j -0.19093572+0.00066419j -0.1550311 +0.00045471j
+            -0.15503166+0.00045471j -0.58842399-0.00202841j -0.67850191+0.00042728j
+            -0.72713566+0.00060655j -0.70972681+0.00052279j -0.72092338+0.0005903j
+            -0.72093237+0.00059052j -0.64608335-0.0001983j  -0.64607544-0.00019853j]
 
         '''
 
@@ -518,11 +534,12 @@ def add_bloch(target):
 
         scm = farray(np.zeros((scmdim, scmdim)), dtype=np.complex64)
         ev = farray(np.zeros(scmdim), dtype=np.complex64)
-        scm, ev, ret = bloch.getscm(sample_thickness, rvec, scm, ev)
+        bms = farray(np.zeros((3, scmdim), dtype=int))
+        scm, ev, bms, ret = bloch.getscm(sample_thickness, rvec, scm, ev, bms)
         if ret != 0:
             raise BlochError('Error retieving scattering matrix, input matrix dimension too small, use printIBDetails to find extact dimentsion')
 
-        return scmdim, scm, ev
+        return scmdim, scm, ev, np.transpose(bms)
 
     def endBloch(self):
        """
@@ -649,7 +666,7 @@ def add_bloch(target):
 
     # ---These calls must be between beginBloch and endBloch calls
     target.printIBDetails = printIBDetails
-    target.getBeams = getBeams
+    # target.getBeams = getBeams     <-------deprecate
     target.getSCMatrix = getSCMatrix
     target.getBlochImages = getBlochImages
     # ---These calls must be between beginBloch and endBloch calls

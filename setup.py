@@ -29,38 +29,57 @@ IFORTROOT = os.getenv('IFORTROOT')
 
 dpgen_cobj = 'write_dpbin.o'
 
-# removing 4R8 option - returning to 4 bytes real
-# compile_args=['-Qm64',
-#               '-WB',
-#               '-heap-arrays',
-#             #   '-Qopenmp',
-#             #   '-Qopenmp-simd',
-#               '-GS', 
-#               '-4R8',
-#               '-fpp',
-#               '-warn:nointerfaces',
-#               '-O2', #this option does not work with -fast
-#               '-libs:static',
-#               '-MT',
-#               '-assume:buffered_io',
-#               '-traceback',
-#             #   '-align:array32byte',
-#             #   '-Qparallel',
-#             #   '-Qopt-report:2',
-#               '-c']
-
+compile_args_debug=['-Qm64',
+                    '-Od',
+              '-WB',
+              '-heap-arrays:1024',
+              '-Qopenmp',
+              '-Qmkl',
+            #   '-Qopenmp-simd',
+            #   '-GS:partial', 
+              '-fpp',
+              '-warn:all',
+            #   '-O2', #this option does not work with -fast
+            #   '-libs:static',
+            #   '-MT',
+            #   '-assume:buffered_io',
+            #   '-traceback',
+            #   '-check:all',
+            #   '-align:array32byte',
+            #   '-Qparallel',
+            #   '-Qopt-report:2',
+              '-c']
+# --------------- production options--------------
 compile_args=['-Qm64',
               '-WB',
-              '-heap-arrays',
-              '-GS', 
+              '-heap-arrays:1024',
+              '-Qopenmp',
+              '-Qmkl',
+              '-GS:partial', 
               '-fpp',
-              '-warn:nointerfaces',
+              '-warn:all',
               '-O2', #this option does not work with -fast
               '-libs:static',
               '-MT',
               '-assume:buffered_io',
-            #   '-traceback',
               '-c']
+
+# --------debugging options-----------
+# compile_args=['-Qm64',
+#               '-WB',
+#               '-heap-arrays:1024',
+#               '-check:all',
+#               'Qfp-stack-check',
+#               '-Qopenmp',
+#               '-GS:partial', 
+#               '-fpp',
+#               '-warn:nointerfaces',
+#             #   '-O2', #this option does not work with -fast
+#             #   '-libs:static',
+#               '-MT',
+#               '-assume:buffered_io',
+#               '-traceback',
+#               '-c']
               
 compile_args_lin= ['-m64',
                    '-WB', 
@@ -114,6 +133,7 @@ dif_source = [
             ]
 
 bloch_files = ['zg.f90',
+               'cbloch.f90',
                'bloch_mem.f90',
                'bloch.f90'
               ]
@@ -122,7 +142,8 @@ stereo_files = ['stereo.f90']
 mxtal_files = ['mxtal_mem.f90',
                'mxtal.f90']
 
-dpgen_files =['dp_types.f90',
+dpgen_files =['cdpgen.f90',
+              'dp_types.f90',
 			  'dp_gen.f90'
              ]
 
@@ -179,11 +200,14 @@ def get_ediom_sources():
     return src_list   
    
 def get_ediom_includes():
-    
+    #  for ccompiler cl arguement too long issue
+    # see https://github.com/pypa/setuptools/pull/3775/commits/dd03b731045d5bb0b47648554f9a1a7429ef306a
+    # temporary fix
     import numpy as np
     from sysconfig import get_paths
     
     includeDirs=[np.get_include()]
+    # python's include
     includeDirs.append(get_paths()['include'])
     includeDirs.append(get_ediom_srcdir())
 
@@ -365,6 +389,7 @@ def get_library_dirs():
     import platform
 
     lib_folder = ''
+    mkl_folder = 'intel64'
 
     osname = platform.platform().lower()
     print(f'OS name found: {osname}')
@@ -377,7 +402,7 @@ def get_library_dirs():
 
     libdir = []
     libdir.append(os.path.join(IFORTROOT, 'compiler', 'lib', lib_folder)) #intel openmp libdir
-    libdir.append(os.path.join(MKLROOT, 'lib', lib_folder))
+    libdir.append(os.path.join(MKLROOT, 'lib', mkl_folder))
     
     return libdir
 
@@ -405,7 +430,7 @@ def get_libraries():
 def get_compiler_args():
     import sys
     if sys.platform == 'win32': 
-        return compile_args
+        return compile_args if pyemaps_debug == 0 else compile_args_debug
     elif sys.platform == 'linux':
         return compile_args_lin
     else:
@@ -428,8 +453,6 @@ def get_install_requires():
         raise Exception('The OS is not supported')
     
 def get_emaps_macros():
-    # print(f'setup.py: build_type: {build_type}')
-    # exit()
     
     if build_type != 'uiuc' and build_type != 'full' and build_type != 'free':
         raise ValueError("Error: build type not specified")
@@ -459,14 +482,20 @@ def get_emaps_macros():
     else:
         # print(f'Build is not a debug build: {pyemaps_debug}')
         undef_list.append('__BDEBUG__')
+        undef_list.append('__INIT0__')
     
     # print(f'defundef list: {def_list}, {undef_list}')
     # exit()
     return [def_list, undef_list]
     
 # ------------------- must set this before build -------------------
-pyemaps_build_defs, pyemaps_build_undefs= get_emaps_macros()
 
+# from distutils import ccompiler
+# cc = ccompiler.new_compiler()
+# cc.set_include_dirs([])
+
+
+pyemaps_build_defs, pyemaps_build_undefs= get_emaps_macros()
 pyemaps_dif = Extension("pyemaps.diffract.emaps",
         sources                = get_diffract_sources(),
         extra_f90_compile_args     = get_compiler_args(),
@@ -513,7 +542,6 @@ pyemaps_ediom =  Extension(
             libraries               =[],
             define_macros           = pyemaps_build_defs,
             undef_macros            = pyemaps_build_undefs,
-            extra_compile_args      =[],
             extra_link_args         =[],
             swig_opts               =['-python']
 )
