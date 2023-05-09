@@ -2,10 +2,11 @@ from pyemaps import EMC, DEF_CBED_DSIZE
 
 MAX_PROCWORKERS = 4
 
-def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt'):
+def generate_lacbed_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt'):
     
     from pyemaps import Crystal as cryst
     from pyemaps import SIMC
+    TY_LACBED = 1 
 
     cr = cryst.from_builtin(name)
     
@@ -20,6 +21,7 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
                                 cl=1000,
                                 simc=simc),
                                 sample_thickness = sth,
+                                nType = TY_LACBED,
                                 bSave = True
                                 )
     except Exception as e:
@@ -33,6 +35,6 @@ if __name__ == '__main__':
     
     from pyemaps import showBloch
 
-    imgs = generate_bloch_images()
+    imgs = generate_lacbed_images()
     if imgs is not None:
         showBloch(imgs, cShow=True, layout='table', bSave = True, bClose=True)
