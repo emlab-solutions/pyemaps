@@ -36,11 +36,17 @@ def run_feat_list(cnflist, ty=1, bShow=True, bSave=False, feat_type='dif'):
     failure_count = 0
     
     for cfn in cnflist: 
+        # if 'Aluminium.xtl' not in cfn:
+        #     continue
         tic = time.perf_counter()
         try:    
             cf = cr.from_xtl(cfn) if ty==1 else cr.from_cif(cfn)                  
             if feat_type == 'bloch':
-                bimgs = cf.generateBloch(disk_size = 0.1)
+                bimgs = cf.generateBloch(
+                                        #  em_controls = emc,
+                                        #  disk_size = 0.1, 
+                                        #  sampling = 8, 
+                                         bSave=True)
 
             if feat_type == 'dif':
                 emc, cf_dp = cf.generateDP()

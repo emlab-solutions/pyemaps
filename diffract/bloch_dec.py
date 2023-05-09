@@ -93,7 +93,6 @@ def add_bloch(target):
         if l > MAX_BIMGFN:
             raise BlochError('Bloch image file name too long, it cant excced 256')
         
-        # fortran string
         ffn = farray(np.empty((256), dtype='c'))
         for i in range(l):
             ffn[i] = cfn[i]
@@ -229,121 +228,6 @@ def add_bloch(target):
         self.session_controls=em_controls
         return nsampling, sp
 
-#     def getLACBEDImage(self, 
-#                         sample_thickness = DEF_THICKNESS,
-#                         pix_size = DEF_PIXSIZE,
-#                         det_size = DEF_DETSIZE,
-#                         bSave = False):
-#        """
-#         Retrieves a set of dynamic diffraction image from the simulation 
-#         sessiom marked by:
-
-#         `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_. and 
-#         `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.   
-        
-#         :param thickness: sample thickness range and step in tuple of three integers (th_start, th_end, th_step)
-#         :type thickness: int, optional
-
-#         :param pix_size: Detector pixel size in microns
-#         :type pix_size: int, optional
-
-#         :param det_size: Detector size or output image size
-#         :type det_size: int, optional
-
-#         :param bSave: True - save the output to a raw image file with extension of 'im3'
-#         :type bSave: bool, optional
-
-#         :return: `BImgList <pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs>`_ object
-#         :rtype: BImgList
-
-#         Default values:
-
-#         ::
-
-#             DEF_PIXSIZE = 25
-#             DEF_DETSIZE = 512
-#             DEF_THICKNESS = (200, 200, 100)
-
-#        """
-#        from copy import deepcopy
-
-#        # check to see if control parameters passed in already in session control
-#        # passed in 
-#        # 
-
-#        if pix_size is None or not isinstance(pix_size, int):
-#             raise BlochListError('Pixel size input must be valid integert')
-
-#        if det_size is None or not isinstance(det_size, int):
-#             raise BlochListError('Pixel size input must be valid integert')
-
-#        if sample_thickness is None or \
-#           not all(isinstance(v, int) for v in sample_thickness) or \
-#           len(sample_thickness) !=3:
-#             raise BlochListError('Sample thickness input must be valid tuple of three integers')
-
-#        th_start, th_end, th_step = sample_thickness
-
-#        if th_start > th_end or th_step <= 0:
-#             raise BlochListError('Sample thickness input must be valid integers range')               
-
-#        thlist = []
-#        if th_start == th_end:
-#             thlist.append(th_start)
-#        else:
-#             thlist = list(range(th_start, th_end, th_step))
-#             thlist.append(th_end)
-
-#        ndep = len(thlist)
-#     #    print(f"image depths: {ndep}, {thlist}")
-
-#        if ndep > MAX_DEPTH:
-#             raise BlochListError(f'Number of sample thickness cannot exceed {MAX_DEPTH}')
-
-#        # save the input as optional control attributes
-#        imgfn =''
-#        if bSave: 
-#             imgfn, bfn, l = self._getBlochFN()
-#             if l > MAX_BIMGFN-1:
-#                 raise BlochError(f'File name must not exceed {MAX_BIMGFN-1}')
-            
-#             if bloch.openimgfile(det_size, ndep, bfn, l) != 0:
-#                 raise BlochError('Error opening file for write, check if you have write permission')
-
-#     #    for th in thlist:
-#        nout = bloch.getcalcbeams()
-#        bimg = farray(np.zeros((det_size, det_size, ndep*nout), dtype=np.float32))
-#        thl = farray(np.array(thlist), dtype=int)
-#        bimg, ret = bloch.getlacbed(thl, 
-#                                   bimg, 
-#                                   teta = 0,
-#                                   pix = pix_size, 
-#                                   det = det_size, 
-#                                   bsave = bSave)
-       
-#        if(ret != 0):
-#             raise BlochError("Large angle CBED generation failed!")
-       
-# # build a image list
-#        bimgs = BImgList(self.name)
-
-#        self.session_controls(pix_size=pix_size, det_size=det_size)
-#        for i, th in enumerate(thlist):
-#           emc = deepcopy(self.session_controls)
-# # save the thickness as optional simulation control attributes
-#           emc.simc(sth=th) 
-#           for j in range(nout):
-#             bimgs.add(emc, bimg[:,:,i*nout + j])
-
-#        if bSave:
-#             if bloch.closeimgfile() != 0:
-#                 raise BlochError('Error closing file')
-
-#             print(f'Large angle CBED image of {det_size}x{det_size}x{ndep} and an offset of 8 bytes successfully saved to: \n{imgfn}')
-#             print(f'To view, import the file into ImageJ or other raw image visualization tools')
-
-#        return bimgs
-
     def getBlochImages(self, 
                   sample_thickness = DEF_THICKNESS,
                   pix_size = DEF_PIXSIZE,
@@ -366,8 +250,8 @@ def add_bloch(target):
         :param det_size: Detector size or output image size
         :type det_size: int, optional
 
-        :param nType: type of bloch images. normal or large angle CBED images are supported
-        :type nType: int, optional. defaults to normal bloch image
+        :param nType: type of bloch images. 0 for normal or 1 for large angle CBED images are supported
+        :type nType: int, optional. defaults to 0
 
         :param bSave: True - save the output to a raw image file with extension of 'im3'
         :type bSave: bool, optional
@@ -385,10 +269,6 @@ def add_bloch(target):
 
        """
        from copy import deepcopy
-
-       # check to see if control parameters passed in already in session control
-       # passed in 
-       # 
 
        if pix_size is None or not isinstance(pix_size, int):
             raise BlochListError('Pixel size input must be valid integert')
@@ -414,7 +294,6 @@ def add_bloch(target):
             thlist.append(th_end)
 
        ndep = len(thlist)
-    #    print(f"image depths: {ndep}, {thlist}")
 
        if ndep > MAX_DEPTH:
             raise BlochListError(f'Number of sample thickness cannot exceed {MAX_DEPTH}')
@@ -429,31 +308,24 @@ def add_bloch(target):
             if bloch.openimgfile(det_size, ndep, bfn, l) != 0:
                 raise BlochError('Error opening file for write, check if you have write permission')
 
+       isLACBED = (nType == TY_LACBED)
     #    for th in thlist:
        nslices = ndep
        nout = 0
-       if nType == TY_LACBED:
-           nout = bloch.getcalcbeams()
+       if isLACBED:
+           nout = bloch.getncalcbeams()
            nslices = ndep*nout
            
        bimg = farray(np.zeros((det_size, det_size, nslices), dtype=np.float32))
        thl = farray(np.array(thlist), dtype=int)
 
-       if nType == TY_NORMAL:
-        bimg, ret = bloch.getimage(thl, 
-                                    bimg, 
-                                    teta = 0,
-                                    pix = pix_size, 
-                                    det = det_size, 
-                                    bsave = bSave)
-       else:
-        
-        bimg, ret = bloch.getlacbed(thl, 
-                                    bimg, 
-                                    teta = 0,
-                                    pix = pix_size, 
-                                    det = det_size, 
-                                    bsave = bSave)   
+       bimg, ret = bloch.getimage(thl,
+                                  bimg,
+                                  teta = 0,
+                                  pix = pix_size,
+                                  det = det_size,
+                                  blacbed = isLACBED,
+                                  bsave = bSave)
        
        if(ret != 0):
             raise BlochError("bloch image generation failed!")
@@ -466,7 +338,7 @@ def add_bloch(target):
        for i, th in enumerate(thlist):
           emc = deepcopy(self.session_controls)
           emc.simc(sth=th)
-          if nType == TY_LACBED:
+          if isLACBED:
                 for j in range(nout):
                     bimgs.add(emc, bimg[:,:,i*nout + j])
           else:
@@ -535,47 +407,49 @@ def add_bloch(target):
 
             print(f"{sn1}{sn2}{st1}{st2}{st3}")   
 
-    # def getBeams(self, bPrint=False):
-    #     '''
-    #     Prints selected beams for current dynamic diffraction simulation 
-    #     session marked by 
-    #     `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
-    #     and `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.
+    def getCalculatedBeams(self, bPrint=False):
+        '''
+        Retieve and/or prints calculated beams for current dynamic diffraction simulation 
+        session marked by 
+        `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
+        and `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.
         
-    #     This information is available right after beginBloch call.
+        This information is available right after beginBloch call.
 
-    #     :param bPrint: whether to print selected beams info on standard output
-    #     :type bPrint: bool, optional, default `False`
+        :param bPrint: whether to print selected beams info on standard output
+        :type bPrint: bool, optional, default `False`
 
-    #     :return: The number of selected beams and the selected beams list in Miller indexes.
-    #     :rtype: a python tuple.
+        :return: The number of selected beams and the selected beams list in Miller indexes.
+        :rtype: a python tuple.
 
-    #     '''    
-    #     nmidx = bloch.get_nbeams()
-    #     if nmidx <= 0:
-    #         raise BlochError("failed to retrieve diffracted beams info")
+        '''    
+        ncalcbeams = bloch.getncalcbeams()
+        if ncalcbeams <= 0:
+            raise BlochError("failed to retrieve diffracted beams info")
 
-    #     ev = farray(np.zeros((3, nmidx), dtype=int))
-    #     ev, ret = bloch.getbeams(ev)
+        cb = farray(np.zeros((3, ncalcbeams), dtype=int))
+        # cb, ret = bloch.GETCALCBEAMS(cb)
+        cb, ret = bloch.getcalcbeams(cb)
 
-    #     if ret != 0:
-    #         raise BlochError("failed to retrieve incidental beams info")
+        if ret != 0:
+            raise BlochError("failed to retrieve incidental beams info")
 
-    #     evv = np.transpose(ev) 
+        cbms = np.transpose(cb) 
         
-    #     if bPrint:
-    #         shkl = "h   K   l"
-    #         print(f"{shkl:^12}")
+        if bPrint:
+            print('---------Calculated Beams in Miller Indexes---------')
+            shkl = "h   K   l"
+            print(f"{shkl:^12}")
 
-    #         for e in evv:
-    #             h,k,l = e
-    #             sh = '{0: < #04d}'. format(int(h))
-    #             sk = '{0: < #04d}'. format(int(k))
-    #             sl = '{0: < #04d}'. format(int(l))
+            for cbm in cbms:
+                h,k,l = cbm
+                sh = '{0: < #04d}'. format(int(h))
+                sk = '{0: < #04d}'. format(int(k))
+                sl = '{0: < #04d}'. format(int(l))
 
-    #             print(f"{sh}{sk}{sl}") 
+                print(f"{sh}{sk}{sl}") 
 
-    #     return nmidx, evv  
+        return ncalcbeams, cbms  
      
 # ----------------deprecated and folded into getSCMatrix call----------------
     # def getEigen(self, ib_coords=(0,0)):
@@ -823,6 +697,7 @@ def add_bloch(target):
     # target.getBeams = getBeams     <-------deprecate
     target.getSCMatrix = getSCMatrix
     target.getBlochImages = getBlochImages
+    target.getCalculatedBeams = getCalculatedBeams
     # target.getLACBEDImage = getLACBEDImage
     # ---These calls must be between beginBloch and endBloch calls
 

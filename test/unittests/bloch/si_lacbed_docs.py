@@ -36,5 +36,6 @@ if __name__ == '__main__':
     from pyemaps import showBloch
 
     imgs = generate_lacbed_images()
-    if imgs is not None:
-        showBloch(imgs, cShow=True, layout='table', bSave = True, bClose=True)
+    # ------- too slow to display the images -------
+    # if imgs is not None:
+    #     showBloch(imgs, cShow=True, layout='table', bSave = True, bClose=True)
