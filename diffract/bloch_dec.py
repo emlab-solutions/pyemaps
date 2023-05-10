@@ -1,28 +1,3 @@
-# def divWorks(sl, np):
-#     # numCPUs = mp.cpu_count()
-#     # if (numCPUs > len(nums)):
-#     #     numCPUs = len(nums)
-#     jobs = []
-#     slLength = sl
-
-#     jobRange = int(slLength / np)
-#     extra = slLength - (jobRange * np)
-
-#     prevEnd = 0
-#     for c in range(np):
-#         endIdx = (c * jobRange) + jobRange - 1
-#         if (c == (np-1)):
-#             endIdx += extra
-
-#         startIdx = prevEnd
-#         if ( (c > 0) and (startIdx+1 < slLength) ):
-#             startIdx += 1
-
-#         jobs.append( (startIdx, endIdx) )
-#         prevEnd = endIdx
-
-#     return jobs
-    
 def add_bloch(target):    
     """
     
@@ -72,12 +47,11 @@ def add_bloch(target):
     from .. import BlochError,BlochListError
     import numpy as np
     from numpy import asfortranarray as farray
+    from .. import TY_NORMAL, TY_LACBED
 
     BIMG_EXT = '.im3'
     MAX_BIMGFN = 256
     CBED_MODE = DEF_MODE + 1
-    TY_NORMAL = 0 # Normal Bloch Image type
-    TY_LACBED = 1
 
     def _getBlochFN(self):
         '''

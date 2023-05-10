@@ -100,7 +100,7 @@ def runSCMTests():
                 print(f'\n----Diffracted beams at: {ib_coords}----')
                 print(si_beams)
 
-        # show a list of calculated beams for the session
+        # show a list of calculated beams for current bloch session
         ncb, cbs = si.getCalculatedBeams(bPrint=True)
     # cleanup 
     si.endBloch()

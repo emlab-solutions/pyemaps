@@ -6,7 +6,7 @@ def generate_lacbed_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'til
     
     from pyemaps import Crystal as cryst
     from pyemaps import SIMC
-    TY_LACBED = 1 
+    from pyemaps import TY_LACBED
 
     cr = cryst.from_builtin(name)
     
@@ -20,6 +20,7 @@ def generate_lacbed_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'til
                                 vt=vt,
                                 cl=1000,
                                 simc=simc),
+                                det_size = 218,
                                 sample_thickness = sth,
                                 nType = TY_LACBED,
                                 bSave = True
@@ -36,6 +37,3 @@ if __name__ == '__main__':
     from pyemaps import showBloch
 
     imgs = generate_lacbed_images()
-    # ------- too slow to display the images -------
-    # if imgs is not None:
-    #     showBloch(imgs, cShow=True, layout='table', bSave = True, bClose=True)
