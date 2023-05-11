@@ -1,6 +1,27 @@
 Release Notes
 =============
 
+Version 1.0.5 Stable
+------------------ 
+
+05-14-2023 
+~~~~~~~~~~
+
+New
+~~~
+
+- Large angle CBED pattern generation. 
+- Calculated diffracted beams for dynamic diffraction simulation or Bloch session.
+
+See `generateBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateBloch>`_
+for details.
+
+Improvements
+~~~~~~~~~~~~
+
+- Optimization in bloch image generation for multiple sample thickness.
+
+
 Version 1.0.4 Stable
 ------------------ 
 

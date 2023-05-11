@@ -224,7 +224,7 @@ def add_bloch(target):
         :param det_size: Detector size or output image size
         :type det_size: int, optional
 
-        :param nType: type of bloch images. 0 for normal or 1 for large angle CBED images are supported
+        :param nType: type of bloch images generated. 0 for normal or 1 for large angle CBED images
         :type nType: int, optional. defaults to 0
 
         :param bSave: True - save the output to a raw image file with extension of 'im3'
@@ -241,6 +241,24 @@ def add_bloch(target):
             DEF_DETSIZE = 512
             DEF_THICKNESS = (200, 200, 100)
 
+        .. warning::
+
+            Dynamic diffraction pattern generation or Bloch has an extensive memory 
+            requirement for regular image generation:
+            
+                nType = TY_NORMAL
+
+            Even more so for a large angle CBED generation when nType = TY_LACBED. 
+
+            To reduce the memory needed, it is recommended to lower input parameters, particularly:
+
+            - The detector size *det_size*. 
+              A reduction of the default value of 512 to 218 for example can reduce memory usage in 
+              pyemaps without losing accuracies of the results.
+
+            - The number of sampling points in *sampling*. 
+              With less available memory on the system where pyemaps is running, decreased sampling 
+              points in *sampling* parameter can make a big difference in pyemaps performance. 
        """
        from copy import deepcopy
 
@@ -383,14 +401,14 @@ def add_bloch(target):
 
     def getCalculatedBeams(self, bPrint=False):
         '''
-        Retieve and/or prints calculated beams for current dynamic diffraction simulation 
+        Retieves and/or prints calculated beams for current dynamic diffraction simulation 
         session marked by 
         `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
         and `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.
         
         This information is available right after beginBloch call.
 
-        :param bPrint: whether to print selected beams info on standard output
+        :param bPrint: whether to print selected diffracted beams info on standard output
         :type bPrint: bool, optional, default `False`
 
         :return: The number of selected beams and the selected beams list in Miller indexes.
@@ -591,13 +609,16 @@ def add_bloch(target):
         :param sample_thickness: Sample thickness in (start, end, step) tuple
         :type sample_thickness: tuple of int, optional
         
+        :param nType: type of bloch images generated. 0 for normal or 1 for large angle CBED images
+        :type nType: int, optional. defaults to 0
+
         :param em_controls: Microscope controls object
         :type em_controls: `Microscope control <pyemaps.emcontrols.html#module-pyemaps.emcontrols>`_, optional
 
         :param bSave: `True` - save the output to a raw image file (ext: im3)
         :type bSave: bool, optional
 
-        :return: BImgList object
+        :return: `BImgList <pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs>`_ object
         :rtype: BImgList
         
         Default values:
@@ -619,6 +640,25 @@ def add_bloch(target):
             thickness specified by sample_thickness = (start, end, step) arguement:
 
             start, start+step ... start+N*step, end
+
+        .. warning::
+
+            Dynamic diffraction pattern generation or Bloch has an extensive memory 
+            requirement for regular image generation:
+            
+                nType = TY_NORMAL
+
+            Even more so for a large angle CBED generation when nType = TY_LACBED. 
+
+            To reduce the memory needed, it is recommended to lower input parameters, particularly:
+
+            - The detector size *det_size*. 
+              A reduction of the default value of 512 to 218 for example can reduce memory usage in 
+              pyemaps without losing accuracies of the results.
+
+            - The number of sampling points in *sampling*. 
+              With less available memory on the system where pyemaps is running, decreased sampling 
+              points in *sampling* parameter can make a big difference in pyemaps performance. 
 
         """
         try:
