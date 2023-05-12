@@ -40,7 +40,21 @@ def gen_perf_baseline(ty='dif'):
     jdata = json.dumps(perfl)
     jFile = open(perf_bfn, 'w')
     jFile.write(jdata)
+
+
             
+def update_baseline(ty='dif', data=None):
+    import json
+
+    perf_bfn = get_baseline_fname(ty = ty)
+    if data is None:
+        return
+#     # perfl = run_perf(ty=ty, bBaseline = True)
+
+    jdata = json.dumps(data)
+    jFile = open(perf_bfn, 'w')
+    jFile.write(jdata)     
+
 
 def run_perf(ty = 'dif', bBaseline = False):
     from pyemaps import Crystal as cr
@@ -83,25 +97,29 @@ def run_perf(ty = 'dif', bBaseline = False):
         jBaseline = get_perf_baseline(ty=ty)
         # print(f'loaded baseline result: {res_dict}')
         for n, v in res_dict.items():
-            base = float(jBaseline[n])
-            vv = float(v)
-            diff = abs(vv-base)
-            percent= 100.0 * (diff/base)
-            
+            if n in jBaseline:
+                base = float(jBaseline[n])
+                vv = float(v)
+                diff = abs(vv-base)
+                percent= round(100.0 * (diff/base))
+                
 
-            if diff < 0.001:
-                print(f'{ty} = {n}: stays the same for {n}')
-                continue
+                if diff < 0.001:
+                    print(f'{ty} = {n}: stays the same for {n}')
+                    continue
 
-            if vv > base:
-                print(f'{ty} - {n}: by {diff} or {percent}%')
-                continue
+                if vv > base:
+                    print(f'{ty} - {n}: by {diff} or {percent}%')
+                    continue
 
-            if vv < base:
-                print(f'{ty} + {n}: by {diff} or {percent}%')
-                continue
-        
-        
+                if vv < base:
+                    print(f'{ty} + {n}: by {diff} or {percent}%')
+                    continue
+            else:
+                print(f'{ty} + {n}: ****no baseline perf data compared to current run: {v}')
+                # newData = {}
+                jBaseline[n] = v
+                update_baseline(ty=ty, data = sorted(jBaseline.items()))
 
 
 
