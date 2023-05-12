@@ -114,6 +114,8 @@ except ImportError as e:
     raise Exception('No diffraction module found')
 else:
 
+    TY_NORMAL = 0 # Normal Bloch Image type
+    TY_LACBED = 1 # Large angle Bloch image type
     th_start, th_end, th_step = bloch.get_sam_defs()
     
     DEF_THICKNESS = (th_start, th_end, th_step)
@@ -142,6 +144,10 @@ try:
 except ImportError as e:
     raise Exception('No mxtal module found')
 else:
+    
+    # TY_NORMAL = 0 # Normal Bloch Image type
+    # TY_LACBED = 1 # Large angle Bloch image type
+
     ID_MATRIX = [[1,0,0], [0,1,0], [0,0,1]]
     MLEN = 10 
     DEF_TRSHIFT = [0,0,0]

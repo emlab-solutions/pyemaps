@@ -82,10 +82,11 @@ def add_dpgen(target):
         for a cubic crystal is *DEF_VERTMAT* = [[0,0,1],[1,1,1],[0,1,1]].
 
         .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png
-            :target: https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png
+           :width: 75%
+           :align: center
 
         The diffraction patterns database file produced will be consumed by pyemaps ediom module
-        for experimental diffraction pattern serach adn indexing.
+        for experimental diffraction pattern serach and indexing.
 
         """
         import os

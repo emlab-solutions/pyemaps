@@ -1,28 +1,3 @@
-# def divWorks(sl, np):
-#     # numCPUs = mp.cpu_count()
-#     # if (numCPUs > len(nums)):
-#     #     numCPUs = len(nums)
-#     jobs = []
-#     slLength = sl
-
-#     jobRange = int(slLength / np)
-#     extra = slLength - (jobRange * np)
-
-#     prevEnd = 0
-#     for c in range(np):
-#         endIdx = (c * jobRange) + jobRange - 1
-#         if (c == (np-1)):
-#             endIdx += extra
-
-#         startIdx = prevEnd
-#         if ( (c > 0) and (startIdx+1 < slLength) ):
-#             startIdx += 1
-
-#         jobs.append( (startIdx, endIdx) )
-#         prevEnd = endIdx
-
-#     return jobs
-    
 def add_bloch(target):    
     """
     
@@ -72,6 +47,7 @@ def add_bloch(target):
     from .. import BlochError,BlochListError
     import numpy as np
     from numpy import asfortranarray as farray
+    from .. import TY_NORMAL, TY_LACBED
 
     BIMG_EXT = '.im3'
     MAX_BIMGFN = 256
@@ -91,7 +67,6 @@ def add_bloch(target):
         if l > MAX_BIMGFN:
             raise BlochError('Bloch image file name too long, it cant excced 256')
         
-        # fortran string
         ffn = farray(np.empty((256), dtype='c'))
         for i in range(l):
             ffn[i] = cfn[i]
@@ -227,12 +202,12 @@ def add_bloch(target):
         self.session_controls=em_controls
         return nsampling, sp
 
-
     def getBlochImages(self, 
-                        sample_thickness = DEF_THICKNESS,
-                        pix_size = DEF_PIXSIZE,
-                        det_size = DEF_DETSIZE,
-                        bSave = False):
+                  sample_thickness = DEF_THICKNESS,
+                  pix_size = DEF_PIXSIZE,
+                  det_size = DEF_DETSIZE,
+                  nType = TY_NORMAL,
+                  bSave = False):
        """
         Retrieves a set of dynamic diffraction image from the simulation 
         sessiom marked by:
@@ -249,6 +224,9 @@ def add_bloch(target):
         :param det_size: Detector size or output image size
         :type det_size: int, optional
 
+        :param nType: type of bloch images generated. 0 for normal or 1 for large angle CBED images
+        :type nType: int, optional. defaults to 0
+
         :param bSave: True - save the output to a raw image file with extension of 'im3'
         :type bSave: bool, optional
 
@@ -263,12 +241,26 @@ def add_bloch(target):
             DEF_DETSIZE = 512
             DEF_THICKNESS = (200, 200, 100)
 
+        .. warning::
+
+            Dynamic diffraction pattern generation or Bloch has an extensive memory 
+            requirement for regular image generation:
+            
+                nType = TY_NORMAL
+
+            Even more so for a large angle CBED generation when nType = TY_LACBED. 
+
+            To reduce the memory needed, it is recommended to lower input parameters, particularly:
+
+            - The detector size *det_size*. 
+              A reduction of the default value of 512 to 218 for example can reduce memory usage in 
+              pyemaps without losing accuracies of the results.
+
+            - The number of sampling points in *sampling*. 
+              With less available memory on the system where pyemaps is running, decreased sampling 
+              points in *sampling* parameter can make a big difference in pyemaps performance. 
        """
        from copy import deepcopy
-
-       # check to see if control parameters passed in already in session control
-       # passed in 
-       # 
 
        if pix_size is None or not isinstance(pix_size, int):
             raise BlochListError('Pixel size input must be valid integert')
@@ -293,43 +285,67 @@ def add_bloch(target):
             thlist = list(range(th_start, th_end, th_step))
             thlist.append(th_end)
 
-       dep = len(thlist)
+       ndep = len(thlist)
 
-       if dep > MAX_DEPTH:
+       if ndep > MAX_DEPTH:
             raise BlochListError(f'Number of sample thickness cannot exceed {MAX_DEPTH}')
 
+       # save the input as optional control attributes
        imgfn =''
        if bSave: 
             imgfn, bfn, l = self._getBlochFN()
-            if bloch.openimgfile(det_size, dep, bfn, l) != 0:
-                raise BlochError('Error opening file for write, check if you have write permission')
+            if l > MAX_BIMGFN-1:
+                raise BlochError(f'File name must not exceed {MAX_BIMGFN-1}')
             
+            if bloch.openimgfile(det_size, ndep, bfn, l) != 0:
+                raise BlochError('Error opening file for write, check if you have write permission')
+
+       isLACBED = (nType == TY_LACBED)
+    #    for th in thlist:
+       nslices = ndep
+       nout = 0
+       if isLACBED:
+           nout = bloch.getncalcbeams()
+           nslices = ndep*nout
+           
+       bimg = farray(np.zeros((det_size, det_size, nslices), dtype=np.float32))
+       thl = farray(np.array(thlist), dtype=int)
+
+       bimg, ret = bloch.getimage(thl,
+                                  bimg,
+                                  teta = 0,
+                                  pix = pix_size,
+                                  det = det_size,
+                                  blacbed = isLACBED,
+                                  bsave = bSave)
+       
+       if(ret != 0):
+            raise BlochError("bloch image generation failed!")
+       
+# build a image list
        bimgs = BImgList(self.name)
 
-       # save the input as optional control attributes   
        self.session_controls(pix_size=pix_size, det_size=det_size)
        
-       for th in thlist:
-            bimg = farray(np.zeros((det_size, det_size), dtype=np.float32))
-            
-            bimg, ret = bloch.getimage(bimg, th, 0, pix_size,
-                                        det_size, bsave = bSave)
-            
-            if(ret != 0):
-              raise BlochError("bloch image generation failed!")
-            emc = deepcopy(self.session_controls)
-            emc.simc(sth=th) # save the thickness as optional simulation control attributes
-            bimgs.add(emc, bimg)
+       for i, th in enumerate(thlist):
+          emc = deepcopy(self.session_controls)
+          emc.simc(sth=th)
+          if isLACBED:
+                for j in range(nout):
+                    bimgs.add(emc, bimg[:,:,i*nout + j])
+          else:
+              bimgs.add(emc, bimg[:,:,i])
+
 
        if bSave:
             if bloch.closeimgfile() != 0:
                 raise BlochError('Error closing file')
 
-            print(f'The raw bloch image(s) of dimensions {det_size}x{det_size}x{dep} and an offset of 8 bytes successfully saved to: \n{imgfn}')
+            print(f'The raw bloch image(s) of dimensions {det_size}x{det_size}x{nslices} and an offset of 8 bytes successfully saved to: \n{imgfn}')
             print(f'To view, import the file into ImageJ or other raw image visualization tools')
 
        return bimgs
-       
+           
     def printIBDetails(self):
         '''
         Prints a dynamic diffraction simulation details during a session
@@ -383,47 +399,49 @@ def add_bloch(target):
 
             print(f"{sn1}{sn2}{st1}{st2}{st3}")   
 
-    # def getBeams(self, bPrint=False):
-    #     '''
-    #     Prints selected beams for current dynamic diffraction simulation 
-    #     session marked by 
-    #     `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
-    #     and `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.
+    def getCalculatedBeams(self, bPrint=False):
+        '''
+        Retieves and/or prints calculated beams for current dynamic diffraction simulation 
+        session marked by 
+        `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
+        and `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.
         
-    #     This information is available right after beginBloch call.
+        This information is available right after beginBloch call.
 
-    #     :param bPrint: whether to print selected beams info on standard output
-    #     :type bPrint: bool, optional, default `False`
+        :param bPrint: whether to print selected diffracted beams info on standard output
+        :type bPrint: bool, optional, default `False`
 
-    #     :return: The number of selected beams and the selected beams list in Miller indexes.
-    #     :rtype: a python tuple.
+        :return: The number of selected beams and the selected beams list in Miller indexes.
+        :rtype: a python tuple.
 
-    #     '''    
-    #     nmidx = bloch.get_nbeams()
-    #     if nmidx <= 0:
-    #         raise BlochError("failed to retrieve diffracted beams info")
+        '''    
+        ncalcbeams = bloch.getncalcbeams()
+        if ncalcbeams <= 0:
+            raise BlochError("failed to retrieve diffracted beams info")
 
-    #     ev = farray(np.zeros((3, nmidx), dtype=int))
-    #     ev, ret = bloch.getbeams(ev)
+        cb = farray(np.zeros((3, ncalcbeams), dtype=int))
+        # cb, ret = bloch.GETCALCBEAMS(cb)
+        cb, ret = bloch.getcalcbeams(cb)
 
-    #     if ret != 0:
-    #         raise BlochError("failed to retrieve incidental beams info")
+        if ret != 0:
+            raise BlochError("failed to retrieve incidental beams info")
 
-    #     evv = np.transpose(ev) 
+        cbms = np.transpose(cb) 
         
-    #     if bPrint:
-    #         shkl = "h   K   l"
-    #         print(f"{shkl:^12}")
+        if bPrint:
+            print('---------Calculated Beams in Miller Indexes---------')
+            shkl = "h   K   l"
+            print(f"{shkl:^12}")
 
-    #         for e in evv:
-    #             h,k,l = e
-    #             sh = '{0: < #04d}'. format(int(h))
-    #             sk = '{0: < #04d}'. format(int(k))
-    #             sl = '{0: < #04d}'. format(int(l))
+            for cbm in cbms:
+                h,k,l = cbm
+                sh = '{0: < #04d}'. format(int(h))
+                sk = '{0: < #04d}'. format(int(k))
+                sl = '{0: < #04d}'. format(int(l))
 
-    #             print(f"{sh}{sk}{sl}") 
+                print(f"{sh}{sk}{sl}") 
 
-    #     return nmidx, evv  
+        return ncalcbeams, cbms  
      
 # ----------------deprecated and folded into getSCMatrix call----------------
     # def getEigen(self, ib_coords=(0,0)):
@@ -560,6 +578,7 @@ def add_bloch(target):
                             sample_thickness = DEF_THICKNESS,           
                             em_controls = EMC(cl=200, # set smaller that 1000 default value
                                               simc = SIMC(gmax=1.0, excitation=(0.3,1.0))),
+                            nType = TY_NORMAL,
                             bSave = False):
         """
         Generates dynamic diffraction (Bloch) image(s). This function is equivalent to 
@@ -590,13 +609,16 @@ def add_bloch(target):
         :param sample_thickness: Sample thickness in (start, end, step) tuple
         :type sample_thickness: tuple of int, optional
         
+        :param nType: type of bloch images generated. 0 for normal or 1 for large angle CBED images
+        :type nType: int, optional. defaults to 0
+
         :param em_controls: Microscope controls object
         :type em_controls: `Microscope control <pyemaps.emcontrols.html#module-pyemaps.emcontrols>`_, optional
 
         :param bSave: `True` - save the output to a raw image file (ext: im3)
         :type bSave: bool, optional
 
-        :return: BImgList object
+        :return: `BImgList <pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs>`_ object
         :rtype: BImgList
         
         Default values:
@@ -618,6 +640,25 @@ def add_bloch(target):
             thickness specified by sample_thickness = (start, end, step) arguement:
 
             start, start+step ... start+N*step, end
+
+        .. warning::
+
+            Dynamic diffraction pattern generation or Bloch has an extensive memory 
+            requirement for regular image generation:
+            
+                nType = TY_NORMAL
+
+            Even more so for a large angle CBED generation when nType = TY_LACBED. 
+
+            To reduce the memory needed, it is recommended to lower input parameters, particularly:
+
+            - The detector size *det_size*. 
+              A reduction of the default value of 512 to 218 for example can reduce memory usage in 
+              pyemaps without losing accuracies of the results.
+
+            - The number of sampling points in *sampling*. 
+              With less available memory on the system where pyemaps is running, decreased sampling 
+              points in *sampling* parameter can make a big difference in pyemaps performance. 
 
         """
         try:
@@ -642,13 +683,14 @@ def add_bloch(target):
                     sample_thickness = sample_thickness,
                     pix_size = pix_size,
                     det_size = det_size,
+                    nType = nType,
                     bSave = bSave)
 
             except (BlochError, BlochListError) as e:
                 raise
 
             except Exception as e:
-                raise BlochError(f'Something went wrong when retrieving bloch image') from e
+                raise BlochError(f'Something went wrong when retrieving bloch image {e}') from e
 
             else:
                 return bimgs
@@ -669,6 +711,8 @@ def add_bloch(target):
     # target.getBeams = getBeams     <-------deprecate
     target.getSCMatrix = getSCMatrix
     target.getBlochImages = getBlochImages
+    target.getCalculatedBeams = getCalculatedBeams
+    # target.getLACBEDImage = getLACBEDImage
     # ---These calls must be between beginBloch and endBloch calls
 
     target.endBloch = endBloch
