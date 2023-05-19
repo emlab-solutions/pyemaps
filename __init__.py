@@ -167,12 +167,13 @@ except ImportError as e:
 
 
 # #------------------Diffraction Pattern Indexing - paid package only---------------------------
-#  used only with dpgen module ablove
+#  used only with dpgen module above
 
 try:
     from .ediom import ediom
 except ImportError:
     pass
+
 
 #--------------Wrapper classes around diffraction extensions---------------
 from .errors import *
@@ -192,6 +193,9 @@ try:
     from .kdiffs import XMAX, YMAX
 except ImportError as e:
     print(f'Error importing kinematic constants: {e}')
-    
+
+#--------------ediom features -------------------------------
+from .stackimg import StackImage
+
 #--------------Pyemaps Display Functions-------------------------------------
 from .display import showDif, showBloch, showStereo
