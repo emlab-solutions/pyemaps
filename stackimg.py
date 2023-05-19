@@ -24,39 +24,27 @@
 # Date:       May 16, 2023    
 '''
     
-from pyemaps import ediom
+from .ediom import ediom
+from . import (E_INT, EM_INT,
+               E_FLOAT, EM_FLOAT,
+               E_DOUBLE, EM_DOUBLE,
+               
+               MAX_IMAGESIZE, MIN_IMAGESIZE, 
+               MAX_IMAGESTACK, MIN_IMAGESTACK,
+               DEF_FILTER_THRESHOLD, DEF_SEARCH_THRESHOLD,
+               
+               DEF_RMIN, DEF_BOXSIZE,
+               DEF_CC, DEF_SIGMA, DEF_ICENTER, 
+               DEF_XSCALE, DEF_TSCALE,
+               
+               E_SH,
+               E_RAW,
+               E_NPY,
+               # imageloading mode
+               EL_ONE, EL_MORE #EDIOM image loading all stacks
+            )
 import numpy as np
 
-E_INT = ediom.E_INT 
-EM_INT = ediom.EM_INT
-
-E_FLOAT = ediom.E_FLOAT
-EM_FLOAT = ediom.EM_FLOAT
-
-E_DOUBLE = ediom.E_DOUBLE
-EM_DOUBLE = ediom.EM_DOUBLE
-
-MAX_IMAGESIZE = ediom.MAX_IMAGESIZE
-MIN_IMAGESIZE = ediom.MIN_IMAGESIZE
-MAX_IMAGESTACK = ediom.MAX_IMAGESTACK
-MIN_IMAGESTACK = 1
-DEF_FILTER_THRESHOLD = 0.2                       
-DEF_SEARCH_THRESHOLD = 0.825
-DEF_RMIN = 7
-DEF_BOXSIZE = 10
-DEF_CC = ediom.cvar.edc.cc      #default value from backend
-DEF_SIGMA = ediom.cvar.edc.sigma
-DEF_ICENTER = ediom.cvar.edc.get_center()
-DEF_XSCALE = 1
-DEF_TSCALE = 2
-
-E_SH = 0
-E_RAW = 1
-E_NPY = 2
-
-# imageloading mode
-EL_ONE = 1  #EDIOM image loading one stack at one time
-EL_MORE = 2 #EDIOM image loading all stacks
 
 from .errors import XDPImageError
 
@@ -194,6 +182,7 @@ class StackImage():
         self._data = idata
 
     def __del__(self):
+        
         ediom.freeEdiom()
 
     def loadImage(self, rmode= EL_ONE, stack = 1):
@@ -201,6 +190,9 @@ class StackImage():
         Loads image into ediom module for analysis.
         """
         img_format = self.nformat
+        if img_format != E_NPY and img_format != E_SH and img_format != E_RAW:
+            raise XDPImageError("Invalid image file type")
+        
         ximage = ediom.cvar.ximg
         ret = -1
         if img_format == E_NPY:
@@ -209,20 +201,17 @@ class StackImage():
 # load proprietory small header formatted image file
         if img_format == E_SH:
             ret = ediom.loadXImage(self.fname, rmode = rmode, stack = stack)
-    
+# load raw image file            
         if img_format == E_RAW:
             ret = ediom.loadRawImage(self.fname, 
                           self.offset, self.ndtype, 
                           self.dim[0], self.dim[1], self.dim[2], 
                           rmode = rmode, stack=stack)
-            # self.data = ediom.cvar.ximg.getImageData()    
-        else:
-            raise XDPImageError("Invalid image file type")
 
         if ret != 0:
             raise XDPImageError("Failed to import the image into ediom module")
         
-        self._dim = (ximage.h.nrow,ximage.h.ncol,ximage.h.nlayer)
+        self._dim = (ximage.h.ncol,ximage.h.nrow,ximage.h.nlayer)
         self._data = ximage.getImageData()
 
     def viewExpImage(self, peakDP = False, Indexed = False, iShow = False):      
@@ -452,7 +441,7 @@ class StackImage():
         return ret, mrow, mcol
     
     @staticmethod
-    def showMatchingIndexMap(self, fr, fc):
+    def showMatchingIndexMap(fr, fc):
             
         """
         Helper function in ediom module to display matching indexes map. The colored
@@ -657,15 +646,14 @@ class StackImage():
             self.loadImage(rmode = 1, stack = ssel) #indexing one stack image at a time
         except Exception as e:
             raise XDPImageError("Error loading image for ediom analysis") from e
-        xim = ediom.cvar.ximg
+        
+        self.viewExpImage()
+
+        # xim = ediom.cvar.ximg
         edc = ediom.cvar.edc
         # setting image control parameters
         edc.cc = cc
         edc.sigma = sigma
-
-        # check if experimental image is loaded
-        if not xim.img_loaded():
-            raise ValueError("Experimental image must be loaded into ediom module")
 
         # validate image center
         
