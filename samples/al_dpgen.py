@@ -1,5 +1,5 @@
 
-def si_dpdb(cname='Silicon'):
+def si_dpdb(cname='Aluminium'):
     from pyemaps import Crystal as cr
     from pyemaps import EMC, SIMC
     import os

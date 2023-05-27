@@ -21,7 +21,7 @@ if "%1"=="local" (
     call python .\pyemaps_samples\si_constructor.py
     call python .\pyemaps_samples\si_stereo.py
     call python .\pyemaps_samples\si_scm.py
-    call python .\pyemaps_samples\si_dpgen.py
+    call python .\pyemaps_samples\al_dpgen.py
     call python .\pyemaps_samples\al_ediom.py
     python test\sanity\feature_sanity.py
     @REM performance test - all includes all types: dif, bloch and stereo
