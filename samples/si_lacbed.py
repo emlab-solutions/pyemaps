@@ -33,18 +33,18 @@ def generate_lacbed_images(name = 'Silicon', bShow=False):
     cr = cryst.from_builtin(name)
     
     try:
-        imgs = cr.generateBloch( disk_size = 0.25,
+        imgs = cr.generateBloch( disk_size = 0.5,
                             sampling = 10,
                             nType = 1, 
                             sample_thickness=(1000,1000,100),
                             bSave=True)
     except Exception as e:
-        print(f'Unable to obtain bloch image(s): {e}') 
+        print(f'Faild to obtain large angle CBED images: {e}') 
         return
 
     if bShow:        
         imgs.sort()
-        showBloch(imgs)
+        showBloch(imgs,bClose=True)
 
 
 from pyemaps import showBloch
