@@ -23,21 +23,39 @@ def test_dpgen_full():
     high_res = dpgen.get_highres()
     assert high_res == FULL_RES_HIGH, \
                        f"{FULL_BUILD_ERRMSG}" 
+def test_pkg_type():
+    from pyemaps import PKG_TYPE
+    TYPE_FREE = 1
+    TYPE_FULL = 2
+    TYPE_UIUC = 3
+
+    if PKG_TYPE == TYPE_FULL:
+        print(f'Current package type is full')
+        return
     
+    if PKG_TYPE == TYPE_FREE:
+        print(f'Current package type is free')
+        return
+
+    if PKG_TYPE == TYPE_UIUC:
+        print(f'Current package type is UIUC')
+        return
+
+    print(f'Current package type is UNKNOWNN!')
 
 def test_dpgen_release():
     
     from pyemaps import Crystal as cr
     import os
     
-    si = cr.from_builtin('Silicon')
+    si = cr.from_builtin('Aluminium')
 
     #  first generate a DP database file
     xa0=(2,0,0)
     res = 200
     ret, dbfn = si.generateDPDB(emc=EMC(zone=(0,0,1)), res = res, xa = xa0)
     assert (ret == 0 and os.path.exists(dbfn)), \
-                f'Generation of DPDB for Silicon failed'
+                f'Generation of DPDB for Aluminium failed'
         
 
     datfn = os.path.splitext(dbfn)[0]+".dat"
@@ -71,4 +89,5 @@ if __name__ == '__main__':
     else:
         print('Module dpgen is build as paid package')
 
+    test_pkg_type()
     print('\n*****unit test for package types completed*****\n')

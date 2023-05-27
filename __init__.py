@@ -42,6 +42,7 @@ else:
     # Default gctl from backend: DEF_GCTL  
     # Default zctl from backend: DEF_ZCTL
 #------------------------------------------------------------------------
+    PKG_TYPE = dif.get_pkgtype()
     (sgmn, 
      sgmx, 
      DEF_GMAX, 

@@ -199,6 +199,7 @@ class DifPlotter:
 
 
     def plotDDif(self):
+        # import matplotlib.colors as colors
         from matplotlib.colors import LinearSegmentedColormap
 
         idx, emc, img, color = self.difData
@@ -216,8 +217,23 @@ class DifPlotter:
         iax.clear()
         iax.set_axis_off()
 
+# image intensity check: 
+# if intensity is below threshold, 
+# don't display the image
+        imax = img.max()
+        if imax < 1.0e-10:
+            ishape = np.shape(img)
+            img = np.zeros(ishape)
+            wmsg = "No intensity detected at: \n\n" + emc.plot_format()
+            iax.text(ishape[0]/2,ishape[1]/2, 
+                        wmsg,
+                        {'color': 'white', 'fontsize': 10},
+                        horizontalalignment='center',
+                        verticalalignment='center')
 
-        iax.imshow(img, cmap=clrMap)
+        iax.imshow(img, 
+                #    norm=colors.LogNorm(vmin=imin, vmax=imax),  --- logrithmatic image normalization, not used now
+                   cmap=clrMap)
         if self.cShow:
             self.plotControls(emc,iax)
 

@@ -1,6 +1,18 @@
 Release Notes
 =============
 
+Version 1.0.6 Stable
+------------------ 
+
+05-27-2023 
+~~~~~~~~~~
+
+Improvements
+~~~~~~~~~~~~
+
+- Large angle CBED image generation sample code *si_lacbed.py* added.
+- Bug fixes
+
 Version 1.0.5 Stable
 ------------------ 
 

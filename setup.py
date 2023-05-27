@@ -82,13 +82,15 @@ compile_args=['-Qm64',
 #               '-c']
               
 compile_args_lin= ['-m64',
+                   '-fpic',
                    '-WB', 
                    '-qopenmp', 
                    '-qmkl', 
-                   '-heap-arrays', 
-	               '-r8', 
+                   '-heap-arrays 1024', 
+	            #    '-r8', 
                    '-fpp', 
                 #    '-warn nointerfaces',
+                    '-warn all',
                    '-O3',
                 #    'fp-stack-check',
                    '-c']

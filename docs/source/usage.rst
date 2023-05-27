@@ -303,8 +303,9 @@ Below is a partial list of sample code:
    shows how kinematic diffraction patterns are generated and rendered with 
    *matplotlib pyplot* module.
 
-* *si_bloch.py*: 
-   demonstrates dynamic diffraction simulations by *bloch* *pyemaps* module.
+* *si_bloch.py*, *si_lacbed.py*: 
+   demonstrates dynamic diffraction simulations by *bloch* *pyemaps* module in two
+   modes: normal and large angle CBED.
 
 * *si_csf.py*: 
    calculates and outputs structure factors using *CSF* *pyemaps* module. 
@@ -316,7 +317,7 @@ Below is a partial list of sample code:
 * *si_stereo.py*: 
    plots stereodiagram using *Stereo* *pyemaps* module. 
 
-* *si_dpgen.py*: 
+* *al_dpgen.py*: 
    generates a proprietory diffraction database file for silicon crystal. 
 
 * *al_ediom.py*: 
