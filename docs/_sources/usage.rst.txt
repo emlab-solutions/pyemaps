@@ -317,7 +317,7 @@ Below is a partial list of sample code:
 * *si_stereo.py*: 
    plots stereodiagram using *Stereo* *pyemaps* module. 
 
-* *si_dpgen.py*: 
+* *al_dpgen.py*: 
    generates a proprietory diffraction database file for silicon crystal. 
 
 * *al_ediom.py*: 
