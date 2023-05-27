@@ -246,3 +246,12 @@ class MxtalError(Exception):
         self.message = str(f'Error generating mxtal: {message}')
         super().__init__(self.message)
 
+
+class XDPImageError(Exception):
+    '''
+    Experimental diffraction pattern image object errors.
+    
+    '''
+    def __init__(self, message=''):
+        self.message = str(f'{message}')
+        super().__init__(self.message)
