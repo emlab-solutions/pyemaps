@@ -16,6 +16,7 @@ if "%1"=="local" (
     call python .\pyemaps_samples\powder.py
     call python .\pyemaps_samples\si_dif.py
     call python .\pyemaps_samples\si_bloch.py
+    call python .\pyemaps_samples\si_lacbed.py
     call python .\pyemaps_samples\si_rawblochimgs.py
     call python .\pyemaps_samples\si_constructor.py
     call python .\pyemaps_samples\si_stereo.py
@@ -30,5 +31,6 @@ if "%1"=="local" (
      python test\unittests\package_test\type_test.py
      python test\unittests\kdif\sanity_doc.py
      python test\unittests\bloch\si_bloch_docs.py
+     python test\unittests\bloch\disk_size.py
     rm -rf pyemaps_samples
 )

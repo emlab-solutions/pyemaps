@@ -1,4 +1,37 @@
+"""
+This file is part of pyemaps
+___________________________
 
+pyemaps is free software for non-comercial use: you can 
+redistribute it and/or modify it under the terms of the GNU General 
+Public License as published by the Free Software Foundation, either 
+version 3 of the License, or (at your option) any later version.
+
+pyemaps is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
+
+Contact supprort@emlabsoftware.com for any questions and comments.
+___________________________
+
+Author:     EMLab Solutions, Inc.
+Date:       April 02, 2023  
+
+This sample code is to demostrate using pyemaps' dpgen and ediom 
+modules to search and index experimental diffraction patterns images. 
+This script is for demonstration and only support crystal with 
+space group 225. 
+
+The full feature with complete crystal system support is available in
+pyemaps full package and for purchase. Contact:
+    support@emlabsoftware.com 
+for price information.
+
+"""
 import os
 from pathlib import Path
 from pyemaps import EMC
@@ -15,7 +48,7 @@ def getDBFile():
 def getDPImageFn():
     '''
     Imports sample experimental diffraction pattern image
-    with preprietory 8-bytes header. 
+    with an 8-bytes header. 
     '''
     return os.path.join(samples_path, 'al.img')
 
@@ -57,10 +90,10 @@ def test_dp_indexing(cname = 'Aluminium'):
         raise ValueError from e
 
     # DPs or peaks search and indexing parameters 
-    # See pyemaps documents for explanation of the parameters
-    cryst.indexExpDP(cc                 = 29.0,                 # Camera constant
-                     sigma              = 3.0,                  # Peak width measurement
-                     img_center         = (99.923, 99.919),     # Image or DP image center location
+    # See pyemaps documents for explanation of the parameters below
+    cryst.indexExpDP(cc                 = 29.0,                 
+                     sigma              = 3.0,                  
+                     img_center         = (99.923, 99.919),     
                      rmin               = 10,                   
                      search_box         = 10.0,
                      scaling_option     = (1,2), 

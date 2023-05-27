@@ -23,7 +23,25 @@ def test_dpgen_full():
     high_res = dpgen.get_highres()
     assert high_res == FULL_RES_HIGH, \
                        f"{FULL_BUILD_ERRMSG}" 
+def test_pkg_type():
+    from pyemaps import PKG_TYPE
+    TYPE_FREE = 1
+    TYPE_FULL = 2
+    TYPE_UIUC = 3
+
+    if PKG_TYPE == TYPE_FULL:
+        print(f'Current package type is full')
+        return
     
+    if PKG_TYPE == TYPE_FREE:
+        print(f'Current package type is free')
+        return
+
+    if PKG_TYPE == TYPE_UIUC:
+        print(f'Current package type is UIUC')
+        return
+
+    print(f'Current package type is UNKNOWNN!')
 
 def test_dpgen_release():
     
@@ -71,4 +89,5 @@ if __name__ == '__main__':
     else:
         print('Module dpgen is build as paid package')
 
+    test_pkg_type()
     print('\n*****unit test for package types completed*****\n')

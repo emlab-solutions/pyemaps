@@ -530,7 +530,7 @@ class Atom:
         for i in range(len(locdata)):
             self._loc[i] = locdata[i]
 
-        self._data = dict(zip(akeys, self._loc))
+        self._data = dict(zip(akeys[1:], self._loc))
                 
     def __eq__(self, other):
         if not isinstance(other, Atom):
@@ -1111,7 +1111,7 @@ class Crystal:
             if k == "_spg":
                  yield('spg', dict(self._spg))
             if k == "_atoms":
-                 yield('atoms', [dict(a) for a in self.atoms])
+                 yield('atoms', [dict(a) for a in self._atoms])
 
     def loaded(self):
         '''

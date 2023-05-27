@@ -18,11 +18,11 @@ along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
 Contact supprort@emlabsoftware.com for any questions and comments.
 ___________________________
 
-This sample code is to demostrate using pyemaps to generate and render
-dynamic diffraction patterns while controls. 
-
 Author:     EMLab Solutions, Inc.
-Date:       July 07, 2022    
+Date:       July 07, 2022  
+
+This sample code is to demostrate using pyemaps to generate and render
+dynamic diffraction patterns.   
 
 """
 

@@ -303,8 +303,9 @@ Below is a partial list of sample code:
    shows how kinematic diffraction patterns are generated and rendered with 
    *matplotlib pyplot* module.
 
-* *si_bloch.py*: 
-   demonstrates dynamic diffraction simulations by *bloch* *pyemaps* module.
+* *si_bloch.py*, *si_lacbed.py*: 
+   demonstrates dynamic diffraction simulations by *bloch* *pyemaps* module in two
+   modes: normal and large angle CBED.
 
 * *si_csf.py*: 
    calculates and outputs structure factors using *CSF* *pyemaps* module. 
