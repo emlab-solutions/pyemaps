@@ -48,14 +48,14 @@ def test_dpgen_release():
     from pyemaps import Crystal as cr
     import os
     
-    si = cr.from_builtin('Silicon')
+    si = cr.from_builtin('Aluminium')
 
     #  first generate a DP database file
     xa0=(2,0,0)
     res = 200
     ret, dbfn = si.generateDPDB(emc=EMC(zone=(0,0,1)), res = res, xa = xa0)
     assert (ret == 0 and os.path.exists(dbfn)), \
-                f'Generation of DPDB for Silicon failed'
+                f'Generation of DPDB for Aluminium failed'
         
 
     datfn = os.path.splitext(dbfn)[0]+".dat"
