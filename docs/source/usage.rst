@@ -276,7 +276,7 @@ indexes the loaded DP image file above. See more details of the usage in
    Diffraction pattern indexing feature is now in preview. Current limitaion of the preview
    feature in this free package:
 
-   1. Crystals that are in cubic space group with space numbers of 225, 227 and 229.
+   1. Crystals that are in cubic space group with space numbers of 225.
    2. The experimental DP image sizes are limited 100 up to 512 pixels.
    3. Diffraction database resolution is restricted in range 100 and 300 sampling points.
    
@@ -320,8 +320,9 @@ Below is a partial list of sample code:
 * *al_dpgen.py*: 
    generates a proprietory diffraction database file for silicon crystal. 
 
-* *al_ediom.py*: 
-   indexes an experimental diffraction image for aluminium crystal. 
+* *al_ediom.py*(demo only), *adf.py*(available in full package only) : 
+   indexes an experimental diffraction image for aluminium crystal, 
+   generates annular dark fields (ADF) from an experimental image.
 
 
 More samples code will be added as more features and releases are available. 

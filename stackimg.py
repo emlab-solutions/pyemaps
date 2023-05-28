@@ -18,10 +18,22 @@
 # Contact supprort@emlabsoftware.com for any questions and comments.
 # ___________________________
 
-
-
 # Author:     EMLab Solutions, Inc.
-# Date:       May 16, 2023    
+# Date:       May 16, 2023   
+
+EDIOM (Electron Diffraction Indexing and Orientation Mapping) module 
+in pyemaps contains a rich set of diffraction pattern search and recognition
+functions, as well as those for orientation mapping.
+
+*StachImage* class is designed to interface with EDIOM functions to provide
+users easy access to the collection of EDIOM features. 
+
+Most of the current and future EDIOM interfaces shown as StackImage
+class methods will be in full pyemaps package, with the exception
+of diffraction indexing method in demo mode in free package.
+
+Contact support@emlabsoftware.com for how to get the full package.
+
 '''
     
 from .ediom import ediom
