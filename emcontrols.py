@@ -455,7 +455,15 @@ class SIMControl:
             raise EMCError(str(e))
         else:
             return sc
-                                
+            
+    # def to_dict(self): 
+    #     retdict={}
+    #     for k, v in DEF_SIMC:
+    #         retdict[k] = v
+    #         if hasattr(self, k):
+    #             retdict[k] = self.__dict__['_'+k]
+    #     return retcdict
+
 DEF_EMC = {
     'mode': {'defval': DEF_MODE, 'desc': 'Simulation mode'},
     'dsize': {'defval': DEF_CBED_DSIZE, 'desc': 'Diffracted beam size'},
@@ -934,3 +942,18 @@ class EMControl:
             return simstr
 
         return ';'.join(emcstrs)
+
+    @staticmethod
+    def def_dict(): 
+        retdict={}
+        for k in DEF_EMC:
+            
+            if k == 'simc':
+                for sk, sv in DEF_SIMC.items():
+                    retdict[sk] = sv
+                continue
+            
+            retdict[k] = DEF_EMC[k]['defval']
+            
+
+        return retdict
