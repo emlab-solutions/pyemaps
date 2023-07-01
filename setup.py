@@ -544,8 +544,8 @@ pyemaps_ediom =  Extension(
             libraries               =[],
             define_macros           = pyemaps_build_defs,
             undef_macros            = pyemaps_build_undefs,
-            extra_link_args         =[],
-            swig_opts               =['-python']
+            extra_link_args         =[]
+            # swig_opts               =['-python']
 )
 
 def get_version(f):
