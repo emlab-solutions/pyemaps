@@ -198,6 +198,16 @@ def add_bloch(target):
         em_controls.simc(omega = omega, 
                          sampling = sampling
                         )
+        # @070323 merge
+        # update x-axis if it was set to (0,0,0)
+        # and new xaxis is calculated by the backend
+
+        if em_controls.xaxis == DEF_XAXIS:
+            xa1 = 0
+            xa2 = 2
+            xa3 = 0
+            xa1, xa2, xa3 = dif.get_xaxis()
+            em_controls(xaxis = (xa1,xa2,xa3))
 
         self.session_controls=em_controls
         return nsampling, sp
