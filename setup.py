@@ -117,10 +117,10 @@ install_requires_common = [
 
 dif_source = [
             'diff_types.f90', 
+            'diff_memalloc.f90',
             'diffract.f90',
             'scattering.f90', 
             'spgra.f90',
-            'diff_memalloc.f90',
             'crystal_mem.f90', 
             'emaps_consts.f90',
             'xtal0.f90', 
