@@ -1,6 +1,26 @@
 Release Notes
 =============
 
+Version 1.0.7 Stable
+------------------ 
+
+07-06-2023 
+~~~~~~~~~~
+
+New
+~~~
+
+- Anular dark field (ADF) for an experimental diffraction image. This bew feature is only
+  available in full and paid package. 
+
+Improvements
+~~~~~~~~~~~~
+
+- Bug fixes
+- Updated EMC control when x-axis input is the default of (0,0,0) when pyemaps
+  will calculate the value. This value is then updated in the output control for
+  kinematical and dynamic diffraction simulations, as well as stereodiagram.
+
 Version 1.0.6 Stable
 ------------------ 
 

@@ -731,7 +731,7 @@ class StackImage():
         :type imgfn: string, required
         
         :param center: The center of ADF detector.
-        :type cc: tuple of floats
+        :type center: tuple of floats
 
         :param rads: a pair of radius for inner and outer ADF detector.
         :type rads: tuple, optional.

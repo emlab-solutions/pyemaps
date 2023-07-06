@@ -544,8 +544,8 @@ pyemaps_ediom =  Extension(
             libraries               =[],
             define_macros           = pyemaps_build_defs,
             undef_macros            = pyemaps_build_undefs,
-            extra_link_args         =[]   
-            # @070323 merge         
+            extra_link_args         =[] 
+            
             # swig_opts               =['-python']
 )
 

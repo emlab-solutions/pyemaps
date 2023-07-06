@@ -198,7 +198,6 @@ def add_bloch(target):
         em_controls.simc(omega = omega, 
                          sampling = sampling
                         )
-        # @070323 merge
         # update x-axis if it was set to (0,0,0)
         # and new xaxis is calculated by the backend
 
@@ -430,7 +429,7 @@ def add_bloch(target):
             raise BlochError("failed to retrieve diffracted beams info")
 
         cb = farray(np.zeros((3, ncalcbeams), dtype=int))
-        # cb, ret = bloch.GETCALCBEAMS(cb)
+        
         cb, ret = bloch.getcalcbeams(cb)
 
         if ret != 0:
