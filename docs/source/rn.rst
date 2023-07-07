@@ -16,6 +16,9 @@ New
   See `generateADF <modules.html#pyemaps.stackimg.StackImage.generateADF>`_
   and sample code *adf.py* for usage details.
 
+- GUI server is now setup for easy and fast access to **pyemaps** simulations for a subscription fee. 
+  Go to: https://pyemaps.emlabsolutions.com
+
 Improvements
 ~~~~~~~~~~~~
 
