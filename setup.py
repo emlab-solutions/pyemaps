@@ -117,10 +117,10 @@ install_requires_common = [
 
 dif_source = [
             'diff_types.f90', 
+            'diff_memalloc.f90',
             'diffract.f90',
             'scattering.f90', 
             'spgra.f90',
-            'diff_memalloc.f90',
             'crystal_mem.f90', 
             'emaps_consts.f90',
             'xtal0.f90', 
@@ -544,8 +544,9 @@ pyemaps_ediom =  Extension(
             libraries               =[],
             define_macros           = pyemaps_build_defs,
             undef_macros            = pyemaps_build_undefs,
-            extra_link_args         =[],
-            swig_opts               =['-python']
+            extra_link_args         =[] 
+            
+            # swig_opts               =['-python']
 )
 
 def get_version(f):
@@ -578,6 +579,7 @@ setup(name                              ="pyemaps",
                                            'pyemaps.errors',
                                            'pyemaps.fileutils',
                                            'pyemaps.emcontrols',
+                                           'pyemaps.stackimg',
                                            'pyemaps.CifFile.CifFile_module',
                                            'pyemaps.CifFile.yapps3_compiled_rt',
                                            'pyemaps.CifFile.YappsStarParser_1_1',

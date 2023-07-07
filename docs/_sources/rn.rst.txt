@@ -1,8 +1,34 @@
 Release Notes
 =============
 
+Version 1.0.7 Stable
+-------------------- 
+
+07-07-2023 
+~~~~~~~~~~
+
+New
+~~~
+
+- Anular dark field (ADF) for an experimental diffraction image. This new feature is only
+  available in full and paid package.
+  
+  See `generateADF <modules.html#pyemaps.stackimg.StackImage.generateADF>`_
+  and sample code *adf.py* for usage details.
+
+- GUI server is now setup for easy and fast access to the latest **pyemaps** for a subscription fee. 
+  Go to: https://pyemaps.emlabsolutions.com
+
+Improvements
+~~~~~~~~~~~~
+
+- Bug fixes
+- Updated EMC control when x-axis input is the default of (0,0,0) when pyemaps
+  will calculate the value. This value is then updated in the output control for
+  kinematical and dynamic diffraction simulations, as well as stereodiagram.
+
 Version 1.0.6 Stable
------------------- 
+--------------------
 
 05-27-2023 
 ~~~~~~~~~~
@@ -14,7 +40,7 @@ Improvements
 - Bug fixes
 
 Version 1.0.5 Stable
------------------- 
+-------------------- 
 
 05-12-2023 
 ~~~~~~~~~~
@@ -35,7 +61,7 @@ Improvements
 
 
 Version 1.0.4 Stable
------------------- 
+-------------------- 
 
 05-07-2023 
 ~~~~~~~~~~
@@ -50,7 +76,7 @@ Improvements
 - Bug fixes.
 
 Version 1.0.3 Stable
------------------- 
+-------------------- 
 
 04-23-2023 
 ~~~~~~~~~~
@@ -74,7 +100,7 @@ Improvements
 - More performance improvement are coming up, stay tuned.
 
 Version 1.0.2 Stable
------------------- 
+-------------------- 
 
 04-02-2023 
 ~~~~~~~~~~
@@ -88,7 +114,7 @@ In preview:
 - :ref:`Electron diffraction pattern indexing <usage:experimental diffraction pattern indexing>`
 
 Version 1.0.1 Stable
------------------- 
+-------------------- 
 
 02-16-2023 
 ~~~~~~~~~~
@@ -101,7 +127,7 @@ Improvements
 
 
 Version 1.0.0 Stable
------------------- 
+-------------------- 
 
 02-07-2023 
 ~~~~~~~~~~

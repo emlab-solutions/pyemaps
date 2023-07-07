@@ -20,6 +20,7 @@
 # Author:     EMLab Solutions, Inc.
 # Date:       May 07, 2022    
 # '''
+
 '''
 Kinematic diffraction module is designed to handle kinematic simulation
 data. It is composed of Point, Line and Disk class objects.
@@ -42,13 +43,18 @@ DEF_MODE = 1
 #int: Default diffraction simulation mode, normal
 
 def _double_eq(a,b):
+
     '''
+
     For internal testing only
+
     '''
     return abs(a-b) <= DIFF_PRECISION
 
 class Point:
+
     '''
+
     Coordinates of kinematic diffraction pattern object.
     
     '''
@@ -59,15 +65,21 @@ class Point:
 
     @property
     def x(self):
+
         '''
+
         X coordinate
+
         '''
         return self._x
     
     @property
     def y(self):
+
         '''
+
         Y coordinate
+
         '''
         return self._y
 
@@ -151,7 +163,9 @@ class Point:
         return iter((self._x, self._y))
 
 class Line:
+
     '''
+
     Kikuchi line representation in kinematic diffraction patterns.
     
     '''
@@ -164,7 +178,9 @@ class Line:
 
     @property
     def pt1(self):
+
         '''
+
         The first end point of a Line
 
         '''
@@ -172,7 +188,9 @@ class Line:
 
     @property
     def pt2(self):
+
         '''
+
         The second end point of a Line
 
         '''
@@ -180,7 +198,9 @@ class Line:
     
     @property
     def type(self):
+
         '''
+
         The type of a Line: Kikuchi line or HOLZ line
 
         '''
@@ -188,6 +208,7 @@ class Line:
     
     @property
     def intensity(self):
+
         '''
         Line intensity
 
@@ -254,7 +275,9 @@ class Line:
         return hash(self.__key__())
     
     def __isub__(self, other):
+
         '''
+
         This operator override is for shifting the line by fixed amount 
         by 2D vector
 
@@ -267,9 +290,12 @@ class Line:
         raise LineError("substraction of Line class from non-Point class type not supported")
     
     def __iadd__(self, other):
+
         '''
+
         This operator override is for shifting the line by fixed amount when
         other line object has the same pt1 and ot2
+
         '''
         if isinstance(other, Point):
             self._pt1 += other
@@ -314,7 +340,9 @@ class Line:
         return iter((x1,y1,x2,y2,self._intensity))
 
     def calOpacity(self, l, h):
+
         """
+    
         Calculate the line opacity based on its intensity value
 
         0.2 -> lowest intensity
@@ -349,7 +377,9 @@ class Line:
                 'int': self._intensity}
 
 class Index:
+
     '''
+    
     Miller Indexes of a diffracted beam representation in kinematic
     diffraction pattern.
 
@@ -362,7 +392,9 @@ class Index:
 
     @property
     def I1(self):
+
         '''
+    
         The first element of Miller Index of a diffracted beam
 
         '''
@@ -370,7 +402,9 @@ class Index:
 
     @property
     def I2(self):
+
         '''
+        
         The second element of Miller Index of a diffracted beam
 
         '''
@@ -378,6 +412,7 @@ class Index:
 
     @property
     def I3(self):
+
         '''
         The third element of Miller Index of a diffracted beam
 
@@ -447,7 +482,9 @@ class Index:
         return iter((self._I1, self._I2, self._I3))
 
 class Disk:
+
     '''
+    
     Diffracted beams representation in kinematic diffraction patterns
 
     '''
@@ -459,7 +496,9 @@ class Disk:
 
     @property 
     def c(self):
+
         '''
+        
         The center point of a diffracted beam.
 
         '''
@@ -467,7 +506,9 @@ class Disk:
     
     @property
     def r(self):
+
         '''
+        
         The radius of a diffracted beam.
 
         '''
@@ -475,7 +516,9 @@ class Disk:
     
     @property
     def idx(self):
+
         '''
+        
         The Miller index of a diffracted beam.
 
         '''
@@ -519,9 +562,12 @@ class Disk:
         return True
     
     def __iadd__(self, other):
+
         '''
+        
         This operator override is for shifting the line when
         other line object has the same pt1 and ot2
+        
         '''
         if isinstance(other, Point):
             self._c += other
@@ -531,8 +577,10 @@ class Disk:
     
     def __isub__(self, other):
         '''
+        
         This operator override is for shifting the line when
         other line object has the same pt1 and ot2
+        
         '''
         if isinstance(other, Point):
             self._c -= other
@@ -566,7 +614,9 @@ class Disk:
                str("radius: {}".format(self._r))
 
     def to_dict(self):
+
         '''
+        
         Creates a diffracted beam object from a dict pyton object
 
         '''
@@ -597,7 +647,9 @@ class Disk:
         return iter((cx, cy, self._r, i1, i2, i3))
 
 class diffPattern:
+
     '''
+    
     Create a kinematic diffraction pattern based on the pyemaps
     kinematic simulation output in python dict object.
 
@@ -606,7 +658,9 @@ class diffPattern:
 
     '''
     def __init__(self, diff_dict):
+
         '''
+
         :param diff_dict: Only accepts output from pyemaps kinematic diffraction run.
         :type diff_dict: dict, required
 
@@ -647,42 +701,82 @@ class diffPattern:
 
     @property
     def klines(self):
-        ''' Kikuchi lines array '''
+
+        ''' 
+        
+        Kikuchi lines array 
+        
+        '''
         return self._klines
 
     @property
     def hlines(self):
-        ''' Holz lines array '''
+
+        ''' 
+        
+        Holz lines array 
+        
+        '''
         return self._hlines
 
     @property
     def disks(self):
-        ''' Disks array '''
+
+        ''' 
+        
+        Disks array 
+        
+        '''
         return self._disks
 
     @property
     def nklines(self):
-        ''' Number of Kikuchi lines '''
+
+        ''' 
+        
+        Number of Kikuchi lines 
+        
+        '''
         return self._nklines
 
     @property
     def nhlines(self):
-        ''' Number of HOLZ lines '''
+
+        ''' 
+        
+        Number of HOLZ lines 
+        
+        '''
         return self._nhlines
 
     @property
     def ndisks(self):
-        ''' Number of Disks '''
+
+        ''' 
+        
+        Number of Disks 
+        
+        '''
         return self._ndisks
 
     @property
     def shift(self):
-        ''' Shifts of the diffraction pattern '''
+
+        ''' 
+        
+        Shifts of the diffraction pattern 
+        
+        '''
         return self._shift
 
     @property
     def name(self):
-        ''' Crystal name '''
+
+        ''' 
+        
+        Crystal name 
+        
+        '''
         return self._name
 
     @klines.setter
@@ -874,7 +968,12 @@ class diffPattern:
         return "\n".join(sDiff)
 
     def _difference(self, other):
-        '''Internal testing use only'''
+
+        '''
+        
+        Internal testing use only
+        
+        '''
         # A - B (self - other)
         if not isinstance(other, diffPattern):
             raise DPError("DP object does not compare with objects of DP types")
@@ -905,7 +1004,9 @@ class diffPattern:
         return retdict
 
 class Diffraction:
+
     '''
+
     List of DP objects and its associated EMControl objects.
 
     '''
@@ -956,9 +1057,12 @@ class Diffraction:
 
     # Adding new diffraction patterns
     def add(self, emc, diffP):
+
         '''
+        
         Append a new kenematic diffraction pattern with its associated 
         controls
+        
         '''
         if not isinstance(diffP, diffPattern):
             raise DPListError('failed to add DP')
@@ -967,11 +1071,21 @@ class Diffraction:
         self.diffList.append((emc, diffP))
     
     def sort(self):
-        ''' Sorting diffraction list by controls'''
+
+        ''' 
+        
+        Sorting diffraction list by controls
+        
+        '''
         self._diffList.sort(key=lambda x: x[0])
             
     def __eq__(self, other):
-        '''Test if two diffraction list is the same'''
+
+        '''
+        
+        Test if two diffraction list is the same
+        
+        '''
         if not isinstance(other, Diffraction):
             return False
         
@@ -998,20 +1112,29 @@ class Diffraction:
         return found
             
     def __getitem__(self, key):
+
         '''
+        
         Array like method for retrieving DP
+        
         '''
         return self._diffList[key]
             
     def clear(self):
+
         '''
+
         Empty the DP list, leaving it as empty.
-        New diffraction patterns can be started
+
         '''
         self._diffList.clear()
 
     def _report_difference(self, other):
-        """ internal testing call"""
+        """ 
+        
+        internal testing call
+        
+        """
         if not isinstance(other, Diffraction):
             raise DPListError('connt report difference between two different type of objects')
         

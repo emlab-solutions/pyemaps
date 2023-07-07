@@ -119,7 +119,18 @@ def add_dif(target):
         em_controls(mode=mode)
         if mode == 2:
             em_controls(dsize=dsize)
-            
+        
+        # @70323 merge
+        # update x-axis if it was set to (0,0,0)
+        # and new xaxis is calculated by the backend
+
+        if em_controls.xaxis == DEF_XAXIS:
+            xa1 = 0
+            xa2 = 2
+            xa3 = 0
+            xa1, xa2, xa3 = dif.get_xaxis()
+            em_controls(xaxis = (xa1,xa2,xa3))
+
         return em_controls, DP(diffp)
 
     def _get_diffraction(self, zone = None, 
@@ -282,7 +293,7 @@ def add_dif(target):
         :type mode: int
 
         :param dsize: diffractted beam size, only applied to CBED mode.
-        :param dsize: float
+        :type dsize: float
 
         :param em_controls: electron microscope controls object.
         :type em_controls: pyemaps.EMC

@@ -102,6 +102,7 @@ def find_pyemaps_datahome(home_type='crystals'):
     
     :param home_type: Type of home directory
     :type home_type: string, optional
+    
     :return: data home path.
     :rtype: string
 

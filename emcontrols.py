@@ -934,3 +934,18 @@ class EMControl:
             return simstr
 
         return ';'.join(emcstrs)
+    
+    @staticmethod
+    def def_dict(): 
+        retdict={}
+        for k in DEF_EMC:
+
+            if k == 'simc':
+                for sk, sv in DEF_SIMC.items():
+                    retdict[sk] = sv
+                continue
+
+            retdict[k] = DEF_EMC[k]['defval']
+
+
+        return retdict

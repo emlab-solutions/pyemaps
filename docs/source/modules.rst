@@ -14,7 +14,7 @@ Crystals
     :undoc-members:
     :show-inheritance:
 
-Microscope Controls
+Microscope and Simulation Controls
 -------------------
 
 .. automodule:: pyemaps.emcontrols
@@ -44,13 +44,22 @@ Dynamic Diffraction
 
 .. _builtin visualization functions:
 
+Images Classes
+--------------
+
+.. automodule:: pyemaps.stackimg
+   :imported-members:
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Display
 -------
 
 .. automodule:: pyemaps.display
    :members: showBloch, showDif, showStereo,
-    .. :no-undoc-members:
-..    :imported-members:
+   .. :no-undoc-members:
+   ..    :imported-members:
 ..    :undoc-members:
 ..    :show-inheritance:
 

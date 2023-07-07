@@ -84,43 +84,60 @@ def add_bloch(target):
                                             )
                     ):
         """
+
         Begins a dynamic diffraction (Bloch) simulation session. 
         The simulation results are retained in the session between this and 
         `endBloch call <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_. 
+        
         :param aperture: Optional. Objective aperture
         :type aperture: float
+        
         :param omega: Optional. Diagnization cutoff value
         :type omega: float
+        
         :param sampling: Optional. Number of sampling points
         :type sampling: int
+        
         :param dbsize: Diffracted beams size.
         :type dbsize: float, optional
+        
         :param em_controls: Optional. electron `microscope control <pyemaps.emcontrols.html#module-pyemaps.emcontrols>`_ object. 
         :type em_controls: pyemaps.EMC
+        
         :return: a tuple (n, ns) where ns is a list of sampling points; n is the number of sampling points
         :rtype: tuple 
+
         Default values:
+
         ::
+
             DEF_APERTURE = 1.0
             DEF_OMEGA = 10
             DEF_SAMPLING = 8
             DEF_CBED_DSIZE - 0.16
             DEF_DSIZE_LIMITS =(0.01, 0.5)
+
         .. note:: 
+
             During the simulation session, results are retained in pyemaps 
             bloch module. The following methods are used to retrieve the
             result before the end of session:
+
             1. `getBlochimages <pyemaps.crystals.html#pyemaps.crystals.Crystal.getBlochImages>`_. 
                Retrieve a list of bloch images
+
             2. `getSCMatrix <pyemaps.crystals.html#pyemaps.crystals.Crystal.getSCMatrix>`_. 
                Retrieve a scattering matrix at a sampling point
         
         .. note:: 
+
             Other information available during the session:
             
             a. List of sampling points, diffraction beams tilts etc 
                with `printIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails>`_;
+            
             b. getEigen function is folded into getSCMatrix call starting from Stable verion 1.0.3
+            
             c. Diagnization Miller indexes at each sampling point: 
                `getBeams <pyemaps.crystals.html#pyemaps.crystals.Crystal.getBeams>`_;
         
@@ -198,6 +215,15 @@ def add_bloch(target):
         em_controls.simc(omega = omega, 
                          sampling = sampling
                         )
+        # update x-axis if it was set to (0,0,0)
+        # and new xaxis is calculated by the backend
+
+        if em_controls.xaxis == DEF_XAXIS:
+            xa1 = 0
+            xa2 = 2
+            xa3 = 0
+            xa1, xa2, xa3 = dif.get_xaxis()
+            em_controls(xaxis = (xa1,xa2,xa3))
 
         self.session_controls=em_controls
         return nsampling, sp
@@ -420,7 +446,7 @@ def add_bloch(target):
             raise BlochError("failed to retrieve diffracted beams info")
 
         cb = farray(np.zeros((3, ncalcbeams), dtype=int))
-        # cb, ret = bloch.GETCALCBEAMS(cb)
+        
         cb, ret = bloch.getcalcbeams(cb)
 
         if ret != 0:

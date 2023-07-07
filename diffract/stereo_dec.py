@@ -38,11 +38,14 @@ def add_stereo(target):
         import numpy as np
         from numpy import asfortranarray as farray
 
-        from ..errors import StereodiagramError
+        from ..errors import StereodiagramError 
+        from .. import DEF_XAXIS
 
         dif.initcontrols()
-        dif.setzone(zone[0], zone[1], zone[2])
-        dif.set_xaxis(1, xa[0], xa[1], xa[2])
+        dif.setzone(zone[0], zone[1], zone[2])        
+        
+        if xa != DEF_XAXIS:
+            dif.set_xaxis(1, xa[0], xa[1], xa[2])
         dif.setsamplecontrols(tilt[0], tilt[1], 0.0, 0.0)
 
         # load the crystal

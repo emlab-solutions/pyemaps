@@ -473,16 +473,22 @@ def showDif(dpl=None,
 
     :param dpl: Kinematic difraction pattern object list `DPList <pyemaps.kdiffs.html#pyemaps.kdiffs.DPList>`_
     :type dpl: DPList
+
     :param cShow: Plot control annotation. `True` (default): plot the control parameters on lower left corner; `False` do not plot.
     :type cShow: bool, optional
+
     :param kShow: Whether to display Kikuchi lines.
     :type kShow: bool 
+
     :param iShow: Whether to display Miller indexes.
     :type iShow: bool 
+
     :param layout: layout format. individual (default): plotting one by one, table: plotting in a table of 3 columns  
     :type layout: str, optional 
+
     :param bSave: Whether to save the diplay into a .png image file.
     :type bSave: bool    
+
     :param bClose: Whether to close plotting window when finished. Default: False - users must close it. 
     :type bClose: bool, optional  
     
@@ -520,14 +526,19 @@ def showBloch(bimgs,
 
     :param bimgs: Optional. Dynamic difraction pattern object list `BImgList <pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs>`_
     :type bimgs: BlochImgs 
+
     :param cShow: Plot control annotation. `True` (default): plot the control parameters on lower left corner; `False` do not plot.
     :type cShow: bool, optional
+
     :param bColor: Optional. Whether to display the image in predefined color map.
     :type bColor: bool 
+
     :param layout: layout format. individual (default): plotting one by one, table: plotting in a table of 3 columns  
     :type layout: str, optional
+
     :param bSave: Optional. Whether to save the image into a .im3 image file.
     :type bSave: bool    
+
     :param bClose: Whether to close plotting window when finished. Default: False - users must close it. 
     :type bClose: bool, optional  
     
@@ -570,16 +581,22 @@ def showStereo(slist, name,
 
     :param slist: Stereodiagram output from `generateStereo <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateStereo>`_.
     :type slist: list, required
+
     :param cShow: Plot control annotation. `True` (default): plot the control parameters on lower left corner; `False` do not plot.
     :type cShow: bool, optional
+
     :param iShow: Whether to display Miller indexes or not.
     :type iShow: bool, optional
+
     :param zLimit: Miller indexes cutoff number.
-    :type zLimit: int, optional  
+    :type zLimit: int, optional 
+
     :param layout: layout format. individual (default): plotting one by one in sequence, table: plotting in a table of 3 columns  
     :type layout: str, optional 
+
     :param bSave: Whether to save the image into a .png image file.
     :type bSave: bool, optional  
+    
     :param bClose: Whether to close plotting window when finished. Default: False - users must close it. 
     :type bClose: bool, optional  
 
@@ -629,3 +646,102 @@ def _getGridPos(i, nCols = 3):
     nrows = i // nCols
 
     return nrows, ncols
+
+# image display for ediom module
+
+
+def normalizeImage(img):
+    if img is None:
+        print("Probe error: image file empty")
+        return False
+    y0 = np.mean(img, dtype=np.float32)
+    medImg = np.std(img, dtype=np.float32)
+
+    Ymin1 = y0 - 3.0 * medImg
+    Ymin = np.amin(img)
+    if Ymin < Ymin1: Ymin = Ymin1
+
+    Ymax1 = y0 + 3.0 * medImg
+    Ymax = np.amax(img)
+    if Ymax > Ymax1: Ymax = Ymax1
+
+    if Ymin >= Ymax:
+        print("not finding right min-max: ")
+        return False
+    ran = Ymax-Ymin
+
+    img[img < Ymin] = Ymin
+    img[img > Ymax] = Ymax
+    img = (img - Ymin)/ran
+    return True
+
+def displayXImage(img, 
+                fsize=(0,0), 
+                bColor= False, 
+                isMask = False, 
+                bIndexed=False, 
+                iShow = False, 
+                ds = None,
+                suptitle = ''):   
+        """
+        Internal ediom helper function displaying image.
+
+        :return:  
+        :rtype: None
+        
+        """
+        
+        import matplotlib.pyplot as plt
+        import matplotlib.patches as patches
+        from matplotlib.colors import LinearSegmentedColormap
+        clrs = ["#2973A5", "cyan", "limegreen", "yellow", "red"]
+        qedDPI = 600
+        gclrs=plt.get_cmap('gray')
+        EDIOM_TITLE = 'Pyemaps Preview - Ediom Diffraction Pattern Indexing'
+
+        nr,nc = fsize
+
+        if isMask:
+            bsize = (0.5, 0.5*int(nr/nc))
+        else:
+            bsize = (1.0, 1.0*int(nr/nc))
+
+        fig, ax = plt.subplots(figsize=bsize, dpi=qedDPI)
+        
+        fig.canvas.set_window_title(EDIOM_TITLE)
+        # ax.set_xlabel(suptitle, fontsize=1.5)
+        fig.suptitle(suptitle, va='top', fontsize=1.5)
+        
+        clrMap = gclrs #default to grey
+        if bColor:
+            clrMap = LinearSegmentedColormap.from_list("mycmap", clrs)
+        plt.imshow(img, cmap = clrMap)
+
+        ax.set_axis_off()
+        
+        count = 0
+        if ds is not None:
+            for d in ds:
+                cx, cy, rad, indx, itype = d
+                
+                if bIndexed and itype != 2 and count != 0:
+                    continue
+
+                centre = (cx, cy)
+                
+                circle = plt.Circle(centre, rad, 
+                                    fill=False, 
+                                    linewidth = 0.1, 
+                                    # alpha=0.6, 
+                                    color='white')
+                ax.add_patch(circle)
+                count += 1
+
+                if iShow:
+                    ax.text(centre[0],centre[1], 
+                        str(indx),
+                        {'color': 'red', 'fontsize': 1.4},
+                        horizontalalignment='center',
+                        verticalalignment='bottom')
+        
+        plt.show()

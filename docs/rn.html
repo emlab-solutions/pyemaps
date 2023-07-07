@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Release Notes &#8212; pyemaps 1.0.6 Stable documentation</title>
+    <title>Release Notes &#8212; pyemaps 1.0.7 Stable documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="license.html" title="Licence"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.6 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.7 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Release Notes</a></li> 
       </ul>
     </div>  
@@ -49,13 +49,40 @@
             
   <section id="release-notes">
 <h1>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this heading">¶</a></h1>
-<section id="version-1-0-6-stable">
-<h2>Version 1.0.6 Stable<a class="headerlink" href="#version-1-0-6-stable" title="Permalink to this heading">¶</a></h2>
+<section id="version-1-0-7-stable">
+<h2>Version 1.0.7 Stable<a class="headerlink" href="#version-1-0-7-stable" title="Permalink to this heading">¶</a></h2>
 <section id="id1">
-<h3>05-27-2023<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
+<h3>07-07-2023<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="new">
+<h3>New<a class="headerlink" href="#new" title="Permalink to this heading">¶</a></h3>
+<ul>
+<li><p>Anular dark field (ADF) for an experimental diffraction image. This new feature is only
+available in full and paid package.</p>
+<p>See <a class="reference external" href="modules.html#pyemaps.stackimg.StackImage.generateADF">generateADF</a>
+and sample code <em>adf.py</em> for usage details.</p>
+</li>
+<li><p>GUI server is now setup for easy and fast access to the latest <strong>pyemaps</strong> for a subscription fee.
+Go to: <a class="reference external" href="https://pyemaps.emlabsolutions.com">https://pyemaps.emlabsolutions.com</a></p></li>
+</ul>
 </section>
 <section id="improvements">
 <h3>Improvements<a class="headerlink" href="#improvements" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Bug fixes</p></li>
+<li><p>Updated EMC control when x-axis input is the default of (0,0,0) when pyemaps
+will calculate the value. This value is then updated in the output control for
+kinematical and dynamic diffraction simulations, as well as stereodiagram.</p></li>
+</ul>
+</section>
+</section>
+<section id="version-1-0-6-stable">
+<h2>Version 1.0.6 Stable<a class="headerlink" href="#version-1-0-6-stable" title="Permalink to this heading">¶</a></h2>
+<section id="id2">
+<h3>05-27-2023<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="id3">
+<h3>Improvements<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Large angle CBED image generation sample code <em>si_lacbed.py</em> added.</p></li>
 <li><p>Bug fixes</p></li>
@@ -64,11 +91,11 @@
 </section>
 <section id="version-1-0-5-stable">
 <h2>Version 1.0.5 Stable<a class="headerlink" href="#version-1-0-5-stable" title="Permalink to this heading">¶</a></h2>
-<section id="id2">
-<h3>05-12-2023<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
+<section id="id4">
+<h3>05-12-2023<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
 </section>
-<section id="new">
-<h3>New<a class="headerlink" href="#new" title="Permalink to this heading">¶</a></h3>
+<section id="id5">
+<h3>New<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Large angle CBED pattern generation.</p></li>
 <li><p>Calculated diffracted beams for dynamic diffraction simulation or Bloch session.</p></li>
@@ -76,8 +103,8 @@
 <p>See <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateBloch">generateBloch</a>
 for details.</p>
 </section>
-<section id="id3">
-<h3>Improvements<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
+<section id="id6">
+<h3>Improvements<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Optimization in bloch image generation for multiple sample thickness.</p></li>
 </ul>
@@ -85,11 +112,11 @@ for details.</p>
 </section>
 <section id="version-1-0-4-stable">
 <h2>Version 1.0.4 Stable<a class="headerlink" href="#version-1-0-4-stable" title="Permalink to this heading">¶</a></h2>
-<section id="id4">
-<h3>05-07-2023<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
+<section id="id7">
+<h3>05-07-2023<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h3>
 </section>
-<section id="id5">
-<h3>Improvements<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
+<section id="id8">
+<h3>Improvements<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Incremental memory performance improvement in Bloch simulation.</p></li>
 <li><p><em>getBeams</em> function folded into
@@ -101,11 +128,11 @@ as one of its return elements. See sample code <em>si_scm.py</em> for demonstrat
 </section>
 <section id="version-1-0-3-stable">
 <h2>Version 1.0.3 Stable<a class="headerlink" href="#version-1-0-3-stable" title="Permalink to this heading">¶</a></h2>
-<section id="id6">
-<h3>04-23-2023<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
+<section id="id9">
+<h3>04-23-2023<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h3>
 </section>
-<section id="id7">
-<h3>Improvements<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h3>
+<section id="id10">
+<h3>Improvements<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h3>
 <ul>
 <li><p>A major memory improvement in dynamic diffraction simulation(Bloch),
 resulting a large performance improvement in Bloch simulation.</p></li>
@@ -126,11 +153,11 @@ from Stable verion 1.0.3</p></li>
 </section>
 <section id="version-1-0-2-stable">
 <h2>Version 1.0.2 Stable<a class="headerlink" href="#version-1-0-2-stable" title="Permalink to this heading">¶</a></h2>
-<section id="id9">
-<h3>04-02-2023<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h3>
+<section id="id12">
+<h3>04-02-2023<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h3>
 </section>
-<section id="id10">
-<h3>New<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h3>
+<section id="id13">
+<h3>New<a class="headerlink" href="#id13" title="Permalink to this heading">¶</a></h3>
 <p>In preview:</p>
 <ul class="simple">
 <li><p>Diffraction pattern database builder.</p></li>
@@ -140,11 +167,11 @@ from Stable verion 1.0.3</p></li>
 </section>
 <section id="version-1-0-1-stable">
 <h2>Version 1.0.1 Stable<a class="headerlink" href="#version-1-0-1-stable" title="Permalink to this heading">¶</a></h2>
-<section id="id11">
-<h3>02-16-2023<a class="headerlink" href="#id11" title="Permalink to this heading">¶</a></h3>
+<section id="id14">
+<h3>02-16-2023<a class="headerlink" href="#id14" title="Permalink to this heading">¶</a></h3>
 </section>
-<section id="id12">
-<h3>Improvements<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h3>
+<section id="id15">
+<h3>Improvements<a class="headerlink" href="#id15" title="Permalink to this heading">¶</a></h3>
 <ul>
 <li><p>Bug fixes in single simulation display functions and other incremental improvements.</p>
 <p>Send your suggestions and comments to <a class="reference external" href="mailto:support&#37;&#52;&#48;emlabsoftware&#46;com">support<span>&#64;</span>emlabsoftware<span>&#46;</span>com</a>.</p>
@@ -154,12 +181,12 @@ from Stable verion 1.0.3</p></li>
 </section>
 <section id="version-1-0-0-stable">
 <h2>Version 1.0.0 Stable<a class="headerlink" href="#version-1-0-0-stable" title="Permalink to this heading">¶</a></h2>
-<section id="id13">
-<h3>02-07-2023<a class="headerlink" href="#id13" title="Permalink to this heading">¶</a></h3>
+<section id="id16">
+<h3>02-07-2023<a class="headerlink" href="#id16" title="Permalink to this heading">¶</a></h3>
 <p>The first stable version!</p>
 </section>
-<section id="id14">
-<h3>Improvements<a class="headerlink" href="#id14" title="Permalink to this heading">¶</a></h3>
+<section id="id17">
+<h3>Improvements<a class="headerlink" href="#id17" title="Permalink to this heading">¶</a></h3>
 <ul>
 <li><p>Bug fixes in dynamic diffraction simulations. The temporary file name
 collision issue discovered during some multiprocess executions is now
@@ -171,11 +198,11 @@ fixed. We’d like to thank our users for reporting the issue.</p>
 </section>
 <section id="version-0-6-2-beta">
 <h2>Version 0.6.2 Beta<a class="headerlink" href="#version-0-6-2-beta" title="Permalink to this heading">¶</a></h2>
-<section id="id15">
-<h3>01-15-2023<a class="headerlink" href="#id15" title="Permalink to this heading">¶</a></h3>
+<section id="id18">
+<h3>01-15-2023<a class="headerlink" href="#id18" title="Permalink to this heading">¶</a></h3>
 </section>
-<section id="id16">
-<h3>Improvements<a class="headerlink" href="#id16" title="Permalink to this heading">¶</a></h3>
+<section id="id19">
+<h3>Improvements<a class="headerlink" href="#id19" title="Permalink to this heading">¶</a></h3>
 <ul>
 <li><p>Bug fixes.</p></li>
 <li><p>Display function parameters naming changes to be more consistent. Specifically,
@@ -209,11 +236,11 @@ default values if not set.</p></li>
 </section>
 <section id="version-0-6-1-beta">
 <h2>Version 0.6.1 Beta<a class="headerlink" href="#version-0-6-1-beta" title="Permalink to this heading">¶</a></h2>
-<section id="id17">
-<h3>01-05-2023<a class="headerlink" href="#id17" title="Permalink to this heading">¶</a></h3>
+<section id="id20">
+<h3>01-05-2023<a class="headerlink" href="#id20" title="Permalink to this heading">¶</a></h3>
 </section>
-<section id="id18">
-<h3>Improvements<a class="headerlink" href="#id18" title="Permalink to this heading">¶</a></h3>
+<section id="id21">
+<h3>Improvements<a class="headerlink" href="#id21" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Bug fixes.</p></li>
 <li><p>Display will keep the figures windows open for each display. Users are now responsible to close them.</p></li>
@@ -222,11 +249,11 @@ default values if not set.</p></li>
 </section>
 <section id="version-0-6-0-beta">
 <h2>Version 0.6.0 Beta<a class="headerlink" href="#version-0-6-0-beta" title="Permalink to this heading">¶</a></h2>
-<section id="id19">
-<h3>12-11-2022<a class="headerlink" href="#id19" title="Permalink to this heading">¶</a></h3>
+<section id="id22">
+<h3>12-11-2022<a class="headerlink" href="#id22" title="Permalink to this heading">¶</a></h3>
 </section>
-<section id="id20">
-<h3>Improvements<a class="headerlink" href="#id20" title="Permalink to this heading">¶</a></h3>
+<section id="id23">
+<h3>Improvements<a class="headerlink" href="#id23" title="Permalink to this heading">¶</a></h3>
 <ul>
 <li><p>Diffraction simulation result list objects <a class="reference external" href="pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern">DPList</a> and
 <a class="reference external" href="pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs">BImgList</a> can now be sorted by its controls objects in their builtin
@@ -256,11 +283,11 @@ and result accuracies.</p></li>
 </section>
 <section id="version-0-5-0-beta">
 <h2>Version 0.5.0 Beta<a class="headerlink" href="#version-0-5-0-beta" title="Permalink to this heading">¶</a></h2>
-<section id="id21">
-<h3>11-30-2022<a class="headerlink" href="#id21" title="Permalink to this heading">¶</a></h3>
+<section id="id24">
+<h3>11-30-2022<a class="headerlink" href="#id24" title="Permalink to this heading">¶</a></h3>
 </section>
-<section id="id22">
-<h3>Improvements<a class="headerlink" href="#id22" title="Permalink to this heading">¶</a></h3>
+<section id="id25">
+<h3>Improvements<a class="headerlink" href="#id25" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Documentation impreovements.</p></li>
 <li><p>Kinematic diffraction pattern: Kikuchi and HOLZ lines intensities
@@ -272,11 +299,11 @@ See <a class="reference internal" href="pyemaps.emcontrols.html"><span class="do
 </section>
 <section id="version-0-4-9-beta">
 <h2>Version 0.4.9 Beta<a class="headerlink" href="#version-0-4-9-beta" title="Permalink to this heading">¶</a></h2>
-<section id="id23">
-<h3>11-26-2022<a class="headerlink" href="#id23" title="Permalink to this heading">¶</a></h3>
+<section id="id26">
+<h3>11-26-2022<a class="headerlink" href="#id26" title="Permalink to this heading">¶</a></h3>
 </section>
-<section id="id24">
-<h3>Improvements<a class="headerlink" href="#id24" title="Permalink to this heading">¶</a></h3>
+<section id="id27">
+<h3>Improvements<a class="headerlink" href="#id27" title="Permalink to this heading">¶</a></h3>
 <ul>
 <li><p>Bug fixes.</p></li>
 <li><dl>
@@ -314,11 +341,11 @@ to <cite>True</cite>.</p>
 </section>
 <section id="version-0-4-8-beta">
 <h2>Version 0.4.8 Beta<a class="headerlink" href="#version-0-4-8-beta" title="Permalink to this heading">¶</a></h2>
-<section id="id25">
-<h3>11-19-2022<a class="headerlink" href="#id25" title="Permalink to this heading">¶</a></h3>
+<section id="id28">
+<h3>11-19-2022<a class="headerlink" href="#id28" title="Permalink to this heading">¶</a></h3>
 </section>
-<section id="id26">
-<h3>Improvements<a class="headerlink" href="#id26" title="Permalink to this heading">¶</a></h3>
+<section id="id29">
+<h3>Improvements<a class="headerlink" href="#id29" title="Permalink to this heading">¶</a></h3>
 <ul>
 <li><p>Crystal volume limit increased to 1200.</p></li>
 <li><p>Dynamic diffraction simulation expanded to handle larger number of
@@ -342,11 +369,11 @@ built-in crystals:</p></li>
 </section>
 <section id="version-0-4-7-beta">
 <h2>Version 0.4.7 Beta<a class="headerlink" href="#version-0-4-7-beta" title="Permalink to this heading">¶</a></h2>
-<section id="id27">
-<h3>11-14-2022<a class="headerlink" href="#id27" title="Permalink to this heading">¶</a></h3>
+<section id="id30">
+<h3>11-14-2022<a class="headerlink" href="#id30" title="Permalink to this heading">¶</a></h3>
 </section>
-<section id="id28">
-<h3>New<a class="headerlink" href="#id28" title="Permalink to this heading">¶</a></h3>
+<section id="id31">
+<h3>New<a class="headerlink" href="#id31" title="Permalink to this heading">¶</a></h3>
 <p>Reorganized dynamic diffraction simulation into sessions with:</p>
 <ol class="arabic simple">
 <li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a>. Starts a Bloch wave dynamic diffraction session.</p></li>
@@ -391,75 +418,81 @@ This function is now equivalent to calling:</p>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Release Notes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#version-1-0-6-stable">Version 1.0.6 Stable</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">05-27-2023</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-1-0-7-stable">Version 1.0.7 Stable</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">07-07-2023</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#new">New</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#improvements">Improvements</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#version-1-0-5-stable">Version 1.0.5 Stable</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id2">05-12-2023</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#new">New</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#version-1-0-6-stable">Version 1.0.6 Stable</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">05-27-2023</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id3">Improvements</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#version-1-0-5-stable">Version 1.0.5 Stable</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">05-12-2023</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Improvements</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#version-1-0-4-stable">Version 1.0.4 Stable</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id4">05-07-2023</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id5">Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">05-07-2023</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">Improvements</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#version-1-0-3-stable">Version 1.0.3 Stable</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id6">04-23-2023</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id7">Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">04-23-2023</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">Improvements</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#version-1-0-2-stable">Version 1.0.2 Stable</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id9">04-02-2023</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id10">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">04-02-2023</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">New</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#version-1-0-1-stable">Version 1.0.1 Stable</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id11">02-16-2023</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id12">Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id14">02-16-2023</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id15">Improvements</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#version-1-0-0-stable">Version 1.0.0 Stable</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id13">02-07-2023</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id14">Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id16">02-07-2023</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id17">Improvements</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-6-2-beta">Version 0.6.2 Beta</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id15">01-15-2023</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id16">Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id18">01-15-2023</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id19">Improvements</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-6-1-beta">Version 0.6.1 Beta</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id17">01-05-2023</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id18">Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id20">01-05-2023</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id21">Improvements</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-6-0-beta">Version 0.6.0 Beta</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id19">12-11-2022</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id20">Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id22">12-11-2022</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id23">Improvements</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-5-0-beta">Version 0.5.0 Beta</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id21">11-30-2022</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id22">Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id24">11-30-2022</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id25">Improvements</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-4-9-beta">Version 0.4.9 Beta</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id23">11-26-2022</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id24">Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id26">11-26-2022</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id27">Improvements</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-4-8-beta">Version 0.4.8 Beta</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id25">11-19-2022</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id26">Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id28">11-19-2022</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id29">Improvements</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#version-0-4-7-beta">Version 0.4.7 Beta</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id27">11-14-2022</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id28">New</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id30">11-14-2022</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id31">New</a></li>
 </ul>
 </li>
 </ul>
@@ -506,7 +539,7 @@ This function is now equivalent to calling:</p>
         <li class="right" >
           <a href="license.html" title="Licence"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.6 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.7 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Release Notes</a></li> 
       </ul>
     </div>
