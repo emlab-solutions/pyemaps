@@ -203,6 +203,21 @@ as demonstrated below:
     :target: https://github.com/emlab-solutions/imagepypy/raw/main/stereo_table.png
 
 
+
+Pyemaps GUI Web Service
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Driven by the latest pyemaps, a web server is setup for those who are interested
+in better visualization of pyemaps simulations and calculations. This service
+is for a nominal subscription fees. Go to https://pyemaps.emlabsolutions.com
+to sign up.
+
+Below is an example of the ineractive 3-d display of atomic structure through Jmole
+based on pyemaps crystal structure calculations:
+
+.. image:: https://github.com/emlab-solutions/imagepypy/raw/main//pyemaps_web_server.png
+    
+
 .. _thirdparty:
 
 Rendering by Third Party Tools
@@ -356,3 +371,4 @@ crystal in 3D atomic structure. The following is an example of such rendering:
 
 
 .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/mxtal01.png
+
