@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>pyemaps package &#8212; pyemaps 1.0.6 Stable documentation</title>
+    <title>pyemaps package &#8212; pyemaps 1.0.7 Stable documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -29,7 +29,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.6 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.7 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyemaps package</a></li> 
       </ul>
     </div>  
@@ -534,20 +534,25 @@ two reciprocal space vectors</p>
 <span class="sig-name descname"><span class="pre">beginBloch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aperture</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_APERTURE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_OMEGA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SAMPLING</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dbsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_CBED_DSIZE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">em_controls</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">EMC(cl=200,</span> <span class="pre">simc=SIMC(gmax=1.0,</span> <span class="pre">excitation=(0.3,</span> <span class="pre">1.0)))</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.beginBloch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Begins a dynamic diffraction (Bloch) simulation session. 
 The simulation results are retained in the session between this and 
-<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch call</a>. 
-:param aperture: Optional. Objective aperture
-:type aperture: float
-:param omega: Optional. Diagnization cutoff value
-:type omega: float
-:param sampling: Optional. Number of sampling points
-:type sampling: int
-:param dbsize: Diffracted beams size.
-:type dbsize: float, optional
-:param em_controls: Optional. electron <a class="reference external" href="pyemaps.emcontrols.html#module-pyemaps.emcontrols">microscope control</a> object. 
-:type em_controls: pyemaps.EMC
-:return: a tuple (n, ns) where ns is a list of sampling points; n is the number of sampling points
-:rtype: tuple 
-Default values:</p>
+<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch call</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>aperture</strong> (<em>float</em>) – Optional. Objective aperture</p></li>
+<li><p><strong>omega</strong> (<em>float</em>) – Optional. Diagnization cutoff value</p></li>
+<li><p><strong>sampling</strong> (<em>int</em>) – Optional. Number of sampling points</p></li>
+<li><p><strong>dbsize</strong> (<em>float</em><em>, </em><em>optional</em>) – Diffracted beams size.</p></li>
+<li><p><strong>em_controls</strong> (<em>pyemaps.EMC</em>) – Optional. electron <a class="reference external" href="pyemaps.emcontrols.html#module-pyemaps.emcontrols">microscope control</a> object.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a tuple (n, ns) where ns is a list of sampling points; n is the number of sampling points</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<p>Default values:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DEF_APERTURE</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="n">DEF_OMEGA</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="n">DEF_SAMPLING</span> <span class="o">=</span> <span class="mi">8</span>
@@ -559,12 +564,10 @@ Default values:</p>
 <p class="admonition-title">Note</p>
 <p>During the simulation session, results are retained in pyemaps 
 bloch module. The following methods are used to retrieve the
-result before the end of session:
-1. <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getBlochImages">getBlochimages</a>.</p>
-<blockquote>
-<div><p>Retrieve a list of bloch images</p>
-</div></blockquote>
-<ol class="arabic simple" start="2">
+result before the end of session:</p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getBlochImages">getBlochimages</a>. 
+Retrieve a list of bloch images</p></li>
 <li><p><a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getSCMatrix">getSCMatrix</a>. 
 Retrieve a scattering matrix at a sampling point</p></li>
 </ol>
@@ -806,8 +809,7 @@ stabel production soon. Its replacement is:
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>mode</strong> (<em>int</em>) – mode of kinemetic diffraction - normal(1) or CBED(2).</p></li>
-<li><p><strong>dsize</strong> – diffractted beam size, only applied to CBED mode.</p></li>
-<li><p><strong>dsize</strong> – float</p></li>
+<li><p><strong>dsize</strong> (<em>float</em>) – diffractted beam size, only applied to CBED mode.</p></li>
 <li><p><strong>em_controls</strong> (<em>pyemaps.EMC</em>) – electron microscope controls object.</p></li>
 </ul>
 </dd>
@@ -1031,244 +1033,6 @@ and diffracted beams.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.crystals.Crystal.importExpImageFromNPY">
-<span class="sig-name descname"><span class="pre">importExpImageFromNPY</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">npy_arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.importExpImageFromNPY" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads a python numpy array representation of diffraction pattern into <strong>pyemaps</strong> ediom module
-for peaks search and indexing.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>npy_arr</strong> (<em>numpy array</em><em>, </em><em>required</em>) – a numpy array of basic types that can be converted into float32 type.</p></li>
-<li><p><strong>bShow</strong> (boolean, optional. Default to <cite>False</cite>) – display the image or not after successful importing</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>status code, 0 for successful run</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-<p>An example of numpy array:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">img_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-        <span class="n">img_arr</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>where <em>dtype</em> can be any type from a list of numpy types that can be converted into numpy.float32.
-The list covers most of the numpy data types, except the complex types:</p>
-<ol class="arabic simple">
-<li><p><a href="#id32"><span class="problematic" id="id33">numpy.bool_</span></a></p></li>
-<li><p>numpy.byte</p></li>
-<li><p>numpy.short</p></li>
-<li><p>numpy.ushort</p></li>
-<li><p>numpy.intc</p></li>
-<li><p>numpy.uintc</p></li>
-<li><p>numpy.uint</p></li>
-<li><p>numpy.longlong</p></li>
-<li><p>numpy.ulonglong</p></li>
-<li><p>numpy.float16</p></li>
-<li><p>numpy.single</p></li>
-<li><p>numpy.double</p></li>
-</ol>
-<p>or corresponding python C API types:</p>
-<ol class="arabic simple">
-<li><p>NPY_BOOL: Boolean data type.</p></li>
-<li><p>NPY_BYTE: Signed byte data type.</p></li>
-<li><p>NPY_UBYTE: Unsigned byte data type.</p></li>
-<li><p>NPY_SHORT: Signed short integer data type.</p></li>
-<li><p>NPY_USHORT: Unsigned short integer data type.</p></li>
-<li><p>NPY_INT: Signed integer data type.</p></li>
-<li><p>NPY_UINT: Unsigned integer data type.</p></li>
-<li><p>NPY_LONG: Signed long integer data type.</p></li>
-<li><p>NPY_ULONG: Unsigned long integer data type.</p></li>
-<li><p>NPY_LONGLONG: Signed long long integer data type.</p></li>
-<li><p>NPY_ULONGLONG: Unsigned long long integer data type.</p></li>
-<li><p>NPY_FLOAT: Single-precision floating point data type.</p></li>
-<li><p>NPY_DOUBLE: Double-precision floating point data type.</p></li>
-</ol>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.crystals.Crystal.importRawExpImage">
-<span class="sig-name descname"><span class="pre">importRawExpImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imgfn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">E_FLOAT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MAX_IMAGESIZE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MAX_IMAGESIZE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.importRawExpImage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads a raw experimental image with diffraction patterns into <strong>pyemaps</strong> ediom module
-for peaks search and DP indexing.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>imgfn</strong> (<em>string</em><em>, </em><em>required</em>) – the raw image full path with file name.</p></li>
-<li><p><strong>offset</strong> (<em>integer</em><em>, </em><em>required</em>) – offset in bytes to image data. This is normally the size of image header in bytes</p></li>
-<li><p><strong>type</strong> (<em>integer</em><em>, </em><em>optional</em>) – the image data type.</p></li>
-<li><p><strong>width</strong> (<em>integer</em><em>, </em><em>optional</em>) – the image width</p></li>
-<li><p><strong>height</strong> (<em>integer</em><em>, </em><em>optional</em>) – the image height</p></li>
-<li><p><strong>depth</strong> (<em>integer</em><em>, </em><em>optional. Default to 1.</em>) – image stack size or the number of layers</p></li>
-<li><p><strong>sel</strong> (<em>integer</em><em>, </em><em>optional</em><em>, </em><em>default to 1 - the first layer.</em>) – the image stack or layer selection - ediom search on specific stack of a multiple stacks image</p></li>
-<li><p><strong>bShow</strong> (boolean, optional, default to <cite>False</cite>.) – weather to display the image after successful import</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>status code, 0 for successful run</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-<p>List of image data types supported:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">char (signed or unsigned, 8 bits)</span>
-<span class="go">short (signed or unsigned, 16 bits)</span>
-<span class="go">int (signed or unsigned, at least 16 bits)</span>
-<span class="go">long (signed or unsigned, at least 32 bits)</span>
-<span class="go">float (32 bits, default)</span>
-<span class="go">double (64 bits, may result in reduction in precision) </span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.crystals.Crystal.importSHExpImage">
-<span class="sig-name descname"><span class="pre">importSHExpImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imgfn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.importSHExpImage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads a pyemaps proprietory experimental image with diffraction patterns into <strong>pyemaps</strong> ediom module
-for peaks search and indexing.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>imgfn</strong> (<em>string</em><em>, </em><em>required</em>) – the raw image file.</p></li>
-<li><p><strong>sel</strong> (<em>integer</em><em>, </em><em>optional</em><em>, </em><em>Default to 1.</em>) – the image stack or layer selection - ediom search on specific stack of a multiple stacks image</p></li>
-<li><p><strong>bShow</strong> (boolean, optional. Default to <cite>False</cite>.) – weather to display the image after successful import</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>status code. 0 successful.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This is a pyemaps’s own proprietory image format where the image attributes are defined
-in a small header C-structure of size 8 bytes:</p>
-</div>
-<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">SHeader</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">short</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">width</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">short</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">height</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">short</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">stacks</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">short</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">type</span><span class="p">;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.crystals.Crystal.indexExpDP">
-<span class="sig-name descname"><span class="pre">indexExpDP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_CC</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIGMA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_ICENTER</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_RMIN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_BOXSIZE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling_option</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(DEF_XSCALE,</span> <span class="pre">DEF_TSCALE)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_FILTER_THRESHOLD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SEARCH_THRESHOLD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bDebug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.indexExpDP" title="Permalink to this definition">¶</a></dt>
-<dd><p>Searches and indexes loaded experimental diffraction image. The experimental diffraction image must be loaded 
-or imported before this call. There are many ways to import your image:</p>
-<p>1. Use <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.importRawExpImage">importRawExpImage</a>,
-if the image format is known and image data can be read from a fixed offset from the start of the file.</p>
-<p>2. Otherwise, use <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.importExpImageFromNPY">importExpImageFromNPY</a>,
-if the image can be exported and stored into a numpy array.</p>
-<p>3. Finally, use <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.importSHExpImage">importSHExpImage</a>,
-if the image id a proprietory formatted image file with a small header of 8 bytes offset,</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>We are working on importing images with popular formats, stay tuned.</p>
-</div>
-<p>In addition, a diffraction database also needs to be loaded by preceeding this call with
-<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB">loadDPDB</a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dpdbfn</strong> – diffraction pattern database file name. The file is generated by pyemaps dp_gen module</p>
-</dd>
-</dl>
-<p>or database file name saved from previous runs.
-:type dpdbfn: string, required</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>cc</strong> (<em>float</em><em>, </em><em>optional</em>) – Camera constant in 1/Angstrom/pixel.</p></li>
-<li><p><strong>sigma</strong> (<em>float</em><em>, </em><em>optional.</em>) – Diffraction peak width - estimated image peak width.</p></li>
-<li><p><strong>img_center</strong> (<em>float tuple</em><em>, </em><em>optional</em>) – diffraction pattern center in (col, row) coordinate.</p></li>
-<li><p><strong>rmin</strong> (<em>float</em><em>, </em><em>optional</em>) – low cutoff radius for excluding center beam and diffuse intensities.</p></li>
-<li><p><strong>search_box</strong> (<em>float</em><em>, </em><em>optional</em>) – Parameter in pixels used to define peak search. Recommended value 
-of 3 to 4 times of sigma value for selected area diffraction.</p></li>
-<li><p><strong>filter_threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Diffraction pattern screening threshold. Between 0.0 and 1.0 
-use 0 to include all database patterns for search.</p></li>
-<li><p><strong>peak_threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Peak threshold. value between 0.0 and 1.0. used to remove noisy peaks.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>status code, 0 for successful run</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-<p>The image control parameters cc - rmin above are image meaurements controls. The accuraccies
-of these measurements can greatly affect the peak search and eventually indexing results.</p>
-<p>The remaining input parameters directly control the search and indexing functions and its results.
-Use these parameters to tune your results.</p>
-<p>The following is a typical sequence of displays during the execution:</p>
-<p>1. Once the DP database is loaded successfully, the steoreo projection map associated
-with the DP database will be shown.</p>
-<a class="reference internal image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojmap.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojmap.png" class="align-center" src="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojmap.png" style="width: 75%;" /></a>
-<p>2. Successful experimental DP image importing will also show the image. This gives users
-the opportunity to verify the image:</p>
-<a class="reference internal image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/expimagoriginal.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/expimagoriginal.png" class="align-center" src="https://github.com/emlab-solutions/imagepypy/raw/main/expimagoriginal.png" style="width: 75%;" /></a>
-<p>3. Following the display of the experimental DP image and if <em>bDebug</em> is not set (by default), 
-the indexing result will be displayed on top of the experimental image:</p>
-<a class="reference internal image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/expimgindexed.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/expimgindexed.png" class="align-center" src="https://github.com/emlab-solutions/imagepypy/raw/main/expimgindexed.png" style="width: 75%;" /></a>
-<p>4. Once the indexing results are generated, users have the option to call more display
-<em>EDIOM</em> functions to show other results generated by this call. For examples, 
-the matching database DP image and DP database matching index map as shown below:</p>
-<a class="reference internal image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/matchingDPDB.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/matchingDPDB.png" class="align-center" src="https://github.com/emlab-solutions/imagepypy/raw/main/matchingDPDB.png" style="width: 75%;" /></a>
-<a class="reference internal image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/matchingindexmap.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/matchingindexmap.png" class="align-center" src="https://github.com/emlab-solutions/imagepypy/raw/main/matchingindexmap.png" style="width: 75%;" /></a>
-<p>The latter map presents the likely matching location  (in red) between the DP in database, 
-also considered the theoretical diffraction patterns, and the experimental DP image.</p>
-<p>5. Finally, in addition to the above visual representation of the run and results, 
-more verbose results are also shown in standard output:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Number of peaks found: 45</span>
-
-<span class="go">-----------------Diffraction Pattern(DP) Indexing Results--------------------</span>
-<span class="go">***** DP stack loaded and indexed: 1</span>
-<span class="go">***** Best matching database DP: 1715</span>
-<span class="go">***** DP rotation angle: 284.191 (degrees)</span>
-<span class="go">***** Number of diffraction peaks indexed: 11</span>
-<span class="go">***** Experimental and database DP correlation maximum: 0.988308</span>
-<span class="go">***** Beam direction: 0.0575418 0.0599394 0.232559</span>
-<span class="go">***** Reliability index (&gt; 5.0): 30.5407</span>
-
-
-<span class="go">-----------------Indexed Diffraction Pattern Details------------------</span>
-<span class="go">DP #   Miller Index     Distance            DP Loc          Intensity</span>
-<span class="go">    1     2    -2     0   18.805359  114.912613  109.021492   14.05505</span>
-<span class="go">    2    -2     2     0   20.888754   81.346603   87.833191  100.00000</span>
-<span class="go">    3     3     1    -1   22.201900   95.978333  120.995316   28.63353</span>
-<span class="go">    4    -1    -3     1   22.830843  117.979164   86.309898    9.12775</span>
-<span class="go">    5    -3    -1     1   23.202806  101.336617   75.915146   17.33628</span>
-<span class="go">    6     1     3    -1   23.803307   78.843224  111.661034   97.01090</span>
-<span class="go">    7     5    -1    -1   36.265705  112.098000  132.817802    2.99402</span>
-<span class="go">    8    -5     1     1   36.616173   85.120682   65.116249    4.92946</span>
-<span class="go">    9    -1     5    -1   36.805595   62.239502  100.821404   33.52511</span>
-<span class="go">    10   -4     4     0   39.269745   66.114388   77.537254   18.77301</span>
-<span class="go">    11    4     4    -2   42.499973   76.063011  134.779076    2.83128</span>
-</pre></div>
-</div>
-<p>where Reliability index greater than 5.0 is considered successful run. DP stands for
-diffraction pattern. If your results do not fit in a run, adjusting search and indexing paramemers
-such as filter_threshold and peak threshold can also help ediom module to search and match peaks.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>When <em>bDebug</em> flag is set (to ‘True’), users are offered to chance to display more information of 
-ediom’s intermediate execution steps. For example, peak discovery step will show results
-of all found peaks by image peak matching algorithms before indexing is done. 
-These intermediate images are mainly for debugging purposes.</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.crystals.Crystal.load">
 <span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepare and load crystal data into backend simulation module.</p>
@@ -1290,53 +1054,6 @@ one crystal object between its load() and unload() methods.</p>
 and therefore miximizing the performance. Users do not need to handle this calls
 directly.</p>
 </div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.crystals.Crystal.loadDPDB">
-<span class="sig-name descname"><span class="pre">loadDPDB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dbfn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bShowDBMap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.loadDPDB" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads the diffraction database file <em>dbfn</em> into ediom for diffraction peak searching and indexing.</p>
-<p>See sample code <em>si_dpgen.py</em> for how to generate a diffraction pattern database with
-pyemaps <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateDPDB">generateDPDB</a>.</p>
-<p>The database file can also be saved and reused.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dbfn</strong> (<em>string</em><em>, </em><em>required</em>) – DP database file name.</p></li>
-<li><p><strong>bShowDBMap</strong> (boolean, optional, default to <cite>False</cite>) – weather to display the stereodigram project map after successful 
-loading of the database file</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>status code, stereo projection map dimension - two integers tuple</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
-</dd>
-</dl>
-<p>See the following for stereo projection map representing the DP database:</p>
-<a class="reference internal image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png" class="align-center" src="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png" style="width: 75%;" /></a>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.crystals.Crystal.peekDBDPAt">
-<span class="sig-name descname"><span class="pre">peekDBDPAt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.peekDBDPAt" title="Permalink to this definition">¶</a></dt>
-<dd><p>Looks up currently loaded DP database for the kinematic diffraction image at stereodiagram
-projection map location <em>loc</em>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>loc</strong> (<em>tuple</em><em>, </em><em>required</em>) – location represented by 2 integers on the stereo projection map.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>status code, stereo projection map dimension two integers tuple</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
-</dd>
-</dl>
-<p>This function helps users navigate current diffraction (DP) database. A typical DP database
-contains thousands of diffraction patterns depending on the number of sampling points taken.
-Each of the diffraction patterns in the database is indexed by its map location.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1376,43 +1093,6 @@ Each of the diffraction patterns in the database is indexed by its map location.
 <span class="go">1   1   3    0.3053588663    1.6374176590    44.24472        180.000000</span>
 <span class="go">2   2   2    0.3189369340    1.5677080534    8.151511e-14    180.000000</span>
 <span class="go">...</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.crystals.Crystal.printDPIndexDetails">
-<span class="sig-name descname"><span class="pre">printDPIndexDetails</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.printDPIndexDetails" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div><p>Ediom helper function displaying more details of the matched peak indexes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">return<span class="colon">:</span></dt>
-<dd class="field-odd"><p>status code, 0 for successful run</p>
-</dd>
-<dt class="field-even">rtype<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
-<p>An example of the print out from this function:</p>
-</div></blockquote>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Peak #  Miller Index     Distance           Peak Loc         Intensity </span>
-<span class="go">1     2     0    -2   15.216021   75.524544   77.989143   57.99596</span>
-<span class="go">2     2    -2     0   15.943615   58.909172   81.734337  100.00000</span>
-<span class="go">3     0     2    -2   16.269718   80.777145   63.026917   41.76962</span>
-<span class="go">4     0    -2     2   16.515915   48.621555   69.126495   61.30554</span>
-<span class="go">5    -2     2     0   16.771706   69.907181   50.962242   59.11509</span>
-<span class="go">6    -2     0     2   16.911699   53.869732   54.267258   76.78214</span>
-<span class="go">7     4    -2    -2   27.182039   69.673668   93.777229   30.43030</span>
-<span class="go">8     2     2    -4   28.084078   91.914803   75.019279   14.09216</span>
-<span class="go">9     2     4    -2   28.336311   86.383392   48.407070   17.27392</span>
-<span class="go">10   -4     2     2   28.374109   59.550945   39.154034   31.84980</span>
-<span class="go">11    2    -4     2   28.521149   42.821850   84.932808   36.47014</span>
-<span class="go">12   -2    -2     4   28.755293   37.739792   57.848614   19.96975</span>
-<span class="go">13    4    -4     0   31.887535   53.672882   96.807907   51.87958</span>
-<span class="go">14   -4     0     4   32.313499   43.617867   42.772602   39.38488</span>
-<span class="go">15   -4     4     0   32.576725   75.825447   36.274559   13.99698</span>
-<span class="go">16    0    -4     4   32.871819   32.674446   72.967834   22.33116</span>
-<span class="go">17    0     4    -4   33.117977   97.612862   61.237911   12.88735</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1474,14 +1154,6 @@ SI           3.3941875000   0.6788375000   3.3941875000
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.crystals.Crystal.release_ediom">
-<span class="sig-name descname"><span class="pre">release_ediom</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.release_ediom" title="Permalink to this definition">¶</a></dt>
-<dd><p>Releases ediom internal memory.</p>
-<p>This must be called after completing or existing from DP search and indexing calls.</p>
-<p>See an example of typical usage in sample code <em>al_ediom.py</em></p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.crystals.Crystal.set_sim_controls">
 <span class="sig-name descname"><span class="pre">set_sim_controls</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.set_sim_controls" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets simulation controls in the backend.</p>
@@ -1501,74 +1173,9 @@ rarely changed.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.crystals.Crystal.showMatchedDBDP">
-<span class="sig-name descname"><span class="pre">showMatchedDBDP</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.showMatchedDBDP" title="Permalink to this definition">¶</a></dt>
-<dd><p>Helper function in ediom module to display diffraction database diffraction pattern 
-that best matches that of the experimental diffraction image pattern.</p>
-<p>This function is typically used to confirm its match with experimental diffraction 
-pattern. See sample code <em>al_ediom.py</em> for usage of this function.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.crystals.Crystal.showMatchingIndexMap">
-<span class="sig-name descname"><span class="pre">showMatchingIndexMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.showMatchingIndexMap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Helper function in ediom module to display matching indexes map. The colored
-heat map with the peak indicates the orientation in which experimental and 
-database diffraction patterns best match.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fr</strong> (<em>int</em><em>, </em><em>required</em>) – <p>stereo projection map height. This number is obtained from 
-<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB">loadDPDB</a> call.</p>
-</p></li>
-<li><p><strong>fc</strong> – <p>stereo projection map width. This number is obtained from 
-<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB">loadDPDB</a> call.</p>
-</p></li>
-</ul>
-</dd>
-<dt class="field-even">Type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int, required</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>status code</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.crystals.Crystal.unload">
 <span class="sig-name descname"><span class="pre">unload</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.unload" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove crystal data from the memory in the backend simulation modules.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.crystals.Crystal.viewExpImage">
-<span class="sig-name descname"><span class="pre">viewExpImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peakDP</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Indexed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.viewExpImage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Helper function in ediom module to display experimental diffraction database 
-diffraction pattern currently loaded.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>peakDP</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – kinematic diffraction with miller index.</p></li>
-<li><p><strong>Indexed</strong> (boolean, optional, default to <cite>False</cite>) – show the kinematic patterns after indexing is completed.</p></li>
-<li><p><strong>iShow</strong> (boolean, optional, default to <cite>False</cite>) – whether to show miller indexes</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-<p>This function is typically used to display experimental image after diffraction 
-patterns matched and indexed. It can also be used to display intermediate
-search results after peaks are found but before indexes are matched. The latter
-display is turned on only by <em>bDebug</em> flag in 
-<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB">loadDPDB</a> call.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2025,6 +1632,25 @@ Miller index. For example, (3, 1, 0) will not be rendered.</p>
 </div>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.display.normalizeImage">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">normalizeImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.normalizeImage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.display.displayXImage">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">displayXImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bColor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isMask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bIndexed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suptitle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.displayXImage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal ediom helper function displaying image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-pyemaps.emcontrols">
 <span id="pyemaps-emcontrols-module"></span><h2>pyemaps.emcontrols module<a class="headerlink" href="#module-pyemaps.emcontrols" title="Permalink to this heading">¶</a></h2>
@@ -2238,7 +1864,7 @@ Only plot those parameter that are not defaults</p>
 <li><p><strong>defl</strong>: shifts in x and y direction (x, y)</p></li>
 <li><p><strong>cl</strong>: cameral length</p></li>
 <li><p><strong>vt</strong>: hight voltage in kilo-volts</p></li>
-<li><p><a href="#id26"><span class="problematic" id="id27">**</span></a>simc*: <a class="reference external" href="pyemaps.emcontrols.html#pyemaps.emcontrols.SIMControl">SIMControl</a> object</p></li>
+<li><p><a href="#id23"><span class="problematic" id="id24">**</span></a>simc*: <a class="reference external" href="pyemaps.emcontrols.html#pyemaps.emcontrols.SIMControl">SIMControl</a> object</p></li>
 </ul>
 <p>Other optional emcontrol parameters:</p>
 <ul class="simple">
@@ -2346,6 +1972,11 @@ Only plot those parameter that are not defaults</p>
 <dd><p>Format simulation controls in builtin display functions
 Only plot those parameter that are not defaults</p>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.def_dict">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">def_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.def_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -2628,6 +2259,18 @@ Dfffracted beams object creation.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.errors.MxtalError.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.errors.MxtalError.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="pyemaps.errors.XDPImageError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.errors.</span></span><span class="sig-name descname"><span class="pre">XDPImageError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.errors.XDPImageError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Experimental diffraction pattern image object errors.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.errors.XDPImageError.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.errors.XDPImageError.__init__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -3002,8 +2645,7 @@ controls</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.kdiffs.Diffraction.clear">
 <span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.kdiffs.Diffraction.clear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Empty the DP list, leaving it as empty.
-New diffraction patterns can be started</p>
+<dd><p>Empty the DP list, leaving it as empty.</p>
 </dd></dl>
 
 </dd></dl>
@@ -3011,8 +2653,7 @@ New diffraction patterns can be started</p>
 </section>
 <section id="module-pyemaps">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyemaps" title="Permalink to this heading">¶</a></h2>
-<section id="this-file-is-part-of-pyemaps">
-<h3>This file is part of pyemaps<a class="headerlink" href="#this-file-is-part-of-pyemaps" title="Permalink to this heading">¶</a></h3>
+<p>This file is part of pyemaps</p>
 <p>pyemaps is free software for non-comercial use: you can 
 redistribute it and/or modify it under the terms of the GNU General 
 Public License as published by the Free Software Foundation, either 
@@ -3023,13 +2664,10 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.</p>
 <p>You should have received a copy of the GNU General Public License
 along with pyemaps.  If not, see &lt;<a class="reference external" href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>&gt;.</p>
-</section>
-<section id="contact-supprort-emlabsoftware-com-for-any-questions-and-comments">
-<h3>Contact <a class="reference external" href="mailto:supprort&#37;&#52;&#48;emlabsoftware&#46;com">supprort<span>&#64;</span>emlabsoftware<span>&#46;</span>com</a> for any questions and comments.<a class="headerlink" href="#contact-supprort-emlabsoftware-com-for-any-questions-and-comments" title="Permalink to this heading">¶</a></h3>
-<p><a href="#id28"><span class="problematic" id="id29">``</span></a><a href="#id30"><span class="problematic" id="id31">`</span></a></p>
+<p>Contact <a class="reference external" href="mailto:supprort&#37;&#52;&#48;emlabsoftware&#46;com">supprort<span>&#64;</span>emlabsoftware<span>&#46;</span>com</a> for any questions and comments.</p>
+<p><a href="#id25"><span class="problematic" id="id26">``</span></a><a href="#id27"><span class="problematic" id="id28">`</span></a></p>
 <p>Author:     EMLab Solutions, Inc.
 Date:       May 07, 2022</p>
-</section>
 </section>
 </section>
 
@@ -3075,7 +2713,7 @@ Date:       May 07, 2022</p>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.6 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.7 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyemaps package</a></li> 
       </ul>
     </div>

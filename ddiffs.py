@@ -24,14 +24,17 @@
 # Date:       July 17, 2022    
 # '''
 """
+
 Simple wrapper for dynamic simulation images.
 
 """
 from . import EMC
 from . import BlochListError
 class BlochImgs:
+
     '''
     list of Bloch image objects and its associated controls 
+
     '''
     def __init__(self, name):
         
@@ -76,12 +79,19 @@ class BlochImgs:
         self._blochList.append((emc, b))
     
     def sort(self):
-        '''Sort the bloch simulation results by controls'''
+
+        '''
+
+        Sort the bloch simulation results by controls
+
+        '''
         self._blochList.sort(key=lambda x: x[0])
                 
     def __getitem__(self, key):
+
         '''
         Array like method for retrieving DP
+
         '''
         
         return self._blochList[key]

@@ -293,7 +293,7 @@ def add_dif(target):
         :type mode: int
 
         :param dsize: diffractted beam size, only applied to CBED mode.
-        :param dsize: float
+        :type dsize: float
 
         :param em_controls: electron microscope controls object.
         :type em_controls: pyemaps.EMC

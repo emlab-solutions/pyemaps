@@ -1,4 +1,3 @@
-
 from . import spgseek as spgra
 
 SPG_SYMMETRY_MAXCOL = spgra.getsymmetrymaxlen() #48

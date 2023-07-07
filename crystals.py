@@ -198,7 +198,8 @@ class Cell:
         '''
         Sets b cell length.
 
-        :param v: required, must be a numeral or numberal string
+        :param v: must be a numeral or numberal string
+        :type v: number or string, required
         
         ''' 
         av = 0.0 if v is None else v
@@ -214,7 +215,8 @@ class Cell:
         '''
         Sets b cell length.
 
-        :param v: required, must be a numeral or numberal string
+        :param v: must be a numeral or numberal string
+        :type v: number or string, required
         
         ''' 
         bv = 0.0 if v is None else v
@@ -230,7 +232,8 @@ class Cell:
         '''
         Sets c cell length.
 
-        :param v: required, must be a numeral or numberal string
+        :param v: must be a numeral or numberal string
+        :type v: number or string, required
         
         ''' 
         cv = 0.0 if v is None else v
@@ -246,7 +249,8 @@ class Cell:
         '''
         Sets cell alpha angle.
 
-        :param v: required, must be a numeral or numberal string
+        :param v: must be a numeral or numberal string
+        :type v: number or string, required
         
         ''' 
         av = 0.0 if v is None else v
@@ -261,7 +265,8 @@ class Cell:
         '''
         Sets cell beta angle.
 
-        :param v: required, must be a numeral or numberal string
+        :param v: must be a numeral or numberal string
+        :type v: number or string, required
         
         ''' 
         bv = 0.0 if v is None else v
@@ -276,7 +281,8 @@ class Cell:
         '''
         Sets cell gamma angle.
 
-        :param v: required, must be a numeral or numberal string
+        :param v: must be a numeral or numberal string
+        :type v: number or string, required
         
         ''' 
         gv = 0.0 if v is None else v
@@ -410,6 +416,7 @@ class Atom:
 
         :param a_type: Atom thermal factor type.
         :type a_type: int, optional
+
         :param data: Atoms positional and other data input. 
         :type data: dict or list, optional
         :raise UCError: if data validation fails.
@@ -689,6 +696,7 @@ class SPG:
     def setting(self, s=None):
         """
         Symmetry setting data.
+
         :param s: Symmetry setting number
         :type s: int or string, optional
         :raise SPGInvalidDataInputError: if s is not an integer or integer string
@@ -872,12 +880,14 @@ class Crystal:
         All atoms in a crystal must have the same thermal type.
 
     """
+    
     def __init__(self, name="Diamond", data=None):
         """
         Default constructor for crystal object    
         
         :param name: Name of the crystal or default to 'Diamond'
         :type name: string, optional
+
         :param data: Other data of the crystal. 
         :type data: dict, optional
         :raise CrystalClassError: If data validations fail.
@@ -957,27 +967,47 @@ class Crystal:
 
     @property
     def cell(self):
-        ''' Cell constants '''
+        ''' 
+        
+        Cell constants 
+        
+        '''
         return self._cell
 
     @property
     def dw(self):
-        ''' Debye-Waller factor or thermal factor'''
+        ''' 
+        
+        Debye-Waller factor or thermal factor
+        
+        '''
         return self._dw
 
     @property
     def spg(self):
-        ''' Space group '''
+        ''' 
+        
+        Space group 
+        
+        '''
         return self._spg
 
     @property
     def atoms(self):
-        ''' atom list '''
+        ''' 
+        
+        atom list 
+        
+        '''
         return self._atoms
 
     @property
     def name(self):
-        ''' crystal name '''
+        ''' 
+        
+        crystal name 
+        
+        '''
         return self._name
 
     @cell.setter
@@ -1044,6 +1074,7 @@ class Crystal:
 
     def isISO(self):
         '''
+        
         Check if crystal thermal type is Isotropic or not 
 
         '''
@@ -1114,7 +1145,9 @@ class Crystal:
                  yield('atoms', [dict(a) for a in self._atoms])
 
     def loaded(self):
+        
         '''
+        
         Check to see if crystal data is loaded into simulation module
         or not.
         
@@ -1126,7 +1159,9 @@ class Crystal:
 
     @classmethod
     def from_builtin(cls, cn='Diamond'):
+        
         """        
+        
         Create a crystal by importing data from pyemaps build-in 
         crystal database
         
@@ -1160,6 +1195,7 @@ class Crystal:
 
     @classmethod
     def from_xtl(cls, fn):
+        
         """
         To create a crystal object by importing data from xtl formtted file.
 
@@ -1226,6 +1262,7 @@ class Crystal:
     
     @classmethod
     def from_cif(cls, fn):
+        
         """
         import crystal data from a cif (Crystallographic Information File).
 
@@ -1257,6 +1294,7 @@ class Crystal:
 
     @classmethod 
     def from_json(cls, jfn):
+        
         """
         Import crystal data from a .json file.
 
@@ -1319,6 +1357,7 @@ class Crystal:
 
     @classmethod
     def from_dict(cls, cdict):
+        
         """
         Import crystal data from a python dictionary object.
         
@@ -1367,7 +1406,9 @@ class Crystal:
 
     @staticmethod
     def list_all_builtin_crystals():
+        
         """
+        
         To list all builtin crystals available in pyemaps built-in crystal database,
         use this routine to determine the name of the crystal to load using 
         `from_builtin <pyemaps.crystals.html#pyemaps.crystals.Crystal.from_builtin>`_.

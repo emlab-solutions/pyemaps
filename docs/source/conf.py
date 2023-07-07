@@ -9,7 +9,7 @@
 project = 'pyemaps'
 copyright = '2022-2023, EMLab Solutions, Inc.'
 author = 'EMLab Solutions, Inc.'
-release = '1.0.6 Stable'
+release = '1.0.7 Stable'
 
 
 
@@ -34,7 +34,7 @@ autosectionlabel_prefix_document = True
 autodoc_preserve_defaults = True
 
 templates_path = ['_templates']
-exclude_patterns = []
+exclude_patterns = ['_build', '**.ipynb_checkpoints']
 
 
 

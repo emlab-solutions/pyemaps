@@ -1,7 +1,6 @@
 
 """
 This file is part of pyemaps
-___________________________
 
 pyemaps is free software for non-comercial use: you can 
 redistribute it and/or modify it under the terms of the GNU General 
@@ -17,7 +16,6 @@ You should have received a copy of the GNU General Public License
 along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
 
 Contact supprort@emlabsoftware.com for any questions and comments.
-___________________________
 
 ```
 

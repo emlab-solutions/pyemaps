@@ -473,16 +473,22 @@ def showDif(dpl=None,
 
     :param dpl: Kinematic difraction pattern object list `DPList <pyemaps.kdiffs.html#pyemaps.kdiffs.DPList>`_
     :type dpl: DPList
+
     :param cShow: Plot control annotation. `True` (default): plot the control parameters on lower left corner; `False` do not plot.
     :type cShow: bool, optional
+
     :param kShow: Whether to display Kikuchi lines.
     :type kShow: bool 
+
     :param iShow: Whether to display Miller indexes.
     :type iShow: bool 
+
     :param layout: layout format. individual (default): plotting one by one, table: plotting in a table of 3 columns  
     :type layout: str, optional 
+
     :param bSave: Whether to save the diplay into a .png image file.
     :type bSave: bool    
+
     :param bClose: Whether to close plotting window when finished. Default: False - users must close it. 
     :type bClose: bool, optional  
     
@@ -520,14 +526,19 @@ def showBloch(bimgs,
 
     :param bimgs: Optional. Dynamic difraction pattern object list `BImgList <pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs>`_
     :type bimgs: BlochImgs 
+
     :param cShow: Plot control annotation. `True` (default): plot the control parameters on lower left corner; `False` do not plot.
     :type cShow: bool, optional
+
     :param bColor: Optional. Whether to display the image in predefined color map.
     :type bColor: bool 
+
     :param layout: layout format. individual (default): plotting one by one, table: plotting in a table of 3 columns  
     :type layout: str, optional
+
     :param bSave: Optional. Whether to save the image into a .im3 image file.
     :type bSave: bool    
+
     :param bClose: Whether to close plotting window when finished. Default: False - users must close it. 
     :type bClose: bool, optional  
     
@@ -570,16 +581,22 @@ def showStereo(slist, name,
 
     :param slist: Stereodiagram output from `generateStereo <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateStereo>`_.
     :type slist: list, required
+
     :param cShow: Plot control annotation. `True` (default): plot the control parameters on lower left corner; `False` do not plot.
     :type cShow: bool, optional
+
     :param iShow: Whether to display Miller indexes or not.
     :type iShow: bool, optional
+
     :param zLimit: Miller indexes cutoff number.
-    :type zLimit: int, optional  
+    :type zLimit: int, optional 
+
     :param layout: layout format. individual (default): plotting one by one in sequence, table: plotting in a table of 3 columns  
     :type layout: str, optional 
+
     :param bSave: Whether to save the image into a .png image file.
     :type bSave: bool, optional  
+    
     :param bClose: Whether to close plotting window when finished. Default: False - users must close it. 
     :type bClose: bool, optional  
 

@@ -1,4 +1,4 @@
-'''
+#'''
 # This file is part of pyemaps
 # ___________________________
 
@@ -20,7 +20,9 @@
 
 # Author:     EMLab Solutions, Inc.
 # Date:       May 16, 2023   
+#'''
 
+'''
 EDIOM (Electron Diffraction Indexing and Orientation Mapping) module 
 in pyemaps contains a rich set of diffraction pattern search and recognition
 functions, as well as those for orientation mapping.
@@ -724,7 +726,7 @@ class StackImage():
                     scol = 0.0,
                     bShow=False):
         """
-        generate an Annular Dark Field(ADF) image from an experimental image input.
+        generates an Annular Dark Field(ADF) image from an experimental image input.
 
 
         :param imgfn: experimental image file name. 
