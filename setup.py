@@ -355,7 +355,7 @@ def get_samples(sdn = 'samples'):
     samples_base_dir = os.path.join(os.path.dirname(base_dir), sdn)
     sbase_files = os.path.join(samples_base_dir, '*.py')
     sfile_list = glob.glob(sbase_files)
-    sfile_list.append('al_db.bin')
+    # sfile_list.append('al_db.bin')
     sfile_list.append('al.img')
 
     return [os.path.join(sdn, os.path.basename(name)) for name in sfile_list]
@@ -544,9 +544,8 @@ pyemaps_ediom =  Extension(
             libraries               =[],
             define_macros           = pyemaps_build_defs,
             undef_macros            = pyemaps_build_undefs,
-            extra_link_args         =[] 
-            
-            # swig_opts               =['-python']
+            extra_link_args         =[],    
+            swig_opts               =['-keyword', '-O', '-macroerrors']
 )
 
 def get_version(f):
