@@ -25,7 +25,7 @@ Date:       October 19th, 2022
 This sample code is to demonstrate how to generated scattering matrix
 '''
 
-c_name = 'silicon'
+c_name = 'Silicon'
 
 def runSCMTests():
 

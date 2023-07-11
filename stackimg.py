@@ -659,7 +659,7 @@ class StackImage():
         try:
             self.loadImage(rmode = 1, stack = ssel) #indexing one stack image at a time
         except Exception as e:
-            raise XDPImageError("Error loading image for ediom analysis") from e
+            raise XDPImageError(f"Error loading image for ediom analysis: {e}") from e
         
         self.viewExpImage()
 
