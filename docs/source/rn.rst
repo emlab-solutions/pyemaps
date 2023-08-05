@@ -10,14 +10,14 @@ Version 1.0.7 Stable
 New
 ~~~
 
-- Anular dark field (ADF) for an experimental diffraction image. This new feature is only
+- Annular dark field (ADF) for an experimental diffraction image. This new feature is only
   available in full and paid package.
   
   See `generateADF <modules.html#pyemaps.stackimg.StackImage.generateADF>`_
   and sample code *adf.py* for usage details.
 
 - GUI server is now setup for easy and fast access to the latest **pyemaps** for a subscription fee. 
-  Go to: https://pyemaps.emlabsolutions.com
+  Go to: https://emaps.emlabsolutions.com
 
 Improvements
 ~~~~~~~~~~~~

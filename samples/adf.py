@@ -25,7 +25,7 @@ Date:       May 27, 2023
 
 This sample code is to demostrate basic usage of pyemaps' ediom
 module (Electron Diffraction Indexing and Orientation Mapping)
-to obtain anular dark field image from an experimental diffraction 
+to obtain annular dark field image from an experimental diffraction 
 image input.
 
 This script is for demonstration and only available in full pyemaps

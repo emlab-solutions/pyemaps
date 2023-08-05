@@ -209,7 +209,7 @@ Pyemaps GUI Web Service
 
 Driven by the latest pyemaps, a web server is setup for those who are interested
 in better visualization of pyemaps simulations and calculations. This service
-is for a nominal subscription fees. Go to https://pyemaps.emlabsolutions.com
+is for a nominal subscription fees. Go to https://emaps.emlabsolutions.com
 to sign up.
 
 Below is an example of the ineractive 3-d display of atomic structure through Jmole
