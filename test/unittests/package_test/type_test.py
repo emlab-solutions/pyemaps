@@ -25,8 +25,8 @@ def test_dpgen_full():
                        f"{FULL_BUILD_ERRMSG}" 
 def test_pkg_type():
     from pyemaps import PKG_TYPE
-    TYPE_FREE = 1
-    TYPE_FULL = 2
+    TYPE_FREE = 0
+    TYPE_FULL = 1
     TYPE_UIUC = 3
 
     if PKG_TYPE == TYPE_FULL:
