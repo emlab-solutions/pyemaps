@@ -38,7 +38,7 @@ Contact support@emlabsoftware.com for how to get the full package.
 
 '''
     
-from .ediom import ediom
+from emaps import ediom
 from . import (E_INT, EM_INT,
                E_FLOAT, EM_FLOAT,
                E_DOUBLE, EM_DOUBLE,

@@ -20,42 +20,42 @@
 # '''
 
 # root directory for all emaps modules
-from .emaps import dif
+from emaps import dif
 
 #check other modules existence
 try:
-    from .emaps import dpgen
+    from emaps import dpgen
 
 except ImportError as e:
     pass
 
 try:
-    from .emaps import csf
+    from emaps import csf
 
 except ImportError as e:
     pass
 
 try:
-    from .emaps import powder
+    from emaps import powder
 
 except ImportError as e:
     pass
 
 try:
-    from .emaps import bloch
+    from emaps import bloch
 
 except ImportError as e:
     pass
 
 try:
-    from .emaps import stereo
+    from emaps import stereo
 
 except ImportError as e:
     pass
 
 
 try:
-    from .emaps import mxtal
+    from emaps import mxtal
 
 except ImportError as e:
     print(f'no mxtal module found in emaps')

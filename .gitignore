@@ -28,7 +28,8 @@ share/python-wheels/
 MANIFEST
 
 #Fortran library source directory
-emaps/
+emaps-save/
+ediom-save/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

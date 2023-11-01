@@ -1,33 +1,3 @@
-"""
-This file is part of pyemaps
-___________________________
-
-pyemaps is free software for non-comercial use: you can 
-redistribute it and/or modify it under the terms of the GNU General 
-Public License as published by the Free Software Foundation, either 
-version 3 of the License, or (at your option) any later version.
-
-pyemaps is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details. see 
-<https://www.gnu.org/licenses/>.
-
-For how to install pyemaps, go to https://emlab-solutions.github.io/pyemaps/ 
-Contact supprort@emlabsoftware.com for any questions and comments.
-___________________________
-
-Additional copyright notices and license terms applicable to portions of 
-pyemaps are set forth in the COPYING file.
-
-This sample code demonstrates how pyemaps can be integrated into 
-DigitalMicrograph to render the diffraction patterns for silicon crystal.
-
-
-Author:     EMLab Solutions, Inc.
-Date:       May 07, 2022    
-
-"""
 import numpy as np
 import DigitalMicrograph as DM
 
@@ -44,7 +14,6 @@ DIFF_MODE = ('Normal', 'CBED')
 #------Diffraction modes-------
 #       1 - normal
 #       2 - CBED
-
 def addline( x1, y1, x2, y2): 
     '''
     reserved for later use
@@ -104,23 +73,30 @@ def show_diffract(dp, md=1, name = 'Diamond'):
     #set image title
     img_title = str(f'Kinematic Diffraction Simulation:  {name} in {DIFF_MODE[md-1]} Mode')
     dm_dif_img.SetName(img_title)
-    
-    #xs,ys = diff_dict['bounds'] # not used
 
     #plotting Kikuchi and HOLZ lines and spots as DM components
     num_klines = dp.nklines
+    
     if num_klines > 0:
         klines = dp.klines
         for kl in klines:        
-            x1, y1, x2, y2 = kl 
+            x1,y1,x2,y2, inten = kl
             
-            xx1, yy1, = (x1 + XMAX)*mult,(y1 + YMAX)*mult 
+            xx1, yy1, = (x1+ XMAX)*mult,(y1 + YMAX)*mult 
             xx2, yy2  = (x2 + XMAX)*mult,(y2 + YMAX)*mult
             
             kline = dif_img_disp.AddNewComponent(2, xx1, yy1, xx2, yy2)
             
             SetCommonProp(kline)
-            kline.SetForegroundColor(0.7, 0.7, 0.7) #grey
+            
+            if inten/5 > 0.8:
+                kline.SetForegroundColor(0.3, 0.3, 0.3) # dark grey
+            elif inten/5 > 0.6:
+                kline.SetForegroundColor(0.6, 0.6, 0.6)
+            elif inten/5 > 0.4:
+                kline.SetForegroundColor(0.8, 0.8, 0.8)
+            else:
+                kline.SetForegroundColor(0.9, 0.9, 0.9) # light grey
             kline.SetBackgroundColor(0.2,0.2,0.5)# dark blue
 
     num_disks = dp.ndisks
@@ -165,38 +141,49 @@ def show_diffract(dp, md=1, name = 'Diamond'):
             
     if md == 2:
         num_hlines = dp.nhlines
+        
         if num_hlines > 0 :
+        
             hlines = dp.hlines
             for hl in hlines:
-                x1, y1, x2, y2 = hl
+            
+                x1, y1, x2, y2, inten = hl
                 xx1, yy1 = (x1 + XMAX)*mult, (y1 + YMAX)*mult 
                 xx2, yy2 = (x2 + XMAX)*mult, (y2 + YMAX)*mult
                 
                 hline = dif_img_disp.AddNewComponent(2, xx1, yy1, xx2, yy2)
                 SetCommonProp(hline)
-                hline.SetForegroundColor(0,0,0.8)
-                hline.SetBackgroundColor(0.2,0.2,0.5)# dark blue
+                
+                if inten/5 > 0.8:
+                    hline.SetForegroundColor(0.1,0.7,0.3) # dark grey
+                elif inten/5 > 0.6:
+                    hline.SetForegroundColor(0.1,0.7,0.6)
+                elif inten/5 > 0.4:
+                    hline.SetForegroundColor(0.1,0.7,0.8)
+                else:
+                    hline.SetForegroundColor(0.1,0.7,0.9) # light grey
                 
     del dm_dif_img
     return 0        
       
       
 def run_si_dm_sample():  
-   
+    from pyemaps import EMC
     #-----------load crystal data into a Crystal class object-----------------
     name = 'Silicon'
     si = cr.from_builtin(name)
 
     #-----------content of the crystal data-----------------------------------
     print(si)
-
-    #-----------generate diffraction pattern in CBED mode---------------------
-    _, si_dp_cbed = si.generateDP(mode = 2, dsize = 0.2)
-    #print(si_dp_cbed)
+    
+    #-----------generate diffraction pattern in CBED mode--------------------- 
+    emc = EMC(tilt=(-0.2, 0.5), zone=(1,-1,2))
+    
+    mode = DIFF_MODE.index('CBED')+1
+    _, si_dp_cbed = si.generateDP(mode = mode, dsize = 0.2, em_controls=emc)
 
     #-----------Plot the pattern in DM----------------------------------------
-    show_diffract(si_dp_cbed, md = 2, name = name)
-
+    show_diffract(si_dp_cbed, md = mode, name = name)
 
 
     #-----------generate diffraction pattern in normal mode-------------------
@@ -206,4 +193,33 @@ def run_si_dm_sample():
     #-----------content of the crystal data-----------------------------------
     show_diffract(si_dp, name = name)
 
-run_si_dm_sample()
+      
+def run_si_dm_bloch():  
+    from pyemaps import EMC
+    #-----------load crystal data into a Crystal class object-----------------
+    name = 'ErbiumPyrogermanate'
+    ep = cr.from_builtin(name)
+
+    #-----------content of the crystal data-----------------------------------
+    print(ep)
+    
+    #-----------generate diffraction pattern in CBED mode--------------------- 
+    emc = EMC(tilt=(-0.2, 0.5), zone=(1,-1,2))
+    
+    try:
+        _ = ep.generateBloch()
+
+    except Exception as e:
+        print(f'Error running dynamic diffraction simuation for {name}')
+    #-----------Plot the pattern in DM----------------------------------------
+    import os
+    imgpath = os.environ.get('PYEMAPS_DATA')
+    imgf = os.path.join(imgpath, 'bloch')
+
+    print(f'Generate image file is located at: {imgf}')
+    #-----------content of the crystal data-----------------------------------
+    # show_diffract(si_dp, name = name)
+
+if __name__ == '__main__'
+    run_si_dm_sample()
+    run_si_dm_bloch()
