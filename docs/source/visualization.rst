@@ -248,10 +248,16 @@ and so on. Each of the objects is accessible for its own data such as points whe
 Below is an exmaple of rendering a diffraction pattern generated for *Diamond* builtin crystal
 in DigitalMicrograph:
 
+.. warning::
+    Due to issues with share library, some older version of DM can no longer import pyemaps. 
+    In this case, we do not recommend DM for pyemaps.
+
 .. code-block:: python
 
     def show_diffract(dp, md=1, name = 'Diamond'):
-    
+        from pyemaps import XMAX, YMAX
+        import DigitalMicrograph as DM
+
         shape = (2*XMAX*mult,2*YMAX*mult)
 
         #A new image from numpy array and initilize it to black background
@@ -263,23 +269,39 @@ in DigitalMicrograph:
         dif_img = dm_dif_img.ShowImage()
         dif_img_disp = dm_dif_img.GetImageDisplay(0)
         
+        #validate diffraction mode
+        if md <1 or md > 2:
+            print(f'diffraction mode provided {md} not supported')
+            return 1
+        
         #set image title
         img_title = str(f'Kinematic Diffraction Simulation:  {name} in {DIFF_MODE[md-1]} Mode')
         dm_dif_img.SetName(img_title)
+
+        #plotting Kikuchi and HOLZ lines and spots as DM components
         num_klines = dp.nklines
+        
         if num_klines > 0:
             klines = dp.klines
             for kl in klines:        
-                x1, y1, x2, y2 = kl 
+                x1,y1,x2,y2, inten = kl #inten: intensity
                 
-                xx1, yy1, = (x1 + XMAX)*mult,(y1 + YMAX)*mult 
+                xx1, yy1, = (x1+ XMAX)*mult,(y1 + YMAX)*mult 
                 xx2, yy2  = (x2 + XMAX)*mult,(y2 + YMAX)*mult
                 
                 kline = dif_img_disp.AddNewComponent(2, xx1, yy1, xx2, yy2)
                 
                 SetCommonProp(kline)
-                kline.SetForegroundColor(0.7, 0.7, 0.7) #grey
-                kline.SetBackgroundColor(0.2,0.2,0.5) # dark blue
+                
+                if inten/5 > 0.8:
+                    kline.SetForegroundColor(0.3, 0.3, 0.3) # dark grey
+                elif inten/5 > 0.6:
+                    kline.SetForegroundColor(0.6, 0.6, 0.6)
+                elif inten/5 > 0.4:
+                    kline.SetForegroundColor(0.8, 0.8, 0.8)
+                else:
+                    kline.SetForegroundColor(0.9, 0.9, 0.9) # light grey
+                kline.SetBackgroundColor(0.2,0.2,0.5)# dark blue
 
         num_disks = dp.ndisks
         
@@ -294,13 +316,15 @@ in DigitalMicrograph:
                 disk = dif_img_disp.AddNewComponent(6, xx-rr, yy-rr, xx+rr, yy+rr)
                 
                 SetCommonProp(disk)
-                disk.SetForegroundColor(0.0,0.0,1.0)  # blue
-                disk.SetBackgroundColor(0.5,0.5,0.75) # dark blue
+                disk.SetForegroundColor(0.0,0.0,1.0) # blue
+                disk.SetBackgroundColor(0.5,0.5,0.75)# dark blue
                 if md == 1:
                     disk.SetFillMode(1)
                 else:
                     disk.SetFillMode(2)
             
+                # a bit tricky to figure out the index location, has to use
+                # the proxy component indxannot0 first. 
                 indxannot0 = DM.NewTextAnnotation(0, 0, idx, 10)
                 
                 t, l, b, r = indxannot0.GetRect()
@@ -308,7 +332,9 @@ in DigitalMicrograph:
                 h = b-t
                 
                 nl = xx - ( w / 2)
+                # nr = xx + ( w / 2)
                 nt = yy -rr - h if md ==1 else yy - (h / 2)
+                # nb = yy + rr + h if md == 1 else yy + (h / 2)
                 
                 indxannot = DM.NewTextAnnotation(nl, nt, idx, 10)
                 
@@ -319,17 +345,27 @@ in DigitalMicrograph:
                 
         if md == 2:
             num_hlines = dp.nhlines
+            
             if num_hlines > 0 :
+            
                 hlines = dp.hlines
                 for hl in hlines:
-                    x1, y1, x2, y2 = hl
+                
+                    x1, y1, x2, y2, inten = hl
                     xx1, yy1 = (x1 + XMAX)*mult, (y1 + YMAX)*mult 
                     xx2, yy2 = (x2 + XMAX)*mult, (y2 + YMAX)*mult
                     
                     hline = dif_img_disp.AddNewComponent(2, xx1, yy1, xx2, yy2)
                     SetCommonProp(hline)
-                    hline.SetForegroundColor(0,0,0.8)
-                    hline.SetBackgroundColor(0.2,0.2,0.5)    # dark blue
+                    
+                    if inten/5 > 0.8:
+                        hline.SetForegroundColor(0.1,0.7,0.3) # dark grey
+                    elif inten/5 > 0.6:
+                        hline.SetForegroundColor(0.1,0.7,0.6)
+                    elif inten/5 > 0.4:
+                        hline.SetForegroundColor(0.1,0.7,0.8)
+                    else:
+                        hline.SetForegroundColor(0.1,0.7,0.9) # light grey
                     
         del dm_dif_img
         return 0        

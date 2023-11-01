@@ -80,7 +80,7 @@ def show_diffract(dp, md=1, name = 'Diamond'):
     if num_klines > 0:
         klines = dp.klines
         for kl in klines:        
-            x1,y1,x2,y2, inten = kl
+            x1,y1,x2,y2, inten = kl #inten: intensity
             
             xx1, yy1, = (x1+ XMAX)*mult,(y1 + YMAX)*mult 
             xx2, yy2  = (x2 + XMAX)*mult,(y2 + YMAX)*mult
