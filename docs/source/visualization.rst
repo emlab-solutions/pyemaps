@@ -250,7 +250,7 @@ in DigitalMicrograph:
 
 .. warning::
     Due to issues with share library, some older version of DM can no longer import pyemaps. 
-    In this case, we do not recommend DM for pyemaps.
+    In this case, pyemaps does not work inside DM.
 
 .. code-block:: python
 
