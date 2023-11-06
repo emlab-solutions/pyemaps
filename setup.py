@@ -14,9 +14,9 @@ import os
 from pathlib import Path
 
 install_requires = [
-            'numpy >= 1.21.2',
-            'matplotlib >= 3.2.1',
-            'emaps >= 1.0.0'
+            'emaps >= 0.0.9',
+            'numpy >= 1.21.2',,
+            'matplotlib >= 3.2.1'
             ]
 
 def get_cifreader_source():
