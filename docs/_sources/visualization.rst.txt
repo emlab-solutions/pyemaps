@@ -249,7 +249,7 @@ Below is an exmaple of rendering a diffraction pattern generated for *Diamond* b
 in DigitalMicrograph:
 
 .. note::
-    For complete python script integrating pyemaps into DM, see _dm_dif.py_ in samples directory.
+    For complete python script integrating pyemaps into DM, see *si_stereo.py* in samples directory.
 
 .. code-block:: python
 
