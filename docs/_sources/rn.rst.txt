@@ -1,6 +1,26 @@
 Release Notes
 =============
 
+Version 1.0.8 Stable
+-------------------- 
+
+11-07-2023 
+~~~~~~~~~~
+
+New
+~~~
+
+- Separated pyemaps simulations backend into emaps python package
+- pyemaps package installation automatically installs emaps package
+- Ready pyemaps source code for open source and community contribution. Send
+  inquiry on how to be pyemaps contributor, contact support@emlabsoftware.com
+
+Improvements
+~~~~~~~~~~~~
+
+- Bug fixes related to DigitalMicrograph (DM) integration and added DM python 
+  script sample code, as shown in :ref:`Rendering by Third Party Tools <thirdparty>`
+
 Version 1.0.7 Stable
 -------------------- 
 

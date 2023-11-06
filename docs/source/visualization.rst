@@ -248,9 +248,8 @@ and so on. Each of the objects is accessible for its own data such as points whe
 Below is an exmaple of rendering a diffraction pattern generated for *Diamond* builtin crystal
 in DigitalMicrograph:
 
-.. warning::
-    Due to issues with share library, some older version of DM can no longer import pyemaps. 
-    In this case, pyemaps does not work inside DM.
+.. note::
+    For complete python script integrating pyemaps into DM, see _dm_dif.py_ in samples directory.
 
 .. code-block:: python
 

@@ -264,7 +264,13 @@ objects and dp.disks of <a class="reference external" href="pyemaps.kdiffs.html#
 and so on. Each of the objects is accessible for its own data such as points when plotting.</p>
 <p>Below is an exmaple of rendering a diffraction pattern generated for <em>Diamond</em> builtin crystal
 in DigitalMicrograph:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For complete python script integrating pyemaps into DM, see _dm_dif.py_ in samples directory.</p>
+</div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">show_diffract</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">md</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Diamond&#39;</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">XMAX</span><span class="p">,</span> <span class="n">YMAX</span>
+    <span class="kn">import</span> <span class="nn">DigitalMicrograph</span> <span class="k">as</span> <span class="nn">DM</span>
 
     <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">XMAX</span><span class="o">*</span><span class="n">mult</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">YMAX</span><span class="o">*</span><span class="n">mult</span><span class="p">)</span>
 
@@ -277,23 +283,39 @@ in DigitalMicrograph:</p>
     <span class="n">dif_img</span> <span class="o">=</span> <span class="n">dm_dif_img</span><span class="o">.</span><span class="n">ShowImage</span><span class="p">()</span>
     <span class="n">dif_img_disp</span> <span class="o">=</span> <span class="n">dm_dif_img</span><span class="o">.</span><span class="n">GetImageDisplay</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
+    <span class="c1">#validate diffraction mode</span>
+    <span class="k">if</span> <span class="n">md</span> <span class="o">&lt;</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">md</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;diffraction mode provided </span><span class="si">{</span><span class="n">md</span><span class="si">}</span><span class="s1"> not supported&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
     <span class="c1">#set image title</span>
     <span class="n">img_title</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Kinematic Diffraction Simulation:  </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> in </span><span class="si">{</span><span class="n">DIFF_MODE</span><span class="p">[</span><span class="n">md</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1"> Mode&#39;</span><span class="p">)</span>
     <span class="n">dm_dif_img</span><span class="o">.</span><span class="n">SetName</span><span class="p">(</span><span class="n">img_title</span><span class="p">)</span>
+
+    <span class="c1">#plotting Kikuchi and HOLZ lines and spots as DM components</span>
     <span class="n">num_klines</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">nklines</span>
+
     <span class="k">if</span> <span class="n">num_klines</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">klines</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">klines</span>
         <span class="k">for</span> <span class="n">kl</span> <span class="ow">in</span> <span class="n">klines</span><span class="p">:</span>
-            <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">kl</span>
+            <span class="n">x1</span><span class="p">,</span><span class="n">y1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">y2</span><span class="p">,</span> <span class="n">inten</span> <span class="o">=</span> <span class="n">kl</span> <span class="c1">#inten: intensity</span>
 
-            <span class="n">xx1</span><span class="p">,</span> <span class="n">yy1</span><span class="p">,</span> <span class="o">=</span> <span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="n">XMAX</span><span class="p">)</span><span class="o">*</span><span class="n">mult</span><span class="p">,(</span><span class="n">y1</span> <span class="o">+</span> <span class="n">YMAX</span><span class="p">)</span><span class="o">*</span><span class="n">mult</span>
+            <span class="n">xx1</span><span class="p">,</span> <span class="n">yy1</span><span class="p">,</span> <span class="o">=</span> <span class="p">(</span><span class="n">x1</span><span class="o">+</span> <span class="n">XMAX</span><span class="p">)</span><span class="o">*</span><span class="n">mult</span><span class="p">,(</span><span class="n">y1</span> <span class="o">+</span> <span class="n">YMAX</span><span class="p">)</span><span class="o">*</span><span class="n">mult</span>
             <span class="n">xx2</span><span class="p">,</span> <span class="n">yy2</span>  <span class="o">=</span> <span class="p">(</span><span class="n">x2</span> <span class="o">+</span> <span class="n">XMAX</span><span class="p">)</span><span class="o">*</span><span class="n">mult</span><span class="p">,(</span><span class="n">y2</span> <span class="o">+</span> <span class="n">YMAX</span><span class="p">)</span><span class="o">*</span><span class="n">mult</span>
 
             <span class="n">kline</span> <span class="o">=</span> <span class="n">dif_img_disp</span><span class="o">.</span><span class="n">AddNewComponent</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">xx1</span><span class="p">,</span> <span class="n">yy1</span><span class="p">,</span> <span class="n">xx2</span><span class="p">,</span> <span class="n">yy2</span><span class="p">)</span>
 
             <span class="n">SetCommonProp</span><span class="p">(</span><span class="n">kline</span><span class="p">)</span>
-            <span class="n">kline</span><span class="o">.</span><span class="n">SetForegroundColor</span><span class="p">(</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">)</span> <span class="c1">#grey</span>
-            <span class="n">kline</span><span class="o">.</span><span class="n">SetBackgroundColor</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)</span> <span class="c1"># dark blue</span>
+
+            <span class="k">if</span> <span class="n">inten</span><span class="o">/</span><span class="mi">5</span> <span class="o">&gt;</span> <span class="mf">0.8</span><span class="p">:</span>
+                <span class="n">kline</span><span class="o">.</span><span class="n">SetForegroundColor</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span> <span class="c1"># dark grey</span>
+            <span class="k">elif</span> <span class="n">inten</span><span class="o">/</span><span class="mi">5</span> <span class="o">&gt;</span> <span class="mf">0.6</span><span class="p">:</span>
+                <span class="n">kline</span><span class="o">.</span><span class="n">SetForegroundColor</span><span class="p">(</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">inten</span><span class="o">/</span><span class="mi">5</span> <span class="o">&gt;</span> <span class="mf">0.4</span><span class="p">:</span>
+                <span class="n">kline</span><span class="o">.</span><span class="n">SetForegroundColor</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">kline</span><span class="o">.</span><span class="n">SetForegroundColor</span><span class="p">(</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span> <span class="c1"># light grey</span>
+            <span class="n">kline</span><span class="o">.</span><span class="n">SetBackgroundColor</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)</span><span class="c1"># dark blue</span>
 
     <span class="n">num_disks</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">ndisks</span>
 
@@ -308,13 +330,15 @@ in DigitalMicrograph:</p>
             <span class="n">disk</span> <span class="o">=</span> <span class="n">dif_img_disp</span><span class="o">.</span><span class="n">AddNewComponent</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">xx</span><span class="o">-</span><span class="n">rr</span><span class="p">,</span> <span class="n">yy</span><span class="o">-</span><span class="n">rr</span><span class="p">,</span> <span class="n">xx</span><span class="o">+</span><span class="n">rr</span><span class="p">,</span> <span class="n">yy</span><span class="o">+</span><span class="n">rr</span><span class="p">)</span>
 
             <span class="n">SetCommonProp</span><span class="p">(</span><span class="n">disk</span><span class="p">)</span>
-            <span class="n">disk</span><span class="o">.</span><span class="n">SetForegroundColor</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span>  <span class="c1"># blue</span>
-            <span class="n">disk</span><span class="o">.</span><span class="n">SetBackgroundColor</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.75</span><span class="p">)</span> <span class="c1"># dark blue</span>
+            <span class="n">disk</span><span class="o">.</span><span class="n">SetForegroundColor</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)</span> <span class="c1"># blue</span>
+            <span class="n">disk</span><span class="o">.</span><span class="n">SetBackgroundColor</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.75</span><span class="p">)</span><span class="c1"># dark blue</span>
             <span class="k">if</span> <span class="n">md</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">disk</span><span class="o">.</span><span class="n">SetFillMode</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">disk</span><span class="o">.</span><span class="n">SetFillMode</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
+            <span class="c1"># a bit tricky to figure out the index location, has to use</span>
+            <span class="c1"># the proxy component indxannot0 first.</span>
             <span class="n">indxannot0</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">NewTextAnnotation</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 
             <span class="n">t</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">indxannot0</span><span class="o">.</span><span class="n">GetRect</span><span class="p">()</span>
@@ -322,7 +346,9 @@ in DigitalMicrograph:</p>
             <span class="n">h</span> <span class="o">=</span> <span class="n">b</span><span class="o">-</span><span class="n">t</span>
 
             <span class="n">nl</span> <span class="o">=</span> <span class="n">xx</span> <span class="o">-</span> <span class="p">(</span> <span class="n">w</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="c1"># nr = xx + ( w / 2)</span>
             <span class="n">nt</span> <span class="o">=</span> <span class="n">yy</span> <span class="o">-</span><span class="n">rr</span> <span class="o">-</span> <span class="n">h</span> <span class="k">if</span> <span class="n">md</span> <span class="o">==</span><span class="mi">1</span> <span class="k">else</span> <span class="n">yy</span> <span class="o">-</span> <span class="p">(</span><span class="n">h</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="c1"># nb = yy + rr + h if md == 1 else yy + (h / 2)</span>
 
             <span class="n">indxannot</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">NewTextAnnotation</span><span class="p">(</span><span class="n">nl</span><span class="p">,</span> <span class="n">nt</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 
@@ -333,17 +359,27 @@ in DigitalMicrograph:</p>
 
     <span class="k">if</span> <span class="n">md</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
         <span class="n">num_hlines</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">nhlines</span>
+
         <span class="k">if</span> <span class="n">num_hlines</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">:</span>
+
             <span class="n">hlines</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">hlines</span>
             <span class="k">for</span> <span class="n">hl</span> <span class="ow">in</span> <span class="n">hlines</span><span class="p">:</span>
-                <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">hl</span>
+
+                <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">inten</span> <span class="o">=</span> <span class="n">hl</span>
                 <span class="n">xx1</span><span class="p">,</span> <span class="n">yy1</span> <span class="o">=</span> <span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="n">XMAX</span><span class="p">)</span><span class="o">*</span><span class="n">mult</span><span class="p">,</span> <span class="p">(</span><span class="n">y1</span> <span class="o">+</span> <span class="n">YMAX</span><span class="p">)</span><span class="o">*</span><span class="n">mult</span>
                 <span class="n">xx2</span><span class="p">,</span> <span class="n">yy2</span> <span class="o">=</span> <span class="p">(</span><span class="n">x2</span> <span class="o">+</span> <span class="n">XMAX</span><span class="p">)</span><span class="o">*</span><span class="n">mult</span><span class="p">,</span> <span class="p">(</span><span class="n">y2</span> <span class="o">+</span> <span class="n">YMAX</span><span class="p">)</span><span class="o">*</span><span class="n">mult</span>
 
                 <span class="n">hline</span> <span class="o">=</span> <span class="n">dif_img_disp</span><span class="o">.</span><span class="n">AddNewComponent</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">xx1</span><span class="p">,</span> <span class="n">yy1</span><span class="p">,</span> <span class="n">xx2</span><span class="p">,</span> <span class="n">yy2</span><span class="p">)</span>
                 <span class="n">SetCommonProp</span><span class="p">(</span><span class="n">hline</span><span class="p">)</span>
-                <span class="n">hline</span><span class="o">.</span><span class="n">SetForegroundColor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.8</span><span class="p">)</span>
-                <span class="n">hline</span><span class="o">.</span><span class="n">SetBackgroundColor</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.2</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)</span>    <span class="c1"># dark blue</span>
+
+                <span class="k">if</span> <span class="n">inten</span><span class="o">/</span><span class="mi">5</span> <span class="o">&gt;</span> <span class="mf">0.8</span><span class="p">:</span>
+                    <span class="n">hline</span><span class="o">.</span><span class="n">SetForegroundColor</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.7</span><span class="p">,</span><span class="mf">0.3</span><span class="p">)</span> <span class="c1"># dark grey</span>
+                <span class="k">elif</span> <span class="n">inten</span><span class="o">/</span><span class="mi">5</span> <span class="o">&gt;</span> <span class="mf">0.6</span><span class="p">:</span>
+                    <span class="n">hline</span><span class="o">.</span><span class="n">SetForegroundColor</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.7</span><span class="p">,</span><span class="mf">0.6</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">inten</span><span class="o">/</span><span class="mi">5</span> <span class="o">&gt;</span> <span class="mf">0.4</span><span class="p">:</span>
+                    <span class="n">hline</span><span class="o">.</span><span class="n">SetForegroundColor</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.7</span><span class="p">,</span><span class="mf">0.8</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">hline</span><span class="o">.</span><span class="n">SetForegroundColor</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">0.7</span><span class="p">,</span><span class="mf">0.9</span><span class="p">)</span> <span class="c1"># light grey</span>
 
     <span class="k">del</span> <span class="n">dm_dif_img</span>
     <span class="k">return</span> <span class="mi">0</span>
