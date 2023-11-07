@@ -10,10 +10,12 @@ Version 1.0.8 Stable
 New
 ~~~
 
-- Separated pyemaps simulations backend into emaps python package
-- pyemaps package installation automatically installs emaps package
-- Ready pyemaps source code for open source and community contribution. Send
-  inquiry on how to be pyemaps contributor, contact support@emlabsoftware.com
+- Separated pyemaps simulations backend into standalone python package.
+- pyemaps package installation automatically installs backend python package. 
+  as one of its depedencies. 
+- Made pyemaps source code ready for open source and community contribution. 
+  We invite you to become pyemaps contributor, contact support@emlabsoftware.com
+  for further information.
 
 Improvements
 ~~~~~~~~~~~~
