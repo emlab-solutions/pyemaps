@@ -28,10 +28,11 @@ from . import __config__
 
 #--------------from diffraction extension module------------------------
 try:
-    from .diffract import dif
+    from emaps import dif
 except ImportError:
     raise Exception('No diffraction module found')
 else:
+    PKG_TYPE = dif.get_pkgtype()
 #--------------defaults from the backend for simulation control parameters
     # Default excitation from backend: DEF_EXCITATION (low, high)
     # Default gmax from backend: DEF_GMAX  
@@ -40,7 +41,6 @@ else:
     # Default gctl from backend: DEF_GCTL  
     # Default zctl from backend: DEF_ZCTL
 #------------------------------------------------------------------------
-    PKG_TYPE = dif.get_pkgtype()
     (sgmn, 
      sgmx, 
      DEF_GMAX, 
@@ -53,8 +53,8 @@ else:
 
     DEF_EXCITATION= (sgmn, sgmx)
     DEF_INTENSITY = (intz, intc)
-    XMAX = 75  # set in dif backend
-    YMAX = 75  #set in dif backend
+    XMAX = 75  # set in dif backend as constant for now, may need to change to variable set by users
+    YMAX = 75  # set in dif backend, same as the above
 
 #-------------- defaults from backend for sample controls---------------
     # Default starting zone setting: DEF_ZONE
@@ -87,12 +87,12 @@ else:
     
 #------------------------Pyemaps Helper Modules---------------------------------
 
-from .spg import spgseek
-from .scattering import sct
+from emaps import spgseek
+from emaps import sct
 
 #------------------------Crystal Structure Factor Module------------------------
 try:
-    from .diffract import csf
+    from emaps import csf
 
 except ImportError as e:
     pass
@@ -100,14 +100,14 @@ except ImportError as e:
 
 #------------------------Powder Diffraction Module------------------------------
 try:
-    from .diffract import powder
+    from emaps import powder
 
 except ImportError as e:
     pass
 
 #------------------------Dynamic Diffraction Module----------------------------
 try:
-    from .diffract import bloch
+    from emaps import bloch
     
 except ImportError as e:
     raise Exception('No diffraction module found')
@@ -128,7 +128,7 @@ else:
 
 #------------------------Stereodiagram Module--------------------------------
 try:
-    from .diffract import stereo
+    from emaps import stereo
     
 except ImportError as e:
     raise Exception('No stereo module found')
@@ -138,27 +138,24 @@ else:
 
 #------------------Crystal Constructor Module--------------------------------
 try:
-    from .diffract import mxtal
+    from emaps import mxtal
     
 except ImportError as e:
     raise Exception('No mxtal module found')
 else:
-    
-    # TY_NORMAL = 0 # Normal Bloch Image type
-    # TY_LACBED = 1 # Large angle Bloch image type
 
     ID_MATRIX = [[1,0,0], [0,1,0], [0,0,1]]
     MLEN = 10 
     DEF_TRSHIFT = [0,0,0]
     DEF_CELLBOX = [[0,0,0], [3,3,3]]
     DEF_XZ = [[1,0,0], [0,0,1]]
-    DEF_ORSHIFT = [0, 0, 0] #Origin shift
-    DEF_LOCASPACE = [0, 0, 0] #location in A Space
+    DEF_ORSHIFT = [0, 0, 0] # Origin shift
+    DEF_LOCASPACE = [0, 0, 0] # location in A Space
 
 
 # #------------------Diffraction Database Generator - paid package only---------------------------
 try:
-    from .diffract import dpgen
+    from emaps import dpgen
     
 except ImportError as e:
     # skip this in free package
@@ -169,7 +166,7 @@ except ImportError as e:
 #  used only with dpgen module above
 
 try:
-    from .ediom import ediom
+    from emaps import ediom
 except ImportError:
     pass
 else:

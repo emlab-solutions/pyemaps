@@ -34,13 +34,13 @@ def run_feat_list(cnflist, ty=1, bShow=True, bSave=False, feat_type='dif'):
 
     failure_cases=[]
     failure_count = 0
-    
+
     for cfn in cnflist: 
-        # if 'Aluminium.xtl' not in cfn:
-        #     continue
+        
         tic = time.perf_counter()
         try:    
-            cf = cr.from_xtl(cfn) if ty==1 else cr.from_cif(cfn)                  
+            cf = cr.from_xtl(cfn) if ty==1 else cr.from_cif(cfn) 
+                           
             if feat_type == 'bloch':
                 bimgs = cf.generateBloch()
 
@@ -61,7 +61,8 @@ def run_feat_list(cnflist, ty=1, bShow=True, bSave=False, feat_type='dif'):
             failure_count += 1
             failure_cases.append(cfn)
             continue
-        except Exception:
+        except Exception as e:
+                print(f'Loading {cfn} failed')
                 failure_count += 1
                 failure_cases.append(cfn)
                 continue
@@ -154,6 +155,8 @@ if __name__ == '__main__':
     for f in feat_list:
         res[f]=[]
         for dt in range(1,3):
+            # if dt == 1:
+            #     continue
             fc, fl = run_features_test(data_ty=dt, bShow = True, feat_type = f)
             res[f].append((fc, fl))
 
@@ -163,6 +166,9 @@ if __name__ == '__main__':
         fres = res[f]
         print(f"\n\n{f} Feature Test Results:")  
         for dt in range(1,3):
+            # if dt == 1:
+            #     continue
+            # print(f'list index: {dt}')
             fc, fl = fres[dt-1]
             data_type = 'builtin Crystal Data' if dt == 1 else 'CIF Crystal Data'
             print(f"<<{data_type.upper()} Tests>>:")  

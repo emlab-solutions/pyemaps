@@ -2,7 +2,10 @@ from multiprocessing.sharedctypes import Value
 import os
 from shutil import move
 from pathlib import Path
+from packaging.tags import sys_tags
 
+pyPackageName = 'pyemaps'
+bwheel ='dist\\'
 if os.getenv('PYEMAPS_DEBUG') is not None:
     pyemaps_debug = int(os.getenv('PYEMAPS_DEBUG'))
 else:
@@ -26,7 +29,7 @@ rel_pypi_url = "https://pypi.org"
 twine_cfg = '../pypi_twine.cfg'
 twinetest_cfg = '../testpypi_twine.cfg'
 
-def clean():
+def clean(preBuild=True):
     '''
     remove build and dist directory in the pyemaps root directory
     '''
@@ -35,17 +38,11 @@ def clean():
     
     builddir = Path("build")
     print(f"Build dir: {builddir}")
-    if os.path.exists(builddir) and os.path.isdir(builddir):
+
+    if os.path.exists(builddir) and os.path.isdir(builddir) and preBuild:
         shutil.rmtree(builddir)
 
-# remove distribution packages... For now we keep them
-    # distdir = Path('dist')
-    # print(f"Distribution dir: {distdir}")
-    # if os.path.exists(distdir) and os.path.isdir(distdir):
-    #     shutil.rmtree(distdir)
-
-
-    eggdir = Path('pyemaps.egg-info')
+    eggdir = Path(pyPackageName + '.egg-info')
     print(f"Egg info dir: {eggdir}")
     if os.path.exists(eggdir) and os.path.isdir(eggdir):
         shutil.rmtree(eggdir)
@@ -219,17 +216,17 @@ def hideEMAPSPYFiles():
     
     print(f'Current dir in hideEMAPSFiles: {os.path.abspath(__file__)}, {currdir}')
     emapsdir = os.path.join(currdir, 'emaps')
-    
-    for f in os.listdir(emapsdir):
-        fp = os.path.join(emapsdir, f)
-        if os.path.isfile(fp) and f.endswith(".py"):
-            if not f.endswith("__init__.py") and \
-                not f.endswith("setup_diffract.py"):
-                fn = Path(fp)
-                fn.with_suffix('')
-                fn_tmpext = fn.with_suffix('.emapspy')
-                move(fn, fn_tmpext)
-                print(f'hid: ', fn_tmpext)
+    if os.path.exists(emapsdir):
+        for f in os.listdir(emapsdir):
+            fp = os.path.join(emapsdir, f)
+            if os.path.isfile(fp) and f.endswith(".py"):
+                if not f.endswith("__init__.py") and \
+                    not f.endswith("setup_diffract.py"):
+                    fn = Path(fp)
+                    fn.with_suffix('')
+                    fn_tmpext = fn.with_suffix('.emapspy')
+                    move(fn, fn_tmpext)
+                    print(f'hid: ', fn_tmpext)
 
 def restoreEMAPSPYFiles():
     '''
@@ -241,16 +238,17 @@ def restoreEMAPSPYFiles():
     currdir = Path(os.path.abspath(__file__)).parent.absolute()
     emapsdir = os.path.join(currdir, 'emaps')
       
-    for f in os.listdir(emapsdir):
+    if os.path.exists(emapsdir):
+        for f in os.listdir(emapsdir):
 
-        fp = os.path.join(emapsdir, f)
+            fp = os.path.join(emapsdir, f)
 
-        if os.path.isfile(fp) and f.endswith(".emapspy"):
-            fn = Path(fp)
-            fn.with_suffix('')
-            fn_tmpext = fn.with_suffix('.py')
-            move(fn, fn_tmpext)
-            print(f'restored: ', fn_tmpext)
+            if os.path.isfile(fp) and f.endswith(".emapspy"):
+                fn = Path(fp)
+                fn.with_suffix('')
+                fn_tmpext = fn.with_suffix('.py')
+                move(fn, fn_tmpext)
+                print(f'restored: ', fn_tmpext)
 
 def copy_configuration():
     import sys
@@ -285,7 +283,7 @@ def build_package(repo_test = True):
         
     clean()
     
-    make_pyf()
+    # make_pyf()
 
     print(f"####Begin building pyemaps package for {build_type}...")
 
@@ -312,6 +310,7 @@ def build_package(repo_test = True):
     else:
         print("The setup.cfg file does not exist")
 
+    clean(preBuild=False)
 
 def upload_package(bRelease = False, ver = None):
     repo_name = 'pypi' if bRelease else 'testpypi'
@@ -410,6 +409,32 @@ def set_benvs():
                             '2022.1.0', 
                             sos)
                             
+def get_wheel(v):
+    # Get the current Python implementation and version
+    # python_tag = sys_tags()[0]
+    # Get the desired Python tag based on your requirements
+    python_tag = "cp37"  # Replace with the Python version you want to target
+
+    # Initialize the python_tag variable to None
+    abi_tag = python_tag + 'm'
+
+    # Iterate through the tags and find the one that matches the desired Python version
+    # for tag in sys_tags():
+    #     if tag.interpreter == desired_python_tag:
+    #         python_tag = tag
+
+    # Specify the platform tag, e.g., for 64-bit Windows
+    platform_tag = "win_amd64" #window only, linux is complicated
+
+    if python_tag is not None:
+        # Construct the wheel file name using the selected Python tag
+        wheel_filename = f"{pyPackageName}-{v}-{python_tag}-{abi_tag}-{platform_tag}.whl"
+        print(f'Composed wheel file name: {wheel_filename}')
+        return wheel_filename
+    
+    print(f"Python tag {desired_python_tag} not found in available tags.")
+
+    return ""
 
 if __name__ == "__main__":
     import argparse
@@ -429,6 +454,15 @@ if __name__ == "__main__":
     ver = args.build_version
     if not ver or ver == '':
         ver = get_bversion(btest = args.test_repo)
+    
+    # compose output wheel file name and relative path
+    # for cature it in batch call
+    bwheel += get_wheel(ver)
+    if bwheel is None or len(bwheel) <= 5:
+        print('Error finding package wheel name')
+        exit(1)
+        
+    print('wheel file name:' + bwheel)
     
     # write the version into __version__.py file
     with open('__version__.py', 'w') as vf:

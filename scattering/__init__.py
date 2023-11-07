@@ -20,4 +20,4 @@
 # '''
 
 # root directory for all emaps modules
-from .scattering import sct
+from emaps import sct

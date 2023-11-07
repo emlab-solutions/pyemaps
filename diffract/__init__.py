@@ -19,43 +19,48 @@
 # ___________________________
 # '''
 
-# root directory for all emaps modules
-from .emaps import dif
+# import all pyemaps simulation modules
+try:
+    from emaps import dif
+except ImportError as e:
+    print(f'Failed to find pyemas simulation modules')
+    print(f'Please make sure emaps python package is installed')
+    raise ValueError('')
 
 #check other modules existence
 try:
-    from .emaps import dpgen
+    from emaps import dpgen
 
 except ImportError as e:
     pass
 
 try:
-    from .emaps import csf
+    from emaps import csf
 
 except ImportError as e:
     pass
 
 try:
-    from .emaps import powder
+    from emaps import powder
 
 except ImportError as e:
     pass
 
 try:
-    from .emaps import bloch
+    from emaps import bloch
 
 except ImportError as e:
     pass
 
 try:
-    from .emaps import stereo
+    from emaps import stereo
 
 except ImportError as e:
     pass
 
 
 try:
-    from .emaps import mxtal
+    from emaps import mxtal
 
 except ImportError as e:
     print(f'no mxtal module found in emaps')

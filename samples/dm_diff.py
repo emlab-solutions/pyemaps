@@ -220,6 +220,6 @@ def run_si_dm_bloch():
     #-----------content of the crystal data-----------------------------------
     # show_diffract(si_dp, name = name)
 
-if __name__ == '__main__'
+if __name__ == '__main__':
     run_si_dm_sample()
     run_si_dm_bloch()
