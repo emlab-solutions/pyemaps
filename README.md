@@ -1,76 +1,150 @@
-pyEMAPS is a python interface into electron diffraction simulations and crystallogrphy calculations. Its
-main components are designed for electron microscope operations and simulations, including microscpe controls
-and crystal python classes. 
+#  Open Source __pyEMAPS__ Development
+1. <a id="contents"></a>[Overview](#overview)
+2. <a id="contents"></a>[Build pyEMAPS](#build)
+3. <a id="contents"></a>[Installation](#installation)
+4. <a id="contents"></a>[Testing](#test)
+5. <a id="contents"></a>[Development Process](#process)
 
-pyEMAPS provides opportunities for user to automate simulations and calculations with common json data 
-output and images of well known format suited for further processing.
+## Overview [`↩`](#contents) <a id="overview"></a>
+__pyEMAPS__ is a python package providing interfaces into electron diffraction simulations and crystallogrphy calculations engines. Its
+main components are designed for electron microscope operations and simulations, including microscpe controls and crystal python classes. 
+__pyEMAPS__ provides opportunities for users to automate simulations and calculations with common json data output and images of well known 
+format suited for further processing.
 
-Check our full [pyemaps documentation](https://emlab-solutions.github.io/pyemaps) for details of pyEMAPS 
+Check our full [pyemaps documentation](https://emlab-solutions.github.io/pyemaps) for details of __pyEMAPS__ 
 python classes designs and their interfaces.
 
-Build pyeEMAPS:
+We greatly appreciate your contributions to pyEMAPS and look forward to making it a tool for 
+the communty to accelaerate microscopy and crystallography education and research. If you benefit from __pyEMAPS__ in your microscopy 
+and crystallography research and education, go to 
+[PayPal](https://www.paypal.com/paypalme/pyemaps22) to donate. Your generous donations keep us in the business of providing free software 
+to the education and research communities.   
+
+## Build pyEMAPS [`↩`](#content) <a id="build"></a>
+
+* __Python__: Version == 3.7
+* __Operating Systems__: Windows
+* __VSCode__: code editing 
+* __Microsoft Visual Studio 2019 Community__: with build tools
 
 Current pyEMAPS only support Windows and python 3.7. We also recommend you to use vscode to develop your code.
-Like many python development, virtual python environment is recommended. Below is a list of steps to establish 
-pyEMAPS build environment with python 3.7.9:
+Like many python development, a virtual python environment is recommended to isolate your pyEMAPS development 
+environment from your other python development projects. We look for contributors to help us to port __pyEMAPS__
+to linux platform.
 
-1) Install python 3.7.9 with PowerPC admin command line in c:\python37 directory:
+Below are steps to establish __pyEMAPS__ build environment with python 3.7.9 (Windows installer still available):
+
+* Install python 3.7.9 with Windows PowerShell command line in Administrator previlige in c:\python37 directory:
+
+```   
    Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe" -OutFile "python-3.7.9-amd64.exe"
-   Run the "python-3.7.9-amd64.exe", choose the following in install GUI:
-     a. Select Customize Installation
-     b. Check and select pip
-     c. Install for all users/specific users
+```
+
+* Run the "python-3.7.9-amd64.exe", choose the following in installer GUI:
+  
+     * Select Customize Installation
+     * Check and select pip
+     * Install for all users/specific users
      
-2) Create a virtual environment for the build
-    a. Create a dev directory: mkdir pyemaps-dev (or choose your own directory name)
-    b. Create pyemaps_build virtual environemnt:
+* Create a virtual environment called "pyemaps_build" for the build
+     * Create a dev directory:
+       
+       ```
+       mkdir pyemaps-dev
+       ``` 
+       (or choose your own directory name)
+     * Create pyemaps_build virtual environemnt:
+       
+       ```
        c:\python37\python.exe -m venv pyemaps_build
-3) Activate pyemaps_build vitual environment:
+       ```
+       
+* Activate pyemaps_build vitual environment:
+ 
+     ```
     .\pyemaps_build\Scripts\activate
+     ```
 
-4) Update pip:
+* Update pip:
+  
+  ```
    C:\Python37\python.exe -m pip install pip --upgrade
+  ```
 
-5) Install other python packages required for building pyemaps:
-   setuptool wheel numpy build
+* Install other python packages required for building pyemaps:
+  
+  ``` 
+  pip install setuptool wheel numpy build
+  ```
 
-6) Install Microsoft Visual Studio 2019 Community with Build
+* Install Microsoft Visual Studio 2019 Community with build tools 
    https://visualstudio.microsoft.com/vs/older-downloads/
    by selecting "Desktop development with C++" in the installer.
    (You may need to have a microsoft account to be able to download)
 
-8) Build pyEMAPS package:
+* Build pyEMAPS package, run:
+  
+  ```
    python build_pyemaps -t -v 1.0.0
+  ```
 
-9) Install the new pyEMAPS package:
+## Installation [`↩`](#contents) <a id="installation"></a>
+
+* Install the new pyEMAPS package:
+
+  ```
    pip .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl
-   This will install new pyEMAPS just built in current python virtual environment
-   along with all of its dependent packages
+  ```
+  This will install new pyEMAPS just built in current python virtual environment
+  along with all of its dependent packages
 
-10) Testing the new pyEMAPS:
-    Current pyEMAPS development comes with a set of basic testing suites, including
-    sanity checks, unit tests and stress tests. To run these test suites, call:
+
+## Testing [`↩`](#contents) <a id="test"></a>
+
+   Current pyEMAPS development comes with a set of basic testing suites, including
+   
+   * sanity checks
+   * unit tests
+   * stress tests.
+
+   To run these test suites, call:
+   ```
       .\test\sanity\sanity.bat
-    We are looking for your contribution of tests to make the development of quality and
-    stability for the community.
+   ```
+   We are looking for your contributions to make the development tomake __pyEMAPS__ quality and stable 
+   tool for the community.
 
-11) Process to follow to contribute to pyEMAPS development as a contributor:
-    a. Before making changes for bug fix or feature implementation, write an issue in the pyEMAPS
-       github repository.
-    b. Create your branch from 'main' branch for the changes you desire.
-    c. Testing your changes based on the issues you wrote in previous steps with existing test suites
-       and add tests cases to existing test suites if possible.
-    d. When ready, make a "pull request" in pyEMAPS repository
-    e. Request code review from other contributors, please always include "sharonz2006" in your code reviewer.
-    f. Document the changes in sphinx tool for any interface changes. To install sphinx, run:
-       pip install -U sphinx
-       in your virtual environment (pyemaps_build).
-       To compile the documentation changes, run:
-          sphinx-build -b html source .
+## Development Process [`↩`](#contents) <a id="process"></a>
 
-We greatly appreciate your contributions to pyEMAPS and look forward to making it a tool for 
-the communty to accelaerate microscopy and crystallography education and research.
-    
+As any open source development, we strongly recommend the following process to follow for all contributors:
+
+* __Issues creation__. Before making changes for bug fix or feature implementation, create an issue in the pyEMAPS
+   github repository be communicating what you intend to change or fix.
+
+* __Development Branch__. Create your own branch from 'main' branch for the changes you desire.
+  
+* __Testing your changes for backwards compatibilities__. Existing test suites designed for testing most of the features
+   are strongly recommended.
+
+* __New tests cases creation__. Test cases for the changes introduced into the package are desired to keep the quality 
+   of __pyEMAPS__
+  
+* __Pull Requests__. Before merging your changes into production branch "main".
+  
+* __Code Review__. Requesting code review from other contributors, please always include "sharonz2006" in your code reviewer list.
+  
+* __Documentation__. You are the author of the changes, so please take the pride of documenting them.  
+   We use sphinx tool for documentation creation. To install sphinx, run:
+   ```
+    pip install -U sphinx
+   ```
+   in your python build virtual environment (pyemaps_build in our example).
+ 
+   Most of the documentations files are in "docs" directory. After making documentation changes to record your changes, compile
+   them with sphinx:
+   ```
+    sphinx-build -b html source .
+   ```
 
    
 
