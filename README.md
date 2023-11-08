@@ -119,21 +119,23 @@ Below are steps to establish __pyEMAPS__ build environment with python 3.7.9 (Wi
 As any open source development, we strongly recommend the following process to follow for all contributors:
 
 * __Issues creation__. Before making changes for bug fix or feature implementation, create an issue in the pyEMAPS
-   github repository be communicating what you intend to change or fix.
+   github repository be communicating what you intend to change or fix to your fellow contributors.
 
 * __Development Branch__. Create your own branch from 'main' branch for the changes you desire.
   
-* __Testing your changes for backwards compatibilities__. Existing test suites designed for testing most of the features
+* __Backwards Compatibilities Tests__. Existing test suites designed for testing most of the features
    are strongly recommended.
 
-* __New tests cases creation__. Test cases for the changes introduced into the package are desired to keep the quality 
+* __New Tests Additions__. New test cases for the changes introduced into the package are desired to keep the quality 
    of __pyEMAPS__
   
-* __Pull Requests__. Before merging your changes into production branch "main".
+* __Pull Requests__. Before merging your changes into production branch "main", a pull request is required. The request created
+  should be verbose enough to convey the summary of the changes and any issues the changes are to address. 
   
-* __Code Review__. Requesting code review from other contributors, please always include "sharonz2006" in your code reviewer list.
+* __Code Review__. Requesting code review from fellow contributors in your pull requests is also required, please always
+  include "sharonz2006" in your code reviewer list.
   
-* __Documentation__. You are the author of the changes, so please take the pride of documenting them.  
+* __Documentation__. You are the author of the changes, so please take the pride by documenting them.  
    We use sphinx tool for documentation creation. To install sphinx, run:
    ```
     pip install -U sphinx
