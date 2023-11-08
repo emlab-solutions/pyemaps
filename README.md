@@ -2,8 +2,8 @@ pyEMAPS is a python interface into electron diffraction simulations and crystall
 main components are designed for electron microscope operations and simulations, including microscpe controls
 and crystal python classes. 
 
-The advantage of pyEMAPS provide opportunities for user to automate simulations and calculations with common json data 
-output and images of well known formatts suited for further processing.
+pyEMAPS provides opportunities for user to automate simulations and calculations with common json data 
+output and images of well known format suited for further processing.
 
 Check our full [pyemaps documentation](https://emlab-solutions.github.io/pyemaps) for details of pyEMAPS 
 python classes designs and their interfaces.
@@ -62,6 +62,11 @@ pyEMAPS build environment with python 3.7.9:
        and add tests cases to existing test suites if possible.
     d. When ready, make a "pull request" in pyEMAPS repository
     e. Request code review from other contributors, please always include "sharonz2006" in your code reviewer.
+    f. Document the changes in sphinx tool for any interface changes. To install sphinx, run:
+       pip install -U sphinx
+       in your virtual environment (pyemaps_build).
+       To compile the documentation changes, run:
+          sphinx-build -b html source .
 
 We greatly appreciate your contributions to pyEMAPS and look forward to making it a tool for 
 the communty to accelaerate microscopy and crystallography education and research.
