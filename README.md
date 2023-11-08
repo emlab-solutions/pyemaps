@@ -24,7 +24,7 @@ to the education and research communities.
 
 * __Python__: Version == 3.7
 * __Operating Systems__: Windows
-* __VSCode__: code editing 
+* __VSCode__: code editing (recommended)
 * __Microsoft Visual Studio 2019 Community__: with build tools
 
 Current pyEMAPS only support Windows and python 3.7. We also recommend you to use vscode to develop your code.
