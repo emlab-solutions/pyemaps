@@ -24,7 +24,7 @@ def get_cifreader_source():
     pyemaps_parent_path = current_path.parent.absolute()
     cifreader_path = os.path.join(pyemaps_parent_path, 'CifFile')
 
-    print(f'-----------CifReader Source path: {cifreader_path}')
+    # print(f'-----------CifReader Source path: {cifreader_path}')
 
     src_files = ["src/lib/lex.yy.c","src/lib/py_star_scan.c"]
     return [os.path.join(cifreader_path, s) for s in src_files]
@@ -39,6 +39,7 @@ def get_samples(sdn = 'samples'):
     samples_base_dir = os.path.join(os.path.dirname(base_dir), sdn)
     sbase_files = os.path.join(samples_base_dir, '*.py')
     sfile_list = glob.glob(sbase_files)
+    # for full package only
     # sfile_list.append('al_db.bin')
     sfile_list.append('al.img')
 
@@ -152,6 +153,9 @@ setup(name                              ="pyemaps",
                                                 '*.in', 
                                                 '__pycache__/*.pyc',
                                                 '*.egg-info/*'
+                                                'setup.py',
+                                                'setup_win.cfg',
+                                                'setup_lin.cfg'
                                                 ],
                                             'pyemaps.ediom':['*.i', 
                                                             '*.cpp',

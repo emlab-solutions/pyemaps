@@ -156,7 +156,7 @@ kdiffs_06232022
 test/sanity/output*
 
 #CifFile directory
-*CifFile/
+# *CifFile/
 
 #f2py intermediate files
 *.pyf
