@@ -4,6 +4,8 @@
 3. <a id="contents"></a>[Installation](#installation)
 4. <a id="contents"></a>[Testing](#test)
 5. <a id="contents"></a>[Development Process](#process)
+5. <a id="contents"></a>[pyEMAPS Contributor License Agreement](#CLA)
+5. <a id="contents"></a>[Code of Conduct](#COC)
 
 ## Overview [`↩`](#contents) <a id="overview"></a>
 __pyEMAPS__ is a python package providing interfaces into electron diffraction simulations and crystallogrphy calculations engines. Its
@@ -148,5 +150,16 @@ As any open source development, we strongly recommend the following process to f
     sphinx-build -b html source .
    ```
 
-   
+## pyEMAPS Contributor License Agreement [`↩`](#contents) <a id="CLA"></a>
+
+Please read and agree to our [Contributor License Agreement](CONTRIBUTING.md) before contributing to this project.
+
+## Code of Conduct [`↩`](#contents) <a id="COC"></a>
+
+pyEMAPS is committed to providing a welcoming and inclusive environment for all contributors. We follow the [Contributor Covenant](https://www.contributor-covenant.org/version/2/0/code_of_conduct/) as our code of conduct. Please make sure to review it before contributing.
+
+**[Read the Contributor Covenant](https://www.contributor-covenant.org/version/2/0/code_of_conduct/)**
+
+Any instances of unacceptable behavior can be reported to support@emlabsoftware.com.
+
 
