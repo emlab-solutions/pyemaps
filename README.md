@@ -1,5 +1,6 @@
-#  Open Source __pyEMAPS__ Development
-1. <a id="contents"></a>[Overview](#overview)
+#  Open Source __pyEMAPS__ Development Guidelines
+
+1. <a id="contents"></a>[What's pyEMAPS](#overview)
 2. <a id="contents"></a>[Build pyEMAPS](#build)
 3. <a id="contents"></a>[Installation](#installation)
 4. <a id="contents"></a>[Testing](#test)
@@ -7,7 +8,7 @@
 5. <a id="contents"></a>[pyEMAPS Contributor License Agreement](#CLA)
 5. <a id="contents"></a>[Code of Conduct](#COC)
 
-## Overview [`↩`](#contents) <a id="overview"></a>
+## What's pyEMAPS [`↩`](#contents) <a id="overview"></a>
 __pyEMAPS__ is a python package providing interfaces into electron diffraction simulations and crystallogrphy calculations engines. Its
 main components are designed for electron microscope operations and simulations, including microscpe controls and crystal python classes. 
 __pyEMAPS__ provides opportunities for users to automate simulations and calculations with common json data output and images of well known 
@@ -138,7 +139,7 @@ As any open source development, we strongly recommend the following process to f
   include "sharonz2006" in your code reviewer list.
   
 * __Documentation__. You are the author of the changes, so please take the pride by documenting them.  
-   We use sphinx tool for documentation creation. To install sphinx, run:
+   We use sphinx tool for documentation generation. To install sphinx, run:
    ```
     pip install -U sphinx
    ```
