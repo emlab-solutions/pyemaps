@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>pyemaps.diffract package &#8212; pyemaps 1.0.8 Stable documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.8 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyemaps.diffract package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="pyemaps-diffract-package">
+<h1>pyemaps.diffract package<a class="headerlink" href="#pyemaps-diffract-package" title="Permalink to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="module-pyemaps.diffract.bloch_dec">
+<span id="pyemaps-diffract-bloch-dec-module"></span><h2>pyemaps.diffract.bloch_dec module<a class="headerlink" href="#module-pyemaps.diffract.bloch_dec" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.diffract.bloch_dec.add_bloch">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.diffract.bloch_dec.</span></span><span class="sig-name descname"><span class="pre">add_bloch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.diffract.bloch_dec.add_bloch" title="Permalink to this definition">¶</a></dt>
+<dd><section id="dynamic-simulation-specific-controls-default-values">
+<h3>Dynamic Simulation Specific Controls Default Values:<a class="headerlink" href="#dynamic-simulation-specific-controls-default-values" title="Permalink to this heading">¶</a></h3>
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.diffract.bloch_dec.DEF_APERTURE">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.diffract.bloch_dec.</span></span><span class="sig-name descname"><span class="pre">DEF_APERTURE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.0</span></em><a class="headerlink" href="#pyemaps.diffract.bloch_dec.DEF_APERTURE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.diffract.bloch_dec.DEF_OMEGA">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.diffract.bloch_dec.</span></span><span class="sig-name descname"><span class="pre">DEF_OMEGA</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#pyemaps.diffract.bloch_dec.DEF_OMEGA" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.diffract.bloch_dec.DEF_SAMPLING">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.diffract.bloch_dec.</span></span><span class="sig-name descname"><span class="pre">DEF_SAMPLING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></em><a class="headerlink" href="#pyemaps.diffract.bloch_dec.DEF_SAMPLING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.diffract.bloch_dec.DEF_PIXSIZE">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.diffract.bloch_dec.</span></span><span class="sig-name descname"><span class="pre">DEF_PIXSIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">25</span></em><a class="headerlink" href="#pyemaps.diffract.bloch_dec.DEF_PIXSIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.diffract.bloch_dec.DEF_DETSIZE">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.diffract.bloch_dec.</span></span><span class="sig-name descname"><span class="pre">DEF_DETSIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">512</span></em><a class="headerlink" href="#pyemaps.diffract.bloch_dec.DEF_DETSIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.diffract.bloch_dec.DEF_CBED_DSIZE">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.diffract.bloch_dec.</span></span><span class="sig-name descname"><span class="pre">DEF_CBED_DSIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.16</span></em><a class="headerlink" href="#pyemaps.diffract.bloch_dec.DEF_CBED_DSIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.diffract.bloch_dec.DEF_THICKNESS">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.diffract.bloch_dec.</span></span><span class="sig-name descname"><span class="pre">DEF_THICKNESS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(200,</span> <span class="pre">200,</span> <span class="pre">100)</span></em><a class="headerlink" href="#pyemaps.diffract.bloch_dec.DEF_THICKNESS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.diffract.bloch_dec.DEF_DSIZE_LIMITS">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.diffract.bloch_dec.</span></span><span class="sig-name descname"><span class="pre">DEF_DSIZE_LIMITS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.01,</span> <span class="pre">0.5)</span></em><a class="headerlink" href="#pyemaps.diffract.bloch_dec.DEF_DSIZE_LIMITS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+</dd></dl>
+
+</section>
+<section id="module-pyemaps.diffract.csf_dec">
+<span id="pyemaps-diffract-csf-dec-module"></span><h2>pyemaps.diffract.csf_dec module<a class="headerlink" href="#module-pyemaps.diffract.csf_dec" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.diffract.csf_dec.add_csf">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.diffract.csf_dec.</span></span><span class="sig-name descname"><span class="pre">add_csf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.diffract.csf_dec.add_csf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate crystal structure factors. The following types 
+Structure Factors are currently supported:</p>
+<ul class="simple">
+<li><p>x-ray structure factor (default)</p></li>
+<li><p>electron structure factor in volts (V)</p></li>
+<li><p>electron structure factor in 1/angstrom^2 in (V)</p></li>
+<li><p>electron absorption structure factor in 1/angstrom^2 (V)</p></li>
+</ul>
+</dd></dl>
+
+</section>
+<section id="module-pyemaps.diffract.dif_dec">
+<span id="pyemaps-diffract-dif-dec-module"></span><h2>pyemaps.diffract.dif_dec module<a class="headerlink" href="#module-pyemaps.diffract.dif_dec" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.diffract.dif_dec.add_dif">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.diffract.dif_dec.</span></span><span class="sig-name descname"><span class="pre">add_dif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.diffract.dif_dec.add_dif" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pyemaps.diffract.dpgen_dec">
+<span id="pyemaps-diffract-dpgen-dec-module"></span><h2>pyemaps.diffract.dpgen_dec module<a class="headerlink" href="#module-pyemaps.diffract.dpgen_dec" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.diffract.dpgen_dec.add_dpgen">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.diffract.dpgen_dec.</span></span><span class="sig-name descname"><span class="pre">add_dpgen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.diffract.dpgen_dec.add_dpgen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pyemaps.diffract.emaps">
+<span id="pyemaps-diffract-emaps-module"></span><h2>pyemaps.diffract.emaps module<a class="headerlink" href="#module-pyemaps.diffract.emaps" title="Permalink to this heading">¶</a></h2>
+<p>This module ‘emaps’ is auto-generated with f2py (version:1.21.6).
+Functions:</p>
+<blockquote>
+<div><p>emaps_cgeev(aa,info,nd=shape(aa,0))
+inverse_eigen(n,info)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>COMMON blocks:</dt><dd><p>/metric/ gmx(3,3),gmxr(3,3)</p>
+</dd>
+<dt>Fortran 90/95 modules:</dt><dd><p>dif — norm_disk_size,cbed_disk_min,cbed_disk_max,cbed_disk_size,a0,def_gctl,def_zonctl,def_sgmax,def_gmax,def_bmin,def_intz0,def_cl,def_kv,def_tilt,def_sgmin,full_cbed_disk_max,def_mode,def_intctl,def_isgx0,cl,kv,gmax,bmin,sgmax,zone0,zonctl,sgmin,disks,tiltx,tilty,fi,gctl,xdef,ydef,intctl,indz0,mode,startzn,isgx0,indexw,center,lindex,a,at,amt,bmt,bigk,wavel,bigkz,intz0,tilt,zone,u0,glen,scaler,xc,yc,xmn,xmx,ymn,ymx,tiltkt,spot,gx0,diffract(),getlin(),xxy(),yxy(),xcirc(),sfact0(),gethlist(),getklist(),getdlist(),getdlist_dp(),lineq(),getg(),setgls(),crule(),getamt(),getbmt(),gselct(),beams_est(),igcheck(),excit(),sortin(),getzon(),zonlis(),getknum(),getdnum(),gethnum(),get_kline(),get_klines(),get_hline(),get_hlines(),get_disk(),get_disks(),get_shifts(),diff_delete(),setmode(),setdisksize(),getdisksize(),setgctl(),setzctl(),setexcitation(),setglen(),setgcutoff(),setintensities(),setzone(),setemcontrols(),setsamplecontrols(),set_xaxis(),get_xaxis(),get_sim_defs(),get_sam_defs(),get_mic_defs(),drtrans(),ang(),vlen(),initcontrols(),loadcrystal(),crystaldelete(),crystal_printall(),diff_printall(),diff_internaldelete(),get_nbeams(),get_pkgtype()  csf — gmx,gmxr,csf_xray,csf_v,csf_u,csf_a,amp_phase,ap_type,sf_type,smax,sfact_csf(),generate_sf(),get_sf(),delete_sfmem(),est_sfbeams(),setsfgls(),sfsortin()  powder — theta2max,theta2min,wavel,isabsp,sfact_powder(),generate_powder(),bkgd(),est_pbeams(),setpwdgls(),sortphkl()  bloch — gmx,gmxr,def_aper,def_abs,def_excitation,def_gcutoff,def_omega,def_sampling,def_pixsize,def_thickness,def_beamsel3,def_det,max_depth,nsmap,max_free_nbeams,max_free_nsamplings,eigen_maxdim,aper,omgmax,abm,disk,alpha,dkv,hv,tilt0,v0,xtilt,ytilt,omega,sampling,pixsize,thickness,beamsel3,nbeams,nref,ntilt,nx2,tstart,tfinal,tstep,ndiag_max,bigkn,bigkz,gvx,gvy,snorm,zone,bfn,bfunit,openimgfile(),closeimgfile(),dobloch(),prepare_bloch_session(),compute_bwave(),cnvtab(),get_nsampling(),get_samplingpoints(),getibinfo(),compute_scm(),getscm(),getcalcbeams(),getimage(),getncalcbeams(),jctst(),tval(),tintp(),setugh(),prepare_eigen(),eigen_cgeev(),bmchk(),get_sam_defs(),get_mic_defs(),get_sim_defs(),bloch_print(),bloch_print_inherit(),print_matrix(),free_bloch()  dpgen — gmx,gmxr,res_low,res_high,ad,att,dx,spoints,ns,a0,a0t,imin,imax,jmin,jmax,get_highres(),get_lowres(),readbin_new(),dpbin_direct(),smeshg(),do_dpgen(),write_dp(),inmask(),set_dpheader(),write_dpheader(),cleanup()  stereo — do_stereogram(),get_stereolimit()  mxtal — gmx,gmxr,cella,cellb,cella0,errmsg,idebug,ith,jth,kth,ih,ik,il,pcell,xd,yd,zd,z0,t0,p0,pc,qcell,tcell,ig1,ig2,radius,gh,gg,gl,a0,znumber,rmin,rmax,temp,init_mxtal(),mx_estimate(),transform(),mxtrans(),sortin(),squeeze(),box0(),box(),isinbox(),place(),get_xyzdata(),get_symdata(),get_nxyz(),get_cellconst(),do_mxtal(),cleanup().</p>
+</dd>
+</dl>
+</section>
+<section id="module-pyemaps.diffract.mxtal_dec">
+<span id="pyemaps-diffract-mxtal-dec-module"></span><h2>pyemaps.diffract.mxtal_dec module<a class="headerlink" href="#module-pyemaps.diffract.mxtal_dec" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.diffract.mxtal_dec.add_mxtal">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.diffract.mxtal_dec.</span></span><span class="sig-name descname"><span class="pre">add_mxtal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.diffract.mxtal_dec.add_mxtal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pyemaps.diffract.powder_dec">
+<span id="pyemaps-diffract-powder-dec-module"></span><h2>pyemaps.diffract.powder_dec module<a class="headerlink" href="#module-pyemaps.diffract.powder_dec" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.diffract.powder_dec.add_powder">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.diffract.powder_dec.</span></span><span class="sig-name descname"><span class="pre">add_powder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.diffract.powder_dec.add_powder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pyemaps.diffract.stereo_dec">
+<span id="pyemaps-diffract-stereo-dec-module"></span><h2>pyemaps.diffract.stereo_dec module<a class="headerlink" href="#module-pyemaps.diffract.stereo_dec" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.diffract.stereo_dec.add_stereo">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.diffract.stereo_dec.</span></span><span class="sig-name descname"><span class="pre">add_stereo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.diffract.stereo_dec.add_stereo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-pyemaps.diffract">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyemaps.diffract" title="Permalink to this heading">¶</a></h2>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rn.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules, Classes and Interfaces</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.8 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyemaps.diffract package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022-2023, EMLab Solutions, Inc..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    </div>
+  </body>
+</html>

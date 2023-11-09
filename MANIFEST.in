@@ -1,0 +1,14 @@
+exclude */emaps/*.f90
+exclude */samples/deprecated/*.py
+prune __pycache__ 
+prune emaps/__pycache__
+
+include __version__.py
+include __main__.py
+include __config__.py
+include README.md
+include COPYING
+include license.txt
+
+include cdata/*.xtl
+include samples/*.py

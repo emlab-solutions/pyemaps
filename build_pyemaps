@@ -1,0 +1,518 @@
+'''
+# This file is part of pyemaps
+# ___________________________
+#
+# pyemaps is free software for non-comercial use: you can 
+# redistribute it and/or modify it under the terms of the GNU General 
+# Public License as published by the Free Software Foundation, either 
+# version 3 of the License, or (at your option) any later version.
+#
+# pyemaps is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
+#
+# Contact supprort@emlabsoftware.com for any questions and comments.
+# ___________________________
+'''
+from multiprocessing.sharedctypes import Value
+import os
+from shutil import move
+from pathlib import Path
+from packaging.tags import sys_tags
+
+pyPackageName = 'pyemaps'
+bwheel ='dist\\'
+if os.getenv('PYEMAPS_DEBUG') is not None:
+    pyemaps_debug = int(os.getenv('PYEMAPS_DEBUG'))
+else:
+    pyemaps_debug = 0
+
+MAKE_LOOKUP = dict(
+    dif = 'DIFPYF',
+    bloch = 'BLOCHPYF',
+    dpgen = 'CDPOBJ DPGENPYF',
+    csf = 'CSFPYF',
+    powder = 'POWDERPYF',
+    stereo = 'STEREOPYF',
+    spg = 'SPGSEEKPYF',
+    scattering = 'SCTPYF',
+    all = 'EMAPSPYF'
+    # all = 'EMAPSDPGENPYF' 
+)
+
+test_pypi_url = "https://test.pypi.org"
+rel_pypi_url = "https://pypi.org"
+twine_cfg = '../pypi_twine.cfg'
+twinetest_cfg = '../testpypi_twine.cfg'
+
+def clean(preBuild=True):
+    '''
+    remove build and dist directory in the pyemaps root directory
+    '''
+    import os, shutil
+    from pathlib import Path
+    
+    builddir = Path("build")
+    print(f"Build dir: {builddir}")
+
+    if os.path.exists(builddir) and os.path.isdir(builddir) and preBuild:
+        shutil.rmtree(builddir)
+
+    eggdir = Path(pyPackageName + '.egg-info')
+    print(f"Egg info dir: {eggdir}")
+    if os.path.exists(eggdir) and os.path.isdir(eggdir):
+        shutil.rmtree(eggdir)
+
+def set_cfg(comp):
+    import json, os
+
+    json_cfg = os.getenv('PYEMAPS_JSON')
+
+    if not json_cfg:
+        json_cfg = "comp.json" # default
+
+    # write a file recording the comp name for setup consumption
+    
+    json_obj = json.dumps(dict(component = comp))
+    try:
+        with open(json_cfg, 'w', encoding="utf-8") as f:
+            f.write(json_obj)
+
+    except IOError as e:
+        raise ValueError(f"Error writing configuration file {json_cfg} for packaging")
+
+
+def make_pyf(comp='all'):
+    '''
+    make .pyf file according to comp name
+    '''
+    from pathlib import Path
+    # first change working directory to emaps from here
+    thisfile_dir = Path(os.path.abspath(__file__)).parent.absolute()
+    print(f'pyemaps root dir: {thisfile_dir}')
+
+    pyemapsroot = thisfile_dir
+    os.chdir(os.path.join(thisfile_dir, 'emaps'))
+    emapsdir = os.getcwd()
+
+    os.system("make clean")
+
+    pyf_fname = 'emaps_'
+
+    makestr = "make EMAPSALLMODULES"
+    if comp in MAKE_LOOKUP:
+        makestr += ' '
+        makestr += MAKE_LOOKUP[comp]
+        pyf_fname += comp
+    else:
+        os.chdir(pyemapsroot)
+        raise ValueError("Error: build pyemaps build type")
+    
+    os.system("make clean")
+    
+    os.system(makestr)
+
+    os.system("make COBJSBUILD")
+    # exit()
+    # build spg standalone spg module
+    os.system("make " + MAKE_LOOKUP['spg'])
+    pyf_fname = 'spg_spgseek.pyf'
+    try:
+         os.path.exists(pyf_fname)
+
+    except FileNotFoundError as e:
+        os.chdir(pyemapsroot)
+        raise ValueError("Error: compiling PYF file {pyf_fname} for: {spg}") 
+    os.system("make " + MAKE_LOOKUP['spg'])
+
+    # build scattering standalone module
+    scatteringpyf = MAKE_LOOKUP['scattering']
+    os.system("make " + scatteringpyf)
+    pyf_fname = 'scattering_sct.pyf'
+    try:
+         os.path.exists(pyf_fname)
+
+    except FileNotFoundError as e:
+        os.chdir(pyemapsroot)
+        raise ValueError("Error: compiling PYF file {pyf_fname} for: {scattering}") 
+    os.system("make " + scatteringpyf)
+    
+    pyf_fn = os.path.join(emapsdir, pyf_fname)
+    
+    try:
+         os.path.exists(pyf_fn)
+
+    except FileNotFoundError as e:
+        os.chdir(pyemapsroot)
+        raise ValueError("Error: compiling PYF file {pyf_fn} for: {comp}") 
+
+    set_cfg(comp)
+
+    os.chdir(pyemapsroot)
+
+def get_bversion(btest = True):
+    '''
+    get build version number dynamically from the repo
+    using repo APIs and write the version to __verson__ file
+    '''
+    import requests, re, json
+    MAX_VER_DIGIT = 10
+    
+    repo_url = test_pypi_url if btest else rel_pypi_url
+    url = repo_url + '/pypi/pyemaps/json'
+
+    response = requests.get(url)
+    
+    try:
+        jresp = response.json()
+
+    except json.decoder.JSONDecodeError as e:
+        print(f"error: getting response from pypi api: {e.msg}")
+        raise SystemExit(e)
+
+    except requests.exceptions.RequestException as e:        
+        raise SystemExit(e)
+
+    rels = jresp['releases']
+
+    # Increment to get the current release
+    max_ver = '0.0.1'
+    for k in rels.keys():
+        if k > max_ver:
+            max_ver = k
+    # increment version number by 1
+    print(f"releases max: {max_ver}")
+
+    ver = re.split(r"\.", max_ver)
+    
+    if len(ver) != 3:
+        raise ValueError("Error: version number validation error")
+    
+    major, minor, sub = ver
+    print(f"existing releases: {major},{minor}, {sub}")
+
+    mr = int(minor)
+    mx = int(major)
+    su = int(sub)
+
+    if int(mr >= MAX_VER_DIGIT):
+        mr %= MAX_VER_DIGIT
+
+    ver_num = mx*MAX_VER_DIGIT**2 + mr*MAX_VER_DIGIT + su
+    print(f"incremented releases: {ver_num}")
+    # increment the version number
+    ver_num += 1
+    print(f"releases numer: {ver_num}")
+
+    if ver_num > MAX_VER_DIGIT**3:
+        raise ValueError(f"Error: version numbers are full")
+
+    sver = str(ver_num)
+    if mx == 0 and len(sver) == 2:
+        sver = '0' + sver
+    ssub = sver[2]
+    sminor = sver[1] 
+    smajor = sver[0]
+
+    new_version = '.'.join([smajor, sminor, ssub])
+    print(f"new releases: {new_version}")
+    # exit()
+    return new_version
+
+
+def hideEMAPSPYFiles():
+    '''
+    hack to evade setup.py to pick up some .py files from
+    emaps directory. manifest.in exclude for these files 
+    does not seem to work
+    '''
+    from pathlib import Path
+    # first change working directory to emaps from here
+    currdir = Path(os.path.abspath(__file__)).parent.absolute()
+    
+    print(f'Current dir in hideEMAPSFiles: {os.path.abspath(__file__)}, {currdir}')
+    emapsdir = os.path.join(currdir, 'emaps')
+    if os.path.exists(emapsdir):
+        for f in os.listdir(emapsdir):
+            fp = os.path.join(emapsdir, f)
+            if os.path.isfile(fp) and f.endswith(".py"):
+                if not f.endswith("__init__.py") and \
+                    not f.endswith("setup_diffract.py"):
+                    fn = Path(fp)
+                    fn.with_suffix('')
+                    fn_tmpext = fn.with_suffix('.emapspy')
+                    move(fn, fn_tmpext)
+                    print(f'hid: ', fn_tmpext)
+
+def restoreEMAPSPYFiles():
+    '''
+    hack to evade setup.py to pick up some .py files from
+    emaps directory. manifest.in exclude for these files 
+    does not seem to work
+    '''
+    
+    currdir = Path(os.path.abspath(__file__)).parent.absolute()
+    emapsdir = os.path.join(currdir, 'emaps')
+      
+    if os.path.exists(emapsdir):
+        for f in os.listdir(emapsdir):
+
+            fp = os.path.join(emapsdir, f)
+
+            if os.path.isfile(fp) and f.endswith(".emapspy"):
+                fn = Path(fp)
+                fn.with_suffix('')
+                fn_tmpext = fn.with_suffix('.py')
+                move(fn, fn_tmpext)
+                print(f'restored: ', fn_tmpext)
+
+def copy_configuration():
+    import sys
+    import shutil
+
+    dst = 'setup.cfg'
+    currdir = Path(os.path.abspath(__file__)).parent.absolute()
+    if sys.platform == 'win32':
+        src = 'setup_win.cfg'
+
+    if sys.platform == 'linux':
+        src = 'setup_lin.cfg'
+    
+    src_file = os.path.join(currdir, src)
+    dst_file = os.path.join(currdir, dst)
+    shutil.copyfile(src_file, dst_file)
+
+    return dst_file
+
+def build_package(repo_test = True):
+    '''
+    Build the package
+    Conponent configuration via PYEMAPS_JSON env variable
+    '''
+    import os, sys
+    
+    build_type = os.getenv('EMAPS_BTYPE')
+    
+    # if build_type != 'free' and build_type != 'full':
+    #     print(f'Unrecognised build type')
+    #     exit(1)
+        
+    clean()
+    
+    # make_pyf()
+
+    print(f"####Begin building pyemaps package for {build_type}...")
+
+    hideEMAPSPYFiles()
+    setupf = copy_configuration()
+    #  build the source distribution
+    
+    if sys.platform == 'win32':
+        os.system('python -m build -s -n')
+    else:
+        os.system('python3 -m build -s -n') 
+
+    #  build the wheel distribution (linrary build)
+    
+    if sys.platform == 'win32':
+        os.system('python -m build -w -n')
+    else:
+        os.system('python3 -m build -w -n')
+
+    restoreEMAPSPYFiles()
+    import os
+    if os.path.exists(setupf):
+        os.remove(setupf)
+    else:
+        print("The setup.cfg file does not exist")
+
+    clean(preBuild=False)
+
+def upload_package(bRelease = False, ver = None):
+    repo_name = 'pypi' if bRelease else 'testpypi'
+    cfg_fn = twine_cfg if bRelease else twinetest_cfg
+    
+    ul_cmd = 'python -m twine upload --repository ' + \
+            repo_name + ' --config-file ' + cfg_fn + \
+            ' dist/*'+ ver + '* --verbose'
+
+    if bRelease:
+        q = str(f"About to publish pyemaps v{ver} ") + \
+            "to official public repository." + \
+            "Are you sure? [Y|n]"
+        ans = input(q).lower().strip()[:1]
+
+        if ans == 'n':
+            print(f"info: upload to {repo_name} canceled")
+            return 0
+
+        if ans == 'y' or ans == '':
+            print(f"Uploading package to pypi.org: {ul_cmd}")
+            os.system(ul_cmd)
+            return 1
+        else:
+            raise ValueError(str(f"Invalid answer: {ans}"))
+
+    else:
+        print(f"Uploading package to test.pypi.org: {ul_cmd}")
+        os.system(ul_cmd)
+    return 1 #successful
+
+def install_package(btest = True, ver= '0.0.0'):
+
+    repo_url = ''
+    if btest:
+        repo_url ='-i ' + test_pypi_url + '/simple/'
+    
+    install_cmd = 'python -m pip install ' + repo_url + ' pyemaps=='+ver
+    print(f'installation: {install_cmd}')
+    os.system(install_cmd)
+
+def install_local():
+    import shutil
+
+    LIBDIR = '.libs'
+
+    pyemaps_dir = Path(os.path.abspath(__file__)).parent.absolute()
+    print(f'pyemaps directoty {pyemaps_dir}')
+    os.chdir(pyemaps_dir)
+
+    # install_cmd = 'python -m pip install -e .'
+    install_cmd = 'python -m pip install --no-build-isolation -e .'
+    
+    os.system(install_cmd)
+
+    #also copy all sample code into parent directory
+    samples_src_dir = os.path.join(pyemaps_dir, 'samples')
+    sample_dest = pyemaps_dir.parent.absolute()
+
+    print(f'sampme dirs: {samples_src_dir}, {sample_dest}')
+    for f in os.listdir(samples_src_dir):
+        src_file = os.path.join(samples_src_dir, f)
+        print(f'source sample file name: {src_file}')
+        if os.path.isfile(src_file):
+            print(f'destination: {sample_dest}')
+            shutil.copy(src_file, sample_dest)
+
+    # copy a couple of files into its parent dir
+    
+    sanity_src_dir = os.path.join(pyemaps_dir, 'test')
+    sanity_src_dir = os.path.join(sanity_src_dir, 'sanity')
+
+    for f in os.listdir(sanity_src_dir):
+            src_file = os.path.join(sanity_src_dir, f)
+            print(f'source sanity file name: {src_file}')
+            if os.path.isfile(src_file):
+                print(f'destination: {sample_dest}')
+                shutil.copy(src_file, sample_dest)
+def set_benvs():
+    import sys
+    
+    curr_dir = Path(os.path.abspath(__file__)).parent.absolute() 
+    ONEAPIROOT = os.getenv('ONEAPI_ROOT')
+    if sys.platform == 'win32': 
+        cmd = os.path.join(ONEAPIROOT, 'setvars.bat')
+        sos = 'windows'
+    else:
+        cmd = os.path.join(ONEAPIROOT, 'setvars.sh')
+        sos = 'linux' 
+
+    config = os.path.join(curr_dir, 'intel.cfg')
+    os.system(cmd + ' ' + '--config = ' + config + ' --force') 
+
+    os.environ['IFORTROOT'] = os.path.join(ONEAPIROOT, 
+                            'compiler', 
+                            '2022.1.0', 
+                            sos)
+                            
+def get_wheel(v):
+    # Get the current Python implementation and version
+    # python_tag = sys_tags()[0]
+    # Get the desired Python tag based on your requirements
+    python_tag = "cp37"  # Replace with the Python version you want to target
+
+    # Initialize the python_tag variable to None
+    abi_tag = python_tag + 'm'
+
+    # Iterate through the tags and find the one that matches the desired Python version
+    # for tag in sys_tags():
+    #     if tag.interpreter == desired_python_tag:
+    #         python_tag = tag
+
+    # Specify the platform tag, e.g., for 64-bit Windows
+    platform_tag = "win_amd64" #window only, linux is complicated
+
+    if python_tag is not None:
+        # Construct the wheel file name using the selected Python tag
+        wheel_filename = f"{pyPackageName}-{v}-{python_tag}-{abi_tag}-{platform_tag}.whl"
+        print(f'Composed wheel file name: {wheel_filename}')
+        return wheel_filename
+    
+    print(f"Python tag {desired_python_tag} not found in available tags.")
+
+    return ""
+
+if __name__ == "__main__":
+    import argparse
+    import time
+    parser = argparse.ArgumentParser(description="Build and publish script for pyeamps")
+    parser.add_argument("-u", "--upload", action="store_true", help="upload the build or not", required=False)
+    parser.add_argument("-t", "--test-repo", action="store_true", help="upload to the build to test repo test.pypi.org", required=False)
+    parser.add_argument("-i", "--install", action="store_true", help="install the package from above repo", required=False)
+    parser.add_argument("-nb", "--no-build", action="store_true", help="no build", required=False)
+    parser.add_argument("-il", "--install-local", action="store_true", help="no build", required=False)
+    parser.add_argument("-v", "--build-version", type=str, nargs="?", const="", default="", help="build version input", required=False)
+    parser.add_argument("-bt", "--build-type", type=str, nargs="?", const="free", default="free", help="build free pyemaps package, defaults to free", required=False)
+    # parser.add_argument("-d", "--debug", action="store_true", help="making debug build", required=False)
+
+    args = parser.parse_args()
+
+    ver = args.build_version
+    if not ver or ver == '':
+        ver = get_bversion(btest = args.test_repo)
+    
+    # compose output wheel file name and relative path
+    # for cature it in batch call
+    bwheel += get_wheel(ver)
+    if bwheel is None or len(bwheel) <= 5:
+        print('Error finding package wheel name')
+        exit(1)
+        
+    print('wheel file name:' + bwheel)
+    
+    # write the version into __version__.py file
+    with open('__version__.py', 'w') as vf:
+        vf.write('__version__ = \"' + ver + '\"')
+
+    if not args.no_build:
+        build_package()
+
+    if args.install_local:
+        install_local()
+        exit(0)
+
+    if not args.upload:
+        exit(0)
+
+    # upload the package, do not 
+    ret = upload_package(bRelease = not args.test_repo , ver = ver)
+
+    if ret ==0:
+        # user canceled upload in case of release   
+        exit(0)
+
+    if not args.install or not args.install_local:
+        exit(0)
+    
+    # wait for the upload is done 
+    time.sleep(10)
+
+    if args.install:
+        install_package(btest = args.test_repo, ver=ver)
+    
+
+    

@@ -1,0 +1,205 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>pyemaps.fileutils module &#8212; pyemaps 1.0.8 Stable documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.8 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyemaps.fileutils module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-pyemaps.fileutils">
+<span id="pyemaps-fileutils-module"></span><h1>pyemaps.fileutils module<a class="headerlink" href="#module-pyemaps.fileutils" title="Permalink to this heading">¶</a></h1>
+<p>Fileutils is a helper module in assisting pyemaps file i/o functions.
+Its methods include reading crystal data files and writing simulation 
+output files.</p>
+<p>It also detects pyemaps data home environment variables and directs
+file i/o accoridng to the rule set in <a class="reference internal" href="usage.html#environment-variables"><span class="std std-ref">Environment Variables</span></a>.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.fileutils.find_datahome">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">find_datahome</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.find_datahome" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.fileutils.auto_fn">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">auto_fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.auto_fn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Auto-generate file name based on crystal name and time stamp
+when file is generated from pyemaps simulations.</p>
+<p>This can be modified to tune the output to any other specific needs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cn</strong> (<em>string</em><em>, </em><em>required</em>) – A crystal name.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>file name composed of crytsal name and time stamp in yyyymmddmmss format</p>
+</dd>
+</dl>
+<p>rtype: string</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.fileutils.find_pyemaps_datahome">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">find_pyemaps_datahome</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">home_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'crystals'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.find_pyemaps_datahome" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detects enviroment variable set by PYEMAPS_DATA and return the
+diretcory set by the variable or return current working directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>home_type</strong> (<em>string</em><em>, </em><em>optional</em>) – Type of home directory</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>data home path.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+<p>Folder names depending by <em>home_type</em> input:</p>
+<ol class="arabic simple">
+<li><p><strong>crystals</strong>: all crystal data files.</p></li>
+<li><p><strong>bloch</strong>: all dynamic simulation output files.</p></li>
+<li><p><strong>mxtal</strong>: all .xyz files saved from crystal constructor.</p></li>
+<li><p><strong>stereo</strong>: all .png files saved from stereodiagram plotting methods</p></li>
+</ol>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.fileutils.compose_ofn">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">compose_ofn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'diffraction'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.compose_ofn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compose output file name based file name and file type.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.fileutils.loadCrystalCIFData">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">loadCrystalCIFData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.loadCrystalCIFData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads a .cif file for crystal data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fn</strong> – cif file name</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>string, required</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple of crystal name and crystal data as dict object</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is still in active development.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.fileutils.loadCrystalData">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">loadCrystalData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.loadCrystalData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reading built-in datbase or a .xtl file for crystal data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fn</strong> – XTL formatted Crystal file name</p></li>
+<li><p><strong>cn</strong> – Crystal name</p></li>
+</ul>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>string, required</p>
+</dd>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>string, optional</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple of crystal name and crystal data as dict object</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="index.html">Table of Contents</a></h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rn.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Modules, Classes and Interfaces</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.8 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">pyemaps.fileutils module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022-2023, EMLab Solutions, Inc..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    </div>
+  </body>
+</html>

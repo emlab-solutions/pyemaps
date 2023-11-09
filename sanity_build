@@ -1,0 +1,196 @@
+import os, sys
+import argparse
+    
+def get_os():
+    import platform
+    osname = platform.platform().lower()
+    if  'windows' in osname:
+        return 1
+    elif 'linux' in osname:
+        return 2
+    
+    return 0
+
+def test_cif():
+    from pyemaps import Crystal as cr
+    from pyemaps import CrystalClassError
+    # try crystal data that does not exist in current working directory
+    # and not in PYEMAPS_DATA directory
+    try:
+        si = cr.from_cif('Silicon.cif')
+    except CrystalClassError as e:
+        print(f'case#1 error: loading crystal data: {e.message}')
+    except Exception as e:
+        print(f'error: loading: ' + str(e))
+    else:
+        print(f'successfully loaded: {si}')
+
+    
+    # try crystal data that does not exist in current working directory
+    # and but in PYEMAPS_DATA directory
+    try:
+        si = cr.from_cif('1010100.cif')
+    except CrystalClassError as e:
+        print(f'error: loading crystal data: {e.message}')
+    except Exception as e:
+        print(f'error: loading: ' + str(e))
+    else:
+        print(f'case#2: successfully loaded: {si}')
+    
+    # try crystal data that exists in current working directory
+    # and not in PYEMAPS_DATA directory
+    try:
+        si = cr.from_cif('1010100.cif')
+    except CrystalClassError as e:
+        print(f'error: loading crystal data: {e.message}')
+    except Exception as e:
+        print(f'error: loading: ' + str(e))
+    else:
+        print(f'case#5: successfully loaded: {si}')
+    
+    # try crystal data that exists in current working directory
+    # and not in PYEMAPS_DATA directory
+    try:
+        si = cr.from_cif('./test/1010100.cif')
+    except CrystalClassError as e:
+        print(f'case#6 error: loading crystal data: {e.message}')
+    except Exception as e:
+        print(f'case#6 error: loading: ' + str(e))
+    else:
+        print(f'case#6: successfully loaded: {si}')
+    
+    # crystal data file in full and correct path
+    try:
+        si = cr.from_cif('C:\\Users\\employee1\\emaps_workspace\\pyemaps_09282022root\\pyemaps\\cifdata\\1010100.cif')
+    except CrystalClassError as e:
+        print(f'case#7 error: loading crystal data: {e.message}')
+    except Exception as e:
+        print(f'case#7 error: loading: ' + str(e))
+    else:
+        print(f'case#7: successfully loaded: {si}')
+    
+    # crystal data file in relative and correct path
+    try:
+        si = cr.from_cif('./test/1010100.cif')
+    except CrystalClassError as e:
+        print(f'case#8 error: loading crystal data: {e.message}')
+    except Exception as e:
+        print(f'case#8 error: loading: ' + str(e))
+    else:
+        print(f'case#8: successfully loaded: {si}')
+
+
+def test_xtl():
+    
+    from pyemaps import Crystal as cr
+    from pyemaps import CrystalClassError
+    # try crystal data that does not exist in current working directory
+    # and not in PYEMAPS_DATA directory
+    try:
+        si = cr.from_xtl('1010100.xtl')
+    except CrystalClassError as e:
+        print(f'case#3 error: loading crystal data: {e.message}')
+    except Exception as e:
+        print(f'error: loading: ' + str(e))
+    else:
+        print(f'successfully loaded: {si}')
+
+    
+    # try crystal data that does not exist in current working directory
+    # and but in PYEMAPS_DATA directory
+    try:
+        si = cr.from_xtl('Copper_FCC.xtl')
+    except CrystalClassError as e:
+        print(f'error: loading crystal data: {e.message}')
+    except Exception as e:
+        print(f'error: loading: ' + str(e))
+    else:
+        print(f'case#4 successfully loaded: {si}')
+
+def test_xyz():
+    
+    from pyemaps import Crystal as cr
+    from pyemaps import CrystalClassError
+    from pyemaps import MxtalError
+    try:
+        si = cr.from_builtin('Silicon')
+        if si:
+            print(f'crytsal data to generate mxtal: {si}')
+            mx = si.generateMxtal(bound=0.1)
+    except (CrystalClassError, MxtalError) as e:
+        print(f'error: generating mxtal data1: {e.message}')
+    except Exception as e:
+        print(f'error: generating mxtal data2: cause unknown')
+    else:
+        # print(f'successfully generated mxtal: {mx}')
+        ret = si.writeXYZ(mx)
+
+        if ret != 0:
+            print(f'failed to write data: {mx} to file')
+
+def test_bimgwrite():
+    
+    from pyemaps import Crystal as cr
+    from pyemaps import CrystalClassError
+    from pyemaps import BlochError
+    try:
+        si = cr.from_builtin('ErbiumPyrogermanate')
+        print(f'loaded crystal: {si}')
+        bimgs = si.generateBlochImgs(bSave=True)
+
+    except (CrystalClassError, BlochError) as e:
+        print(f'error: generate and write bloch image data1: {e.message}')
+    except Exception as e:
+        print(f'error: generate and write bloch image data2: ' + str(e))
+    else:
+        print(f'crytsal data loaded: {si}')
+        print(f'successfully generated and write bloch images')
+
+def test_dpgen():
+    
+    from pyemaps import Crystal as cr
+    from pyemaps import CrystalClassError
+    try:
+        si = cr.from_builtin('Silicon')
+        if si:
+            print(f'crytsal data loaded: {si}')
+            ret = si.dp_gen()
+
+    except (CrystalClassError) as e:
+        print(f'error: generate and write bloch image data: {e.message}')
+    except Exception as e:
+        print(f'error: generate and write bloch image data:  ' + str(e))
+    else:
+        print(f'success!')
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Build and publish script for pyeamps")
+    parser.add_argument("-nb", "--no-build", action="store_true", help="no build", required=False)
+    parser.add_argument("-bt", "--build-type", type=str, nargs="?", const="free", default="free", help="build free pyemaps package, defaults to free", required=False)
+    
+    args = parser.parse_args()   
+    print(f'Arguement: {args.no_build}')
+
+    os_type = get_os()
+    if os_type == 1: #windows
+        mypy = 'python'
+        mywhl = 'dist\pyemaps-3.1.2-cp37-cp37m-win_amd64.whl'
+    elif os_type == 2:
+        mypy = 'python3'
+        mywhl = 'dist/pyemaps-3.1.2-cp37-cp37m-linux_x86_64.whl'
+    else:
+        print(f'OS unsupported')
+        raise BlochError('Unsupported OS')
+
+    if not args.no_build: 
+        
+        os.system(mypy + " -m pip uninstall -y pyemaps")
+        os.system(mypy +" build_pyemaps -c all -t " + '-bt ' + args.build_type)
+
+        os.system(mypy + " -m pip install " + mywhl)
+
+    # test_cif()
+    # test_xtl()
+    test_xyz()
+    test_bimgwrite()
+    # test_dpgen()
