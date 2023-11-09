@@ -31,82 +31,64 @@ Requirements and recommendations:
 * __VSCode__: code editing (recommended)
 * __Microsoft Visual Studio 2019 Community__: with build tools
 
-Current pyEMAPS only support Windows and python 3.7. We also recommend you to use vscode to develop your code.
+Current __pyEMAPS__ only support Windows and python 3.7. We also recommend you to use vscode to develop your code.
 Like many python development, a virtual python environment is recommended to isolate your pyEMAPS development 
-environment from your other python development projects. We look for contributors to help us to port __pyEMAPS__
+environment from your other python development projects. We are also looking for contributors to help us to port __pyEMAPS__
 to linux platform.
 
-Below are steps to establish __pyEMAPS__ build environment with python 3.7.9 (Windows installer still available):
+Below are steps to establish __pyEMAPS__ build environment with python 3.7.9 for example:
 
-* Install python 3.7.9 with Windows PowerShell command line in Administrator previlige in c:\python37 directory:
-
+* Install python 3.7.9 with Windows PowerShell command line in Administrator mode in c:\python37 directory:
 ```   
    Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe" -OutFile "python-3.7.9-amd64.exe"
 ```
-
 * Run the "python-3.7.9-amd64.exe", choose the following in installer GUI:
   
      * Select Customize Installation
      * Check and select pip
-     * Install for all users/specific users
-     
+     * Install for all users/specific users   
 * Create a virtual environment called "pyemaps_build" for the build
      * Create a dev directory:
-       
        ```
        mkdir pyemaps-dev
        ``` 
        (or choose your own directory name)
      * Create pyemaps_build virtual environemnt:
-       
        ```
        c:\python37\python.exe -m venv pyemaps_build
        ```
-       
 * Activate pyemaps_build vitual environment:
- 
      ```
     .\pyemaps_build\Scripts\activate
      ```
-
 * Update pip:
-  
   ```
    C:\Python37\python.exe -m pip install pip --upgrade
   ```
-
 * Install other python packages required for building pyemaps:
-  
   ``` 
   pip install setuptool wheel numpy build
   ```
-
 * Install Microsoft Visual Studio 2019 Community with build tools 
    https://visualstudio.microsoft.com/vs/older-downloads/
    by selecting "Desktop development with C++" in the installer.
    (You may need to have a microsoft account to be able to download)
-
 * Build pyEMAPS package, run:
-  
   ```
    python build_pyemaps -t -v 1.0.0
   ```
-
 ## Installation [`↩`](#contents) <a id="installation"></a>
 
 * Install the new pyEMAPS package:
-
   ```
    pip .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl
   ```
   This will install new pyEMAPS just built in current python virtual environment
   along with all of its dependent packages
 
-
 ## Testing [`↩`](#contents) <a id="test"></a>
 
-   Current pyEMAPS development comes with a set of basic testing suites, including
-   
+  Current pyEMAPS development comes with a set of basic testing suites, including 
    * sanity checks
    * unit tests
    * stress tests.
