@@ -9,12 +9,14 @@
 5. <a id="contents"></a>[Code of Conduct](#COC)
 
 ## What's pyEMAPS [`↩`](#contents) <a id="overview"></a>
-__pyEMAPS__ is a python package providing interfaces into electron diffraction simulations and crystallogrphy calculations engines. Its main components are designed for electron microscope operations and simulations, including microscpe controls and crystal python classes. __pyEMAPS__ provides opportunities for users to automate simulations and calculations with common JSON data output and images of well known format suited for further processing.
+__pyEMAPS__ is a python package providing interfaces into electron diffraction simulations and crystallogrphy calculations engines. Its main components are designed for electron microscope operations and simulations, including microscpe controls and crystal python classes. __pyEMAPS__ provides opportunities for users to automate simulations and calculations with common JSON data output and images of well known format suited for further processing.  
 
 Check our full [pyemaps documentation](https://emlab-solutions.github.io/pyemaps) for details of __pyEMAPS__ python classes designs and their interfaces.
 
+We are looking for experts in electron microscope and crystallography, and/or python enthusiasts to join pyEMAPS project as contributors, please contact us at support@emlabsoftware.com if you are interested.
+
 We greatly appreciate your contributions to pyEMAPS and look forward to making it a tool for 
-the communty to accelaerate microscopy and crystallography education and research. If you benefit from __pyEMAPS__ in your microscopy and crystallography research and education, go to [PayPal](https://www.paypal.com/paypalme/pyemaps22) to donate. Your generous donations keep us in the business of providing software tools to the education and research communities.   
+the communty to accelaerate microscopy and crystallography education and research. If you benefit from __pyEMAPS__ in your microscopy and crystallography research and education, go to [PayPal](https://www.paypal.com/paypalme/pyemaps22) to donate. Your generous donations keep us in the business of providing software tools to the education and research communities. 
 
 ## Build pyEMAPS [`↩`](#content) <a id="build"></a>
 
