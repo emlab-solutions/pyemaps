@@ -115,12 +115,12 @@ As any open source development project, we strongly recommend contributors to ad
   ```
   in your python build virtual environment (pyemaps_build in our example).
 
-  Most of the documentations files are in "docs" directory. After making documentation changes to record your changes, compile
-  them with sphinx:
+  Most of the documentations files are in "docs" directory. After making documentation changes to record your changes, compile them with sphinx:
   ```
   sphinx-build -b html source .
   ```
-
+  The changes resulted from the above can be previewed by opening index.html with avaliable browser.
+  
 ## pyEMAPS Contributor License Agreement [`↩`](#contents) <a id="CLA"></a>
 
 Please read and agree to our [Contributor License Agreement](CONTRIBUTING.md) before contributing to this project.
