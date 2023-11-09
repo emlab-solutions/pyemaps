@@ -25,6 +25,7 @@ to the education and research communities.
 
 ## Build pyEMAPS [`↩`](#content) <a id="build"></a>
 
+Requirements and recommendations:
 * __Python__: Version == 3.7
 * __Operating Systems__: Windows
 * __VSCode__: code editing (recommended)
