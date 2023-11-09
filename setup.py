@@ -180,7 +180,9 @@ setup(name                              ="pyemaps",
                                                 '*.egg-info/*'
                                                 'setup.py',
                                                 'setup_win.cfg',
-                                                'setup_lin.cfg'
+                                                'setup_lin.cfg',
+                                                'README.md',
+                                                'CONTRIBUTING.md'
                                                 ],
                                             'pyemaps.ediom':['*.i', 
                                                             '*.cpp',
