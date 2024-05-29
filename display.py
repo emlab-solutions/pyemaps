@@ -201,7 +201,7 @@ class DifPlotter:
 
 
     def plotDDif(self):
-        # import matplotlib.colors as colors
+        
         from matplotlib.colors import LinearSegmentedColormap
 
         idx, emc, img, color = self.difData
@@ -353,9 +353,7 @@ class DifPlotter:
     def showImage(self):
         if _isLinux() and not hasDisplay:
             return
-        import matplotlib
-        # print(os.environ)
-        # print("Matplotlib backend:", matplotlib.get_backend())
+        
         plt.show()
         
 
@@ -748,5 +746,5 @@ def displayXImage(img,
                         {'color': 'red', 'fontsize': 1.4},
                         horizontalalignment='center',
                         verticalalignment='bottom')
-        # print(os.environ)
+                    
         plt.show()
