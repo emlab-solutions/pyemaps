@@ -1,6 +1,18 @@
 Release Notes
 =============
 
+Version 1.0.9 Stable
+-------------------- 
+
+05-29-2024 
+~~~~~~~~~~
+
+Improvements
+~~~~~~~~~~~~
+
+- Bug fixes for image display. Now all displays are utilizing Matplotlib's Tkinter backend.
+- Expanded pyemaps build guide.
+
 Version 1.0.8 Stable
 -------------------- 
 

@@ -7,9 +7,9 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'pyemaps'
-copyright = '2022-2023, EMLab Solutions, Inc.'
+copyright = '2022-2024, EMLab Solutions, Inc.'
 author = 'EMLab Solutions, Inc.'
-release = '1.0.8 Stable'
+release = '1.0.9 Stable'
 
 
 
