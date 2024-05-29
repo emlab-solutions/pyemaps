@@ -29,8 +29,12 @@ def plot2Powder(pw1, pw2):
     """
     plot multiple powder diffraction in one plt plot
     """
-
+    import matplotlib, sys
     import matplotlib.pyplot as plt
+    if 'linux' in sys.platform:
+        matplotlib.use('Agg')
+    elif 'win32' in sys.platform:
+        matplotlib.use('TkAgg') # make sure that the backend is Tkinker
 
     fig, (ax1, ax2) = plt.subplots(nrows = 2)
     

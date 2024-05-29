@@ -33,6 +33,8 @@ hasDisplay = True
 if 'linux' in sys.platform and "DISPLAY" not in os.environ:
     hasDisplay = False
     matplotlib.use('Agg')
+elif 'win32' in sys.platform:
+    matplotlib.use('TkAgg') # make sure that the backend is Tkinker
 
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -351,6 +353,9 @@ class DifPlotter:
     def showImage(self):
         if _isLinux() and not hasDisplay:
             return
+        import matplotlib
+        # print(os.environ)
+        # print("Matplotlib backend:", matplotlib.get_backend())
         plt.show()
         
 
@@ -743,5 +748,5 @@ def displayXImage(img,
                         {'color': 'red', 'fontsize': 1.4},
                         horizontalalignment='center',
                         verticalalignment='bottom')
-        
+        # print(os.environ)
         plt.show()
