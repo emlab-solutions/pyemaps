@@ -9,7 +9,7 @@
 5. <a id="contents"></a>[Code of Conduct](#COC)
 
 ## What's pyEMAPS [`↩`](#contents) <a id="overview"></a>
-__pyEMAPS__ is a python package providing interfaces into electron diffraction simulations and crystallogrphy calculations engines. Its main components are designed for electron microscope operations and simulations, including microscpe controls and crystal python classes. __pyEMAPS__ provides opportunities for users to automate simulations and calculations with common JSON data output and images of well known format suited for further processing.  
+__pyEMAPS__ is a python package providing interfaces into electron diffraction simulations and crystallogrphy calculations engines - __emaps__. Its main components are designed for electron microscope operations and simulations, including microscpe controls and crystal python classes. __pyEMAPS__ provides opportunities for users to automate simulations and calculations with common JSON data output and images of well known formats suited for further processing.  
 
 Check our full [pyemaps documentation](https://emlab-solutions.github.io/pyemaps) for details of __pyEMAPS__ python classes designs and their interfaces.
 
@@ -67,11 +67,42 @@ Below are steps to establish __pyEMAPS__ build environment with python 3.7.9 as 
    https://visualstudio.microsoft.com/vs/older-downloads/
    by selecting "Desktop development with C++" in the installer.
    (You may need a microsoft account to be able to download)
+* Build directory structure:
+
+<pre>
+📦pyemaps
+  ┣━ 📂.git          <----Source repository configurations
+  ┣━ 📂build         <----Intermediate build folder
+  ┣━ 📂dist          <----Build package files
+  ┣━ 📂cdata         <----Built-in crystal data in proprietory format
+  ┣━ 📂CifFile       <----CIF crystal data reader
+  ┣━ 📂diffract      <----Diffraction modules python interfaces
+  ┣━ 📂docs          <----Documentation using Sphinx. Document your changes!
+  ┣━ 📂samples       <----Sample code. Offical sample code for guiding pyemaps usages
+  ┣━ 📂scattering    <----Scattering data module
+  ┣━ 📂spg           <----Space group data module
+  ┗━ 📂test          <----Test cases including sanity, unit and stree tests. Keep adding them!
+</pre>
+where _docs_ for creation of documents requires Sphinx python package:
+- Sphinx for documentation can be installed:
+```
+       pip install Sphinx=5.3.0
+```
+
 * Build pyEMAPS package, run:
   ```
    python build_pyemaps -t -v 1.0.0
   ```
-  You can replace the version number '1.0.0' with the one you designate.
+  Here the option "-t" indicates build is for local testing purposes. 
+  You can replace the version number '1.0.0' with the one you desire.
+
+  When the option _-v_ is not specified. The build script will figure out the version
+  from pypi.org repository.
+
+  Note: there will be two additional diretcories:
+  - _build_.  folder holding intermediate build files.
+  - _dist_. folder for final package that includes .whl and .tgz. The former is the package file and the latter is the current source code used to build the pacage in compressed format. 
+
 ## Installation [`↩`](#contents) <a id="installation"></a>
 
 * Install the new pyEMAPS package:
@@ -79,7 +110,13 @@ Below are steps to establish __pyEMAPS__ build environment with python 3.7.9 as 
    pip .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl
   ```
   This will install new pyEMAPS just built in current python virtual environment
-  along with all of its dependent packages
+  along with all of its dependent packages. 
+  
+  If you have a previous _pyemaps_ with versiual or larger than current package version.
+  In that case, you need to uninstall previous version before installing the new package:
+  ```
+  pip uninstall pyemaps
+  ```
 
 ## Testing [`↩`](#contents) <a id="test"></a>
 

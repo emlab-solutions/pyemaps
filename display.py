@@ -33,6 +33,8 @@ hasDisplay = True
 if 'linux' in sys.platform and "DISPLAY" not in os.environ:
     hasDisplay = False
     matplotlib.use('Agg')
+elif 'win32' in sys.platform:
+    matplotlib.use('TkAgg') # make sure that the backend is Tkinker
 
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -199,7 +201,7 @@ class DifPlotter:
 
 
     def plotDDif(self):
-        # import matplotlib.colors as colors
+        
         from matplotlib.colors import LinearSegmentedColormap
 
         idx, emc, img, color = self.difData
@@ -351,6 +353,7 @@ class DifPlotter:
     def showImage(self):
         if _isLinux() and not hasDisplay:
             return
+        
         plt.show()
         
 
@@ -743,5 +746,32 @@ def displayXImage(img,
                         {'color': 'red', 'fontsize': 1.4},
                         horizontalalignment='center',
                         verticalalignment='bottom')
-        
+                    
         plt.show()
+
+def plot2Powder(pw1, pw2):
+    """
+    plot multiple powder diffraction in one plt plot
+    """
+
+    fig, (ax1, ax2) = plt.subplots(nrows = 2)
+    
+    title = 'PYEMAPS - Powder Diffraction'
+    if fig.canvas.manager is not None:
+        fig.canvas.manager.set_window_title(title)
+    else:
+        fig.canvas.set_window_title(title)    
+    
+    ax1.plot(pw1[0], pw1[1], 'r')
+    ax1.set_title('Silicon')
+    ax2.plot(pw2[0], pw2[1], 'b')
+    ax2.set_title('Diamond')
+    
+    ax1.set_ylabel('Intensity')
+    ax2.set_ylabel('Intensity /w Absorption')
+    ax2.set_xlabel('Scattering Angle 2\u03F4 (Rad)')
+
+    fig.suptitle("Electron Powder Diffraction", fontsize=14, fontweight='bold')
+    plt.subplots_adjust(hspace = 0.4)
+
+    plt.show()
