@@ -225,4 +225,4 @@ except ImportError as e:
 from .stackimg import StackImage
 
 #--------------Pyemaps Display Functions-------------------------------------
-from .display import showDif, showBloch, showStereo
+from .display import showDif, showBloch, showStereo, plot2Powder

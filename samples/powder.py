@@ -25,41 +25,9 @@ Date:       May 31, 2022
 This sample code is to demonstrate how to generate powder diffraction.
 '''
 
-def plot2Powder(pw1, pw2):
-    """
-    plot multiple powder diffraction in one plt plot
-    """
-    import matplotlib, sys
-    import matplotlib.pyplot as plt
-    if 'linux' in sys.platform:
-        matplotlib.use('Agg')
-    elif 'win32' in sys.platform:
-        matplotlib.use('TkAgg') # make sure that the backend is Tkinker
-
-    fig, (ax1, ax2) = plt.subplots(nrows = 2)
-    
-    title = 'PYEMAPS - Powder Diffraction'
-    if fig.canvas.manager is not None:
-        fig.canvas.manager.set_window_title(title)
-    else:
-        fig.canvas.set_window_title(title)    
-    
-    ax1.plot(pw1[0], pw1[1], 'r')
-    ax1.set_title('Silicon')
-    ax2.plot(pw2[0], pw2[1], 'b')
-    ax2.set_title('Diamond')
-    
-    ax1.set_ylabel('Intensity')
-    ax2.set_ylabel('Intensity /w Absorption')
-    ax2.set_xlabel('Scattering Angle 2\u03F4 (Rad)')
-
-    fig.suptitle("Electron Powder Diffraction", fontsize=14, fontweight='bold')
-    plt.subplots_adjust(hspace = 0.4)
-
-    plt.show()
-
 def runPowderTests():
     from pyemaps import Crystal as cryst
+    from pyemaps import plot2Powder
     import time
 
     si = cryst.from_builtin('Silicon')
