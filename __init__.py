@@ -166,30 +166,30 @@ except ImportError as e:
 #  used only with dpgen module above
 
 try:
-    from emaps import ediom
+    from emaps import stem4d
 except ImportError:
     pass
 else:
-    E_INT = ediom.E_INT 
-    EM_INT = ediom.EM_INT
+    E_INT = stem4d.E_INT 
+    EM_INT = stem4d.EM_INT
 
-    E_FLOAT = ediom.E_FLOAT
-    EM_FLOAT = ediom.EM_FLOAT
+    E_FLOAT = stem4d.E_FLOAT
+    EM_FLOAT = stem4d.EM_FLOAT
 
-    E_DOUBLE = ediom.E_DOUBLE
-    EM_DOUBLE = ediom.EM_DOUBLE
+    E_DOUBLE = stem4d.E_DOUBLE
+    EM_DOUBLE = stem4d.EM_DOUBLE
 
-    MAX_IMAGESIZE = ediom.MAX_IMAGESIZE
-    MIN_IMAGESIZE = ediom.MIN_IMAGESIZE
-    MAX_IMAGESTACK = ediom.MAX_IMAGESTACK
+    MAX_IMAGESIZE = stem4d.MAX_IMAGESIZE
+    MIN_IMAGESIZE = stem4d.MIN_IMAGESIZE
+    MAX_IMAGESTACK = stem4d.MAX_IMAGESTACK
     MIN_IMAGESTACK = 1
     DEF_FILTER_THRESHOLD = 0.2                       
     DEF_SEARCH_THRESHOLD = 0.825
     DEF_RMIN = 7
     DEF_BOXSIZE = 10
-    DEF_CC = ediom.cvar.edc.cc      #default value from backend
-    DEF_SIGMA = ediom.cvar.edc.sigma
-    DEF_ICENTER = ediom.cvar.edc.get_center()
+    DEF_CC = stem4d.cvar.edc.cc      #default value from backend
+    DEF_SIGMA = stem4d.cvar.edc.sigma
+    DEF_ICENTER = stem4d.cvar.edc.get_center()
     DEF_XSCALE = 1
     DEF_TSCALE = 2
 
@@ -198,8 +198,8 @@ else:
     E_NPY = 2
 
     # imageloading mode
-    EL_ONE = 1  #EDIOM image loading one stack at one time
-    EL_MORE = 2 #EDIOM image loading all stacks
+    EL_ONE = 1  #STEM4D image loading one stack at one time
+    EL_MORE = 2 #STEM4D image loading all stacks
 
 
 #--------------Wrapper classes around diffraction extensions---------------
@@ -221,7 +221,7 @@ try:
 except ImportError as e:
     print(f'Error importing kinematic constants: {e}')
 
-#--------------ediom features -------------------------------
+#--------------stem4d features -------------------------------
 from .stackimg import StackImage
 
 #--------------Pyemaps Display Functions-------------------------------------

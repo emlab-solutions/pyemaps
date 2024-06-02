@@ -29,7 +29,7 @@ MANIFEST
 
 #Fortran library source directory
 emaps-save/
-ediom-save/
+stem4d-save/
 pyemaps_save/
 
 # PyInstaller
@@ -188,8 +188,8 @@ fort.7
 # .inv file
 *.inv
 
-# ediom source dir
-ediom/
+# stem4d source dir
+stem4d/
 emaps/
 extal/
 advisor/

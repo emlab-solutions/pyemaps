@@ -24,7 +24,7 @@ Date:       April 02, 2023
 
 This sample code is to demostrate basic usage of pyemaps' dpgen - 
 diffraction pattern (DP) generator module used as database
-for ediom module to search and index experimental diffraction 
+for stem4d module to search and index experimental diffraction 
 patterns images. 
 
 This script is for demonstration and only support crystal with 

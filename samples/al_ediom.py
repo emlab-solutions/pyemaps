@@ -21,7 +21,7 @@ ___________________________
 Author:     EMLab Solutions, Inc.
 Date:       April 02, 2023  
 
-This sample code is to demostrate using pyemaps' dpgen and ediom 
+This sample code is to demostrate using pyemaps' dpgen and stem4d 
 modules to search and index experimental diffraction patterns images. 
 This script is for demonstration and only support crystal with 
 space group 225. 
@@ -79,8 +79,8 @@ def test_dp_indexing(cname = 'Aluminium'):
     # ret, mr, mc =cryst.loadDPDB(dbfn = dbfn, bShowDBMap=True)
     
     # if ret != 0 or mr <= 0 or mc <=0:
-    #     print(f"Error loading DP database from file {dbfn} into ediom module")
-    #     cryst.release_ediom()
+    #     print(f"Error loading DP database from file {dbfn} into stem4d module")
+    #     cryst.release_stem4d()
     #     exit(1)
 
     xifn = getDPImageFn()
@@ -113,8 +113,8 @@ def test_dp_indexing(cname = 'Aluminium'):
     # print match diffraction details
     # StackImage.printDPIndexDetails()
 
-    # release ediom module memory.
-    # StackImage.release_ediom()
+    # release stem4d module memory.
+    # StackImage.release_stem4d()
 
 
 if __name__ == '__main__':

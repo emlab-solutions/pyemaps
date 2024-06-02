@@ -23,7 +23,7 @@ ___________________________
 Author:     EMLab Solutions, Inc.
 Date:       May 27, 2023  
 
-This sample code is to demostrate basic usage of pyemaps' ediom
+This sample code is to demostrate basic usage of pyemaps' stem4d
 module (Electron Diffraction Indexing and Orientation Mapping)
 to obtain annular dark field image from an experimental diffraction 
 image input.
@@ -64,8 +64,8 @@ def test_adf():
                     scol = 30,
                     bShow = True)
 
-    # # release ediom module memory.
-    # release_ediom()
+    # # release stem4d module memory.
+    # release_stem4d()
 
 if __name__ == '__main__':
     

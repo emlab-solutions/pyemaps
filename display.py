@@ -650,7 +650,7 @@ def _getGridPos(i, nCols = 3):
 
     return nrows, ncols
 
-# image display for ediom module
+# image display for stem4d module
 
 
 def normalizeImage(img):
@@ -687,7 +687,7 @@ def displayXImage(img,
                 ds = None,
                 suptitle = ''):   
         """
-        Internal ediom helper function displaying image.
+        Internal stem4d helper function displaying image.
 
         :return:  
         :rtype: None
@@ -700,7 +700,7 @@ def displayXImage(img,
         clrs = ["#2973A5", "cyan", "limegreen", "yellow", "red"]
         qedDPI = 600
         gclrs=plt.get_cmap('gray')
-        EDIOM_TITLE = 'Pyemaps Preview - Ediom Diffraction Pattern Indexing'
+        STEM4D_TITLE = 'Pyemaps Preview - 4D-Stem Diffraction Pattern Indexing'
 
         nr,nc = fsize
 
@@ -711,7 +711,7 @@ def displayXImage(img,
 
         fig, ax = plt.subplots(figsize=bsize, dpi=qedDPI)
         
-        fig.canvas.set_window_title(EDIOM_TITLE)
+        fig.canvas.set_window_title(STEM4D_TITLE)
         # ax.set_xlabel(suptitle, fontsize=1.5)
         fig.suptitle(suptitle, va='top', fontsize=1.5)
         
