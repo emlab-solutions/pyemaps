@@ -37,6 +37,9 @@ Contact support@emlabsoftware.com for how to get the full package.
 '''
     
 from emaps import stem4d
+from emaps.stem4d import ediom
+from emaps.stem4d import send
+
 from . import (E_INT, EM_INT,
                E_FLOAT, EM_FLOAT,
                E_DOUBLE, EM_DOUBLE,
@@ -250,6 +253,7 @@ class StackImage():
         `loadDPDB <pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB>`_ call.
 
         """
+        
         # img1d = stem4d.cvar.ximg.getImageData()
         xnc, xnr = self._dim[0], self._dim[1]
         
@@ -266,13 +270,13 @@ class StackImage():
         else:
             xkdisk = None
             if peakDP:
-                nps = stem4d.getExpImagePeaks()
+                nps = ediom.getExpImagePeaks()
                 
                 if nps <= 0:
                     print(f'Image is not indexed or indexing data is invalid')
                     return
                 
-                ret, xkdisk = stem4d.getXKDif(nps+1)
+                ret, xkdisk = ediom.getXKDif(nps+1)
                 
                 if ret != 0:
                     print(f'Python ----Failed to get diffraction patterns for the experimental image')
@@ -299,7 +303,7 @@ class StackImage():
         
         img1d = np.ascontiguousarray(np.zeros(shape=(nc,nr)), dtype=np.float32)
        
-        nPeaks = stem4d.DPGetCurrentImage(img1d)
+        nPeaks = ediom.DPGetCurrentImage(img1d)
         if nPeaks <=0:
             print(f'Python ----Failed to get selected database image')
             return -1
@@ -309,7 +313,7 @@ class StackImage():
             return -1
        
         knum = nPeaks+1
-        ret, kdisk = stem4d.getDPListKDif(knum) 
+        ret, kdisk = ediom.getDPListKDif(knum) 
         
         if ret != 0:
             print(f'Python ----Failed to get diffraction disks list')
@@ -327,7 +331,7 @@ class StackImage():
         """
        
         filen = nr*nc
-        ret, fimg = stem4d.getFitImage(filen)
+        ret, fimg = ediom.getFitImage(filen)
         if ret != 0:
             print(f'Python ----Failed to get fit image')
             return ret
@@ -349,7 +353,7 @@ class StackImage():
         ret = 1
 
 
-        ret, img1d = stem4d.getXMask(len)
+        ret, img1d = ediom.getXMask(len)
 
         if ret != 0 :
             print(f'Python ----Error getting current image slice')
@@ -371,7 +375,7 @@ class StackImage():
         ret = -1
 
 
-        ret, img1d = stem4d.getXTemplateMask(len)
+        ret, img1d = ediom.getXTemplateMask(len)
 
         if ret != 0 :
             print(f'Python ----Error getting current image slice')
@@ -399,7 +403,7 @@ class StackImage():
         
         mask = np.ascontiguousarray(np.zeros(len), dtype=np.short)
         
-        ret= stem4d.DPGetMask(mask)
+        ret= ediom.DPGetMask(mask)
         
         if ret != 0:
             print(f'Python ----Error getting the mask data')
@@ -439,7 +443,7 @@ class StackImage():
 
         """
         # load DP database into stem4d and return database fitmap dimensions
-        ret, mrow, mcol = stem4d.readDPDB(dbfn)
+        ret, mrow, mcol = ediom.readDPDB(dbfn)
         if ret != 0:            #need to replace this with stem4d return value
             print(f'Error loading image file')
             return ret, 0, 0
@@ -475,7 +479,7 @@ class StackImage():
         
         flen = fc*fr
         
-        ret, fmask = stem4d.getFitMap(flen)
+        ret, fmask = ediom.getFitMap(flen)
         if ret != 0:
             print(f'Python ----Failed to get for map')
             return ret
@@ -687,7 +691,7 @@ class StackImage():
             StackImage.displaySearchKernel(kr, kc) 
 
         # Start peaks search...
-        xpeaks = stem4d.searchXPeaks(search_box, threshold=peak_threshold)
+        xpeaks = ediom.searchXPeaks(search_box, threshold=peak_threshold)
 
         if xpeaks == -1:
             print(f'Peaks search failed')
@@ -700,7 +704,7 @@ class StackImage():
         if bDebug:
             self.viewExpImage(peakDP=True, Indexed=False, iShow = False)
         
-        ret = stem4d.indexXPeaks(rmin, soption, filter_threshold)
+        ret = ediom.indexXPeaks(rmin, soption, filter_threshold)
         
         if ret != 0:
             print(f'Error indexing experimental image for DP')
@@ -715,7 +719,7 @@ class StackImage():
 
         print(f"""{'DP #':^7}{'Miller Index':^15}{'Distance':^15}{'DP Loc':^23}{'Intensity':^11}""")
     
-        stem4d.printIndexDetails()
+        ediom.printIndexDetails()
         return 0
     # TODO: create two new functions: 1) generateBF() <-> getBF() 2)generateDF() <-> getBF()
     def generateADF(self,
@@ -761,7 +765,7 @@ class StackImage():
             print(f'Invalid ADF detector inner and outer radius, it must be a pair of numerals')
             return
                    
-        ret = stem4d.getADF(self.fname, 
+        ret = send.getADF(self.fname, 
                            center[0], center[1], 
                            rads[0], rads[1], 
                            scol)
