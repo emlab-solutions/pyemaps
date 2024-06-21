@@ -721,23 +721,23 @@ class StackImage():
     
         ediom.printIndexDetails()
         return 0
-    # TODO: create two new functions: 1) generateBF() <-> getBF() 2)generateDF() <-> getBF()
-    def generateADF(self,
+    # TODO: create two new functions: 1) generateBF() <-> getBF() 2)generateBDF() <-> getBF()
+    # TODO: needs to check if nlayers is greater than 1
+
+    def generateBDF(self,
                     center=(0.0, 0.0), 
                     rads = (0.0, 0.0),
                     scol = 0.0,
                     bShow=False):
         """
-        generates an Annular Dark Field(ADF) image from an experimental stack image input.
-        TODO: needs to check if nlayers is greater than 1
-
-        :param imgfn: experimental image file name. 
-        :type imgfn: string, required
+        generates an Annular Bright/Dark Field(ADF) image from an experimental stack image input.
         
-        :param center: The center of ADF detector.
+        :param center: The center of detector.
         :type center: tuple of floats
 
-        :param rads: a pair of radius for inner and outer ADF detector.
+        :param rads: a pair of radius for inner and outer field detector. 
+         When the inner radius is set yo zero, the resulting image will be either Bright Field(BF) or Dark Field(DF)
+         depending on if the center is on the bright spot of the image or not
         :type rads: tuple, optional.
 
         :param scol: The size of the output image along column direction.
@@ -746,32 +746,33 @@ class StackImage():
         :param bShow: whether to display the resulting ADF image.
         :type bShow: boolean, optional, default `False`
 
-        :return: status code, 0 successful, otherwise failed
-        :rtype: integer
+        :return: (status code, image data), status code of 0 successful, otherwise failed
+        :rtype: tuple
+
 
         """
         if not isinstance(scol, (int, float)) or scol <= 0:
             print(f'The size of the output image along column direction must be numeral and positive')
-            return
+            return -1, None
         
         if not isinstance(center, tuple) or len(center) !=2 or \
            not all(isinstance(x, (int, float)) for x in center):
             print(f'Invalid ADF detector center')
-            return
+            return -2, None
         
         if not isinstance(rads, tuple) or len(rads) !=2 or \
            not all(isinstance(x, (int, float)) for x in rads) or \
            rads[0] == rads[1]:
             print(f'Invalid ADF detector inner and outer radius, it must be a pair of numerals')
-            return
+            return -3, None
                    
-        ret = send.getADF(self.fname, 
+        ret = send.getBDF(self.fname, 
                            center[0], center[1], 
                            rads[0], rads[1], 
                            scol)
         if ret != 0:
             print(f'Failed to generate ADF image for experimental image {self.fname}')
-            return
+            return -4, None
         
         adfimg = stem4d.cvar.ximg
         self._dim = (adfimg.h.ncol, adfimg.h.nrow, 1)
@@ -780,4 +781,78 @@ class StackImage():
         if bShow:
             self.viewExpImage()
 
-        return self._data
+        return 0, self._data
+    
+    # def generateBF(self,
+    #                centery=0.0, 
+    #                rads = (0.0, 0.0),
+    #                scol = 0.0,
+    #                bShow=False):
+    #     """
+    #     generates an annular Bright Field(BF) image from an experimental stack image input.
+    #     TODO: needs to check if nlayers is greater than 1
+
+    #     :param centery: The second imension of center of annulae bright field detector.
+    #     :type center: float
+
+    #     :param rads: a pair of radius for inner and outer ADF detector.
+    #     :type rads: tuple, optional.
+
+    #     :param scol: The size of the output image along column direction.
+    #     :type scol: float, optional
+
+    #     :param bShow: whether to display the resulting ADF image.
+    #     :type bShow: boolean, optional, default `False`
+
+    #     :return: (status code, raw output image data), status code of 0 successful, otherwise failed
+    #     :rtype: tuple
+
+    #     """
+    #     # generateBF is really a special case of generateBDF
+    #     bcenter = (0.0, centery)
+    #     return self.generateBDF(center=bcenter, rads = rads, scol = scol, bShow = bShow)
+    
+    def generateMaskedDiffImage(self,
+                   maskfn,
+                   scancol = 0.0,
+                   bShow=False):
+        """
+        generates an Bright Field(ADF) image from an experimental stack image input.
+        and a mask image.
+
+        :param maskfn: mask image file name. 
+        :type maskfn: string, required
+        
+        :param scancol: The center of ADF detector. default value 0.0
+        :type scancol: float
+
+        :param bShow: whether to display the resulting ADF image.
+        :type bShow: boolean, optional, default `False`
+
+        :return: status code, 0 successful, otherwise failed
+        :rtype: integer
+
+        """
+        if not isinstance(scancol, (int, float)) or scancol <= 0:
+            print(f'The scancol input must be numeral and positive')
+            return
+        
+        if not isinstance(maskfn, str) and maskfn.strip():
+            print(f'The mask image file name must be string and not empty ')
+            return
+                   
+        ret = send.getABF(self.fname, maskfn, scancol)
+
+        if ret != 0:
+            print(f'Failed to generate bright field image for experimental image {self.fname}')
+            return
+        
+
+        # adfimg = stem4d.cvar.ximg
+        # self._dim = (adfimg.h.ncol, adfimg.h.nrow, 1)
+        # self._data = adfimg.getImageData()
+
+        # if bShow:
+        #     self.viewExpImage()
+
+        # return self._data
