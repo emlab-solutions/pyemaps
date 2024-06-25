@@ -181,6 +181,7 @@ fort.7
 
 # not to save sample code
 *samples/bt.py
+*samples/mask.img
 
 # .dat file
 *.dat

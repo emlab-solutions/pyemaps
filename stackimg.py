@@ -812,7 +812,7 @@ class StackImage():
     #     bcenter = (0.0, centery)
     #     return self.generateBDF(center=bcenter, rads = rads, scol = scol, bShow = bShow)
     
-    def generateMaskedDiffImage(self,
+    def generateMaskedImage(self,
                    maskfn,
                    scancol = 0.0,
                    bShow=False):
@@ -835,24 +835,23 @@ class StackImage():
         """
         if not isinstance(scancol, (int, float)) or scancol <= 0:
             print(f'The scancol input must be numeral and positive')
-            return
+            return -1, None
         
         if not isinstance(maskfn, str) and maskfn.strip():
             print(f'The mask image file name must be string and not empty ')
-            return
-                   
-        ret = send.getABF(self.fname, maskfn, scancol)
-
-        if ret != 0:
-            print(f'Failed to generate bright field image for experimental image {self.fname}')
-            return
+            return -2, None
         
+        ret = send.getMaskedImage(self.fname, maskfn, scancol)
+        
+        if ret != 0:
+            print(f'Failed to generate masked image for experimental image {self.fname}')
+            return -3, None
+        
+        maskedimg = stem4d.cvar.ximg
+        self._dim = (maskedimg.h.ncol, maskedimg.h.nrow, 1)
+        self._data = maskedimg.getImageData()
 
-        # adfimg = stem4d.cvar.ximg
-        # self._dim = (adfimg.h.ncol, adfimg.h.nrow, 1)
-        # self._data = adfimg.getImageData()
+        if bShow:
+            self.viewExpImage()
 
-        # if bShow:
-        #     self.viewExpImage()
-
-        # return self._data
+        return 0, self._data

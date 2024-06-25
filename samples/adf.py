@@ -51,6 +51,13 @@ def getDFFn():
     return os.path.join(samples_path, 'adftest30x30.im3')
     # return os.path.join(samples_path, '3_30by30pts_6by6nm_Int2.dat')
 
+def getMaskFn():
+    '''
+    Imports sample experimental diffraction pattern image
+    with preprietory 8-bytes header. 
+    '''
+    return os.path.join(samples_path, 'mask.img')
+    # return os.path.join(samples_path, '3_30by30pts_6by6nm_Int2.dat')
 
 def test_adf():
     '''
@@ -93,8 +100,24 @@ def test_df():
         print(f'Annular bright field image generation failed ')
     # # release stem4d module memory.
     # release_stem4d()
+def test_maskedimage():
+    imgfn = getDFFn()
+    maskfn = getMaskFn()
+    # print(f'masked image call file name: {imgfn}, {maskfn}')
+    # img = StackImage(adfn, nformat=E_RAW, ndtype = EM_INT)
+    img = StackImage(imgfn, ndtype = EM_INT)
+    # adfimgfn = getDFFn()
+    scancol = 30
+    ret, _ = img.generateMaskedImage(maskfn,
+                                scancol,
+                                bShow = True)
+
+    if ret != 0:
+        print(f'Masked image generation failed ')
+    
 if __name__ == '__main__':
     
     test_adf()
     test_df()
+    test_maskedimage()
     
