@@ -56,7 +56,8 @@ from . import (E_INT, EM_INT,
                E_RAW,
                E_NPY,
                # imageloading mode
-               EL_ONE, EL_MORE #STEM4D image loading all stacks
+               EL_ONE, #STEM4D image loading only one particular stack
+               EL_MORE #STEM4D image loading all stacks
             )
 import numpy as np
 
@@ -214,6 +215,7 @@ class StackImage():
             ret = ximage.setImage_from_numpy(self.data)
 
 # load proprietory small header formatted image file
+        # print(f'image input: {img_format}, {rmode}, {stack}')
         if img_format == E_SH:
             ret = stem4d.loadXImage(self.fname, rmode = rmode, stack = stack)
 # load raw image file            
@@ -227,18 +229,82 @@ class StackImage():
             raise XDPImageError("Failed to import the image into stem4d module")
         
         self._dim = (ximage.h.ncol,ximage.h.nrow,ximage.h.nlayer)
-        self._data = ximage.getImageData()
+        self._data = ximage.getImageData(stack)
 
-    def viewExpImage(self, peakDP = False, Indexed = False, iShow = False):      
+    # def viewExpImage(self, peakDP = False, Indexed = False, iShow = False):      
+    #     """
+    #     Helper function in stem4d module to display experimental diffraction database 
+    #     diffraction pattern currently loaded.
+
+    #     :param peakDP: kinematic diffraction with miller index. 
+    #     :type peakDP: Boolean, optional
+
+    #     :param Indexed: show the kinematic patterns after indexing is completed.
+    #     :type Indexed: boolean, optional, default to `False`
+
+    #     :param iShow: whether to show miller indexes
+    #     :type iShow: boolean, optional, default to `False`
+        
+    #     :return:  
+    #     :rtype: None
+        
+    #     This function is typically used to display experimental image after diffraction 
+    #     patterns matched and indexed. It can also be used to display intermediate
+    #     search results after peaks are found but before indexes are matched. The latter
+    #     display is turned on only by *bDebug* flag in 
+    #     `loadDPDB <pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB>`_ call.
+
+    #     """
+        
+    #     # img1d = stem4d.cvar.ximg.getImageData()
+    #     xnc, xnr = self._dim[0], self._dim[1]
+        
+    #     if self._data is None:
+    #         print(f'Experimental image is not loaded or invalid')
+    #         return
+        
+    #     try:
+    #         yi = np.ascontiguousarray(self._data, 
+    #                                   dtype=np.float32).reshape(xnc, xnr)
+    #     except Exception as e:
+    #         print("Error converting image data to numpy array")
+    #         raise XDPImageError from e
+    #     else:
+    #         xkdisk = None
+    #         if peakDP:
+    #             nps = ediom.getExpImagePeaks()
+                
+    #             if nps <= 0:
+    #                 print(f'Image is not indexed or indexing data is invalid')
+    #                 return
+                
+    #             ret, xkdisk = ediom.getXKDif(nps+1)
+                
+    #             if ret != 0:
+    #                 print(f'Python ----Failed to get diffraction patterns for the experimental image')
+    #                 return ret
+                
+    #         displayXImage(yi, 
+    #                       fsize=(xnc, xnr), 
+    #                       bIndexed=Indexed, 
+    #                       iShow = iShow, 
+    #                       ds = xkdisk,
+    #                       suptitle = 'Experimental Diffraction Image' if not Indexed \
+    #                                   else 'Experimental Diffraction Image - Indexed')
+
+    def viewExpImage(self, peakDP = False, iStack=1, title = "", iShow = False):      
         """
         Helper function in stem4d module to display experimental diffraction database 
         diffraction pattern currently loaded.
 
-        :param peakDP: kinematic diffraction with miller index. 
+        :param peakDP: kinematic diffraction with miller index. This parameter is only valid for EDIOM operations
         :type peakDP: Boolean, optional
 
         :param Indexed: show the kinematic patterns after indexing is completed.
         :type Indexed: boolean, optional, default to `False`
+
+        :param iStack: Image stack number to show. For single stack image, this parameter takes default value of 1
+        :type iStack: integer, optional, default to 1
 
         :param iShow: whether to show miller indexes
         :type iShow: boolean, optional, default to `False`
@@ -255,7 +321,11 @@ class StackImage():
         """
         
         # img1d = stem4d.cvar.ximg.getImageData()
-        xnc, xnr = self._dim[0], self._dim[1]
+        xnc, xnr, nl = self._dim[0], self._dim[1], self._dim[2]
+        
+        if iStack < 1 or iStack > nl+1:
+            print(f'The stack number of the image is invalid')
+            return
         
         if self._data is None:
             print(f'Experimental image is not loaded or invalid')
@@ -284,11 +354,9 @@ class StackImage():
                 
             displayXImage(yi, 
                           fsize=(xnc, xnr), 
-                          bIndexed=Indexed, 
                           iShow = iShow, 
                           ds = xkdisk,
-                          suptitle = 'Experimental Diffraction Image' if not Indexed \
-                                      else 'Experimental Diffraction Image - Indexed')
+                          suptitle = title)
     @staticmethod
     def showMatchedDBDP():        
         """
@@ -663,7 +731,8 @@ class StackImage():
         except Exception as e:
             raise XDPImageError(f"Error loading image for stem4d analysis: {e}") from e
         
-        self.viewExpImage()
+        # print(f'debug:experimental image depth: {self._dim}')
+        self.viewExpImage(title='Experimental Diffraction Image - Indexed')
 
         # xim = stem4d.cvar.ximg
         edc = stem4d.cvar.edc
@@ -702,7 +771,7 @@ class StackImage():
             return -1
         
         if bDebug:
-            self.viewExpImage(peakDP=True, Indexed=False, iShow = False)
+            self.viewExpImage(peakDP=True, title = 'Experimental Diffraction Image', iShow = False)
         
         ret = ediom.indexXPeaks(rmin, soption, filter_threshold)
         
@@ -710,7 +779,7 @@ class StackImage():
             print(f'Error indexing experimental image for DP')
             return ret
         
-        self.viewExpImage(peakDP=True, Indexed=True, iShow = True)
+        self.viewExpImage(peakDP=True, title = 'Experimental Diffraction Image - Indexed', iShow = True)
 
         StackImage.showMatchingIndexMap(mr,mc)
         
@@ -730,26 +799,34 @@ class StackImage():
                     scol = 0.0,
                     bShow=False):
         """
-        generates an Annular Bright/Dark Field(ADF) image from an experimental stack image input.
-        
-        :param center: The center of detector.
-        :type center: tuple of floats
+        This method generates an (Annular) Bright/Dark Field image from an experimental stack image.
+        It is a wrapper for the function `getBDF`function in the new SEND module.
+        The SEND module is a collection of 4DStem module called `stem4d` backend that handles ... (TODO) 
 
-        :param rads: a pair of radius for inner and outer field detector. 
-         When the inner radius is set yo zero, the resulting image will be either Bright Field(BF) or Dark Field(DF)
-         depending on if the center is on the bright spot of the image or not
+
+        :param center: The center of detector.
+        :type center: tuple of floating point numbers
+
+        :param rads: a pair of radius for inner and outer field detectors. 
+         When the inner radius is set to zero, the resulting image will be either 
+         Bright Field(BF) or Dark Field(DF) depending on if the center is on 
+         the bright spot of the image or not. Otherwise, a positive inner radius
+         will result in Annular Bright Field (ABF) or Annular Dark Field (ADF).
         :type rads: tuple, optional.
 
         :param scol: The size of the output image along column direction.
-        :type scol: float, optional
+        :type scol: floating point numbers, optional
 
-        :param bShow: whether to display the resulting ADF image.
+        :param bShow: whether to display the resulting image.
         :type bShow: boolean, optional, default `False`
 
         :return: (status code, image data), status code of 0 successful, otherwise failed
-        :rtype: tuple
+        :rtype: tuple of a short integer and image data array.
 
+.. note::
 
+        The experimental image loaded must have more than one stack.
+        
         """
         if not isinstance(scol, (int, float)) or scol <= 0:
             print(f'The size of the output image along column direction must be numeral and positive')
@@ -765,9 +842,14 @@ class StackImage():
            rads[0] == rads[1]:
             print(f'Invalid ADF detector inner and outer radius, it must be a pair of numerals')
             return -3, None
-                   
-        ret = send.getBDF(self.fname, 
-                           center[0], center[1], 
+               
+        try:
+            self.loadImage(rmode = EL_MORE) 
+        except Exception as e:
+            print(f'Error loading the experimental image with message: {e}')
+            return -4, None
+    
+        ret = send.getBDF(center[0], center[1], 
                            rads[0], rads[1], 
                            scol)
         if ret != 0:
@@ -776,10 +858,11 @@ class StackImage():
         
         adfimg = stem4d.cvar.ximg
         self._dim = (adfimg.h.ncol, adfimg.h.nrow, 1)
-        self._data = adfimg.getImageData()
+        self._data = adfimg.getImageData(1)
 
         if bShow:
-            self.viewExpImage()
+            self.viewExpImage(title='Annular Dark or Bright Field Image' if rads[0] > 0.0 else \
+                              'Dark or Bright Field Image')
 
         return 0, self._data
     
@@ -832,6 +915,7 @@ class StackImage():
         :return: status code, 0 successful, otherwise failed
         :rtype: integer
 
+        .. note::
         """
         if not isinstance(scancol, (int, float)) or scancol <= 0:
             print(f'The scancol input must be numeral and positive')
@@ -841,7 +925,12 @@ class StackImage():
             print(f'The mask image file name must be string and not empty ')
             return -2, None
         
-        ret = send.getMaskedImage(self.fname, maskfn, scancol)
+        try:
+            self.loadImage(rmode = EL_MORE) 
+        except Exception as e:
+            return -4, None
+
+        ret = send.getMaskedImage(maskfn, scancol)
         
         if ret != 0:
             print(f'Failed to generate masked image for experimental image {self.fname}')
@@ -849,9 +938,9 @@ class StackImage():
         
         maskedimg = stem4d.cvar.ximg
         self._dim = (maskedimg.h.ncol, maskedimg.h.nrow, 1)
-        self._data = maskedimg.getImageData()
+        self._data = maskedimg.getImageData(1)
 
         if bShow:
-            self.viewExpImage()
+            self.viewExpImage(title = "Experimental Diffraction Image - Masked")
 
         return 0, self._data

@@ -110,6 +110,7 @@ def test_maskedimage():
     scancol = 30
     ret, _ = img.generateMaskedImage(maskfn,
                                 scancol,
+                                # bViewOriginal = True,
                                 bShow = True)
 
     if ret != 0:
