@@ -26,6 +26,9 @@ Date:       May 07, 2022
 
 from . import __config__
 
+TYPE_FREE = 1
+TYPE_FULL = 2
+TYPE_UIUC = 3
 #--------------from diffraction extension module------------------------
 try:
     from emaps import dif
@@ -152,56 +155,56 @@ else:
     DEF_ORSHIFT = [0, 0, 0] # Origin shift
     DEF_LOCASPACE = [0, 0, 0] # location in A Space
 
-
-# #------------------Diffraction Database Generator - paid package only---------------------------
-try:
-    from emaps import dpgen
-    
-except ImportError as e:
-    # skip this in free package
-    pass
-
-
 # #------------------Diffraction Pattern Indexing - paid package only---------------------------
 #  used only with dpgen module above
 
-try:
-    from emaps import stem4d
-except ImportError:
-    pass
-else:
-    E_INT = stem4d.E_INT 
-    EM_INT = stem4d.EM_INT
+if PKG_TYPE != TYPE_FREE:
+    #------------------Diffraction Database Generator - paid package only---------------------------
+    try:
+        from emaps import dpgen
+        
+    except ImportError as e:
+        # skip this in free package
+        pass
 
-    E_FLOAT = stem4d.E_FLOAT
-    EM_FLOAT = stem4d.EM_FLOAT
+    try:
+        from emaps import stem4d
+    except ImportError:
+        pass
+    else:
+        E_INT = stem4d.E_INT 
+        EM_INT = stem4d.EM_INT
 
-    E_DOUBLE = stem4d.E_DOUBLE
-    EM_DOUBLE = stem4d.EM_DOUBLE
+        E_FLOAT = stem4d.E_FLOAT
+        EM_FLOAT = stem4d.EM_FLOAT
 
-    MAX_IMAGESIZE = stem4d.MAX_IMAGESIZE
-    MIN_IMAGESIZE = stem4d.MIN_IMAGESIZE
-    MAX_IMAGESTACK = stem4d.MAX_IMAGESTACK
-    MIN_IMAGESTACK = 1
-    DEF_FILTER_THRESHOLD = 0.2                       
-    DEF_SEARCH_THRESHOLD = 0.825
-    DEF_RMIN = 7
-    DEF_BOXSIZE = 10
-    DEF_CC = stem4d.cvar.edc.cc      #default value from backend
-    DEF_SIGMA = stem4d.cvar.edc.sigma
-    DEF_ICENTER = stem4d.cvar.edc.get_center()
-    DEF_XSCALE = 1
-    DEF_TSCALE = 2
+        E_DOUBLE = stem4d.E_DOUBLE
+        EM_DOUBLE = stem4d.EM_DOUBLE
 
-    E_SH = 0
-    E_RAW = 1
-    E_NPY = 2
+        MAX_IMAGESIZE = stem4d.MAX_IMAGESIZE
+        MIN_IMAGESIZE = stem4d.MIN_IMAGESIZE
+        MAX_IMAGESTACK = stem4d.MAX_IMAGESTACK
+        MIN_IMAGESTACK = 1
+        DEF_FILTER_THRESHOLD = 0.2                       
+        DEF_SEARCH_THRESHOLD = 0.825
+        DEF_RMIN = 7
+        DEF_BOXSIZE = 10
+        DEF_CC = stem4d.cvar.edc.cc      #default value from backend
+        DEF_SIGMA = stem4d.cvar.edc.sigma
+        DEF_ICENTER = stem4d.cvar.edc.get_center()
+        DEF_XSCALE = 1
+        DEF_TSCALE = 2
 
-    # imageloading mode
-    EL_ONE = 1  #STEM4D image loading one stack at one time
-    EL_MORE = 2 #STEM4D image loading all stacks
+        E_SH = 0
+        E_RAW = 1
+        E_NPY = 2
 
+        # imageloading mode
+        EL_ONE = 1  #STEM4D image loading one stack at one time
+        EL_MORE = 2 #STEM4D image loading all stacks
 
+        # image handling class obly for 4dstem modules  
+        from .stackimg import StackImage
 #--------------Wrapper classes around diffraction extensions---------------
 from .errors import *
 
@@ -220,9 +223,6 @@ try:
     from .kdiffs import XMAX, YMAX
 except ImportError as e:
     print(f'Error importing kinematic constants: {e}')
-
-#--------------stem4d features -------------------------------
-from .stackimg import StackImage
 
 #--------------Pyemaps Display Functions-------------------------------------
 from .display import showDif, showBloch, showStereo, plot2Powder
