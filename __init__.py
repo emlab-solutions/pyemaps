@@ -26,9 +26,10 @@ Date:       May 07, 2022
 
 from . import __config__
 
-TYPE_FREE = 1
-TYPE_FULL = 2
-TYPE_UIUC = 3
+TYPE_FREE = 1 # Free package includes basic diffraction simulations and crystallogrphic calculations
+TYPE_FULL = 2 # Paid package with stem4d modules. license must be generated using python -m pyemaps -l trial|prod <license token>
+TYPE_UIUC = 3 # Special package for exclusive usage in University if Illinois at Urbana Champaign
+
 #--------------from diffraction extension module------------------------
 try:
     from emaps import dif
@@ -56,7 +57,7 @@ else:
 
     DEF_EXCITATION= (sgmn, sgmx)
     DEF_INTENSITY = (intz, intc)
-    XMAX = 75  # set in dif backend as constant for now, may need to change to variable set by users
+    XMAX = 75  # set in dif backend as constant for now, may need to change to variable that can be set by users
     YMAX = 75  # set in dif backend, same as the above
 
 #-------------- defaults from backend for sample controls---------------
@@ -109,6 +110,7 @@ except ImportError as e:
     pass
 
 #------------------------Dynamic Diffraction Module----------------------------
+
 try:
     from emaps import bloch
     
@@ -155,8 +157,27 @@ else:
     DEF_ORSHIFT = [0, 0, 0] # Origin shift
     DEF_LOCASPACE = [0, 0, 0] # location in A Space
 
-# #------------------Diffraction Pattern Indexing - paid package only---------------------------
-#  used only with dpgen module above
+#--------------Wrapper classes around diffraction extensions---------------
+from .errors import *
+
+#---------Microscope control data classes handling data properties----------
+from .emcontrols import EMControl as EMC
+from .emcontrols import SIMControl as SIMC
+
+#---------Diffraction classes handling diffraction pattern data-------------
+from .kdiffs import diffPattern as DP
+from .kdiffs import Diffraction as DPList
+from .ddiffs import BlochImgs as BImgList
+
+#--------------Crystal Classes and subclasses-------------------------------
+from .crystals import Cell, Atom, SPG, Crystal
+try:
+    from .kdiffs import XMAX, YMAX
+except ImportError as e:
+    print(f'Error importing kinematic constants: {e}')
+
+#--------------Pyemaps Display Functions-------------------------------------
+from .display import showDif, showBloch, showStereo, plot2Powder
 
 if PKG_TYPE != TYPE_FREE:
     #------------------Diffraction Database Generator - paid package only---------------------------
@@ -164,13 +185,13 @@ if PKG_TYPE != TYPE_FREE:
         from emaps import dpgen
         
     except ImportError as e:
-        # skip this in free package
-        pass
-
+        print(f'Failure to import supporting module for 4D Stem module.')
+        print(f'Diffraction pattern indexing function is not available')
     try:
         from emaps import stem4d
     except ImportError:
-        pass
+        print(f'Failure to import supporting module for 4D Stem module.')
+        print(f'4D STEM functions are not available.')
     else:
         E_INT = stem4d.E_INT 
         EM_INT = stem4d.EM_INT
@@ -199,30 +220,14 @@ if PKG_TYPE != TYPE_FREE:
         E_RAW = 1
         E_NPY = 2
 
-        # imageloading mode
-        EL_ONE = 1  #STEM4D image loading one stack at one time
-        EL_MORE = 2 #STEM4D image loading all stacks
+        # image loading mode
+        EL_ONE = 1  #STEM4D image loading one stack at a time - good for processing single image at a time
+        EL_MORE = 2 #STEM4D image loading all stacks at once - good for processing large amount of images
 
-        # image handling class obly for 4dstem modules  
-        from .stackimg import StackImage
-#--------------Wrapper classes around diffraction extensions---------------
-from .errors import *
-
-#---------Microscope control data classes handling data properties----------
-from .emcontrols import EMControl as EMC
-from .emcontrols import SIMControl as SIMC
-
-#---------Diffraction classes handling diffraction pattern data-------------
-from .kdiffs import diffPattern as DP
-from .kdiffs import Diffraction as DPList
-from .ddiffs import BlochImgs as BImgList
-
-#--------------Crystal Classes and subclasses-------------------------------
-from .crystals import Cell, Atom, SPG, Crystal
-try:
-    from .kdiffs import XMAX, YMAX
-except ImportError as e:
-    print(f'Error importing kinematic constants: {e}')
-
-#--------------Pyemaps Display Functions-------------------------------------
-from .display import showDif, showBloch, showStereo, plot2Powder
+        # image handling class only for 4dstem 
+        # "stem4d" for programming purposes - python not allowing numeric starting letter for variables  
+        
+        try:
+            from .stackimg import StackImage
+        except ImportError as e:
+            print(f'Error importing image module: {e}. The 4D STEM module not available')
