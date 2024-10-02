@@ -147,7 +147,7 @@ if __name__ == '__main__':
             exit(0)
         
         if args.license:
-            from emaps import PKG_TYPE, TYPE_FREE
+            from emaps import PKG_TYPE
 
             if PKG_TYPE == TYPE_FREE:
                 print(f'License activation is only required for a full pyemaps package with 4DSTEM features')
