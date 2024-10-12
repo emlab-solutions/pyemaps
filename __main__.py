@@ -50,16 +50,13 @@ def copy_samples():
     pyemaps_pkgdir = os.path.dirname(os.path.abspath(__file__))
     pkg_samples_dir = os.path.join(pyemaps_pkgdir, "samples")
 
-    # now copy most of the files in pkg_samples_dir into curr_samples_dir
-    # fetch all files
     for file_name in os.listdir(pkg_samples_dir):
-        # construct full file path
+        
         if file_name == 'si_pyemaps.py':
             continue
         source = os.path.join(pkg_samples_dir, file_name)
         destination = os.path.join(curr_samples_dir, file_name)
         
-        # copy only files
         if os.path.isfile(source):
             shutil.copy(source, destination)
             print(f'Copied sample code: {file_name} in pyemaps package to {destination}')
@@ -94,20 +91,39 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description="pyemaps console script options parsing")
     
-    parser.add_argument("-s", "--sample", type=bool, nargs="?", const=True, default=False, 
-                        help="for running sample code", required=False)
-    parser.add_argument("-c", "--copyright", type=bool, nargs="?", const=True, default=False, 
-                        help="for checking copyright", required=False)
-    parser.add_argument("-v", "--version", type=bool, nargs="?", const=True, default=False, 
-                        help="for checking pyemaps version", required=False)
-    parser.add_argument("-cp", "--copysamples", type=bool, nargs="?", const=True, default=False, 
-                        help="for copying sample code into working directory", required=False)
+    parser.add_argument("-c", 
+                        "--copyright", 
+                        default=False, 
+                        action='store_true',
+                        help="display pyEMAPS copyrights", 
+                        required=False)
+    parser.add_argument("-cp", 
+                        "--copysamples", 
+                        default=False, 
+                        action='store_true',
+                        help="copy sample code into working directory", 
+                        required=False)
     parser.add_argument("-l", 
                         "--license", 
-                        nargs='+',  
-                        help="License activation for full package with 4D STEM features. Use empty option value for 7 days trial license", 
+                        nargs='?', 
+                        const='',   
+                        default=None,   
+                        metavar='LICENSE_TOKEN',
+                        help="activate license for full package with 4D STEM features. Leave LICENSE_TOKEN empty for 7 days trial license", 
                         required=False
                         )
+    parser.add_argument("-s", 
+                        "--sample",
+                        default=False, 
+                        action='store_true',
+                        help="run basic pyEMAPS sample code", 
+                        required=False)
+    parser.add_argument("-v", 
+                        "--version", 
+                        default=False, 
+                        help="display pyEMAPS version", 
+                        action='store_true',
+                        required=False)
    
     try:
         args = parser.parse_args()
@@ -146,31 +162,23 @@ if __name__ == '__main__':
             run_si_sample()
             exit(0)
         
-        if args.license:
+        if args.license is not None:
             from emaps import PKG_TYPE
-
+            from . import TYPE_FREE
+            
             if PKG_TYPE == TYPE_FREE:
                 print(f'License activation is only required for a full pyemaps package with 4DSTEM features')
                 print(f'Contact support@emlabsoftware.com for how to download and install the full package')
                 exit(0)
 
-            lic_args = args.license
-            if len(lic_args) <= 0 or len(lic_args) > 2:
-                print(f"License handling error: {lic_args}")
-                parser.print_help()
-                exit(1)
-
-            lic_type = lic_args[0]
-
-            lic_token = None
-            if len(lic_args) == 2:
-                lic_token = lic_args[1]
-
-            # offline license activation if token is given as the third arguement
-            if lic_token is not None:
-                ret = stem4d.activate_license_offline_once(lic_token)
-            elif lic_type == "trial":
+            lic_token = args.license
+            if lic_token is None or lic_token == '':
                 ret = stem4d.activate_license_once()
-            exit(0)
+            else:
+                ret = stem4d.activate_license_offline_once(lic_token)
+            if ret == 0:
+                exit(0)
+
+            exit(1)
     
     
