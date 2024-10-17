@@ -143,14 +143,14 @@ if __name__ == '__main__':
     ver = pkg_resources.require("pyemaps")[0].version + str(f" {rel_stage}").lower()
     
     copyrit = ['PyEMAPS - Transmission Electron Diffraction Simulations In Python']
-    copy1 = 'Copyright @ 2021 - ' + datetime.date.today().strftime('%Y') + ' EMLab Solutions, Inc. All Rights Reserved'
+    copy1 = '© 2021-' + datetime.date.today().strftime('%Y') + ' EMLab Solutions, Inc. All rights reserved.'
     
     vers = 'Free version ' + ver
     if PKG_TYPE == TYPE_UIUC:
-        vers = "Full version " + ver +" for use exclusively at University of Illinois " 
+        vers = "Full version " + ver +" for use exclusively at University of Illinois at Urbana Champaign." 
     
     if PKG_TYPE == TYPE_FULL:
-        vers = "Full version " + ver
+        vers = "Full version " + ver +" with 4dstem features." 
 
     copyrit.append(copy1)
     scopyrit = '\n'.join(copyrit)
