@@ -74,13 +74,17 @@ if __name__ == '__main__':
         python -m pyemaps -c (--copyright)
         python -m pyemaps -cp (--copysamples)
         python -m pyemaps -v (--version)
-        python -m pyemaps -l (--licenseactivation) <trial|prod> <empty|license token>
+        python -m pyemaps -l (--license) <empty|license token>
 
     """
     
     try:
         from .samples.si_pyemaps import run_si_sample
-        from emaps import stem4d 
+        
+        from emaps import PKG_TYPE
+        from . import TYPE_FREE, TYPE_FULL, TYPE_UIUC
+        if PKG_TYPE != TYPE_FREE:
+            from emaps import stem4d 
         
     except ImportError as e:
         print(f"Error importing built-in sample: {e}")
@@ -136,21 +140,29 @@ if __name__ == '__main__':
         parser.print_help()
         exit(1)
 
-    ver = pkg_resources.require("pyemaps")[0].version + str(f" {rel_stage}")
+    ver = pkg_resources.require("pyemaps")[0].version + str(f" {rel_stage}").lower()
     
-    copyrit = ['Pyemaps - Transmission Electron Diffraction Simulations In Python']
+    copyrit = ['PyEMAPS - Transmission Electron Diffraction Simulations In Python']
     copy1 = 'Copyright @ 2021 - ' + datetime.date.today().strftime('%Y') + ' EMLab Solutions, Inc. All Rights Reserved'
+    
+    vers = 'Free version ' + ver
+    if PKG_TYPE == TYPE_UIUC:
+        vers = "Full version " + ver +" for use exclusively at University of Illinois " 
+    
+    if PKG_TYPE == TYPE_FULL:
+        vers = "Full version " + ver
+
     copyrit.append(copy1)
     scopyrit = '\n'.join(copyrit)
 
     if args.version:
-        print(f'pyemaps {ver}')
+        print(f'pyEMAPS {vers.lower()}')
         exit(0)
     elif args.copyright: 
         print(scopyrit)
         exit(0)  
     else:
-        copyrit.append('Version  ' + ver)
+        copyrit.append(vers)
         copyrit.append('--------------------------------')
         print('\n'.join(copyrit)) 
           
