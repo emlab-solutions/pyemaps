@@ -81,8 +81,7 @@ if __name__ == '__main__':
     try:
         from .samples.si_pyemaps import run_si_sample
         
-        from emaps import PKG_TYPE
-        from . import TYPE_FREE, TYPE_FULL, TYPE_UIUC
+        from emaps import PKG_TYPE, TYPE_FREE, TYPE_FULL, TYPE_UIUC
         if PKG_TYPE != TYPE_FREE:
             from emaps import stem4d 
         

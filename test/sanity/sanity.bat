@@ -1,6 +1,6 @@
-@REM basic usage
-@echo off 
 
+@echo off 
+@REM basic usage
 @REM starting time
 set startTime=%time%
 echo Script started at %startTime%
@@ -20,6 +20,7 @@ call python .\pyemaps_samples\si_constructor.py
 call python .\pyemaps_samples\si_stereo.py
 call python .\pyemaps_samples\si_scm.py
 python test\sanity\feature_sanity.py
+
 @REM performance test - all includes all types: dif, bloch and stereo
 call python test\sanity\run_perf_test.py -r all
 @REM unit test: EMC SIMC class basic function tests

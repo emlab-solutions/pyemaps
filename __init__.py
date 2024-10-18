@@ -25,10 +25,7 @@ Date:       May 07, 2022
 
 
 from . import __config__
-
-TYPE_FREE = 1 # Free package includes basic diffraction simulations and crystallogrphic calculations
-TYPE_FULL = 2 # Paid package with stem4d modules. license must be generated using python -m pyemaps -l trial|prod <license token>
-TYPE_UIUC = 3 # Special package for exclusive usage in University if Illinois at Urbana Champaign
+from emaps import TYPE_FREE
 
 #--------------from diffraction extension module------------------------
 try:
