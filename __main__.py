@@ -106,15 +106,17 @@ if __name__ == '__main__':
                         action='store_true',
                         help="copy sample code into working directory", 
                         required=False)
-    parser.add_argument("-l", 
-                        "--license", 
-                        nargs='?', 
-                        const='',   
-                        default=None,   
-                        metavar='LICENSE_TOKEN',
-                        help="activate license for full package with 4D STEM features. Leave LICENSE_TOKEN empty for 7 days trial license", 
-                        required=False
-                        )
+    
+    if PKG_TYPE != TYPE_FREE:
+        parser.add_argument("-l", 
+                            "--license", 
+                            nargs='?', 
+                            const='',   
+                            default=None,   
+                            metavar='LICENSE_TOKEN',
+                            help="activate license for full package with 4D STEM features. Leave LICENSE_TOKEN empty for 7 days trial license", 
+                            required=False
+                            )
     parser.add_argument("-s", 
                         "--sample",
                         default=False, 
@@ -174,11 +176,9 @@ if __name__ == '__main__':
             exit(0)
         
         if args.license is not None:
-            from emaps import PKG_TYPE
-            from . import TYPE_FREE
-            
+
             if PKG_TYPE == TYPE_FREE:
-                print(f'License activation is only required for a full pyemaps package with 4DSTEM features')
+                print(f'License is required only for a full pyemaps package with 4DSTEM features')
                 print(f'Contact support@emlabsoftware.com for how to download and install the full package')
                 exit(0)
 
