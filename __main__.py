@@ -35,7 +35,7 @@ def copy_samples():
     curr_dir = os.getcwd()
     
     q = str(f"Copy pyemaps samples into {pyemaps_samples_dir} in current directory?\n ")
-    # ans = str(raw_input(q +' [y/n]: ')).lower().strip()
+    
     inp = input(q +"[Y/n] ")
 
     if inp and not inp.lower().strip()[:1] == "y":
@@ -50,16 +50,13 @@ def copy_samples():
     pyemaps_pkgdir = os.path.dirname(os.path.abspath(__file__))
     pkg_samples_dir = os.path.join(pyemaps_pkgdir, "samples")
 
-    # now copy most of the files in pkg_samples_dir into curr_samples_dir
-    # fetch all files
     for file_name in os.listdir(pkg_samples_dir):
-        # construct full file path
+        
         if file_name == 'si_pyemaps.py':
             continue
         source = os.path.join(pkg_samples_dir, file_name)
         destination = os.path.join(curr_samples_dir, file_name)
         
-        # copy only files
         if os.path.isfile(source):
             shutil.copy(source, destination)
             print(f'Copied sample code: {file_name} in pyemaps package to {destination}')
@@ -75,10 +72,19 @@ if __name__ == '__main__':
     Usage:
         python -m pyemaps -s (--sample)
         python -m pyemaps -c (--copyright)
+        python -m pyemaps -cp (--copysamples)
         python -m pyemaps -v (--version)
+        python -m pyemaps -l (--license) <empty|license token>
+
     """
+    
     try:
         from .samples.si_pyemaps import run_si_sample
+        
+        from emaps import PKG_TYPE, TYPE_FREE, TYPE_FULL, TYPE_UIUC
+        if PKG_TYPE != TYPE_FREE:
+            from emaps import stem4d 
+        
     except ImportError as e:
         print(f"Error importing built-in sample: {e}")
         
@@ -88,42 +94,102 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description="pyemaps console script options parsing")
     
-    parser.add_argument("-s", "--sample", type=bool, nargs="?", const=True, default=False, help="for running sample code", required=False)
-    parser.add_argument("-c", "--copyright", type=bool, nargs="?", const=True, default=False, help="for checking copyright", required=False)
-    parser.add_argument("-v", "--version", type=bool, nargs="?", const=True, default=False, help="for checking pyemaps version", required=False)
-    parser.add_argument("-cp", "--copysamples", type=bool, nargs="?", const=True, default=False, help="for copying sample code into working directory", required=False)
+    parser.add_argument("-c", 
+                        "--copyright", 
+                        default=False, 
+                        action='store_true',
+                        help="display pyEMAPS copyrights", 
+                        required=False)
+    parser.add_argument("-cp", 
+                        "--copysamples", 
+                        default=False, 
+                        action='store_true',
+                        help="copy sample code into working directory", 
+                        required=False)
     
-    #parsing for the arguements
-    args = parser.parse_args()
+    if PKG_TYPE != TYPE_FREE:
+        parser.add_argument("-l", 
+                            "--license", 
+                            nargs='?', 
+                            const='',   
+                            default=None,   
+                            metavar='LICENSE_TOKEN',
+                            help="activate license for full package with 4D STEM features. Leave LICENSE_TOKEN empty for 7 days trial license", 
+                            required=False
+                            )
+    parser.add_argument("-s", 
+                        "--sample",
+                        default=False, 
+                        action='store_true',
+                        help="run basic pyEMAPS sample code", 
+                        required=False)
+    parser.add_argument("-v", 
+                        "--version", 
+                        default=False, 
+                        help="display pyEMAPS version", 
+                        action='store_true',
+                        required=False)
+   
+    try:
+        args = parser.parse_args()
+    except argparse.ArgumentTypeError as e:
+        print(f"Argument validation error: {e}")
+        parser.print_help()
+        exit(1)
+    except SystemExit as e:
+        print(f"Parsing failed with exit code {e}. Invalid input or argument format.")
+        parser.print_help()
+        exit(1)
 
-    #default to always print version and version
-
-    ver = pkg_resources.require("pyemaps")[0].version + str(f" {rel_stage}")
+    ver = pkg_resources.require("pyemaps")[0].version + str(f" {rel_stage}").lower()
     
-    copyrit = ['Pyemaps - Transmission Electron Diffraction Simulations in Python']
-    copy1 = 'Copyright @ 2021 - ' + datetime.date.today().strftime('%Y') + ' EMLab Solutions, Inc. All Rights Reserved'
+    copyrit = ['PyEMAPS - Transmission Electron Diffraction Simulations In Python']
+    copy1 = '© 2021-' + datetime.date.today().strftime('%Y') + ' EMLab Solutions, Inc. All rights reserved.'
+    
+    vers = 'Free version ' + ver
+    if PKG_TYPE == TYPE_UIUC:
+        vers = "Full version " + ver +" for use exclusively at University of Illinois at Urbana Champaign." 
+    
+    if PKG_TYPE == TYPE_FULL:
+        vers = "Full version " + ver +" with 4dstem features." 
+
     copyrit.append(copy1)
     scopyrit = '\n'.join(copyrit)
 
-    if args.sample:
-        copyrit.append('Version ' + ver)
-        print('\n'.join(copyrit))
-        run_si_sample()
-        exit(0)
-
-    if args.copyright:
-        print(scopyrit)
-        exit(0)
-    
     if args.version:
-        print(f'pyemaps {ver}')
+        print(f'pyEMAPS {vers.lower()}')
         exit(0)
-    
-    if args.copysamples:
-        print(f'pyemaps {ver}')
-        copy_samples()
-        exit(0)
+    elif args.copyright: 
+        print(scopyrit)
+        exit(0)  
+    else:
+        copyrit.append(vers)
+        copyrit.append('--------------------------------')
+        print('\n'.join(copyrit)) 
+          
+        if args.copysamples:
+            copy_samples()
+            exit(0)
+        
+        if args.sample:
+            run_si_sample()
+            exit(0)
+        
+        if args.license is not None:
 
-    copyrit.append('Version  ' + ver)
-    print('\n'.join(copyrit)) 
+            if PKG_TYPE == TYPE_FREE:
+                print(f'License is required only for a full pyemaps package with 4DSTEM features')
+                print(f'Contact support@emlabsoftware.com for how to download and install the full package')
+                exit(0)
+
+            lic_token = args.license
+            if lic_token is None or lic_token == '':
+                ret = stem4d.activate_license_once()
+            else:
+                ret = stem4d.activate_license_offline_once(lic_token)
+            if ret == 0:
+                exit(0)
+
+            exit(1)
+    
     

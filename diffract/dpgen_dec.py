@@ -75,7 +75,7 @@ def add_dpgen(target):
         binary formatted database file with extension .bin.
 
         The database created will be used for diffraction pattern indexing
-        and matchig functions in pyemaps EDIOM module.
+        and matchig functions in pyemaps STEM4D module.
         
         The generated database file is saved to directory pointed by environment variable
         *PYEMAPS_DATA* or in current working directory if *PYEMAPS_DATA* is not set.
@@ -109,7 +109,7 @@ def add_dpgen(target):
            :width: 75%
            :align: center
 
-        The diffraction patterns database file produced will be consumed by pyemaps ediom module
+        The diffraction patterns database file produced will be consumed by pyemaps stem4d module
         for experimental diffraction pattern serach and indexing.
 
         """

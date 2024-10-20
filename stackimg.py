@@ -21,14 +21,14 @@ ___________________________
 Author:     EMLab Solutions, Inc.
 Date:       May 16, 2023   
 
-EDIOM (Electron Diffraction Indexing and Orientation Mapping) module 
+STEM4D (Electron Diffraction Indexing and Orientation Mapping) module 
 in pyemaps contains a rich set of diffraction pattern search and recognition
 functions. Future feature addition include orientation mapping.
 
-*StachImage* class is designed to interface with EDIOM functions to provide
-users easy access to the collection of EDIOM features. 
+*StachImage* class is designed to interface with STEM4D functions to provide
+users easy access to the STEM4D features. 
 
-Most of the current and future EDIOM interfaces shown as StackImage
+Most of the current and future STEM4D interfaces shown as StackImage
 class methods will be in full pyemaps package, with the exception
 of diffraction indexing method in demo mode in free package.
 
@@ -36,7 +36,10 @@ Contact support@emlabsoftware.com for how to get the full package.
 
 '''
     
-from emaps import ediom
+from emaps import stem4d
+from emaps.stem4d import ediom
+from emaps.stem4d import send
+
 from . import (E_INT, EM_INT,
                E_FLOAT, EM_FLOAT,
                E_DOUBLE, EM_DOUBLE,
@@ -53,7 +56,8 @@ from . import (E_INT, EM_INT,
                E_RAW,
                E_NPY,
                # imageloading mode
-               EL_ONE, EL_MORE #EDIOM image loading all stacks
+               EL_ONE, #STEM4D image loading only one particular stack
+               EL_MORE #STEM4D image loading all stacks
             )
 import numpy as np
 
@@ -63,7 +67,7 @@ from .errors import XDPImageError
 from .display import normalizeImage, displayXImage
 class StackImage():
     """
-    Simple wrapper for experimental images used in pyemaps Ediom analyzes
+    Simple wrapper for experimental images used in pyemaps Stem4d analyzes
     that include:
     
     - diffraction pattern indexing
@@ -135,7 +139,7 @@ class StackImage():
     def data(self):
         """
         Raw image data in numpy ndarray when it is read from a numpy array
-        Otherwise, the data will be generated from Ediom when it is loaded. 
+        Otherwise, the data will be generated from Stem4d when it is loaded. 
         """
         return self._data
 
@@ -195,47 +199,112 @@ class StackImage():
 
     def __del__(self):
         
-        ediom.freeEdiom()
+        stem4d.freeStem4d()
 
     def loadImage(self, rmode= EL_ONE, stack = 1):
         """
-        Loads image into ediom module for analysis.
+        Loads image into stem4d module for analysis.
         """
         img_format = self.nformat
         if img_format != E_NPY and img_format != E_SH and img_format != E_RAW:
             raise XDPImageError("Invalid image file type")
         
-        ximage = ediom.cvar.ximg
+        ximage = stem4d.cvar.ximg
         ret = -1
         if img_format == E_NPY:
             ret = ximage.setImage_from_numpy(self.data)
 
 # load proprietory small header formatted image file
+        # print(f'image input: {img_format}, {rmode}, {stack}')
         if img_format == E_SH:
-            ret = ediom.loadXImage(self.fname, rmode = rmode, stack = stack)
+            ret = stem4d.loadXImage(self.fname, rmode = rmode, stack = stack)
 # load raw image file            
         if img_format == E_RAW:
-            ret = ediom.loadRawImage(self.fname, 
+            ret = stem4d.loadRawImage(self.fname, 
                           self.offset, self.ndtype, 
                           self.dim[0], self.dim[1], self.dim[2], 
                           rmode = rmode, stack=stack)
 
         if ret != 0:
-            raise XDPImageError("Failed to import the image into ediom module")
+            raise XDPImageError("Failed to import the image into stem4d module")
         
         self._dim = (ximage.h.ncol,ximage.h.nrow,ximage.h.nlayer)
-        self._data = ximage.getImageData()
+        self._data = ximage.getImageData(stack)
 
-    def viewExpImage(self, peakDP = False, Indexed = False, iShow = False):      
+    # def viewExpImage(self, peakDP = False, Indexed = False, iShow = False):      
+    #     """
+    #     Helper function in stem4d module to display experimental diffraction database 
+    #     diffraction pattern currently loaded.
+
+    #     :param peakDP: kinematic diffraction with miller index. 
+    #     :type peakDP: Boolean, optional
+
+    #     :param Indexed: show the kinematic patterns after indexing is completed.
+    #     :type Indexed: boolean, optional, default to `False`
+
+    #     :param iShow: whether to show miller indexes
+    #     :type iShow: boolean, optional, default to `False`
+        
+    #     :return:  
+    #     :rtype: None
+        
+    #     This function is typically used to display experimental image after diffraction 
+    #     patterns matched and indexed. It can also be used to display intermediate
+    #     search results after peaks are found but before indexes are matched. The latter
+    #     display is turned on only by *bDebug* flag in 
+    #     `loadDPDB <pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB>`_ call.
+
+    #     """
+        
+    #     # img1d = stem4d.cvar.ximg.getImageData()
+    #     xnc, xnr = self._dim[0], self._dim[1]
+        
+    #     if self._data is None:
+    #         print(f'Experimental image is not loaded or invalid')
+    #         return
+        
+    #     try:
+    #         yi = np.ascontiguousarray(self._data, 
+    #                                   dtype=np.float32).reshape(xnc, xnr)
+    #     except Exception as e:
+    #         print("Error converting image data to numpy array")
+    #         raise XDPImageError from e
+    #     else:
+    #         xkdisk = None
+    #         if peakDP:
+    #             nps = ediom.getExpImagePeaks()
+                
+    #             if nps <= 0:
+    #                 print(f'Image is not indexed or indexing data is invalid')
+    #                 return
+                
+    #             ret, xkdisk = ediom.getXKDif(nps+1)
+                
+    #             if ret != 0:
+    #                 print(f'Python ----Failed to get diffraction patterns for the experimental image')
+    #                 return ret
+                
+    #         displayXImage(yi, 
+    #                       fsize=(xnc, xnr), 
+    #                       bIndexed=Indexed, 
+    #                       iShow = iShow, 
+    #                       ds = xkdisk,
+    #                       suptitle = 'Experimental Diffraction Image' if not Indexed \
+    #                                   else 'Experimental Diffraction Image - Indexed')
+
+    def viewExpImage(self, peakDP = False, iStack=1, title = "", iShow = False):      
         """
-        Helper function in ediom module to display experimental diffraction database 
+        Helper function in stem4d module to display experimental diffraction database 
         diffraction pattern currently loaded.
 
-        :param peakDP: kinematic diffraction with miller index. 
+        :param peakDP: kinematic diffraction with miller index. This parameter is only valid for EDIOM operations
         :type peakDP: Boolean, optional
 
         :param Indexed: show the kinematic patterns after indexing is completed.
         :type Indexed: boolean, optional, default to `False`
+
+        :param iStack: Image stack number to show. For single stack image, this parameter takes default value of 1
+        :type iStack: integer, optional, default to 1
 
         :param iShow: whether to show miller indexes
         :type iShow: boolean, optional, default to `False`
@@ -250,8 +319,13 @@ class StackImage():
         `loadDPDB <pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB>`_ call.
 
         """
-        # img1d = ediom.cvar.ximg.getImageData()
-        xnc, xnr = self._dim[0], self._dim[1]
+        
+        # img1d = stem4d.cvar.ximg.getImageData()
+        xnc, xnr, nl = self._dim[0], self._dim[1], self._dim[2]
+        
+        if iStack < 1 or iStack > nl+1:
+            print(f'The stack number of the image is invalid')
+            return
         
         if self._data is None:
             print(f'Experimental image is not loaded or invalid')
@@ -280,19 +354,17 @@ class StackImage():
                 
             displayXImage(yi, 
                           fsize=(xnc, xnr), 
-                          bIndexed=Indexed, 
                           iShow = iShow, 
                           ds = xkdisk,
-                          suptitle = 'Experimental Diffraction Image' if not Indexed \
-                                      else 'Experimental Diffraction Image - Indexed')
+                          suptitle = title)
     @staticmethod
     def showMatchedDBDP():        
         """
-        Helper function in ediom module to display diffraction database diffraction pattern 
+        Helper function in stem4d module to display diffraction database diffraction pattern 
         that best matches that of the experimental diffraction image pattern.
 
         This function is typically used to confirm its match with experimental diffraction 
-        pattern. See sample code *al_ediom.py* for usage of this function.
+        pattern. See sample code *al_stem4d.py* for usage of this function.
 
         """
         nr, nc = MAX_IMAGESIZE, MAX_IMAGESIZE
@@ -338,7 +410,7 @@ class StackImage():
     @staticmethod
     def displaySearchMask(nr, nc):    
         """
-        Internal ediom helper function displaying image mask image 
+        Internal stem4d helper function displaying image mask image 
         generated in peak search.
 
         :return:  
@@ -360,7 +432,7 @@ class StackImage():
     @staticmethod
     def displaySearchKernel(nr, nc):     
         """
-        Internal ediom helper function displaying image kernel image 
+        Internal stem4d helper function displaying image kernel image 
         generated in peak search.
 
         :return:  
@@ -413,7 +485,7 @@ class StackImage():
     @staticmethod    
     def loadDPDB(dbfn, bShowDBMap=False):
         """
-        Loads the diffraction database file *dbfn* into ediom for diffraction peak searching and indexing.
+        Loads the diffraction database file *dbfn* into stem4d for diffraction peak searching and indexing.
 
         See sample code *si_dpgen.py* for how to generate a diffraction pattern database with
         pyemaps `generateDPDB <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateDPDB>`_.
@@ -438,9 +510,9 @@ class StackImage():
            :align: center
 
         """
-        # load DP database into ediom and return database fitmap dimensions
+        # load DP database into stem4d and return database fitmap dimensions
         ret, mrow, mcol = ediom.readDPDB(dbfn)
-        if ret != 0:            #need to replace this with ediom return value
+        if ret != 0:            #need to replace this with stem4d return value
             print(f'Error loading image file')
             return ret, 0, 0
 
@@ -456,7 +528,7 @@ class StackImage():
     def showMatchingIndexMap(fr, fc):
             
         """
-        Helper function in ediom module to display matching indexes map. The colored
+        Helper function in stem4d module to display matching indexes map. The colored
         heat map with the peak indicates the orientation in which experimental and 
         database diffraction patterns best match.
 
@@ -500,23 +572,11 @@ class StackImage():
                    bDebug                  = False
               ):
         """
-        Searches and indexes loaded experimental diffraction image. The experimental diffraction image must be loaded 
-        or imported before this call. There are many ways to import your image:
+        Searches and indexes an experimental diffraction image. The experimental diffraction image will be loaded
+        with StackImage class constructor and its `loadImage <pyemaps.stackimg.html#pyemaps.stackimg.StackImage.loadImage>`_
+        method before the search and indexes are performed.
 
-        1. Use `importRawExpImage <pyemaps.crystals.html#pyemaps.crystals.Crystal.importRawExpImage>`_,
-        if the image format is known and image data can be read from a fixed offset from the start of the file.
-
-        2. Otherwise, use `importExpImageFromNPY <pyemaps.crystals.html#pyemaps.crystals.Crystal.importExpImageFromNPY>`_,
-        if the image can be exported and stored into a numpy array. 
-
-        3. Finally, use `importSHExpImage <pyemaps.crystals.html#pyemaps.crystals.Crystal.importSHExpImage>`_,
-        if the image id a proprietory formatted image file with a small header of 8 bytes offset,
-
-        .. note::
-
-            We are working on importing images with popular formats, stay tuned.
-
-        In addition, a diffraction database also needs to be loaded by preceeding this call with
+        In addition, a diffraction database also needs to be loaded preceeding this call with
         `loadDPDB <pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB>`_ 
 
         :param dpdbfn: diffraction pattern database file name. The file is generated by pyemaps dp_gen module 
@@ -546,8 +606,14 @@ class StackImage():
         :param peak_threshold: Peak threshold. value between 0.0 and 1.0. used to remove noisy peaks.
         :type peak_threshold: float, optional
 
+        :param ssel: image stack selection. The value must be in range of the input image layers.
+        :type ssel: integer, optional. Default value to 1, the first image layer in the input image stack.
+
+        :param bDebug: debug option. This is for displaying intermediate searching and masking images used. 
+        :type bDebug: Boolean, optional. Default value to `False`.
+
         :return: status code, 0 for successful run
-        :rtype: int
+        :rtype: integer
 
         
         The image control parameters cc - rmin above are image meaurements controls. The accuraccies
@@ -580,7 +646,7 @@ class StackImage():
             :align: center
 
         4. Once the indexing results are generated, users have the option to call more display
-        *EDIOM* functions to show other results generated by this call. For examples, 
+        *STEM4D* functions to show other results generated by this call. For examples, 
         the matching database DP image and DP database matching index map as shown below:
 
         .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/matchingDPDB.png
@@ -627,12 +693,12 @@ class StackImage():
 
         where Reliability index greater than 5.0 is considered successful run. DP stands for
         diffraction pattern. If your results do not fit in a run, adjusting search and indexing paramemers
-        such as filter_threshold and peak threshold can also help ediom module to search and match peaks.
+        such as filter_threshold and peak threshold can also help stem4d module to search and match peaks.
 
         .. note::
 
             When *bDebug* flag is set (to 'True'), users are offered to chance to display more information of 
-            ediom's intermediate execution steps. For example, peak discovery step will show results
+            stem4d's intermediate execution steps. For example, peak discovery step will show results
             of all found peaks by image peak matching algorithms before indexing is done. 
             These intermediate images are mainly for debugging purposes.
 
@@ -657,12 +723,13 @@ class StackImage():
         try:
             self.loadImage(rmode = 1, stack = ssel) #indexing one stack image at a time
         except Exception as e:
-            raise XDPImageError(f"Error loading image for ediom analysis: {e}") from e
+            raise XDPImageError(f"Error loading image for stem4d analysis: {e}") from e
         
-        self.viewExpImage()
+        # print(f'debug:experimental image depth: {self._dim}')
+        self.viewExpImage(title='Experimental Diffraction Image - Indexed')
 
-        # xim = ediom.cvar.ximg
-        edc = ediom.cvar.edc
+        # xim = stem4d.cvar.ximg
+        edc = stem4d.cvar.edc
         # setting image control parameters
         edc.cc = cc
         edc.sigma = sigma
@@ -675,9 +742,9 @@ class StackImage():
         
         edc.set_center(img_center[0], img_center[1])
 
-        # load ediom control parameters with which the image is generated
+        # load stem4d control parameters with which the image is generated
         # and search and return search kernel dimensions
-        ret, kc, kr = ediom.prepareSearch(img_center[0], img_center[1], rmin)
+        ret, kc, kr = stem4d.prepareSearch(img_center[0], img_center[1], rmin)
         if ret != 0 or kc <= 0 or kr <= 0:
             print(f'Error preparing for experimental image peak search')
             return -1
@@ -698,7 +765,7 @@ class StackImage():
             return -1
         
         if bDebug:
-            self.viewExpImage(peakDP=True, Indexed=False, iShow = False)
+            self.viewExpImage(peakDP=True, title = 'Experimental Diffraction Image', iShow = False)
         
         ret = ediom.indexXPeaks(rmin, soption, filter_threshold)
         
@@ -706,7 +773,7 @@ class StackImage():
             print(f'Error indexing experimental image for DP')
             return ret
         
-        self.viewExpImage(peakDP=True, Indexed=True, iShow = True)
+        self.viewExpImage(peakDP=True, title = 'Experimental Diffraction Image - Indexed', iShow = True)
 
         StackImage.showMatchingIndexMap(mr,mc)
         
@@ -718,26 +785,90 @@ class StackImage():
         ediom.printIndexDetails()
         return 0
     
-    def generateADF(self,
+    def generateBDF(self,
                     center=(0.0, 0.0), 
                     rads = (0.0, 0.0),
                     scol = 0.0,
                     bShow=False):
         """
-        generates an Annular Dark Field(ADF) image from an experimental image input.
+        This method generates an (Annular) Bright/Dark Field image from an experimental stack image.
+        It is a wrapper for the function `getBDF`function in the new SEND module.
 
+        :param center: The center of detector.
+        :type center: tuple of floating point numbers
 
-        :param imgfn: experimental image file name. 
-        :type imgfn: string, required
-        
-        :param center: The center of ADF detector.
-        :type center: tuple of floats
-
-        :param rads: a pair of radius for inner and outer ADF detector.
+        :param rads: a pair of radius for inner and outer field detectors. 
+         When the inner radius is set to zero, the resulting image will be either 
+         Bright Field(BF) or Dark Field(DF) depending on if the center is on 
+         the bright spot of the image or not. Otherwise, a positive inner radius
+         will result in Annular Bright Field (ABF) or Annular Dark Field (ADF).
         :type rads: tuple, optional.
 
         :param scol: The size of the output image along column direction.
-        :type scol: float, optional
+        :type scol: floating point numbers, optional
+
+        :param bShow: whether to display the resulting image.
+        :type bShow: boolean, optional, default `False`
+
+        :return: (status code, image data), status code of 0 successful, otherwise failed
+        :rtype: tuple of a short integer and image data array.
+
+.. note::
+
+        The experimental image loaded must have more than one stack.
+        
+        """
+        if not isinstance(scol, (int, float)) or scol <= 0:
+            print(f'The size of the output image along column direction must be numeral and positive')
+            return -1, None
+        
+        if not isinstance(center, tuple) or len(center) !=2 or \
+           not all(isinstance(x, (int, float)) for x in center):
+            print(f'Invalid ADF detector center')
+            return -2, None
+        
+        if not isinstance(rads, tuple) or len(rads) !=2 or \
+           not all(isinstance(x, (int, float)) for x in rads) or \
+           rads[0] == rads[1]:
+            print(f'Invalid ADF detector inner and outer radius, it must be a pair of numerals')
+            return -3, None
+               
+        try:
+            self.loadImage(rmode = EL_MORE) 
+        except Exception as e:
+            print(f'Error loading the experimental image with message: {e}')
+            return -4, None
+    
+        ret = send.getBDF(center[0], center[1], 
+                           rads[0], rads[1], 
+                           scol)
+        if ret != 0:
+            print(f'Failed to generate ADF image for experimental image {self.fname}')
+            return -4, None
+        
+        adfimg = stem4d.cvar.ximg
+        self._dim = (adfimg.h.ncol, adfimg.h.nrow, 1)
+        self._data = adfimg.getImageData(1)
+
+        if bShow:
+            self.viewExpImage(title='Annular Dark or Bright Field Image' if rads[0] > 0.0 else \
+                              'Dark or Bright Field Image')
+
+        return 0, self._data
+    
+    def generateMaskedImage(self,
+                   maskfn,
+                   scancol = 0.0,
+                   bShow=False):
+        """
+        generates an Bright Field(ADF) image from an experimental stack image input.
+        and a mask image.
+
+        :param maskfn: mask image file name. 
+        :type maskfn: string, required
+        
+        :param scancol: The center of ADF detector. default value 0.0
+        :type scancol: float
 
         :param bShow: whether to display the resulting ADF image.
         :type bShow: boolean, optional, default `False`
@@ -745,35 +876,32 @@ class StackImage():
         :return: status code, 0 successful, otherwise failed
         :rtype: integer
 
+        .. note::
         """
-        if not isinstance(scol, (int, float)) or scol <= 0:
-            print(f'The size of the output image along column direction must be numeral and positive')
-            return
+        if not isinstance(scancol, (int, float)) or scancol <= 0:
+            print(f'The scancol input must be numeral and positive')
+            return -1, None
         
-        if not isinstance(center, tuple) or len(center) !=2 or \
-           not all(isinstance(x, (int, float)) for x in center):
-            print(f'Invalid ADF detector center')
-            return
+        if not isinstance(maskfn, str) and maskfn.strip():
+            print(f'The mask image file name must be string and not empty ')
+            return -2, None
         
-        if not isinstance(rads, tuple) or len(rads) !=2 or \
-           not all(isinstance(x, (int, float)) for x in rads) or \
-           rads[0] == rads[1]:
-            print(f'Invalid ADF detector inner and outer radius, it must be a pair of numerals')
-            return
-                   
-        ret = ediom.getADF(self.fname, 
-                           center[0], center[1], 
-                           rads[0], rads[1], 
-                           scol)
+        try:
+            self.loadImage(rmode = EL_MORE) 
+        except Exception as e:
+            return -4, None
+
+        ret = send.getMaskedImage(maskfn, scancol)
+        
         if ret != 0:
-            print(f'Failed to generate ADF image for experimental image {self.fname}')
-            return
+            print(f'Failed to generate masked image for experimental image {self.fname}')
+            return -3, None
         
-        adfimg = ediom.cvar.ximg
-        self._dim = (adfimg.h.ncol, adfimg.h.nrow, 1)
-        self._data = adfimg.getImageData()
+        maskedimg = stem4d.cvar.ximg
+        self._dim = (maskedimg.h.ncol, maskedimg.h.nrow, 1)
+        self._data = maskedimg.getImageData(1)
 
         if bShow:
-            self.viewExpImage()
+            self.viewExpImage(title = "Experimental Diffraction Image - Masked")
 
-        return self._data
+        return 0, self._data

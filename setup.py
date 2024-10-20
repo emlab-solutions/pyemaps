@@ -184,7 +184,7 @@ setup(name                              ="pyemaps",
                                                 'README.md',
                                                 'CONTRIBUTING.md'
                                                 ],
-                                            'pyemaps.ediom':['*.i', 
+                                            'pyemaps.stem4d':['*.i', 
                                                             '*.cpp',
                                                             '__pycache__/*.pyc'
                                                             ]

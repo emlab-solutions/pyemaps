@@ -25,6 +25,7 @@ Date:       May 07, 2022
 
 
 from . import __config__
+from emaps import TYPE_FREE
 
 #--------------from diffraction extension module------------------------
 try:
@@ -53,7 +54,7 @@ else:
 
     DEF_EXCITATION= (sgmn, sgmx)
     DEF_INTENSITY = (intz, intc)
-    XMAX = 75  # set in dif backend as constant for now, may need to change to variable set by users
+    XMAX = 75  # set in dif backend as constant for now, may need to change to variable that can be set by users
     YMAX = 75  # set in dif backend, same as the above
 
 #-------------- defaults from backend for sample controls---------------
@@ -106,6 +107,7 @@ except ImportError as e:
     pass
 
 #------------------------Dynamic Diffraction Module----------------------------
+
 try:
     from emaps import bloch
     
@@ -152,56 +154,6 @@ else:
     DEF_ORSHIFT = [0, 0, 0] # Origin shift
     DEF_LOCASPACE = [0, 0, 0] # location in A Space
 
-
-# #------------------Diffraction Database Generator - paid package only---------------------------
-try:
-    from emaps import dpgen
-    
-except ImportError as e:
-    # skip this in free package
-    pass
-
-
-# #------------------Diffraction Pattern Indexing - paid package only---------------------------
-#  used only with dpgen module above
-
-try:
-    from emaps import ediom
-except ImportError:
-    pass
-else:
-    E_INT = ediom.E_INT 
-    EM_INT = ediom.EM_INT
-
-    E_FLOAT = ediom.E_FLOAT
-    EM_FLOAT = ediom.EM_FLOAT
-
-    E_DOUBLE = ediom.E_DOUBLE
-    EM_DOUBLE = ediom.EM_DOUBLE
-
-    MAX_IMAGESIZE = ediom.MAX_IMAGESIZE
-    MIN_IMAGESIZE = ediom.MIN_IMAGESIZE
-    MAX_IMAGESTACK = ediom.MAX_IMAGESTACK
-    MIN_IMAGESTACK = 1
-    DEF_FILTER_THRESHOLD = 0.2                       
-    DEF_SEARCH_THRESHOLD = 0.825
-    DEF_RMIN = 7
-    DEF_BOXSIZE = 10
-    DEF_CC = ediom.cvar.edc.cc      #default value from backend
-    DEF_SIGMA = ediom.cvar.edc.sigma
-    DEF_ICENTER = ediom.cvar.edc.get_center()
-    DEF_XSCALE = 1
-    DEF_TSCALE = 2
-
-    E_SH = 0
-    E_RAW = 1
-    E_NPY = 2
-
-    # imageloading mode
-    EL_ONE = 1  #EDIOM image loading one stack at one time
-    EL_MORE = 2 #EDIOM image loading all stacks
-
-
 #--------------Wrapper classes around diffraction extensions---------------
 from .errors import *
 
@@ -221,8 +173,58 @@ try:
 except ImportError as e:
     print(f'Error importing kinematic constants: {e}')
 
-#--------------ediom features -------------------------------
-from .stackimg import StackImage
-
 #--------------Pyemaps Display Functions-------------------------------------
 from .display import showDif, showBloch, showStereo, plot2Powder
+
+if PKG_TYPE != TYPE_FREE:
+    #------------------Diffraction Database Generator - paid package only---------------------------
+    try:
+        from emaps import dpgen
+        
+    except ImportError as e:
+        print(f'Failure to import supporting module for 4D Stem module.')
+        print(f'Diffraction pattern indexing function is not available')
+    try:
+        from emaps import stem4d
+    except ImportError:
+        print(f'Failure to import supporting module for 4D Stem module.')
+        print(f'4D STEM functions are not available.')
+    else:
+        E_INT = stem4d.E_INT 
+        EM_INT = stem4d.EM_INT
+
+        E_FLOAT = stem4d.E_FLOAT
+        EM_FLOAT = stem4d.EM_FLOAT
+
+        E_DOUBLE = stem4d.E_DOUBLE
+        EM_DOUBLE = stem4d.EM_DOUBLE
+
+        MAX_IMAGESIZE = stem4d.MAX_IMAGESIZE
+        MIN_IMAGESIZE = stem4d.MIN_IMAGESIZE
+        MAX_IMAGESTACK = stem4d.MAX_IMAGESTACK
+        MIN_IMAGESTACK = 1
+        DEF_FILTER_THRESHOLD = 0.2                       
+        DEF_SEARCH_THRESHOLD = 0.825
+        DEF_RMIN = 7
+        DEF_BOXSIZE = 10
+        DEF_CC = stem4d.cvar.edc.cc      #default value from backend
+        DEF_SIGMA = stem4d.cvar.edc.sigma
+        DEF_ICENTER = stem4d.cvar.edc.get_center()
+        DEF_XSCALE = 1
+        DEF_TSCALE = 2
+
+        E_SH = 0
+        E_RAW = 1
+        E_NPY = 2
+
+        # image loading mode
+        EL_ONE = 1  #STEM4D image loading one stack at a time - good for processing single image at a time
+        EL_MORE = 2 #STEM4D image loading all stacks at once - good for processing large amount of images
+
+        # image handling class only for 4dstem 
+        # "stem4d" for programming purposes - python not allowing numeric starting letter for variables  
+        
+        try:
+            from .stackimg import StackImage
+        except ImportError as e:
+            print(f'Error importing image module: {e}. The 4D STEM module not available')
