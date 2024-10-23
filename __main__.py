@@ -63,7 +63,7 @@ def copy_samples():
 
     print(f'Run sample code by typing: \"python pyemaps_samples\<sample>\"')
 
-if __name__ == '__main__':
+def main():
     """
     Liveness test and other information of pemaps run on command line. 
     The purpose of the run run is to show diffraction patterns 
@@ -151,7 +151,7 @@ if __name__ == '__main__':
         vers = "Full version " + ver +" for use exclusively at University of Illinois at Urbana Champaign." 
     
     if PKG_TYPE == TYPE_FULL:
-        vers = "Full version " + ver +" with 4dstem features." 
+        vers = "Full version " + ver +" with 4DSTEM features." 
 
     copyrit.append(copy1)
     scopyrit = '\n'.join(copyrit)
@@ -186,10 +186,12 @@ if __name__ == '__main__':
             if lic_token is None or lic_token == '':
                 ret = stem4d.activate_license_once()
             else:
-                ret = stem4d.activate_license_offline_once(lic_token)
+                ret = stem4d.activate_license_bytoken_once(lic_token)
             if ret == 0:
                 exit(0)
 
             exit(1)
     
-    
+
+if __name__ == '__main__':
+    main()  

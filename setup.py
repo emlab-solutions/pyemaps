@@ -157,6 +157,11 @@ setup(name                              ="pyemaps",
       package_dir                       = {'pyemaps':'',
                                            'pyemaps.CifFile':'CifFile/src'
                                             },
+      entry_points                      = {
+                                            'console_scripts': [
+                                            'pyemaps=pyemaps.__main__:main',  # This makes 'pyemaps' a command-line executable
+                                            ],
+                                            },
       install_requires                  = get_install_requires(),
       
       data_files                        = [('pyemaps', 
