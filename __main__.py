@@ -98,7 +98,7 @@ def main():
     import datetime
     import pkg_resources
 
-    parser = argparse.ArgumentParser(description="pyemaps console script options parsing",  
+    parser = argparse.ArgumentParser(description="pyEMAPS console script",  
                                      formatter_class=argparse.RawTextHelpFormatter)
     
     parser.add_argument("-c", 
