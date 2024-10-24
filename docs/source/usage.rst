@@ -37,12 +37,12 @@ Enviroment Variables
 It provides a central location for organizing your own crystal data, and it is also used 
 for storing your simulation and calculation results.   
 
-**pyemaps** searches crystal files in the following order when only file name is provided:
+**pyEMAPS** searches crystal files in the following order when only file name is provided:
 
 1. Current working directory. 
 2. Data home directory pointed by *PYEMAPS_DATA*.
 
-For output from **pyemaps** simulations and calculations, the placement order is reversed:
+For output from **pyEMAPS** simulations and calculations, the placement order is reversed:
 
 1. Data home directory pointed by *PYEMAPS_DATA* if it is set. 
 2. Current working directory.
@@ -71,14 +71,14 @@ the package:
 
 .. code-block:: console
 
-   python -m pyemaps --version (-v)
-   python -m pyemaps --copyright (-c)
+   pyemaps --version (-v)
+   pyemaps --copyright (-c)
 
 A test for *pyemaps* basic kinematic function is also provided:  
 
 .. code-block:: console
 
-   python -m pyemaps --sample (-s)
+   pyemaps --sample (-s)
 
 All pyemaps simulations and calculations start from its 
 `Crystal class <pyemaps.crystals.html#pyemaps.crystals.Crystal>`_. 
@@ -295,7 +295,7 @@ to the current working directory, run:
 
 .. code-block:: console
 
-   python -m pyemaps -cp
+   pyemaps -cp
 
 Below is a partial list of sample code:
 

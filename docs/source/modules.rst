@@ -1,7 +1,7 @@
 Modules, Classes and Interfaces
 ===============================
 
-**pyemaps** modules are built around its backend simulation and 
+**pyEMAPS** modules are built around its backend simulation and 
 calculation libraries and are designed to make access to the core 
 diffraction simulation libraries easy.
 

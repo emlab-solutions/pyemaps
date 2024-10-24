@@ -2,16 +2,16 @@
 Licence
 =======
 
- **pyemaps** is distributed for electron diffraction and microscopy research, 
+ **pyEMAPS** is distributed for electron diffraction and microscopy research, 
  but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public Licence for 
  more details.
  
-* **pyemaps** is for personal and non-commercial use.
-* **pyemaps** is free software under the terms of the GNU General Public Licence 
+* **pyEMAPS** is for personal and non-commercial use.
+* **pyEMAPS** is free software under the terms of the GNU General Public Licence 
   as published by the Free Software Foundation, either version 3 of the Licence, 
   or (at your option) any later version. You should have received a copy of the 
-  GNU General Public Licence along with **pyemaps**.  If not, 
+  GNU General Public Licence along with **pyEMAPS**.  If not, 
   see <https://www.gnu.org/licenses/>.
 
 Additional copyright notices and license terms applicable to portions of pyemaps 

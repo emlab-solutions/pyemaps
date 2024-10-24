@@ -1,6 +1,19 @@
 Release Notes
 =============
 
+Version 1.1.0 Stable
+-------------------- 
+
+10-30-2024 
+~~~~~~~~~~
+
+Improvements
+~~~~~~~~~~~~
+
+- License activation is now available for full pyEMAPS package with 4DSTEM features.
+- No license is required for free packages.
+- Simplified pyEMAPS command line from <pyemaps [options]> to pyemaps [options].
+
 Version 1.0.9 Stable
 -------------------- 
 
@@ -50,7 +63,7 @@ New
   See `generateADF <modules.html#pyemaps.stackimg.StackImage.generateADF>`_
   and sample code *adf.py* for usage details.
 
-- GUI server is now setup for easy and fast access to the latest **pyemaps** for a subscription fee. 
+- GUI server is now setup for easy and fast access to the latest **pyEMAPS** for a subscription fee. 
   Go to: https://emaps.emlabsolutions.com
 
 Improvements

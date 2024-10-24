@@ -1,7 +1,7 @@
 Overview
 ========
 
-**pyemaps** package is a collection of python modules and libraries designed 
+**pyEMAPS** package is a collection of python modules and libraries designed 
 for transmission electron diffraction simulations and related crystallographic 
 calculations for all crystal systems. The simulation is based on the theories 
 of kinematical and dynamical electron diffraction, as described by Spence and Zuo 

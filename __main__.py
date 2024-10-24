@@ -63,6 +63,12 @@ def copy_samples():
 
     print(f'Run sample code by typing: \"python pyemaps_samples\<sample>\"')
 
+def is_alphanumeric_with_dash(s, slen):
+    import re
+    # Regular expression to match alphanumeric characters and dashes
+    pattern = r'^[A-Za-z0-9-]+$'
+    return bool(re.match(pattern, s) and len(s) == slen)
+
 def main():
     """
     Liveness test and other information of pemaps run on command line. 
@@ -74,7 +80,7 @@ def main():
         python -m pyemaps -c (--copyright)
         python -m pyemaps -cp (--copysamples)
         python -m pyemaps -v (--version)
-        python -m pyemaps -l (--license) <empty|license token>
+        python -m pyemaps -l (--license) <trial|info|license token>
 
     """
     
@@ -92,7 +98,8 @@ def main():
     import datetime
     import pkg_resources
 
-    parser = argparse.ArgumentParser(description="pyemaps console script options parsing")
+    parser = argparse.ArgumentParser(description="pyemaps console script options parsing",  
+                                     formatter_class=argparse.RawTextHelpFormatter)
     
     parser.add_argument("-c", 
                         "--copyright", 
@@ -111,10 +118,15 @@ def main():
         parser.add_argument("-l", 
                             "--license", 
                             nargs='?', 
-                            const='',   
+                            const='info',   
                             default=None,   
-                            metavar='LICENSE_TOKEN',
-                            help="activate license for full package with 4D STEM features. Leave LICENSE_TOKEN empty for 7 days trial license", 
+                            metavar='trial|info|<LICENSE_ACTIVATION_TOKsEN>',
+                            help="""activate license for full package with 4D STEM features.
+- trial: to activate a trial license, this option requires internet connection.
+- info: to display current license details, no internet connection is needed.
+- <LICENSE_ACTIVATION_TOKEN>: to activate license with license token obtained from EMLab Solutions, Inc.
+**Note: pyEMAPS license can be activated without internet access in third option above.
+No internet is required after license is activated, as license check is all local""", 
                             required=False
                             )
     parser.add_argument("-s", 
@@ -175,22 +187,32 @@ def main():
             run_si_sample()
             exit(0)
         
-        if args.license is not None:
-
-            if PKG_TYPE == TYPE_FREE:
-                print(f'License is required only for a full pyemaps package with 4DSTEM features')
-                print(f'Contact support@emlabsoftware.com for how to download and install the full package')
-                exit(0)
-
-            lic_token = args.license
-            if lic_token is None or lic_token == '':
-                ret = stem4d.activate_license_once()
+        if args.license is not None and PKG_TYPE != TYPE_FREE:
+            
+            from emaps import stem4d
+            
+            lic_option = args.license
+            if lic_option is not None:
+                lic_option_new = lic_option.lower()
+                if lic_option_new == 'info':
+                    ret = stem4d.getLicenseInfo()
+                elif lic_option_new == 'trial': 
+                    ret = stem4d.activate_license_once()
+                
+                elif is_alphanumeric_with_dash(lic_option, stem4d.LICENSE_TOKEN_LENGTH): 
+                    ret = stem4d.activate_license_bytoken_once(lic_option)
+                else:
+                    print(f'Error: license activation token: {lic_option} is invalid!')
+                    exit(1)
             else:
-                ret = stem4d.activate_license_bytoken_once(lic_token)
-            if ret == 0:
-                exit(0)
+                print(f'Error: license activation token: {lic_option} is invalid!')
+                exit(1)
+            
+            if ret != 0:
+                exit(1)
 
-            exit(1)
+        exit(0)
+
     
 
 if __name__ == '__main__':

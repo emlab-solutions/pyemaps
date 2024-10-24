@@ -383,7 +383,7 @@ The output from bloch dynamic diffraction simulation is an array of 2 or 3 dimen
 numbers representing image intensities, depending on whether one or multiple slices of 
 dynamic diffraction images are generated. 
 
-**pyemaps** provides an option for users to save the images as raw image files that
+**pyEMAPS** provides an option for users to save the images as raw image files that
 can be imported into ImageJ or DigitalMicrograph. Refer to 
 `generateBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateBloch>`_ or
 `getBlochImages <pyemaps.crystals.html#pyemaps.crystals.Crystal.getBlochImages>`_ for
