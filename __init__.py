@@ -25,7 +25,9 @@ Date:       May 07, 2022
 
 
 from . import __config__
-from emaps import TYPE_FREE
+# explicit numberic representation of pyEMAPS package type
+# TYPE_FREE, TYPE_FULL, TYPE_UIUC defiend by the backend module emaps
+from emaps import PKG_TYPE, TYPE_FREE, TYPE_FULL, TYPE_UIUC
 
 #--------------from diffraction extension module------------------------
 try:
@@ -217,12 +219,14 @@ if PKG_TYPE != TYPE_FREE:
         E_RAW = 1
         E_NPY = 2
 
-        # image loading mode
-        EL_ONE = 1  #STEM4D image loading one stack at a time - good for processing single image at a time
-        EL_MORE = 2 #STEM4D image loading all stacks at once - good for processing large amount of images
+        # --------image loading mode -------
+        #  allowing users to handle memory needs depending on size of the images
+        EL_ONE = 1  #STEM4D image loading one stack at a time - designed for processing single image at a time
+        EL_MORE = 2 #STEM4D image loading all stacks at once - designed for processing large amount of images
 
-        # image handling class only for 4dstem 
-        # "stem4d" for programming purposes - python not allowing numeric starting letter for variables  
+        # -------image handling class for 4dstem or 4DSTEM features ------ 
+        # "stem4d" for programming purposes - so named sue to the fact that 
+        # python not allowing numeric starting letter for variables  
         
         try:
             from .stackimg import StackImage
