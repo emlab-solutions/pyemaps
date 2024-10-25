@@ -123,13 +123,13 @@ def main():
                             nargs='?', 
                             const='info',   
                             default=None,   
-                            metavar='trial|info|<LICENSE_ACTIVATION_TOKsEN>',
+                            metavar='trial|info|<LICENSE_ACTIVATION_TOKEN>',
                             help="""activate license for full package with 4D STEM features.
 - trial: to activate a trial license, this option requires internet connection.
 - info: to display current license details, no internet connection is needed.
-- <LICENSE_ACTIVATION_TOKEN>: to activate license with license token obtained from EMLab Solutions, Inc.
-**Note: pyEMAPS license can be activated without internet access in third option above.
-No internet is required after license is activated, as license check is all local.""", 
+- <LICENSE_ACTIVATION_TOKEN>: to activate license with license token with or without internet**.
+The token is obtained from EMLab Solutions, Inc. by writing to support@emlabsoftware.com.
+**No internet is required after license is activated, as license check is all local.""", 
                             required=False
                             )
     parser.add_argument("-s", 
