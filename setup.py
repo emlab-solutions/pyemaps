@@ -39,7 +39,7 @@ import os
 from pathlib import Path
 
 install_requires = [
-            'emaps >= 1.0.0',
+            'emaps >= 1.0.1',
             'numpy >= 1.21.2',
             'matplotlib >= 3.2.1'
             ]
