@@ -1,44 +1,32 @@
 '''
-This file is part of pyemaps
-___________________________
+.. This file is part of pyemaps
+ 
+.. ----
 
-pyemaps is free software for non-comercial use: you can 
-redistribute it and/or modify it under the terms of the GNU General 
-Public License as published by the Free Software Foundation, either 
-version 3 of the License, or (at your option) any later version.
+.. pyemaps is free software. You can redistribute it and/or modify 
+.. it under the terms of the GNU General Public License as published 
+.. by the Free Software Foundation, either version 3 of the License, 
+.. or (at your option) any later version..
 
-pyemaps is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+.. pyemaps is distributed in the hope that it will be useful,
+.. but WITHOUT ANY WARRANTY; without even the implied warranty of
+.. MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.. GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
+.. You should have received a copy of the GNU General Public License
+.. along with pyemaps.  If not, see `<https://www.gnu.org/licenses/>`_.
 
-Contact supprort@emlabsoftware.com for any questions and comments.
-___________________________
+.. Contact supprort@emlabsoftware.com for any questions and comments.
 
-Author:     EMLab Solutions, Inc.
-Date:       May 16, 2023   
+.. ----
 
-STEM4D (Electron Diffraction Indexing and Orientation Mapping) module 
-in pyemaps contains a rich set of diffraction pattern search and recognition
-functions. Future feature addition include orientation mapping.
-
-*StachImage* class is designed to interface with STEM4D functions to provide
-users easy access to the STEM4D features. 
-
-Most of the current and future STEM4D interfaces shown as StackImage
-class methods will be in full pyemaps package, with the exception
-of diffraction indexing method in demo mode in free package.
-
-Contact support@emlabsoftware.com for how to get the full package.
 
 '''
     
-from emaps import stem4d
-from emaps.stem4d import ediom
-from emaps.stem4d import send
+# from emaps import stem4d
+# from emaps.stem4d import ediom
+# from emaps.stem4d import send
+from . import stem4d, send, ediom
 
 from . import (E_INT, EM_INT,
                E_FLOAT, EM_FLOAT,
@@ -215,7 +203,7 @@ class StackImage():
             ret = ximage.setImage_from_numpy(self.data)
 
 # load proprietory small header formatted image file
-        # print(f'image input: {img_format}, {rmode}, {stack}')
+
         if img_format == E_SH:
             ret = stem4d.loadXImage(self.fname, rmode = rmode, stack = stack)
 # load raw image file            
@@ -230,67 +218,6 @@ class StackImage():
         
         self._dim = (ximage.h.ncol,ximage.h.nrow,ximage.h.nlayer)
         self._data = ximage.getImageData(stack)
-
-    # def viewExpImage(self, peakDP = False, Indexed = False, iShow = False):      
-    #     """
-    #     Helper function in stem4d module to display experimental diffraction database 
-    #     diffraction pattern currently loaded.
-
-    #     :param peakDP: kinematic diffraction with miller index. 
-    #     :type peakDP: Boolean, optional
-
-    #     :param Indexed: show the kinematic patterns after indexing is completed.
-    #     :type Indexed: boolean, optional, default to `False`
-
-    #     :param iShow: whether to show miller indexes
-    #     :type iShow: boolean, optional, default to `False`
-        
-    #     :return:  
-    #     :rtype: None
-        
-    #     This function is typically used to display experimental image after diffraction 
-    #     patterns matched and indexed. It can also be used to display intermediate
-    #     search results after peaks are found but before indexes are matched. The latter
-    #     display is turned on only by *bDebug* flag in 
-    #     `loadDPDB <pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB>`_ call.
-
-    #     """
-        
-    #     # img1d = stem4d.cvar.ximg.getImageData()
-    #     xnc, xnr = self._dim[0], self._dim[1]
-        
-    #     if self._data is None:
-    #         print(f'Experimental image is not loaded or invalid')
-    #         return
-        
-    #     try:
-    #         yi = np.ascontiguousarray(self._data, 
-    #                                   dtype=np.float32).reshape(xnc, xnr)
-    #     except Exception as e:
-    #         print("Error converting image data to numpy array")
-    #         raise XDPImageError from e
-    #     else:
-    #         xkdisk = None
-    #         if peakDP:
-    #             nps = ediom.getExpImagePeaks()
-                
-    #             if nps <= 0:
-    #                 print(f'Image is not indexed or indexing data is invalid')
-    #                 return
-                
-    #             ret, xkdisk = ediom.getXKDif(nps+1)
-                
-    #             if ret != 0:
-    #                 print(f'Python ----Failed to get diffraction patterns for the experimental image')
-    #                 return ret
-                
-    #         displayXImage(yi, 
-    #                       fsize=(xnc, xnr), 
-    #                       bIndexed=Indexed, 
-    #                       iShow = iShow, 
-    #                       ds = xkdisk,
-    #                       suptitle = 'Experimental Diffraction Image' if not Indexed \
-    #                                   else 'Experimental Diffraction Image - Indexed')
 
     def viewExpImage(self, peakDP = False, iStack=1, title = "", iShow = False):      
         """
@@ -320,7 +247,6 @@ class StackImage():
 
         """
         
-        # img1d = stem4d.cvar.ximg.getImageData()
         xnc, xnr, nl = self._dim[0], self._dim[1], self._dim[2]
         
         if iStack < 1 or iStack > nl+1:
@@ -364,7 +290,7 @@ class StackImage():
         that best matches that of the experimental diffraction image pattern.
 
         This function is typically used to confirm its match with experimental diffraction 
-        pattern. See sample code *al_stem4d.py* for usage of this function.
+        pattern. See sample code *al_ediom.py* for usage of this function.
 
         """
         nr, nc = MAX_IMAGESIZE, MAX_IMAGESIZE
@@ -728,8 +654,8 @@ class StackImage():
         # print(f'debug:experimental image depth: {self._dim}')
         self.viewExpImage(title='Experimental Diffraction Image - Indexed')
 
-        # xim = stem4d.cvar.ximg
         edc = stem4d.cvar.edc
+        
         # setting image control parameters
         edc.cc = cc
         edc.sigma = sigma

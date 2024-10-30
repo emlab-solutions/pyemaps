@@ -1,26 +1,29 @@
 
 """
-This file is part of pyemaps
+.. This file is part of pyemaps
+ 
+.. ----
 
-pyemaps is free software for non-comercial use: you can 
-redistribute it and/or modify it under the terms of the GNU General 
-Public License as published by the Free Software Foundation, either 
-version 3 of the License, or (at your option) any later version.
+.. pyemaps is free software. You can redistribute it and/or modify 
+.. it under the terms of the GNU General Public License as published 
+.. by the Free Software Foundation, either version 3 of the License, 
+.. or (at your option) any later version..
 
-pyemaps is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+.. pyemaps is distributed in the hope that it will be useful,
+.. but WITHOUT ANY WARRANTY; without even the implied warranty of
+.. MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.. GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
+.. You should have received a copy of the GNU General Public License
+.. along with pyemaps.  If not, see `<https://www.gnu.org/licenses/>`_.
 
-Contact supprort@emlabsoftware.com for any questions and comments.
+.. Contact supprort@emlabsoftware.com for any questions and comments.
 
-```
+.. ----
 
-Author:     EMLab Solutions, Inc.
-Date:       May 07, 2022    
+.. Author:     EMLab Solutions, Inc.
+.. Date:       May 07, 2022    
+
 """
 
 
@@ -182,15 +185,11 @@ if PKG_TYPE != TYPE_FREE:
     #------------------Diffraction Database Generator - paid package only---------------------------
     try:
         from emaps import dpgen
+        from emaps import stem4d
         
     except ImportError as e:
-        print(f'Failure to import supporting module for 4D Stem module.')
-        print(f'Diffraction pattern indexing function is not available')
-    try:
-        from emaps import stem4d
-    except ImportError:
-        print(f'Failure to import supporting module for 4D Stem module.')
-        print(f'4D STEM functions are not available.')
+        print(f'Failure to import supporting module(s) for 4DSTEM module')
+        print(f'4DSTEM feature are not available. Contact support@emlabsoftware if issue persistes')
     else:
         E_INT = stem4d.E_INT 
         EM_INT = stem4d.EM_INT
@@ -227,7 +226,7 @@ if PKG_TYPE != TYPE_FREE:
         # -------image handling class for 4dstem or 4DSTEM features ------ 
         # "stem4d" for programming purposes - so named sue to the fact that 
         # python not allowing numeric starting letter for variables  
-        
+        from emaps.stem4d import send, ediom
         try:
             from .stackimg import StackImage
         except ImportError as e:

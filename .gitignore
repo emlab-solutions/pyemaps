@@ -196,3 +196,6 @@ extal/
 advisor/
 bloch/
 dif/
+
+# ignore generated icon file
+*docs/_static/pyemaps.ico

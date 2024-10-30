@@ -9,7 +9,7 @@
 project = 'pyemaps'
 copyright = '2022-2024, EMLab Solutions, Inc.'
 author = 'EMLab Solutions, Inc.'
-release = '1.0.9 Stable'
+release = '1.1.0 Stable'
 
 
 
@@ -21,6 +21,9 @@ extensions = [
     "sphinx.ext.autosectionlabel",
     'sphinx.ext.autosummary',
 ]
+
+html_favicon = 'pyemaps.ico'
+
 autodoc_default_options = {
     'members': 'var1, var2',
     'member-order': 'bysource',

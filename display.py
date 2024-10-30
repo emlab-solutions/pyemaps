@@ -1,33 +1,30 @@
-# """
-# This file is part of pyemaps
-# ___________________________
-# pyemaps is free software for non-comercial use: you can 
-# redistribute it and/or modify it under the terms of the GNU General 
-# Public License as published by the Free Software Foundation, either 
-# version 3 of the License, or (at your option) any later version.
-# pyemaps is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# You should have received a copy of the GNU General Public License
-# along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
-# Contact supprort@emlabsoftware.com for any questions and comments.
-# ___________________________
+"""
+.. This file is part of pyemaps
+ 
+.. ----
 
-# Author:     EMLab Solutions, Inc.
-# Date:       May 07, 2022    
-# """
+.. pyemaps is free software. You can redistribute it and/or modify 
+.. it under the terms of the GNU General Public License as published 
+.. by the Free Software Foundation, either version 3 of the License, 
+.. or (at your option) any later version..
+
+.. pyemaps is distributed in the hope that it will be useful,
+.. but WITHOUT ANY WARRANTY; without even the implied warranty of
+.. MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.. GNU General Public License for more details.
+
+.. You should have received a copy of the GNU General Public License
+.. along with pyemaps.  If not, see `<https://www.gnu.org/licenses/>`_.
+
+.. Contact supprort@emlabsoftware.com for any questions and comments.
+
+.. ----
+
+.. Author:     EMLab Solutions, Inc.
+.. Date:       May 07, 2022  
 
 """
-Display is provided as a helper module. It serves as demonstration
-purpose only. It is implemented for a list of pyemaps simulation objects
-and multiprocess and pipe python objects. Currently this rendering
-functions may not be best fit for single display.
 
-Check :doc:`visualization` for examples of customizing your own 
-visualization methods rendering pyemaps simulations results.  
-
-"""
 import matplotlib, sys, os
 hasDisplay = True
 if 'linux' in sys.platform and "DISPLAY" not in os.environ:
@@ -54,7 +51,6 @@ DISPLAY_ONE_SIZE = 900
 PLOT_MULTIPLIER = 6
 
 clrs = ["#2973A5", "cyan", "limegreen", "yellow", "red"]
-# clrs=plt.get_cmap('binary')
 gclrs=plt.get_cmap('gray')
 
 TY_DIF = 1

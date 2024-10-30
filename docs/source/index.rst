@@ -1,4 +1,4 @@
-Welcome to pyemaps' documentation!
+Welcome to pyEMAPS' documentation!
 ===================================
 
 .. |dif_img1| image:: https://github.com/emlab-solutions/imagepypy/raw/main/si_dif1.png
@@ -85,3 +85,4 @@ Contents
    license
    rn
    modules
+

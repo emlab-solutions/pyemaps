@@ -22,10 +22,10 @@ before trying :ref:`installation <installation>` again.
 How Do I Install and Run **pyEMAPS** in Anaconda Environment With Jupyter Notebook?
 ---------------------------------------------------------------------------------
 
-Installing pyemaps in an virtual environment provides isolation and prevents conflicts.
+Installing pyEMAPS in an virtual environment provides isolation and prevents conflicts.
 Anaconda and python's own virtual environment are good choices.
 
-Follow the steps below to install and run pyemaps in Anaconda with Jupyter Notebooks:
+Follow the steps below to install and run pyEMAPS in Anaconda with Jupyter Notebooks:
 
 * Install Anaconda. 
   
@@ -90,7 +90,7 @@ What can I do to speed up dynamic diffraction simulations?
 significant computation resource and operations. As a result, it is much
 slower than that of kinematic simulation. 
 
-While pyemaps performance has improved significantly since its inception, 
+While pyEMAPS performance has improved significantly since its inception, 
 there are still rooms for enhancements and we are still looking for 
 opportunities to make constant progress.
 

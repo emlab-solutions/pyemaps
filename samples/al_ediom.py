@@ -2,10 +2,10 @@
 This file is part of pyemaps
 ___________________________
 
-pyemaps is free software for non-comercial use: you can 
-redistribute it and/or modify it under the terms of the GNU General 
-Public License as published by the Free Software Foundation, either 
-version 3 of the License, or (at your option) any later version.
+pyemaps is free software. You can redistribute it and/or modify 
+it under the terms of the GNU General Public License as published 
+by the Free Software Foundation, either version 3 of the License, 
+or (at your option) any later version.
 
 pyemaps is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -75,13 +75,6 @@ def test_dp_indexing(cname = 'Aluminium'):
     if ret != 0:
         print(f'failed to generate a diffraction patterns databaes')
         return -1
-
-    # ret, mr, mc =cryst.loadDPDB(dbfn = dbfn, bShowDBMap=True)
-    
-    # if ret != 0 or mr <= 0 or mc <=0:
-    #     print(f"Error loading DP database from file {dbfn} into stem4d module")
-    #     cryst.release_stem4d()
-    #     exit(1)
 
     xifn = getDPImageFn()
     alimg = StackImage(xifn)

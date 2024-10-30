@@ -2,7 +2,7 @@
 Visualisation
 =============
 
-*pyemaps* provides a set of helper functions to show diffraction patterns.
+*pyEMAPS* provides a set of helper functions to show diffraction patterns.
 These function are implemented with python's *matplotlib*. 
 
 *si_dif.py* and *si_bloch.py* sample code demonstrate the rendering of 
@@ -20,7 +20,7 @@ Builtin Displays
 
 Kinematic Diffraction Simulations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Additional example of *pyemaps*'s builtin functions for rendering 
+Additional example of *pyEMAPS*'s builtin functions for rendering 
 kinematic diffraction simulations for *silicon* crystal with starting zone 
 changing and camera length set at 2500:
 
@@ -84,7 +84,7 @@ with the following sample code:
 Dynamic Diffraction Simulations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Below is another example of using *pyemaps* builtin display functions
+Below is another example of using *pyEMAPS* builtin display functions
 to render Bloch simulation images for *silicon* with:
 
 ::
@@ -141,9 +141,9 @@ to render Bloch simulation images for *silicon* with:
 Stereodiagram
 ~~~~~~~~~~~~~
 
-Similar build-in function to display stereodiagram output from *pyemaps*
-is showStereo function in *pyemaps*'s *display* module. It takes a 
-stereodiagram dictionary objects generated from *pyemaps*' 
+Similar build-in function to display stereodiagram output from *pyEMAPS*
+is showStereo function in *pyEMAPS*'s *display* module. It takes a 
+stereodiagram dictionary objects generated from *pyEMAPS*' 
 `generateStereo <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateStereo>`_
 and renders each element by accessing the dictionary objects directly
 as demonstrated below:
@@ -207,13 +207,13 @@ as demonstrated below:
 Pyemaps GUI Web Service
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Driven by the latest pyemaps, a web server is setup for those who are interested
-in better visualization of pyemaps simulations and calculations. This service
+Driven by the latest pyEMAPS, a web server is setup for those who are interested
+in better visualization of pyEMAPS simulations and calculations. This service
 is for a nominal subscription fees. Go to https://emaps.emlabsolutions.com
 to sign up.
 
 Below is an example of the ineractive 3-d display of atomic structure through Jmole
-based on pyemaps crystal structure calculations:
+based on pyEMAPS crystal structure calculations:
 
 .. image:: https://github.com/emlab-solutions/imagepypy/raw/main//pyemaps_web_server.png
     
@@ -223,7 +223,7 @@ based on pyemaps crystal structure calculations:
 Rendering by Third Party Tools
 ------------------------------
 
-pyemaps kinematic diffraction simulation results are captured by 
+pyEMAPS kinematic diffraction simulation results are captured by 
 `DP or diffPattern <pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern>`_ class:
 
 .. code-block:: python
@@ -249,7 +249,7 @@ Below is an exmaple of rendering a diffraction pattern generated for *Diamond* b
 in DigitalMicrograph:
 
 .. note::
-    For complete python script integrating pyemaps into DM, see *si_stereo.py* in samples directory.
+    For complete python script integrating pyEMAPS into DM, see *si_stereo.py* in samples directory.
 
 .. code-block:: python
 
@@ -373,7 +373,7 @@ where *dp* is the kinematic diffraction pattern generated from generateDP call.
 
 .. note:: 
 
-    To get the above display work in *DM*, *pyemaps* must be installed in *DM*'s 
+    To get the above display work in *DM*, *pyEMAPS* must be installed in *DM*'s 
     python environment.
 
 Dynamic Diffraction Patterns
@@ -389,7 +389,7 @@ can be imported into ImageJ or DigitalMicrograph. Refer to
 `getBlochImages <pyemaps.crystals.html#pyemaps.crystals.Crystal.getBlochImages>`_ for
 details.
 
-Below is a visualization of a raw bloch images files saved from a pyemaps dynamic simulation
+Below is a visualization of a raw bloch images files saved from a pyEMAPS dynamic simulation
 run in Digita;Micrograph. The raw image contains 10 images each at a sample thickness 
 range betwwen 0 and 1000.
 
@@ -399,7 +399,7 @@ range betwwen 0 and 1000.
 Constructing Crystal
 ~~~~~~~~~~~~~~~~~~~~
 
-*pyemaps*' `generateMxtal <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateMxtal>`_
+*pyEMAPS*' `generateMxtal <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateMxtal>`_
 function produces .XYZ file that can be improted into 
 `Jmole <http://www.jmol.org/>`_ and visualize the 
 crystal in 3D atomic structure. The following is an example of such rendering:

@@ -1,7 +1,7 @@
 Modules, Classes and Interfaces
 ===============================
 
-**pyemaps** modules are built around its backend simulation and 
+**pyEMAPS** modules are built around its backend simulation and 
 calculation libraries and are designed to make access to the core 
 diffraction simulation libraries easy.
 
@@ -13,15 +13,17 @@ Crystals
     :members: Cell, Atom, SPG, Crystal
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 Microscope and Simulation Controls
--------------------
+----------------------------------
 
 .. automodule:: pyemaps.emcontrols
     :imported-members:
     :members: 
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 
 Kinematic Diffractions
@@ -32,6 +34,7 @@ Kinematic Diffractions
     :members: Point, Line, Disk, Index, diffPattern
     :undoc-members:
     :show-inheritance:
+    :noindex:
 
 Dynamic Diffraction
 -------------------
@@ -41,6 +44,7 @@ Dynamic Diffraction
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 
 .. _builtin visualization functions:
 
@@ -52,25 +56,28 @@ Images Classes
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 
 Display
 -------
 
 .. automodule:: pyemaps.display
    :members: showBloch, showDif, showStereo,
-   .. :no-undoc-members:
-   ..    :imported-members:
-..    :undoc-members:
-..    :show-inheritance:
+   :no-undoc-members:
+   :imported-members:
+   :undoc-members:
+   :show-inheritance:
+   :noindex:
 
 File Utilities
 --------------
 
 .. automodule:: pyemaps.fileutils
    :members:
-..    :imported-members:
-..    :undoc-members:
-..    :show-inheritance:
+   :imported-members:
+   :undoc-members:
+   :show-inheritance:
+   :noindex:
 
 
 Error Handling
@@ -81,3 +88,24 @@ Error Handling
     :members: 
     :undoc-members:
     :show-inheritance:
+    :noindex:
+
+.. Kinematical Diffractions Simulation Module
+.. ------------------------------------------
+
+.. .. automodule:: pyemaps.dif
+..    :members: get_hlines, get_klines, dif.get_hlines
+..    :no-undoc-members:
+..    :imported-members:
+..    :undoc-members:
+..    :show-inheritance:
+
+.. 4D STEM Module
+.. --------------
+
+.. .. automodule:: pyemaps.stem4d
+..    :members:
+..    :imported-members:
+..    :undoc-members:
+..    :show-inheritance:
+   .. :no-undoc-members:
