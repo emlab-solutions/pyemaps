@@ -365,6 +365,7 @@ Below is a partial list of sample code:
    indexes an experimental diffraction image for aluminium crystal. 
 
 * *adf.py* (license activated features only):
-   generates annular bright and dark fields from an experimental image.
+   generates annular bright and dark fields, as well as a masked image from an experimental image.
+   You must also have your own experimental image file named *adftest30x30.im3* in the same directory.
    
 More samples code will be added as more features and releases are available. 

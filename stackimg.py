@@ -22,9 +22,6 @@
 
 '''
     
-# from emaps import stem4d
-# from emaps.stem4d import ediom
-# from emaps.stem4d import send
 from . import stem4d, send, ediom
 
 from . import (E_INT, EM_INT,
@@ -52,14 +49,31 @@ import numpy as np
 from .errors import XDPImageError
 
 from .display import normalizeImage, displayXImage
+
 class StackImage():
     """
-    Simple wrapper for experimental images used in pyemaps Stem4d analyzes
-    that include:
+
+    Simple wrapper class for experimental images used in pyemaps 
+    Stem4d analysis:
     
-    - diffraction pattern indexing
+    - Diffraction pattern indexing
     - Annular Drak Field image generation
+    - Masked images
+
+    All image files must be of raw bitmap format, or known as headered raw format:
+
+    - **Header**: stores metadata about the image, often including three numbers 
+        for dimensions (e.g. width, height, and number of bit depth, or stacks).
+
+    - **Data Offset**: After the header, the actual image or pixel data starts.
+
+    - **Pixel Data**: Stored in a row-major order, meaning pixels are arranged 
+        row-byrow across columns.
     
+    
+    The image can also be represented by a numpy array directly. In this case,
+    the StackImage object created will ignore its file name member.
+
     and more to come.
 
     """
@@ -72,17 +86,16 @@ class StackImage():
                         MIN_IMAGESTACK),
                  noffset = 8):
         
-        setattr(self, 'fname', imgfn)           # image file name
         setattr(self, 'nformat', nformat)       # image file type
+        setattr(self, 'fname', imgfn)           # image file name
         setattr(self, 'noffset', noffset)       # image header offset to image data
         setattr(self, 'ndtype', ndtype)         # image data offset
         setattr(self, 'dim', dim)               # dimension of the image
-        # setattr(self, 'data', data)             # dimension of the image
 
     @property
     def fname(self):
         """
-        Experimental diffraction pattern image file name.
+        Experimental diffraction pattern image input file full path.
         In case of numpy array, this field is ignored.
         """
         return self._fname
@@ -93,7 +106,9 @@ class StackImage():
         The type of the image file 
 
         - E_RAW: raw image files with image data at an `noffset` from the beginning of the file. 
-        - E_SH: small header (pyemaps propietory)
+        - E_SH: small header (pyemaps propietory). Header is a tuple of three short integers 
+          and data type represented also by a short integer. Total bytes of the header or the offset
+          is 8)
         - E_NPY: numpy array.
 
         """
@@ -102,22 +117,32 @@ class StackImage():
     @property
     def ndtype(self):
         """
-        The type of the image data - int, float, double supported. 
+        The type of the image data - int, float, double are supported.
+        The constants to used to represent the types are:
+
+        - E_INT and EM_INT: single and multiple stack integral image data type.
+        - E_FLOAT and EM_FLOAT: single and multiple stack real image data type.  
+        - E_DOUBLE and EM_DOUBLE: single and multiple stack 8-byte real image data type. 
+         
         """
         return self._ndtype
 
     @property
     def noffset(self):
         """
-        image data offset from start of the file. 
+        
+        image data offset from start of the file. Normally, it is the size of the 
+        header in bytes.
+
         """
         return self._noffset
 
     @property
     def dim(self):
         """
+
         image dimension, support 3 dimensional images with input of 
-        3 integer tuple of (width, height, stack).
+        3 integer tuple of integers (width, height, stack).
 
         """
         return self._dim
@@ -125,15 +150,19 @@ class StackImage():
     @property
     def data(self):
         """
+
         Raw image data in numpy ndarray when it is read from a numpy array
-        Otherwise, the data will be generated from Stem4d when it is loaded. 
+        Otherwise, the data will be generated from Stem4d when the input image
+        file is loaded.
+
         """
         return self._data
 
     @fname.setter
     def fname(self, fn):
-        if not isinstance(fn, str) or len(fn) == 0:
-            raise XDPImageError('DP image file name invalid')
+        if self._nformat != E_NPY:
+            if not isinstance(fn, str) or len(fn) == 0:
+                raise XDPImageError('Input image file name invalid')
         
         self._fname = fn
 

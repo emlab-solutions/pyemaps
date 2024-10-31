@@ -696,7 +696,7 @@ def displayXImage(img,
         clrs = ["#2973A5", "cyan", "limegreen", "yellow", "red"]
         qedDPI = 600
         gclrs=plt.get_cmap('gray')
-        STEM4D_TITLE = 'Pyemaps Preview - 4D-Stem Diffraction Pattern Indexing'
+        STEM4D_TITLE = 'pyEMAPS 4DSTEM'
 
         nr,nc = fsize
 
@@ -752,7 +752,7 @@ def plot2Powder(pw1, pw2):
 
     fig, (ax1, ax2) = plt.subplots(nrows = 2)
     
-    title = 'PYEMAPS - Powder Diffraction'
+    title = 'pyEMAPS - Powder Diffraction'
     if fig.canvas.manager is not None:
         fig.canvas.manager.set_window_title(title)
     else:
