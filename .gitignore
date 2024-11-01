@@ -167,7 +167,7 @@ test/sanity/output*
 *.xyz
 
 # bloch image output file
-*.im3
+*adf*.im3
 
 # saved code
 *_save.py
@@ -181,7 +181,7 @@ fort.7
 
 # not to save sample code
 *samples/bt.py
-*samples/mask.img
+*samples/sh_converted*
 
 # .dat file
 *.dat

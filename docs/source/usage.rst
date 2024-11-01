@@ -359,13 +359,20 @@ Below is a partial list of sample code:
    plots stereodiagram using *Stereo* *pyemaps* module. 
 
 * *al_dpgen.py*: 
-   generates a proprietory diffraction database file for aluminium crystal. 
+   generates a proprietory diffraction database file for aluminium crystal. The
+   database file is to be used with 4DSTEM's *ediom* module functions.  
 
 * *al_ediom.py* (license activated features only): 
    indexes an experimental diffraction image for aluminium crystal. 
 
+* *convert_image.py* (license activated features only): 
+   converts any raw image into pyEMAPS proprietory small header formatted image . 
+
 * *adf.py* (license activated features only):
    generates annular bright and dark fields, as well as a masked image from an experimental image.
    You must also have your own experimental image file named *adftest30x30.im3* in the same directory.
+
+   The mask image function requires the input mask image file to be pyEMAPS proprietory
+   small header formatted image. See how to convert your mask image inout file to the format. 
    
 More samples code will be added as more features and releases are available. 

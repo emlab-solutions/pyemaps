@@ -44,9 +44,10 @@ samples_path = current_file.parent.absolute()
 
 def getRawImageFn():
     '''
-    Imports sample experimental diffraction pattern image
+    retrieves sample experimental diffraction pattern image
     in raw image format of dimension (256, 256, 1), 4-bytes 
-    real image data type and offset of 0.  
+    real image data type and offset of 0, to be converted to
+    pyEMAPS proprietory image format.  
 
     To use your own image file, modify this call to retrieve 
     the file.
@@ -62,8 +63,8 @@ def test_conversion():
 
     If the input raw image file name does not contain directory,
     this method will search the file in pyEMAPS data diretcory
-    set by environment variable PYEMAPS_DATA or current working
-    directory in that order. 
+    set by the environment variable PYEMAPS_DATA or current 
+    working directory in that order. 
     
     If the input file contains the fully qualified file path, 
     pyEMAPS will be using the folder that contains the file

@@ -66,7 +66,7 @@ def getMaskFn():
     the file.
 
     '''
-    return os.path.join(samples_path, 'mask.img')
+    return os.path.join(samples_path, 'mask.im3')
 
 def test_adf():
     '''
