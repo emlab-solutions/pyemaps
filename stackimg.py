@@ -50,6 +50,27 @@ from .errors import XDPImageError
 
 from .display import normalizeImage, displayXImage
 
+    
+def _getDateTimeString():
+    '''
+    Helper function to create a unique name for the image file name.
+
+    '''
+    from datetime import datetime
+
+    # Get the current date and time
+    current_time = datetime.now()
+
+    # Format the date-time string (up to seconds)
+    date_time_string = current_time.strftime("%Y-%m-%d %H:%M:%S")
+
+    # Remove all whitespace characters using join and a generator
+    date_time_string_no_spaces = ''.join(char for char in date_time_string if not char.isspace())
+
+    print("Current date-time string without spaces:", date_time_string_no_spaces)
+    
+    return date_time_string_no_spaces
+
 class StackImage():
     """
 
@@ -220,6 +241,7 @@ class StackImage():
     def loadImage(self, rmode= EL_ONE, stack = 1):
         """
         Loads image into stem4d module for analysis.
+
         """
         img_format = self.nformat
         if img_format != E_NPY and img_format != E_SH and img_format != E_RAW:
@@ -231,13 +253,12 @@ class StackImage():
             ret = ximage.setImage_from_numpy(self.data)
 
 # load proprietory small header formatted image file
-
         if img_format == E_SH:
             ret = stem4d.loadXImage(self.fname, rmode = rmode, stack = stack)
 # load raw image file            
         if img_format == E_RAW:
             ret = stem4d.loadRawImage(self.fname, 
-                          self.offset, self.ndtype, 
+                          self.noffset, self.ndtype, 
                           self.dim[0], self.dim[1], self.dim[2], 
                           rmode = rmode, stack=stack)
 
@@ -680,7 +701,7 @@ class StackImage():
             raise XDPImageError(f"Error loading image for stem4d analysis: {e}") from e
         
         # print(f'debug:experimental image depth: {self._dim}')
-        self.viewExpImage(title='Experimental Diffraction Image - Indexed')
+        self.viewExpImage(title='Experimental Diffraction Image - input')
 
         edc = stem4d.cvar.edc
         
@@ -859,3 +880,124 @@ class StackImage():
             self.viewExpImage(title = "Experimental Diffraction Image - Masked")
 
         return 0, self._data
+    
+
+    @staticmethod
+    def convertImage(
+                imgfn, 
+                nformat=E_RAW,
+                ndtype = E_FLOAT,
+                dim = (MIN_IMAGESIZE,
+                        MIN_IMAGESIZE,
+                        MIN_IMAGESTACK),
+                noffset = 8):
+        '''
+
+        converts any other suported image formats into pyEMAPS' proprietory small 
+        header format.
+
+        This static method is very useful for all auxillary images to be used with 
+        stem4d module and are required to have the proprietory image format by the
+        pyEMAPS simulation backend.
+
+        :param imgfn: input image file path
+        :type imgfn: string, required. Ignored when nformat is E_NPY
+
+        :param nformat: format of the image file. Support all bitmap formatted image format
+        :type nformat: integer, optional, default to `E_RAW`
+
+        :param ndtype: image date types. It can be integer, float or double
+        :type ndtype: integer, optional, default to E_INT
+
+        :param dim: three integer tuple for the dimension of the image data (width, height, stack/depth)
+        :type dim: integer tuple, optional, default to (MIN_IMAGESIZE, MIN_IMAGESIZE, MIN_IMAGESTACK)
+
+        :param noffset: header offset or starting byte of the image data.
+        :type noffset: integer, optional, default to 8.
+
+        :return:  
+        :rtype: None
+        
+        .. note::
+
+            If the input raw image file name does not contain directory,
+            this method will search the file in pyEMAPS data diretcory
+            set by environment variable PYEMAPS_DATA or current working
+            directory in that order.
+
+            If the input file contains the fully qualified file path, 
+            pyEMAPS will be using the folder that contains the file
+            to place the output image file. So, please make sure that
+            the input directory is writable.
+
+            The result pyEMAPS image file with small header will be saved 
+            in a folder name `sh_converted` in the dierctory that
+            contains the original raw image file.
+
+        '''
+
+        if nformat==E_SH or (nformat != E_RAW and nformat !=E_NPY):
+            raise ValueError('pyEmaps only converts raw and numpy images to its proprietory format.')
+        
+        oExt = '.im3'
+        iname = ''
+        idir=''
+        imgFile = imgfn
+        if nformat !=E_NPY:
+            import os
+
+            if not imgfn or imgfn is None:
+                raise ValueError("Input image file error!")
+            
+            # first, split the image path
+            idir, ifile = os.path.split(imgfn)
+
+            if not ifile:
+                raise ValueError("Input image file error!")
+            
+            if not idir:
+                if 'PYEMAPS_DATA' in os.environ:
+                    idir = os.environ['PYEMAPS_DATA']
+                else:
+                    idir = os.getcwd()
+
+            imgFile = os.path.join(idir, ifile)
+            if not os.path.exists(imgFile):
+                raise FileNotFoundError("Input image file not found!")            
+
+            iname, inxt = os.path.splitext(ifile)
+            
+            if not iname or not inxt:
+                raise ValueError('Input file name error!')
+            
+        else:
+            if 'PYEMAPS_DATA' in os.environ:
+                idir = os.environ['PYEMAPS_DATA']
+            else:
+                idir = os.getcwd()
+            iname = "shimage_from_numpy" + _getDateTimeString()
+
+        odir = os.path.join(idir, 'sh_converted')
+
+        os.makedirs(odir, exist_ok=True)    
+        oImageFn = os.path.join(odir, f"{iname}{oExt}")
+
+        # now create a StackImage object.
+
+        img = StackImage(imgFile, 
+                        nformat=nformat, 
+                        ndtype = ndtype, 
+                        dim = dim, 
+                        noffset = noffset)
+        try:
+            img.loadImage()
+            stem4d.saveImage(oImageFn)
+
+        except Exception as e:
+            print(f'Error converting image into pyEMAPS proprietory image file: {e}')
+
+        else:
+            print(f"The image file {imgFile} was successfully converted to pyEMAPS image format and saved as {oImageFn}")
+        
+
+
