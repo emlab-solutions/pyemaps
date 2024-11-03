@@ -1,7 +1,7 @@
 
 @echo off 
 @REM basic usage
-@REM starting time
+@REM --------------  starting time --------------  
 set startTime=%time%
 echo Script started at %startTime%
 
@@ -18,7 +18,7 @@ call python .\pyemaps_samples\si_lacbed.py
 call python .\pyemaps_samples\si_constructor.py
 call python .\pyemaps_samples\si_stereo.py
 call python .\pyemaps_samples\si_scm.py
-@REM python test\sanity\feature_sanity.py
+python test\sanity\feature_sanity.py
 
 @REM performance test - all includes all types: dif, bloch and stereo
 call python test\sanity\run_perf_test.py -r all
@@ -49,7 +49,7 @@ if %return_code%==1 (
 )
 rm -rf pyemaps_samples
 
-rem Capture end time
+rem --------------  Capture end time -----------------
 set endTime=%time%
 echo Script ended at %endTime%
 
@@ -59,8 +59,6 @@ set /a endSeconds=(%endTime:~0,2%*3600) + (%endTime:~3,2%*60) + (%endTime:~6,2%)
 
 rem Calculate the duration in seconds
 set /a duration=endSeconds-startSeconds
-
-echo duration in seconds: %duration% 
 
 rem Handle negative duration in case the script ran past midnight
 if %duration% lss 0 set /a duration+=86400
