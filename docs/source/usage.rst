@@ -6,7 +6,7 @@ Getting Started
 Installation
 ------------
 
-To use pyemaps, first install it using pip:
+To use pyEMAPS, first install it using pip:
 
 .. code-block:: console
 
@@ -16,8 +16,8 @@ where .venv is the python virtual environment.
 
 .. note::
    
-   To prevent conflicts of pyemaps dependencies with your existing python
-   libraries, it is recommended that pyemaps install in its own python environment
+   To prevent conflicts of pyEMAPS dependencies with your existing python
+   libraries, it is recommended that pyEMAPS install in its own python environment
    such as that with Annaconda or Miniconda.
 
 .. code-block:: console
@@ -33,21 +33,21 @@ where <env-name> is the name of the new conda environment.
 Enviroment Variables
 --------------------
 
-*PYEMAPS_DATA* environment variable is set to represent pyemaps' data home directory.
+*PYEMAPS_DATA* environment variable is set to represent pyEMAPS' data home directory.
 It provides a central location for organizing your own crystal data, and it is also used 
 for storing your simulation and calculation results.   
 
-**pyemaps** searches crystal files in the following order when only file name is provided:
+**pyEMAPS** searches crystal files in the following order when only file name is provided:
 
 1. Current working directory. 
 2. Data home directory pointed by *PYEMAPS_DATA*.
 
-For output from **pyemaps** simulations and calculations, the placement order is reversed:
+For output from **pyEMAPS** simulations and calculations, the placement order is reversed:
 
 1. Data home directory pointed by *PYEMAPS_DATA* if it is set. 
 2. Current working directory.
 
-The layout of the pyemaps data home directory is as follows:
+The layout of the pyEMAPS data home directory is as follows:
 
 .. code-block:: console
 
@@ -62,25 +62,66 @@ The layout of the pyemaps data home directory is as follows:
    
    The legacy environment variable $(PYEMAPS_CRYSTALS) is still supported if it is set.
 
-Quickstart pyemaps
+.. _License Activation:
+
+License Activation
 ------------------
 
-After *pyemaps* installation, run the following to check if the package is installed
+There is no license requirement for many pf **pyEMAPS** base features. However, to access 
+its extended features like 4DSTEM, a license activation is required. The activations in pyEMAPS can 
+also be done without internet connection if isolation is desired. Finally, once license is activated,
+all license checks are offline without requirement for internet connections. 
+
+To obtain a **pyEMAPS** license:
+
+* **Trial license**: **pyEMAPS** has a 7-days trial license that allows users to check out 
+  the features without commiting to a pruchase. This license can also be converted or upgraded 
+  to production license.
+
+  Use the following command to get the trial license when internet connection is available:
+
+  .. code-block:: console
+
+   pyemaps --license trial (-l)
+
+* **License activation token**: contact support@emlabsoftware.com for the 19 character license
+  activation token. This way of activation can be used for both trial and product license
+  activation online or offline.  
+
+  .. code-block:: console
+
+   pyemaps --license <license token> (-l)
+
+  where <license token> is of format: XXXX-XXXX-XXXX-XXXX here X is an alpha numberic character.
+
+  Contact support@emlabsoftware.com for obtaining a license activation token.
+
+* **License information**: use the following command to find out if a license exists and valid.
+  If so, the license infomation is displayed.
+
+  .. code-block:: console
+
+   pyemaps --license info (-l)
+
+Quickstart pyEMAPS
+------------------
+
+After *pyEMAPS* installation, run the following to check if the package is installed
 and setup correctly on your system by verifying the version and other information about
 the package: 
 
 .. code-block:: console
 
-   python -m pyemaps --version (-v)
-   python -m pyemaps --copyright (-c)
+   pyemaps --version (-v)
+   pyemaps --copyright (-c)
 
-A test for *pyemaps* basic kinematic function is also provided:  
+A test for *pyEMAPS* basic kinematic function is also provided:  
 
 .. code-block:: console
 
-   python -m pyemaps --sample (-s)
+   pyemaps --sample (-s)
 
-All pyemaps simulations and calculations start from its 
+All pyEMAPS simulations and calculations start from its 
 `Crystal class <pyemaps.crystals.html#pyemaps.crystals.Crystal>`_. 
 To import the class:
 
@@ -88,9 +129,9 @@ To import the class:
 
    from pyemaps import Crystal
 
-Before starting pyemaps diffraction simulation, the crystal
-object must be created and loaded. The following example
-creates a *si* crystal object by loading it from pyemaps 
+Before starting pyEMAPS diffraction simulation, the crystal
+object must be created and data loaded. The following example
+creates a *si* crystal object by loading it from pyEMAPS 
 built-in database for Silicon crystal using 
 `from_builtin <pyemaps.crystals.html#pyemaps.crystals.Crystal.from_builtin>`_ 
 
@@ -140,7 +181,7 @@ using all default control parameters .
 Go to `generateDP <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateDP>`_ for a complete
 list of control parameters. 
 
-*showDif*, a method in the pyemaps `display module <pyemaps.display.html#module-pyemaps.display>`_  
+*showDif*, a method in the pyEMAPS `display module <pyemaps.display.html#module-pyemaps.display>`_  
 visualizes the *si_dp* diffraction pattern with options controling whether to show Kikuchi lines or
 Miller Indexes.
 
@@ -159,7 +200,7 @@ document.
     c_name = 'Silicon'
     si = cr.from_builtin(c_name)
 
-    # Generate dynamic diffraction patterns using pyemaps' bloch module
+    # Generate dynamic diffraction patterns using pyEMAPS' bloch module
     # with all other default parameters except sampling
 
     try:
@@ -202,7 +243,7 @@ visualizing the Bloch simulation results.
    `endBloch calls
    <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.
 
-To see all crystal names in the *pyemaps* built-in database, call 
+To see all crystal names in the *pyEMAPS* built-in database, call 
 `list_all_builtin_crystals <pyemaps.crystals.html#pyemaps.crystals.Crystal.list_all_builtin_crystals>`_:
 
 .. code-block:: python
@@ -210,7 +251,7 @@ To see all crystal names in the *pyemaps* built-in database, call
    from pyemaps import Crystal as cr
    cr.list_all_builtin_crystals()
 
-Current list of built-in crystals in *pyemaps*:
+Current list of built-in crystals in *pyEMAPS*:
 
 ::
 
@@ -227,7 +268,7 @@ Current list of built-in crystals in *pyemaps*:
 Experimental Diffraction Pattern Indexing 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Electron diffraction patterns (DP) indexing is based on the template matching algorithm to 
-compare the acquired DPs to pre-built ones - A DP database generated by pyemaps DPGEN module.
+compare the acquired DPs to pre-built ones - A DP database generated by pyEMAPS DPGEN module.
 
 In this feature, the crystal orietations and phases are determined from the best match or fit
 to one of the DP in the pre-generated DP database:
@@ -249,7 +290,7 @@ For details of this function go to:
 
    ret, mr, mc =al.loadDPDB(dbfn = dbfn, bShowDBMap=True)
     
-will be loading the database into pyemaps' EDIOM module and ready for DP indexing.
+will be loading the database into pyEMAPS' EDIOM module and ready for DP indexing.
 
 .. code-block:: python
 
@@ -287,15 +328,15 @@ indexes the loaded DP image file above. See more details of the usage in
 Samples code
 ------------
 
-Sample scripts for exploring *pyemaps* features are available in 
-pyemaps' *samples* directory.
+Sample scripts for exploring *pyEMAPS* features are available in 
+pyEMAPS' *samples* directory.
 
-To copy all sample scripts from *pyemaps* package installation directory
+To copy all sample scripts from *pyEMAPS* package installation directory
 to the current working directory, run:
 
 .. code-block:: console
 
-   python -m pyemaps -cp
+   pyemaps -cp
 
 Below is a partial list of sample code:
 
@@ -318,11 +359,22 @@ Below is a partial list of sample code:
    plots stereodiagram using *Stereo* *pyemaps* module. 
 
 * *al_dpgen.py*: 
-   generates a proprietory diffraction database file for silicon crystal. 
+   generates a proprietory diffraction database file for aluminium crystal. The
+   database file is to be used with 4DSTEM's *ediom* module functions.  
 
-* *al_ediom.py*(demo only), *adf.py*(available in full package only) : 
-   indexes an experimental diffraction image for aluminium crystal, 
-   generates annular dark fields (ADF) from an experimental image.
+* *al_ediom.py* (license activated features only): 
+   indexes an experimental diffraction image for aluminium crystal. 
 
+* *convert_image.py* (license activated features only): 
+   converts any raw image into pyEMAPS proprietory small header formatted image . 
 
+* *adf.py* (license activated features only):
+   generates annular bright and dark fields, as well as a masked image from an experimental image.
+   You must the example experimental diffraction image named *adftest900.im3* in the same directory.
+   Due to the size of the file, you must downloaded it from `the official Zenodo site <https://zenodo.org/records/14028793/files/adftest900.im3?download=1>`_
+   and place it to the the same directory.
+
+   Also, the mask image function requires the input mask image file to be pyEMAPS proprietory
+   small header formatted image. See how to convert your mask image inout file to the format. 
+   
 More samples code will be added as more features and releases are available. 

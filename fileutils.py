@@ -1,38 +1,38 @@
 
-# """
-# This file is part of pyemaps
-# ___________________________
+"""
+.. This file is part of pyEMAPS
 
-# pyemaps is free software for non-comercial use: you can 
-# redistribute it and/or modify it under the terms of the GNU General 
-# Public License as published by the Free Software Foundation, either 
-# version 3 of the License, or (at your option) any later version.
-
-# pyemaps is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-# You should have received a copy of the GNU General Public License
-# along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
-
-# Contact supprort@emlabsoftware.com for any questions and comments.
-# ___________________________
-
-
-# Author:     EMLab Solutions, Inc.
-# Date:       September 26th, 2022    
-# """
-
-'''
 Fileutils is a helper module in assisting pyemaps file i/o functions.
 Its methods include reading crystal data files and writing simulation 
 output files. 
 
 It also detects pyemaps data home environment variables and directs
 file i/o accoridng to the rule set in :ref:`Environment Variables <Environment Variables>`.
+ 
+.. ----
 
-'''
+.. pyEMAPS is free software. You can redistribute it and/or modify 
+.. it under the terms of the GNU General Public License as published 
+.. by the Free Software Foundation, either version 3 of the License, 
+.. or (at your option) any later version..
+
+.. pyEMAPS is distributed in the hope that it will be useful,
+.. but WITHOUT ANY WARRANTY; without even the implied warranty of
+.. MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.. GNU General Public License for more details.
+
+.. You should have received a copy of the GNU General Public License
+.. along with pyEMAPS.  If not, see `<https://www.gnu.org/licenses/>`_.
+
+.. Contact supprort@emlabsoftware.com for any questions and comments.
+
+.. ----
+
+.. Author:     EMLab Solutions, Inc.
+.. Date:       September 26th, 2022    
+
+"""
+
 
 from pathlib import Path
 import os

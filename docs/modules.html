@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Modules, Classes and Interfaces &#8212; pyemaps 1.0.9 Stable documentation</title>
+    <title>Modules, Classes and Interfaces &#8212; pyemaps 1.1.0 Stable documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -17,6 +17,7 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     
+    <link rel="shortcut icon" href="_static/pyemaps.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="Release Notes" href="rn.html" /> 
@@ -33,7 +34,7 @@
         <li class="right" >
           <a href="rn.html" title="Release Notes"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.9 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.1.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Modules, Classes and Interfaces</a></li> 
       </ul>
     </div>  
@@ -45,15 +46,11 @@
             
   <section id="modules-classes-and-interfaces">
 <h1>Modules, Classes and Interfaces<a class="headerlink" href="#modules-classes-and-interfaces" title="Permalink to this heading">¶</a></h1>
-<p><strong>pyemaps</strong> modules are built around its backend simulation and
+<p><strong>pyEMAPS</strong> modules are built around its backend simulation and
 calculation libraries and are designed to make access to the core
 diffraction simulation libraries easy.</p>
 <section id="module-pyemaps.crystals">
 <span id="crystals"></span><h2>Crystals<a class="headerlink" href="#module-pyemaps.crystals" title="Permalink to this heading">¶</a></h2>
-<p>Crystals module contains python classes and methods for creating,
-importing and loading crystal data from various sources. It also 
-provides the core interfaces to the backend diffraction simulations 
-and calculations.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyemaps.crystals.Cell">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.crystals.</span></span><span class="sig-name descname"><span class="pre">Cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Cell" title="Permalink to this definition">¶</a></dt>
@@ -457,29 +454,29 @@ the following data:</p>
 </dd>
 </dl>
 <p>The dictionary object example for Silicon:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>{&#39;cell&#39;:                                       
-    {&#39;a&#39;: &#39;5.4307&#39;,
-    &#39;b&#39;: &#39;5.4307&#39;,
-    &#39;c&#39;: &#39;5.4307&#39;,
-    &#39;alpha&#39;: &#39;90.0&#39;,
-    &#39;beta&#39;: &#39;90.0&#39;,
-    &#39;gamma&#39;: &#39;90.0&#39;},
-&#39;atoms&#39;:                                        
-    [
-        {&#39;symb&#39;: &#39;si&#39;,                          
-        &#39;x&#39;: &#39;0.125&#39;,                           
-        &#39;y&#39;: &#39;0.125&#39;,  
-        &#39;z&#39;: &#39;0.125&#39;,
-        &#39;d-w&#39;: &#39;0.4668&#39;,                        
-        &#39;occ&#39;: 1.00},                           
-    ],
-&#39;spg&#39;:                                          
-    {&#39;number&#39;: &#39;227&#39;                            
-    &#39;setting&#39;: &#39;2&#39;                              
-    },
-&#39;dw&#39;: &#39;iso&#39;                                     
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;cell&#39;</span><span class="p">:</span>                                       
+    <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="s1">&#39;5.4307&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="s1">&#39;5.4307&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="s1">&#39;5.4307&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="s1">&#39;90.0&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="s1">&#39;90.0&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="s1">&#39;90.0&#39;</span><span class="p">},</span>
+<span class="s1">&#39;atoms&#39;</span><span class="p">:</span>                                        
+    <span class="p">[</span>
+        <span class="p">{</span><span class="s1">&#39;symb&#39;</span><span class="p">:</span> <span class="s1">&#39;si&#39;</span><span class="p">,</span>                          
+        <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="s1">&#39;0.125&#39;</span><span class="p">,</span>                           
+        <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="s1">&#39;0.125&#39;</span><span class="p">,</span>  
+        <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="s1">&#39;0.125&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;d-w&#39;</span><span class="p">:</span> <span class="s1">&#39;0.4668&#39;</span><span class="p">,</span>                        
+        <span class="s1">&#39;occ&#39;</span><span class="p">:</span> <span class="mf">1.00</span><span class="p">},</span>                           
+    <span class="p">],</span>
+<span class="s1">&#39;spg&#39;</span><span class="p">:</span>                                          
+    <span class="p">{</span><span class="s1">&#39;number&#39;</span><span class="p">:</span> <span class="s1">&#39;227&#39;</span>                            
+    <span class="s1">&#39;setting&#39;</span><span class="p">:</span> <span class="s1">&#39;2&#39;</span>                              
+    <span class="p">},</span>
+<span class="s1">&#39;dw&#39;</span><span class="p">:</span> <span class="s1">&#39;iso&#39;</span>                                     
 
-}
+<span class="p">}</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -705,13 +702,13 @@ points in <em>sampling</em> parameter can make a big difference in pyemaps perfo
 </div>
 <p>The return of an array of structure factors in the following 
 python dictionary format:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>{
-    &#39;hkl&#39;: (h,k,l),         # Miller Indices 
-    &#39;sw&#39;: s,                # Sin(theta)/Wave length
-    &#39;ds&#39;: d,                # d-spacing value
-    &#39;amp_re&#39;: ar            # amplitude or real part 
-    &#39;phase_im&#39;: ph          # phase or imaginary part
-}
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;hkl&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">l</span><span class="p">),</span>         <span class="c1"># Miller Indices </span>
+    <span class="s1">&#39;sw&#39;</span><span class="p">:</span> <span class="n">s</span><span class="p">,</span>                <span class="c1"># Sin(theta)/Wave length</span>
+    <span class="s1">&#39;ds&#39;</span><span class="p">:</span> <span class="n">d</span><span class="p">,</span>                <span class="c1"># d-spacing value</span>
+    <span class="s1">&#39;amp_re&#39;</span><span class="p">:</span> <span class="n">ar</span>            <span class="c1"># amplitude or real part </span>
+    <span class="s1">&#39;phase_im&#39;</span><span class="p">:</span> <span class="n">ph</span>          <span class="c1"># phase or imaginary part</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -744,7 +741,7 @@ python dictionary format:</p>
 <dd><p>Generate a list diffraction patterns and save them in proprietory
 binary formatted database file with extension .bin.</p>
 <p>The database created will be used for diffraction pattern indexing
-and matchig functions in pyemaps EDIOM module.</p>
+and matchig functions in pyemaps STEM4D module.</p>
 <p>The generated database file is saved to directory pointed by environment variable
 <em>PYEMAPS_DATA</em> or in current working directory if <em>PYEMAPS_DATA</em> is not set.</p>
 <dl class="field-list simple">
@@ -770,7 +767,7 @@ graphic illustration of the vertices input.</p></li>
 <p>Input zone axis indexes define the vertices of the stereo projection map. The default
 for a cubic crystal is <em>DEF_VERTMAT</em> = [[0,0,1],[1,1,1],[0,1,1]].</p>
 <a class="reference internal image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png" class="align-center" src="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png" style="width: 75%;" /></a>
-<p>The diffraction patterns database file produced will be consumed by pyemaps ediom module
+<p>The diffraction patterns database file produced will be consumed by pyemaps stem4d module
 for experimental diffraction pattern serach and indexing.</p>
 </dd></dl>
 
@@ -880,13 +877,13 @@ stabel production soon. Its replacement is:
 </dd>
 </dl>
 <p>Example of the stereodiagram output:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>[
-    {
-        &quot;c&quot;: (x,y),              # center
-        &quot;r&quot;: rad,                # radius
-        &quot;idx&quot;: (h, k, l),        # Miller Index
-    }
-]    
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">),</span>              <span class="c1"># center</span>
+        <span class="s2">&quot;r&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>                <span class="c1"># radius</span>
+        <span class="s2">&quot;idx&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">l</span><span class="p">),</span>        <span class="c1"># Miller Index</span>
+    <span class="p">}</span>
+<span class="p">]</span>    
 </pre></div>
 </div>
 <p>To display the resulting stereodiagram, use 
@@ -1101,14 +1098,14 @@ for its definition and usage.</p>
 <p class="admonition-title">Note</p>
 <p>An example of Silicon atomic structure by pyemaps:</p>
 </div>
-<div class="highlight-console: notranslate"><div class="highlight"><pre><span></span>216
-    50.0 50.0 50.0 90.0 90.0 90.0
-SI           0.6788375000   0.6788375000   0.6788375000 
-SI           3.3941875000   3.3941875000   0.6788375000 
-SI           4.7518625000   2.0365125000   2.0365125000 
-SI           2.0365125000   4.7518625000   2.0365125000 
-SI           3.3941875000   0.6788375000   3.3941875000 
-...
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">216</span>
+<span class="go">    50.0 50.0 50.0 90.0 90.0 90.0</span>
+<span class="go">SI           0.6788375000   0.6788375000   0.6788375000 </span>
+<span class="go">SI           3.3941875000   3.3941875000   0.6788375000 </span>
+<span class="go">SI           4.7518625000   2.0365125000   2.0365125000 </span>
+<span class="go">SI           2.0365125000   4.7518625000   2.0365125000 </span>
+<span class="go">SI           3.3941875000   0.6788375000   3.3941875000 </span>
+<span class="go">...</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1430,14 +1427,15 @@ use this routine to determine the name of the crystal to load using
 </dd></dl>
 
 </section>
-<section id="microscope-and-simulation-controls">
-<h2>Microscope and Simulation Controls<a class="headerlink" href="#microscope-and-simulation-controls" title="Permalink to this heading">¶</a></h2>
-<span class="target" id="module-pyemaps.emcontrols"></span><p>There are two controls classes this module defines: <a class="reference external" href="modules.html#pyemaps.emcontrols.EMControl">microscope controls</a>
+<section id="module-pyemaps.emcontrols">
+<span id="microscope-and-simulation-controls"></span><h2>Microscope and Simulation Controls<a class="headerlink" href="#module-pyemaps.emcontrols" title="Permalink to this heading">¶</a></h2>
+<p>This class is a helper for handling pyEMAPS microscope controls.</p>
+<p>There are two controls classes this module defines: <a class="reference external" href="modules.html#pyemaps.emcontrols.EMControl">microscope controls</a>
 and <a class="reference external" href="modules.html#pyemaps.emcontrols.SIMControl">simulations controls</a>.</p>
 <p>Since the latter changes much less frequently than the former, 
 simulation control is embedded as a member of a microscope controls class.</p>
 <section id="simulation-control-constants-and-default-values">
-<h3>Simulation Control Constants and Default Values:<a class="headerlink" href="#simulation-control-constants-and-default-values" title="Permalink to this heading">¶</a></h3>
+<h3>Simulation control constants and default values<a class="headerlink" href="#simulation-control-constants-and-default-values" title="Permalink to this heading">¶</a></h3>
 <dl class="py data">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_EXCITATION">
 <span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_EXCITATION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.3,</span> <span class="pre">2.0)</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_EXCITATION" title="Permalink to this definition">¶</a></dt>
@@ -1485,7 +1483,7 @@ simulation control is embedded as a member of a microscope controls class.</p>
 
 </section>
 <section id="microscope-control-constants-and-default-values">
-<h3>Microscope Control Constants and Default Values:<a class="headerlink" href="#microscope-control-constants-and-default-values" title="Permalink to this heading">¶</a></h3>
+<h3>Microscope control constants and default values<a class="headerlink" href="#microscope-control-constants-and-default-values" title="Permalink to this heading">¶</a></h3>
 <dl class="py data">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_TILT">
 <span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_TILT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.0,</span> <span class="pre">0.0)</span></em><a class="headerlink" href="#pyemaps.emcontrols.DEF_TILT" title="Permalink to this definition">¶</a></dt>
@@ -1538,7 +1536,7 @@ simulation control is embedded as a member of a microscope controls class.</p>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_CBED_DSIZE">
-<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_CBED_DSIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.16</span>&#160; </em><a class="headerlink" href="#pyemaps.emcontrols.DEF_CBED_DSIZE" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_CBED_DSIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.16</span> </em><a class="headerlink" href="#pyemaps.emcontrols.DEF_CBED_DSIZE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </section>
@@ -1775,6 +1773,8 @@ Only plot those parameter that are not defaults</p>
 <span id="kinematic-diffractions"></span><h2>Kinematic Diffractions<a class="headerlink" href="#module-pyemaps.kdiffs" title="Permalink to this heading">¶</a></h2>
 <p>Kinematic diffraction module is designed to handle kinematic simulation
 data. It is composed of Point, Line and Disk class objects.</p>
+<blockquote>
+<div></div></blockquote>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyemaps.kdiffs.Point">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.kdiffs.</span></span><span class="sig-name descname"><span class="pre">Point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.kdiffs.Point" title="Permalink to this definition">¶</a></dt>
@@ -1991,7 +1991,6 @@ kinematic diffraction patterns using this object.</p>
 </section>
 <section id="module-pyemaps.ddiffs">
 <span id="dynamic-diffraction"></span><h2>Dynamic Diffraction<a class="headerlink" href="#module-pyemaps.ddiffs" title="Permalink to this heading">¶</a></h2>
-<p>Simple wrapper for dynamic simulation images.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyemaps.ddiffs.EMC">
 <span class="sig-prename descclassname"><span class="pre">pyemaps.ddiffs.</span></span><span class="sig-name descname"><span class="pre">EMC</span></span><a class="headerlink" href="#pyemaps.ddiffs.EMC" title="Permalink to this definition">¶</a></dt>
@@ -2046,33 +2045,6 @@ kinematic diffraction patterns using this object.</p>
 </section>
 <section id="module-pyemaps.stackimg">
 <span id="images-classes"></span><span id="builtin-visualization-functions"></span><h2>Images Classes<a class="headerlink" href="#module-pyemaps.stackimg" title="Permalink to this heading">¶</a></h2>
-<section id="this-file-is-part-of-pyemaps">
-<h3>This file is part of pyemaps<a class="headerlink" href="#this-file-is-part-of-pyemaps" title="Permalink to this heading">¶</a></h3>
-<p>pyemaps is free software for non-comercial use: you can 
-redistribute it and/or modify it under the terms of the GNU General 
-Public License as published by the Free Software Foundation, either 
-version 3 of the License, or (at your option) any later version.</p>
-<p>pyemaps is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p>
-<p>You should have received a copy of the GNU General Public License
-along with pyemaps.  If not, see &lt;<a class="reference external" href="https://www.gnu.org/licenses/">https://www.gnu.org/licenses/</a>&gt;.</p>
-</section>
-<section id="contact-supprort-emlabsoftware-com-for-any-questions-and-comments">
-<h3>Contact <a class="reference external" href="mailto:supprort&#37;&#52;&#48;emlabsoftware&#46;com">supprort<span>&#64;</span>emlabsoftware<span>&#46;</span>com</a> for any questions and comments.<a class="headerlink" href="#contact-supprort-emlabsoftware-com-for-any-questions-and-comments" title="Permalink to this heading">¶</a></h3>
-<p>Author:     EMLab Solutions, Inc.
-Date:       May 16, 2023</p>
-<p>EDIOM (Electron Diffraction Indexing and Orientation Mapping) module 
-in pyemaps contains a rich set of diffraction pattern search and recognition
-functions. Future feature addition include orientation mapping.</p>
-<p><em>StachImage</em> class is designed to interface with EDIOM functions to provide
-users easy access to the collection of EDIOM features.</p>
-<p>Most of the current and future EDIOM interfaces shown as StackImage
-class methods will be in full pyemaps package, with the exception
-of diffraction indexing method in demo mode in free package.</p>
-<p>Contact <a class="reference external" href="mailto:support&#37;&#52;&#48;emlabsoftware&#46;com">support<span>&#64;</span>emlabsoftware<span>&#46;</span>com</a> for how to get the full package.</p>
-</section>
 <dl class="py exception">
 <dt class="sig sig-object py" id="pyemaps.stackimg.XDPImageError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.stackimg.</span></span><span class="sig-name descname"><span class="pre">XDPImageError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.XDPImageError" title="Permalink to this definition">¶</a></dt>
@@ -2093,7 +2065,7 @@ of diffraction indexing method in demo mode in free package.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pyemaps.stackimg.displayXImage">
 <span class="sig-prename descclassname"><span class="pre">pyemaps.stackimg.</span></span><span class="sig-name descname"><span class="pre">displayXImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bColor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isMask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bIndexed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suptitle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.displayXImage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Internal ediom helper function displaying image.</p>
+<dd><p>Internal stem4d helper function displaying image.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p></p>
@@ -2108,12 +2080,29 @@ of diffraction indexing method in demo mode in free package.</p>
 <dt class="sig sig-object py" id="pyemaps.stackimg.StackImage">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.stackimg.</span></span><span class="sig-name descname"><span class="pre">StackImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imgfn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nformat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">E_SH</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">E_FLOAT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(MIN_IMAGESIZE,</span> <span class="pre">MIN_IMAGESIZE,</span> <span class="pre">MIN_IMAGESTACK)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noffset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Simple wrapper for experimental images used in pyemaps Ediom analyzes
-that include:</p>
+<p>Simple wrapper class for experimental images used in pyemaps 
+Stem4d analysis:</p>
 <ul class="simple">
-<li><p>diffraction pattern indexing</p></li>
+<li><p>Diffraction pattern indexing</p></li>
 <li><p>Annular Drak Field image generation</p></li>
+<li><p>Masked images</p></li>
 </ul>
+<p>All image files must be of raw bitmap format, or known as headered raw format:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><strong>Header</strong>: stores metadata about the image, often including three numbers </dt><dd><p>for dimensions (e.g. width, height, and number of bit depth, or stacks).</p>
+</dd>
+</dl>
+</li>
+<li><p><strong>Data Offset</strong>: After the header, the actual image or pixel data starts.</p></li>
+<li><dl class="simple">
+<dt><strong>Pixel Data</strong>: Stored in a row-major order, meaning pixels are arranged </dt><dd><p>row-byrow across columns.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>The image can also be represented by a numpy array directly. In this case,
+the StackImage object created will ignore its file name member.</p>
 <p>and more to come.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.__init__">
@@ -2123,7 +2112,7 @@ that include:</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.fname">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fname</span></span><a class="headerlink" href="#pyemaps.stackimg.StackImage.fname" title="Permalink to this definition">¶</a></dt>
-<dd><p>Experimental diffraction pattern image file name.
+<dd><p>Experimental diffraction pattern image input file full path.
 In case of numpy array, this field is ignored.</p>
 </dd></dl>
 
@@ -2133,7 +2122,9 @@ In case of numpy array, this field is ignored.</p>
 <dd><p>The type of the image file</p>
 <ul class="simple">
 <li><p>E_RAW: raw image files with image data at an <cite>noffset</cite> from the beginning of the file.</p></li>
-<li><p>E_SH: small header (pyemaps propietory)</p></li>
+<li><p>E_SH: small header (pyemaps propietory). Header is a tuple of three short integers 
+and data type represented also by a short integer. Total bytes of the header or the offset
+is 8)</p></li>
 <li><p>E_NPY: numpy array.</p></li>
 </ul>
 </dd></dl>
@@ -2141,45 +2132,54 @@ In case of numpy array, this field is ignored.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.ndtype">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ndtype</span></span><a class="headerlink" href="#pyemaps.stackimg.StackImage.ndtype" title="Permalink to this definition">¶</a></dt>
-<dd><p>The type of the image data - int, float, double supported.</p>
+<dd><p>The type of the image data - int, float, double are supported.
+The constants to used to represent the types are:</p>
+<ul class="simple">
+<li><p>E_INT and EM_INT: single and multiple stack integral image data type.</p></li>
+<li><p>E_FLOAT and EM_FLOAT: single and multiple stack real image data type.</p></li>
+<li><p>E_DOUBLE and EM_DOUBLE: single and multiple stack 8-byte real image data type.</p></li>
+</ul>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.noffset">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">noffset</span></span><a class="headerlink" href="#pyemaps.stackimg.StackImage.noffset" title="Permalink to this definition">¶</a></dt>
-<dd><p>image data offset from start of the file.</p>
+<dd><p>image data offset from start of the file. Normally, it is the size of the 
+header in bytes.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.dim">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dim</span></span><a class="headerlink" href="#pyemaps.stackimg.StackImage.dim" title="Permalink to this definition">¶</a></dt>
 <dd><p>image dimension, support 3 dimensional images with input of 
-3 integer tuple of (width, height, stack).</p>
+3 integer tuple of integers (width, height, stack).</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.data">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#pyemaps.stackimg.StackImage.data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raw image data in numpy ndarray when it is read from a numpy array
-Otherwise, the data will be generated from Ediom when it is loaded.</p>
+Otherwise, the data will be generated from Stem4d when the input image
+file is loaded.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.loadImage">
 <span class="sig-name descname"><span class="pre">loadImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">EL_ONE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stack</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.loadImage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads image into ediom module for analysis.</p>
+<dd><p>Loads image into stem4d module for analysis.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.viewExpImage">
-<span class="sig-name descname"><span class="pre">viewExpImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peakDP</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Indexed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.viewExpImage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Helper function in ediom module to display experimental diffraction database 
+<span class="sig-name descname"><span class="pre">viewExpImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peakDP</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iStack</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.viewExpImage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function in stem4d module to display experimental diffraction database 
 diffraction pattern currently loaded.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>peakDP</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – kinematic diffraction with miller index.</p></li>
+<li><p><strong>peakDP</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – kinematic diffraction with miller index. This parameter is only valid for EDIOM operations</p></li>
 <li><p><strong>Indexed</strong> (boolean, optional, default to <cite>False</cite>) – show the kinematic patterns after indexing is completed.</p></li>
+<li><p><strong>iStack</strong> (<em>integer</em><em>, </em><em>optional</em><em>, </em><em>default to 1</em>) – Image stack number to show. For single stack image, this parameter takes default value of 1</p></li>
 <li><p><strong>iShow</strong> (boolean, optional, default to <cite>False</cite>) – whether to show miller indexes</p></li>
 </ul>
 </dd>
@@ -2200,7 +2200,7 @@ display is turned on only by <em>bDebug</em> flag in
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.showMatchedDBDP">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">showMatchedDBDP</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.showMatchedDBDP" title="Permalink to this definition">¶</a></dt>
-<dd><p>Helper function in ediom module to display diffraction database diffraction pattern 
+<dd><p>Helper function in stem4d module to display diffraction database diffraction pattern 
 that best matches that of the experimental diffraction image pattern.</p>
 <p>This function is typically used to confirm its match with experimental diffraction 
 pattern. See sample code <em>al_ediom.py</em> for usage of this function.</p>
@@ -2215,7 +2215,7 @@ pattern. See sample code <em>al_ediom.py</em> for usage of this function.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.displaySearchMask">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">displaySearchMask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.displaySearchMask" title="Permalink to this definition">¶</a></dt>
-<dd><p>Internal ediom helper function displaying image mask image 
+<dd><p>Internal stem4d helper function displaying image mask image 
 generated in peak search.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -2230,7 +2230,7 @@ generated in peak search.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.displaySearchKernel">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">displaySearchKernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.displaySearchKernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Internal ediom helper function displaying image kernel image 
+<dd><p>Internal stem4d helper function displaying image kernel image 
 generated in peak search.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -2253,7 +2253,7 @@ as explained in the following</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.loadDPDB">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">loadDPDB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dbfn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bShowDBMap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.loadDPDB" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads the diffraction database file <em>dbfn</em> into ediom for diffraction peak searching and indexing.</p>
+<dd><p>Loads the diffraction database file <em>dbfn</em> into stem4d for diffraction peak searching and indexing.</p>
 <p>See sample code <em>si_dpgen.py</em> for how to generate a diffraction pattern database with
 pyemaps <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateDPDB">generateDPDB</a>.</p>
 <p>The database file can also be saved and reused.</p>
@@ -2279,7 +2279,7 @@ loading of the database file</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.showMatchingIndexMap">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">showMatchingIndexMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.showMatchingIndexMap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Helper function in ediom module to display matching indexes map. The colored
+<dd><p>Helper function in stem4d module to display matching indexes map. The colored
 heat map with the peak indicates the orientation in which experimental and 
 database diffraction patterns best match.</p>
 <dl class="field-list simple">
@@ -2308,19 +2308,10 @@ database diffraction patterns best match.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.indexImage">
 <span class="sig-name descname"><span class="pre">indexImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dpdbfn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_CC</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIGMA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_ICENTER</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_RMIN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_BOXSIZE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling_option</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(DEF_XSCALE,</span> <span class="pre">DEF_TSCALE)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_FILTER_THRESHOLD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SEARCH_THRESHOLD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bDebug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.indexImage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Searches and indexes loaded experimental diffraction image. The experimental diffraction image must be loaded 
-or imported before this call. There are many ways to import your image:</p>
-<p>1. Use <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.importRawExpImage">importRawExpImage</a>,
-if the image format is known and image data can be read from a fixed offset from the start of the file.</p>
-<p>2. Otherwise, use <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.importExpImageFromNPY">importExpImageFromNPY</a>,
-if the image can be exported and stored into a numpy array.</p>
-<p>3. Finally, use <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.importSHExpImage">importSHExpImage</a>,
-if the image id a proprietory formatted image file with a small header of 8 bytes offset,</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>We are working on importing images with popular formats, stay tuned.</p>
-</div>
-<p>In addition, a diffraction database also needs to be loaded by preceeding this call with
+<dd><p>Searches and indexes an experimental diffraction image. The experimental diffraction image will be loaded
+with StackImage class constructor and its <a class="reference external" href="pyemaps.stackimg.html#pyemaps.stackimg.StackImage.loadImage">loadImage</a>
+method before the search and indexes are performed.</p>
+<p>In addition, a diffraction database also needs to be loaded preceeding this call with
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB">loadDPDB</a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -2341,13 +2332,15 @@ of 3 to 4 times of sigma value for selected area diffraction.</p></li>
 <li><p><strong>filter_threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Diffraction pattern screening threshold. Between 0.0 and 1.0 
 use 0 to include all database patterns for search.</p></li>
 <li><p><strong>peak_threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Peak threshold. value between 0.0 and 1.0. used to remove noisy peaks.</p></li>
+<li><p><strong>ssel</strong> (<em>integer</em><em>, </em><em>optional. Default value to 1</em><em>, </em><em>the first image layer in the input image stack.</em>) – image stack selection. The value must be in range of the input image layers.</p></li>
+<li><p><strong>bDebug</strong> (Boolean, optional. Default value to <cite>False</cite>.) – debug option. This is for displaying intermediate searching and masking images used.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>status code, 0 for successful run</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
+<dd class="field-odd"><p>integer</p>
 </dd>
 </dl>
 <p>The image control parameters cc - rmin above are image meaurements controls. The accuraccies
@@ -2365,7 +2358,7 @@ the opportunity to verify the image:</p>
 the indexing result will be displayed on top of the experimental image:</p>
 <a class="reference internal image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/expimgindexed.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/expimgindexed.png" class="align-center" src="https://github.com/emlab-solutions/imagepypy/raw/main/expimgindexed.png" style="width: 75%;" /></a>
 <p>4. Once the indexing results are generated, users have the option to call more display
-<em>EDIOM</em> functions to show other results generated by this call. For examples, 
+<em>STEM4D</em> functions to show other results generated by this call. For examples, 
 the matching database DP image and DP database matching index map as shown below:</p>
 <a class="reference internal image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/matchingDPDB.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/matchingDPDB.png" class="align-center" src="https://github.com/emlab-solutions/imagepypy/raw/main/matchingDPDB.png" style="width: 75%;" /></a>
 <a class="reference internal image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/matchingindexmap.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/matchingindexmap.png" class="align-center" src="https://github.com/emlab-solutions/imagepypy/raw/main/matchingindexmap.png" style="width: 75%;" /></a>
@@ -2402,27 +2395,75 @@ more verbose results are also shown in standard output:</p>
 </div>
 <p>where Reliability index greater than 5.0 is considered successful run. DP stands for
 diffraction pattern. If your results do not fit in a run, adjusting search and indexing paramemers
-such as filter_threshold and peak threshold can also help ediom module to search and match peaks.</p>
+such as filter_threshold and peak threshold can also help stem4d module to search and match peaks.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>When <em>bDebug</em> flag is set (to ‘True’), users are offered to chance to display more information of 
-ediom’s intermediate execution steps. For example, peak discovery step will show results
+stem4d’s intermediate execution steps. For example, peak discovery step will show results
 of all found peaks by image peak matching algorithms before indexing is done. 
 These intermediate images are mainly for debugging purposes.</p>
 </div>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.generateADF">
-<span class="sig-name descname"><span class="pre">generateADF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.generateADF" title="Permalink to this definition">¶</a></dt>
-<dd><p>generates an Annular Dark Field(ADF) image from an experimental image input.</p>
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.generateBDF">
+<span class="sig-name descname"><span class="pre">generateBDF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.generateBDF" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>This method generates an (Annular) Bright/Dark Field image from an experimental stack image.
+It is a wrapper for the function <a href="#id27"><span class="problematic" id="id28">`</span></a>getBDF`function in the new SEND module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param center<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The center of detector.</p>
+</dd>
+<dt class="field-even">type center<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple of floating point numbers</p>
+</dd>
+<dt class="field-odd">param rads<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a pair of radius for inner and outer field detectors. 
+When the inner radius is set to zero, the resulting image will be either 
+Bright Field(BF) or Dark Field(DF) depending on if the center is on 
+the bright spot of the image or not. Otherwise, a positive inner radius
+will result in Annular Bright Field (ABF) or Annular Dark Field (ADF).</p>
+</dd>
+<dt class="field-even">type rads<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple, optional.</p>
+</dd>
+<dt class="field-odd">param scol<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The size of the output image along column direction.</p>
+</dd>
+<dt class="field-even">type scol<span class="colon">:</span></dt>
+<dd class="field-even"><p>floating point numbers, optional</p>
+</dd>
+<dt class="field-odd">param bShow<span class="colon">:</span></dt>
+<dd class="field-odd"><p>whether to display the resulting image.</p>
+</dd>
+<dt class="field-even">type bShow<span class="colon">:</span></dt>
+<dd class="field-even"><p>boolean, optional, default <cite>False</cite></p>
+</dd>
+<dt class="field-odd">return<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(status code, image data), status code of 0 successful, otherwise failed</p>
+</dd>
+<dt class="field-even">rtype<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple of a short integer and image data array.</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The experimental image loaded must have more than one stack.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.generateMaskedImage">
+<span class="sig-name descname"><span class="pre">generateMaskedImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maskfn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scancol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.generateMaskedImage" title="Permalink to this definition">¶</a></dt>
+<dd><p>generates an Bright Field(ADF) image from an experimental stack image input.
+and a mask image.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>imgfn</strong> (<em>string</em><em>, </em><em>required</em>) – experimental image file name.</p></li>
-<li><p><strong>center</strong> (<em>tuple</em><em> of </em><em>floats</em>) – The center of ADF detector.</p></li>
-<li><p><strong>rads</strong> (<em>tuple</em><em>, </em><em>optional.</em>) – a pair of radius for inner and outer ADF detector.</p></li>
-<li><p><strong>scol</strong> (<em>float</em><em>, </em><em>optional</em>) – The size of the output image along column direction.</p></li>
+<li><p><strong>maskfn</strong> (<em>string</em><em>, </em><em>required</em>) – mask image file name.</p></li>
+<li><p><strong>scancol</strong> (<em>float</em>) – The center of ADF detector. default value 0.0</p></li>
 <li><p><strong>bShow</strong> (boolean, optional, default <cite>False</cite>) – whether to display the resulting ADF image.</p></li>
 </ul>
 </dd>
@@ -2435,11 +2476,114 @@ These intermediate images are mainly for debugging purposes.</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.convertImage">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">convertImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imgfn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nformat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">E_RAW</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">E_FLOAT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(MIN_IMAGESIZE,</span> <span class="pre">MIN_IMAGESIZE,</span> <span class="pre">MIN_IMAGESTACK)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noffset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.convertImage" title="Permalink to this definition">¶</a></dt>
+<dd><p>converts any other suported image formats into pyEMAPS’ proprietory small 
+header format.</p>
+<p>This static method is very useful for all auxillary images to be used with 
+stem4d module and are required to have the proprietory image format by the
+pyEMAPS simulation backend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>imgfn</strong> (<em>string</em><em>, </em><em>required. Ignored when nformat is E_NPY</em>) – input image file path</p></li>
+<li><p><strong>nformat</strong> (integer, optional, default to <cite>E_RAW</cite>) – format of the image file. Support all bitmap formatted image format</p></li>
+<li><p><strong>ndtype</strong> (<em>integer</em><em>, </em><em>optional</em><em>, </em><em>default to E_INT</em>) – image date types. It can be integer, float or double</p></li>
+<li><p><strong>dim</strong> (<em>integer tuple</em><em>, </em><em>optional</em><em>, </em><em>default to</em><em> (</em><em>MIN_IMAGESIZE</em><em>, </em><em>MIN_IMAGESIZE</em><em>, </em><em>MIN_IMAGESTACK</em><em>)</em>) – three integer tuple for the dimension of the image data (width, height, stack/depth)</p></li>
+<li><p><strong>noffset</strong> (<em>integer</em><em>, </em><em>optional</em><em>, </em><em>default to 8.</em>) – header offset or starting byte of the image data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the input raw image file name does not contain directory,
+this method will search the file in pyEMAPS data diretcory
+set by environment variable PYEMAPS_DATA or current working
+directory in that order.</p>
+<p>If the input file contains the fully qualified file path, 
+pyEMAPS will be using the folder that contains the file
+to place the output image file. So, please make sure that
+the input directory is writable.</p>
+<p>The result pyEMAPS image file with small header will be saved 
+in a folder name <cite>sh_converted</cite> in the dierctory that
+contains the original raw image file.</p>
+</div>
+</dd></dl>
+
 </dd></dl>
 
 </section>
-<section id="display">
-<h2>Display<a class="headerlink" href="#display" title="Permalink to this heading">¶</a></h2>
+<section id="module-pyemaps.display">
+<span id="display"></span><h2>Display<a class="headerlink" href="#module-pyemaps.display" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.display.showDif">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">showDif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dpl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'individual'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bSave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bClose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.showDif" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render kinematic diffraction pattern generated by pyemaps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dpl</strong> (<em>DPList</em>) – Kinematic difraction pattern object list <a class="reference external" href="pyemaps.kdiffs.html#pyemaps.kdiffs.DPList">DPList</a></p></li>
+<li><p><strong>cShow</strong> (<em>bool</em><em>, </em><em>optional</em>) – Plot control annotation. <cite>True</cite> (default): plot the control parameters on lower left corner; <cite>False</cite> do not plot.</p></li>
+<li><p><strong>kShow</strong> (<em>bool</em>) – Whether to display Kikuchi lines.</p></li>
+<li><p><strong>iShow</strong> (<em>bool</em>) – Whether to display Miller indexes.</p></li>
+<li><p><strong>layout</strong> (<em>str</em><em>, </em><em>optional</em>) – layout format. individual (default): plotting one by one, table: plotting in a table of 3 columns</p></li>
+<li><p><strong>bSave</strong> (<em>bool</em>) – Whether to save the diplay into a .png image file.</p></li>
+<li><p><strong>bClose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to close plotting window when finished. Default: False - users must close it.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.display.showBloch">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">showBloch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bimgs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bColor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'individual'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bSave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bClose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.showBloch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render dynamic diffraction pattern generated by pyemaps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bimgs</strong> (<a class="reference internal" href="pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs" title="pyemaps.ddiffs.BlochImgs"><em>BlochImgs</em></a>) – <p>Optional. Dynamic difraction pattern object list <a class="reference external" href="pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs">BImgList</a></p>
+</p></li>
+<li><p><strong>cShow</strong> (<em>bool</em><em>, </em><em>optional</em>) – Plot control annotation. <cite>True</cite> (default): plot the control parameters on lower left corner; <cite>False</cite> do not plot.</p></li>
+<li><p><strong>bColor</strong> (<em>bool</em>) – Optional. Whether to display the image in predefined color map.</p></li>
+<li><p><strong>layout</strong> (<em>str</em><em>, </em><em>optional</em>) – layout format. individual (default): plotting one by one, table: plotting in a table of 3 columns</p></li>
+<li><p><strong>bSave</strong> (<em>bool</em>) – Optional. Whether to save the image into a .im3 image file.</p></li>
+<li><p><strong>bClose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to close plotting window when finished. Default: False - users must close it.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.display.showStereo">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.display.</span></span><span class="sig-name descname"><span class="pre">showStereo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'individual'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bSave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bClose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.display.showStereo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render stereodiagram generated by pyemaps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>slist</strong> (<em>list</em><em>, </em><em>required</em>) – Stereodiagram output from <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateStereo">generateStereo</a>.</p></li>
+<li><p><strong>cShow</strong> (<em>bool</em><em>, </em><em>optional</em>) – Plot control annotation. <cite>True</cite> (default): plot the control parameters on lower left corner; <cite>False</cite> do not plot.</p></li>
+<li><p><strong>iShow</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to display Miller indexes or not.</p></li>
+<li><p><strong>zLimit</strong> (<em>int</em><em>, </em><em>optional</em>) – Miller indexes cutoff number.</p></li>
+<li><p><strong>layout</strong> (<em>str</em><em>, </em><em>optional</em>) – layout format. individual (default): plotting one by one in sequence, table: plotting in a table of 3 columns</p></li>
+<li><p><strong>bSave</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to save the image into a .png image file.</p></li>
+<li><p><strong>bClose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to close plotting window when finished. Default: False - users must close it.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When zlimit is set at 2, it is applied to all elements of each 
+Miller index. For example, (3, 1, 0) will not be rendered.</p>
+</div>
+</dd></dl>
+
 </section>
 <section id="module-pyemaps.fileutils">
 <span id="file-utilities"></span><h2>File Utilities<a class="headerlink" href="#module-pyemaps.fileutils" title="Permalink to this heading">¶</a></h2>
@@ -2448,6 +2592,255 @@ Its methods include reading crystal data files and writing simulation
 output files.</p>
 <p>It also detects pyemaps data home environment variables and directs
 file i/o accoridng to the rule set in <a class="reference internal" href="usage.html#environment-variables"><span class="std std-ref">Environment Variables</span></a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">Path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PurePath</span></code></p>
+<p>PurePath subclass that can make system calls.</p>
+<p>Path represents a filesystem path but unlike PurePath, also offers
+methods to do system calls on path objects. Depending on your system,
+instantiating a Path will return either a PosixPath or a WindowsPath
+object. You can also instantiate a PosixPath or WindowsPath directly,
+but cannot instantiate a WindowsPath on a POSIX system or vice versa.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.cwd">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cwd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.cwd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new path pointing to the current working directory
+(as returned by os.getcwd()).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.home">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">home</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.home" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new path pointing to the user’s home directory (as
+returned by os.path.expanduser(‘~’)).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.samefile">
+<span class="sig-name descname"><span class="pre">samefile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.samefile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether other_path is the same or not as this file
+(as returned by os.path.samefile()).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.iterdir">
+<span class="sig-name descname"><span class="pre">iterdir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.iterdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over the files in this directory.  Does not yield any
+result for the special paths ‘.’ and ‘..’.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.glob">
+<span class="sig-name descname"><span class="pre">glob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.glob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over this subtree and yield all existing files (of any
+kind, including directories) matching the given relative pattern.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.rglob">
+<span class="sig-name descname"><span class="pre">rglob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.rglob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursively yield all existing files (of any kind, including
+directories) matching the given relative pattern, anywhere in
+this subtree.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.absolute">
+<span class="sig-name descname"><span class="pre">absolute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.absolute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an absolute version of this path.  This function works
+even if the path doesn’t point to anything.</p>
+<p>No normalization is done, i.e. all ‘.’ and ‘..’ will be kept along.
+Use resolve() to get the canonical path to a file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.resolve">
+<span class="sig-name descname"><span class="pre">resolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.resolve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make the path absolute, resolving all symlinks on the way and also
+normalizing it (for example turning slashes into backslashes under
+Windows).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.stat">
+<span class="sig-name descname"><span class="pre">stat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.stat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the result of the stat() system call on this path, like
+os.stat() does.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.owner">
+<span class="sig-name descname"><span class="pre">owner</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.owner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the login name of the file owner.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.group">
+<span class="sig-name descname"><span class="pre">group</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the group name of the file gid.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.open">
+<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open the file pointed by this path and return a file object, as
+the built-in open() function does.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.read_bytes">
+<span class="sig-name descname"><span class="pre">read_bytes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.read_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open the file in bytes mode, read it, and close the file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.read_text">
+<span class="sig-name descname"><span class="pre">read_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.read_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open the file in text mode, read it, and close the file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.write_bytes">
+<span class="sig-name descname"><span class="pre">write_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.write_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open the file in bytes mode, write to it, and close the file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.write_text">
+<span class="sig-name descname"><span class="pre">write_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.write_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open the file in text mode, write to it, and close the file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.touch">
+<span class="sig-name descname"><span class="pre">touch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">438</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_ok</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.touch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create this file with the given access mode, if it doesn’t exist.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.mkdir">
+<span class="sig-name descname"><span class="pre">mkdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">511</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_ok</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.mkdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new directory at this given path.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.chmod">
+<span class="sig-name descname"><span class="pre">chmod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.chmod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the permissions of the path, like os.chmod().</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.lchmod">
+<span class="sig-name descname"><span class="pre">lchmod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.lchmod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like chmod(), except if the path points to a symlink, the symlink’s
+permissions are changed, rather than its target’s.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.unlink">
+<span class="sig-name descname"><span class="pre">unlink</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.unlink" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove this file or link.
+If the path is a directory, use rmdir() instead.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.rmdir">
+<span class="sig-name descname"><span class="pre">rmdir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.rmdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove this directory.  The directory must be empty.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.lstat">
+<span class="sig-name descname"><span class="pre">lstat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.lstat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like stat(), except if the path points to a symlink, the symlink’s
+status information is returned, rather than its target’s.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.rename">
+<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.rename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rename this path to the given path.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.replace">
+<span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rename this path to the given path, clobbering the existing
+destination if it exists.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.symlink_to">
+<span class="sig-name descname"><span class="pre">symlink_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_is_directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.symlink_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make this path a symlink pointing to the given path.
+Note the order of arguments (self, target) is the reverse of os.symlink’s.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.exists">
+<span class="sig-name descname"><span class="pre">exists</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether this path exists.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.is_dir">
+<span class="sig-name descname"><span class="pre">is_dir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.is_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether this path is a directory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.is_file">
+<span class="sig-name descname"><span class="pre">is_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.is_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether this path is a regular file (also True for symlinks pointing
+to regular files).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.is_mount">
+<span class="sig-name descname"><span class="pre">is_mount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.is_mount" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if this path is a POSIX mount point</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.is_symlink">
+<span class="sig-name descname"><span class="pre">is_symlink</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.is_symlink" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether this path is a symbolic link.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.is_block_device">
+<span class="sig-name descname"><span class="pre">is_block_device</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.is_block_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether this path is a block device.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.is_char_device">
+<span class="sig-name descname"><span class="pre">is_char_device</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.is_char_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether this path is a character device.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.is_fifo">
+<span class="sig-name descname"><span class="pre">is_fifo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.is_fifo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether this path is a FIFO.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.is_socket">
+<span class="sig-name descname"><span class="pre">is_socket</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.is_socket" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether this path is a socket.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.expanduser">
+<span class="sig-name descname"><span class="pre">expanduser</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.expanduser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new path with expanded ~ and ~user constructs
+(as returned by os.path.expanduser)</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="pyemaps.fileutils.find_datahome">
 <span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">find_datahome</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.find_datahome" title="Permalink to this definition">¶</a></dt>
@@ -2502,6 +2895,121 @@ diretcory set by the variable or return current working directory.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.fileutils.farray">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">farray</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.farray" title="Permalink to this definition">¶</a></dt>
+<dd><p>asfortranarray(a, dtype=None, <a href="#id30"><span class="problematic" id="id31">*</span></a>, like=None)</p>
+<p>Return an array (ndim &gt;= 1) laid out in Fortran order in memory.</p>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this heading">¶</a></h3>
+<dl>
+<dt>a<span class="classifier">array_like</span></dt><dd><p>Input array.</p>
+</dd>
+<dt>dtype<span class="classifier">str or dtype object, optional</span></dt><dd><p>By default, the data-type is inferred from the input data.</p>
+</dd>
+<dt>like<span class="classifier">array_like</span></dt><dd><p>Reference object to allow the creation of arrays which are not
+NumPy arrays. If an array-like passed in as <code class="docutils literal notranslate"><span class="pre">like</span></code> supports
+the <code class="docutils literal notranslate"><span class="pre">__array_function__</span></code> protocol, the result will be defined
+by it. In this case, it ensures the creation of an array object
+compatible with that passed in via this argument.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 1.20.0.</span></p>
+</div>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Permalink to this heading">¶</a></h3>
+<dl class="simple">
+<dt>out<span class="classifier">ndarray</span></dt><dd><p>The input <cite>a</cite> in Fortran, or column-major, order.</p>
+</dd>
+</dl>
+</section>
+<section id="see-also">
+<h3>See Also<a class="headerlink" href="#see-also" title="Permalink to this heading">¶</a></h3>
+<p>ascontiguousarray : Convert input to a contiguous (C order) array.
+asanyarray : Convert input to an ndarray with either row or</p>
+<blockquote>
+<div><p>column-major memory order.</p>
+</div></blockquote>
+<p>require : Return an ndarray that satisfies requirements.
+ndarray.flags : Information about the memory layout of the array.</p>
+</section>
+<section id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h3>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asfortranarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;F_CONTIGUOUS&#39;</span><span class="p">]</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;F_CONTIGUOUS&#39;</span><span class="p">]</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Note: This function returns an array with at least one-dimension (1-d)
+so it will not preserve 0-d arrays.</p>
+</section>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="pyemaps.fileutils.XTLError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">XTLError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.XTLError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>XTL crystal data import errors.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.XTLError.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.XTLError.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="pyemaps.fileutils.SPGError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">SPGError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.SPGError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Space group data validation errors.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.SPGError.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.SPGError.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="pyemaps.fileutils.CIFError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">CIFError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.CIFError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>CIF crystal data import errors.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.CIFError.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.CIFError.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="pyemaps.fileutils.SPGSettingNotInRangeError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">SPGSettingNotInRangeError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">setmax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.SPGSettingNotInRangeError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyemaps.errors.html#pyemaps.errors.SPGError" title="pyemaps.errors.SPGError"><code class="xref py py-class docutils literal notranslate"><span class="pre">SPGError</span></code></a></p>
+<p>Space group setting validation errors.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.SPGSettingNotInRangeError.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">setmax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.SPGSettingNotInRangeError.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="pyemaps.fileutils.SPGITMumberNotInRangeError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">SPGITMumberNotInRangeError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nummax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.SPGITMumberNotInRangeError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyemaps.errors.html#pyemaps.errors.SPGError" title="pyemaps.errors.SPGError"><code class="xref py py-class docutils literal notranslate"><span class="pre">SPGError</span></code></a></p>
+<p>Space group IT number validation errors.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.SPGITMumberNotInRangeError.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nummax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.SPGITMumberNotInRangeError.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="pyemaps.fileutils.loadCrystalCIFData">
 <span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">loadCrystalCIFData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.loadCrystalCIFData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads a .cif file for crystal data.</p>
@@ -2550,6 +3058,26 @@ diretcory set by the variable or return current working directory.</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.fileutils.get_settingmax">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">get_settingmax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.get_settingmax" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.fileutils.getsymmetryxyz">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">getsymmetryxyz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.getsymmetryxyz" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.fileutils.lookuphm">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">lookuphm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.lookuphm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.fileutils.validateSPG">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">validateSPG</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.validateSPG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </section>
 <section id="module-pyemaps.errors">
@@ -2863,7 +3391,7 @@ Dfffracted beams object creation.</p>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualisation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licences for pyEMAPS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rn.html">Release Notes</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Modules, Classes and Interfaces</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.crystals">Crystals</a><ul>
@@ -2873,9 +3401,9 @@ Dfffracted beams object creation.</p>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.crystals.Crystal"><code class="docutils literal notranslate"><span class="pre">Crystal</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#microscope-and-simulation-controls">Microscope and Simulation Controls</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#simulation-control-constants-and-default-values">Simulation Control Constants and Default Values:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#microscope-control-constants-and-default-values">Microscope Control Constants and Default Values:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.emcontrols">Microscope and Simulation Controls</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#simulation-control-constants-and-default-values">Simulation control constants and default values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#microscope-control-constants-and-default-values">Microscope control constants and default values</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.emcontrols.EMCError"><code class="docutils literal notranslate"><span class="pre">EMCError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.emcontrols.doc_dec_simc"><code class="docutils literal notranslate"><span class="pre">doc_dec_simc()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.emcontrols.SIMControl"><code class="docutils literal notranslate"><span class="pre">SIMControl</span></code></a></li>
@@ -2898,22 +3426,36 @@ Dfffracted beams object creation.</p>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.stackimg">Images Classes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#this-file-is-part-of-pyemaps">This file is part of pyemaps</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#contact-supprort-emlabsoftware-com-for-any-questions-and-comments">Contact supprort&#64;emlabsoftware.com for any questions and comments.</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.stackimg.XDPImageError"><code class="docutils literal notranslate"><span class="pre">XDPImageError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.stackimg.normalizeImage"><code class="docutils literal notranslate"><span class="pre">normalizeImage()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.stackimg.displayXImage"><code class="docutils literal notranslate"><span class="pre">displayXImage()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.stackimg.StackImage"><code class="docutils literal notranslate"><span class="pre">StackImage</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#display">Display</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.display">Display</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.display.showDif"><code class="docutils literal notranslate"><span class="pre">showDif()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.display.showBloch"><code class="docutils literal notranslate"><span class="pre">showBloch()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.display.showStereo"><code class="docutils literal notranslate"><span class="pre">showStereo()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.fileutils">File Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.Path"><code class="docutils literal notranslate"><span class="pre">Path</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.find_datahome"><code class="docutils literal notranslate"><span class="pre">find_datahome()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.auto_fn"><code class="docutils literal notranslate"><span class="pre">auto_fn()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.find_pyemaps_datahome"><code class="docutils literal notranslate"><span class="pre">find_pyemaps_datahome()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.compose_ofn"><code class="docutils literal notranslate"><span class="pre">compose_ofn()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.farray"><code class="docutils literal notranslate"><span class="pre">farray()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.XTLError"><code class="docutils literal notranslate"><span class="pre">XTLError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.SPGError"><code class="docutils literal notranslate"><span class="pre">SPGError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.CIFError"><code class="docutils literal notranslate"><span class="pre">CIFError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.SPGSettingNotInRangeError"><code class="docutils literal notranslate"><span class="pre">SPGSettingNotInRangeError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.SPGITMumberNotInRangeError"><code class="docutils literal notranslate"><span class="pre">SPGITMumberNotInRangeError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.loadCrystalCIFData"><code class="docutils literal notranslate"><span class="pre">loadCrystalCIFData()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.loadCrystalData"><code class="docutils literal notranslate"><span class="pre">loadCrystalData()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.get_settingmax"><code class="docutils literal notranslate"><span class="pre">get_settingmax()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.getsymmetryxyz"><code class="docutils literal notranslate"><span class="pre">getsymmetryxyz()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.lookuphm"><code class="docutils literal notranslate"><span class="pre">lookuphm()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.fileutils.validateSPG"><code class="docutils literal notranslate"><span class="pre">validateSPG()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.errors">Error Handling</a><ul>
@@ -2978,7 +3520,7 @@ Dfffracted beams object creation.</p>
         <li class="right" >
           <a href="rn.html" title="Release Notes"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.9 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.1.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Modules, Classes and Interfaces</a></li> 
       </ul>
     </div>

@@ -1,38 +1,16 @@
-# """
-# This file is part of pyemaps
-# ___________________________
-
-# pyemaps is free software for non-comercial use: you can 
-# redistribute it and/or modify it under the terms of the GNU General 
-# Public License as published by the Free Software Foundation, either 
-# version 3 of the License, or (at your option) any later version.
-
-# pyemaps is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-# You should have received a copy of the GNU General Public License
-# along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
-
-# Contact supprort@emlabsoftware.com for any questions and comments.
-# ___________________________
-
-# Author:     EMLab Solutions, Inc.
-# Date:       May 09, 2022   
-
-# This class is helper for handling pyemaps microscope controls
-# """
-
 """
+.. This file is part of pyEMAPS. 
+
+This class is a helper for handling pyEMAPS microscope controls.
+
 There are two controls classes this module defines: `microscope controls <modules.html#pyemaps.emcontrols.EMControl>`_
 and `simulations controls <modules.html#pyemaps.emcontrols.SIMControl>`_. 
 
 Since the latter changes much less frequently than the former, 
 simulation control is embedded as a member of a microscope controls class.
 
-Simulation Control Constants and Default Values:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Simulation control constants and default values
+-----------------------------------------------
 
 .. data:: DEF_EXCITATION
     :value: (0.3, 2.0)
@@ -62,8 +40,8 @@ Simulation Control Constants and Default Values:
     :value: (200, 200, 100)
 
 
-Microscope Control Constants and Default Values:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Microscope control constants and default values
+-----------------------------------------------
 
 .. data:: DEF_TILT
     :value: (0.0, 0.0)
@@ -96,9 +74,30 @@ Microscope Control Constants and Default Values:
     :value: 1
 
 .. data:: DEF_CBED_DSIZE
-    :value: 0.16  
-    
+    :value: 0.16 
+
+.. pyEMAPS is free software. You can redistribute it and/or modify 
+.. it under the terms of the GNU General Public License as published 
+.. by the Free Software Foundation, either version 3 of the License, 
+.. or (at your option) any later version..
+
+.. pyEMAPS is distributed in the hope that it will be useful,
+.. but WITHOUT ANY WARRANTY; without even the implied warranty of
+.. MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.. GNU General Public License for more details.
+
+.. You should have received a copy of the GNU General Public License
+.. along with pyEMAPS.  If not, see `<https://www.gnu.org/licenses/>`_.
+
+.. Contact supprort@emlabsoftware.com for any questions and comments.
+
+.. ----
+
+.. Author:     EMLab Solutions, Inc.
+.. Date:       May 09, 2022   
+
 """
+
 from . import  EMCError
 
 

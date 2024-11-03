@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Visualisation &#8212; pyemaps 1.0.9 Stable documentation</title>
+    <title>Visualisation &#8212; pyemaps 1.1.0 Stable documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -17,6 +17,7 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     
+    <link rel="shortcut icon" href="_static/pyemaps.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Frequently Asked Questions" href="faq.html" />
@@ -37,7 +38,7 @@
         <li class="right" >
           <a href="usage.html" title="Getting Started"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.9 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.1.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Visualisation</a></li> 
       </ul>
     </div>  
@@ -49,7 +50,7 @@
             
   <section id="visualisation">
 <h1>Visualisation<a class="headerlink" href="#visualisation" title="Permalink to this heading">¶</a></h1>
-<p><em>pyemaps</em> provides a set of helper functions to show diffraction patterns.
+<p><em>pyEMAPS</em> provides a set of helper functions to show diffraction patterns.
 These function are implemented with python’s <em>matplotlib</em>.</p>
 <p><em>si_dif.py</em> and <em>si_bloch.py</em> sample code demonstrate the rendering of
 diffraction patterns generated for <em>silicon</em> crystal by plotting
@@ -63,7 +64,7 @@ as shown in <a class="reference internal" href="#thirdparty"><span class="std st
 <h2>Builtin Displays<a class="headerlink" href="#builtin-displays" title="Permalink to this heading">¶</a></h2>
 <section id="kinematic-diffraction-simulations">
 <h3>Kinematic Diffraction Simulations<a class="headerlink" href="#kinematic-diffraction-simulations" title="Permalink to this heading">¶</a></h3>
-<p>Additional example of <em>pyemaps</em>’s builtin functions for rendering
+<p>Additional example of <em>pyEMAPS</em>’s builtin functions for rendering
 kinematic diffraction simulations for <em>silicon</em> crystal with starting zone
 changing and camera length set at 2500:</p>
 <a class="reference external image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png" src="https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png" /></a>
@@ -120,7 +121,7 @@ changing and camera length set at 2500:</p>
 </section>
 <section id="dynamic-diffraction-simulations">
 <h3>Dynamic Diffraction Simulations<a class="headerlink" href="#dynamic-diffraction-simulations" title="Permalink to this heading">¶</a></h3>
-<p>Below is another example of using <em>pyemaps</em> builtin display functions
+<p>Below is another example of using <em>pyEMAPS</em> builtin display functions
 to render Bloch simulation images for <em>silicon</em> with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">zone</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">hight</span> <span class="n">voltage</span> <span class="n">vt</span><span class="o">=</span><span class="mi">100</span>
@@ -172,9 +173,9 @@ to render Bloch simulation images for <em>silicon</em> with:</p>
 </section>
 <section id="stereodiagram">
 <h3>Stereodiagram<a class="headerlink" href="#stereodiagram" title="Permalink to this heading">¶</a></h3>
-<p>Similar build-in function to display stereodiagram output from <em>pyemaps</em>
-is showStereo function in <em>pyemaps</em>’s <em>display</em> module. It takes a
-stereodiagram dictionary objects generated from <em>pyemaps</em>’
+<p>Similar build-in function to display stereodiagram output from <em>pyEMAPS</em>
+is showStereo function in <em>pyEMAPS</em>’s <em>display</em> module. It takes a
+stereodiagram dictionary objects generated from <em>pyEMAPS</em>’
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateStereo">generateStereo</a>
 and renders each element by accessing the dictionary objects directly
 as demonstrated below:</p>
@@ -232,18 +233,18 @@ as demonstrated below:</p>
 </section>
 <section id="pyemaps-gui-web-service">
 <h3>Pyemaps GUI Web Service<a class="headerlink" href="#pyemaps-gui-web-service" title="Permalink to this heading">¶</a></h3>
-<p>Driven by the latest pyemaps, a web server is setup for those who are interested
-in better visualization of pyemaps simulations and calculations. This service
+<p>Driven by the latest pyEMAPS, a web server is setup for those who are interested
+in better visualization of pyEMAPS simulations and calculations. This service
 is for a nominal subscription fees. Go to <a class="reference external" href="https://emaps.emlabsolutions.com">https://emaps.emlabsolutions.com</a>
 to sign up.</p>
 <p>Below is an example of the ineractive 3-d display of atomic structure through Jmole
-based on pyemaps crystal structure calculations:</p>
+based on pyEMAPS crystal structure calculations:</p>
 <img alt="https://github.com/emlab-solutions/imagepypy/raw/main//pyemaps_web_server.png" src="https://github.com/emlab-solutions/imagepypy/raw/main//pyemaps_web_server.png" />
 </section>
 </section>
 <section id="rendering-by-third-party-tools">
 <span id="thirdparty"></span><h2>Rendering by Third Party Tools<a class="headerlink" href="#rendering-by-third-party-tools" title="Permalink to this heading">¶</a></h2>
-<p>pyemaps kinematic diffraction simulation results are captured by
+<p>pyEMAPS kinematic diffraction simulation results are captured by
 <a class="reference external" href="pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern">DP or diffPattern</a> class:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>
 
@@ -266,7 +267,7 @@ and so on. Each of the objects is accessible for its own data such as points whe
 in DigitalMicrograph:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>For complete python script integrating pyemaps into DM, see <em>si_stereo.py</em> in samples directory.</p>
+<p>For complete python script integrating pyEMAPS into DM, see <em>si_stereo.py</em> in samples directory.</p>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">show_diffract</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">md</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Diamond&#39;</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">XMAX</span><span class="p">,</span> <span class="n">YMAX</span>
@@ -388,7 +389,7 @@ in DigitalMicrograph:</p>
 <p>where <em>dp</em> is the kinematic diffraction pattern generated from generateDP call.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>To get the above display work in <em>DM</em>, <em>pyemaps</em> must be installed in <em>DM</em>’s
+<p>To get the above display work in <em>DM</em>, <em>pyEMAPS</em> must be installed in <em>DM</em>’s
 python environment.</p>
 </div>
 <section id="dynamic-diffraction-patterns">
@@ -396,19 +397,19 @@ python environment.</p>
 <p>The output from bloch dynamic diffraction simulation is an array of 2 or 3 dimensional floating
 numbers representing image intensities, depending on whether one or multiple slices of
 dynamic diffraction images are generated.</p>
-<p><strong>pyemaps</strong> provides an option for users to save the images as raw image files that
+<p><strong>pyEMAPS</strong> provides an option for users to save the images as raw image files that
 can be imported into ImageJ or DigitalMicrograph. Refer to
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateBloch">generateBloch</a> or
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getBlochImages">getBlochImages</a> for
 details.</p>
-<p>Below is a visualization of a raw bloch images files saved from a pyemaps dynamic simulation
+<p>Below is a visualization of a raw bloch images files saved from a pyEMAPS dynamic simulation
 run in Digita;Micrograph. The raw image contains 10 images each at a sample thickness
 range betwwen 0 and 1000.</p>
 <img alt="_images/bloch_3d_dm.png" src="_images/bloch_3d_dm.png" />
 </section>
 <section id="constructing-crystal">
 <h3>Constructing Crystal<a class="headerlink" href="#constructing-crystal" title="Permalink to this heading">¶</a></h3>
-<p><em>pyemaps</em>’ <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateMxtal">generateMxtal</a>
+<p><em>pyEMAPS</em>’ <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateMxtal">generateMxtal</a>
 function produces .XYZ file that can be improted into
 <a class="reference external" href="http://www.jmol.org/">Jmole</a> and visualize the
 crystal in 3D atomic structure. The following is an example of such rendering:</p>
@@ -445,7 +446,7 @@ crystal in 3D atomic structure. The following is an example of such rendering:</
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licences for pyEMAPS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rn.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules, Classes and Interfaces</a></li>
 </ul>
@@ -489,7 +490,7 @@ crystal in 3D atomic structure. The following is an example of such rendering:</
         <li class="right" >
           <a href="usage.html" title="Getting Started"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.9 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.1.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Visualisation</a></li> 
       </ul>
     </div>

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Getting Started &#8212; pyemaps 1.0.9 Stable documentation</title>
+    <title>Getting Started &#8212; pyemaps 1.1.0 Stable documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -17,6 +17,7 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     
+    <link rel="shortcut icon" href="_static/pyemaps.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Visualisation" href="visualization.html" />
@@ -37,7 +38,7 @@
         <li class="right" >
           <a href="requirements.html" title="Requirements"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.9 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.1.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Getting Started</a></li> 
       </ul>
     </div>  
@@ -51,15 +52,15 @@
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this heading">¶</a></h1>
 <section id="installation">
 <span id="id1"></span><h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h2>
-<p>To use pyemaps, first install it using pip:</p>
+<p>To use pyEMAPS, first install it using pip:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>pip install pyemaps
 </pre></div>
 </div>
 <p>where .venv is the python virtual environment.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>To prevent conflicts of pyemaps dependencies with your existing python
-libraries, it is recommended that pyemaps install in its own python environment
+<p>To prevent conflicts of pyEMAPS dependencies with your existing python
+libraries, it is recommended that pyEMAPS install in its own python environment
 such as that with Annaconda or Miniconda.</p>
 </div>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda create -n &lt;env-name&gt; python=3.7</span>
@@ -71,20 +72,20 @@ such as that with Annaconda or Miniconda.</p>
 </section>
 <section id="enviroment-variables">
 <span id="environment-variables"></span><h2>Enviroment Variables<a class="headerlink" href="#enviroment-variables" title="Permalink to this heading">¶</a></h2>
-<p><em>PYEMAPS_DATA</em> environment variable is set to represent pyemaps’ data home directory.
+<p><em>PYEMAPS_DATA</em> environment variable is set to represent pyEMAPS’ data home directory.
 It provides a central location for organizing your own crystal data, and it is also used
 for storing your simulation and calculation results.</p>
-<p><strong>pyemaps</strong> searches crystal files in the following order when only file name is provided:</p>
+<p><strong>pyEMAPS</strong> searches crystal files in the following order when only file name is provided:</p>
 <ol class="arabic simple">
 <li><p>Current working directory.</p></li>
 <li><p>Data home directory pointed by <em>PYEMAPS_DATA</em>.</p></li>
 </ol>
-<p>For output from <strong>pyemaps</strong> simulations and calculations, the placement order is reversed:</p>
+<p>For output from <strong>pyEMAPS</strong> simulations and calculations, the placement order is reversed:</p>
 <ol class="arabic simple">
 <li><p>Data home directory pointed by <em>PYEMAPS_DATA</em> if it is set.</p></li>
 <li><p>Current working directory.</p></li>
 </ol>
-<p>The layout of the pyemaps data home directory is as follows:</p>
+<p>The layout of the pyEMAPS data home directory is as follows:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)=</span>&lt;<span class="nb">local</span> directory&gt;  <span class="c1"># pyemaps data home, must have read and write permisions</span>
 <span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/crystals           <span class="c1"># hosts all custom crystal data files (.xtl, .cif)</span>
 <span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/dif                <span class="c1"># location for all kinematic diffraction simulation output</span>
@@ -98,28 +99,61 @@ for storing your simulation and calculation results.</p>
 <p>The legacy environment variable $(PYEMAPS_CRYSTALS) is still supported if it is set.</p>
 </div>
 </section>
+<section id="license-activation">
+<span id="id2"></span><h2>License Activation<a class="headerlink" href="#license-activation" title="Permalink to this heading">¶</a></h2>
+<p>There is no license requirement for many pf <strong>pyEMAPS</strong> base features. However, to access
+its extended features like 4DSTEM, a license activation is required. The activations in pyEMAPS can
+also be done without internet connection if isolation is desired. Finally, once license is activated,
+all license checks are offline without requirement for internet connections.</p>
+<p>To obtain a <strong>pyEMAPS</strong> license:</p>
+<ul>
+<li><p><strong>Trial license</strong>: <strong>pyEMAPS</strong> has a 7-days trial license that allows users to check out
+the features without commiting to a pruchase. This license can also be converted or upgraded
+to production license.</p>
+<p>Use the following command to get the trial license when internet connection is available:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pyemaps --license trial (-l)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>License activation token</strong>: contact <a class="reference external" href="mailto:support&#37;&#52;&#48;emlabsoftware&#46;com">support<span>&#64;</span>emlabsoftware<span>&#46;</span>com</a> for the 19 character license
+activation token. This way of activation can be used for both trial and product license
+activation online or offline.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pyemaps --license &lt;license token&gt; (-l)</span>
+</pre></div>
+</div>
+<p>where &lt;license token&gt; is of format: XXXX-XXXX-XXXX-XXXX here X is an alpha numberic character.</p>
+<p>Contact <a class="reference external" href="mailto:support&#37;&#52;&#48;emlabsoftware&#46;com">support<span>&#64;</span>emlabsoftware<span>&#46;</span>com</a> for obtaining a license activation token.</p>
+</li>
+<li><p><strong>License information</strong>: use the following command to find out if a license exists and valid.
+If so, the license infomation is displayed.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pyemaps --license info (-l)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
 <section id="quickstart-pyemaps">
-<h2>Quickstart pyemaps<a class="headerlink" href="#quickstart-pyemaps" title="Permalink to this heading">¶</a></h2>
-<p>After <em>pyemaps</em> installation, run the following to check if the package is installed
+<h2>Quickstart pyEMAPS<a class="headerlink" href="#quickstart-pyemaps" title="Permalink to this heading">¶</a></h2>
+<p>After <em>pyEMAPS</em> installation, run the following to check if the package is installed
 and setup correctly on your system by verifying the version and other information about
 the package:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pyemaps --version (-v)</span>
-<span class="go">python -m pyemaps --copyright (-c)</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pyemaps --version (-v)</span>
+<span class="go">pyemaps --copyright (-c)</span>
 </pre></div>
 </div>
-<p>A test for <em>pyemaps</em> basic kinematic function is also provided:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pyemaps --sample (-s)</span>
+<p>A test for <em>pyEMAPS</em> basic kinematic function is also provided:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pyemaps --sample (-s)</span>
 </pre></div>
 </div>
-<p>All pyemaps simulations and calculations start from its
+<p>All pyEMAPS simulations and calculations start from its
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal">Crystal class</a>.
 To import the class:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span>
 </pre></div>
 </div>
-<p>Before starting pyemaps diffraction simulation, the crystal
-object must be created and loaded. The following example
-creates a <em>si</em> crystal object by loading it from pyemaps
+<p>Before starting pyEMAPS diffraction simulation, the crystal
+object must be created and data loaded. The following example
+creates a <em>si</em> crystal object by loading it from pyEMAPS
 built-in database for Silicon crystal using
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.from_builtin">from_builtin</a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>
@@ -160,7 +194,7 @@ and calculations.</p>
 using all default control parameters .</p>
 <p>Go to <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateDP">generateDP</a> for a complete
 list of control parameters.</p>
-<p><em>showDif</em>, a method in the pyemaps <a class="reference external" href="pyemaps.display.html#module-pyemaps.display">display module</a>
+<p><em>showDif</em>, a method in the pyEMAPS <a class="reference external" href="pyemaps.display.html#module-pyemaps.display">display module</a>
 visualizes the <em>si_dp</em> diffraction pattern with options controling whether to show Kikuchi lines or
 Miller Indexes.</p>
 </section>
@@ -176,7 +210,7 @@ document.</p>
 <span class="n">c_name</span> <span class="o">=</span> <span class="s1">&#39;Silicon&#39;</span>
 <span class="n">si</span> <span class="o">=</span> <span class="n">cr</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="n">c_name</span><span class="p">)</span>
 
-<span class="c1"># Generate dynamic diffraction patterns using pyemaps&#39; bloch module</span>
+<span class="c1"># Generate dynamic diffraction patterns using pyEMAPS&#39; bloch module</span>
 <span class="c1"># with all other default parameters except sampling</span>
 
 <span class="k">try</span><span class="p">:</span>
@@ -212,13 +246,13 @@ and other dynamic diffraction session information, see <a class="reference exter
 between <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a> and
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch calls</a>.</p>
 </div>
-<p>To see all crystal names in the <em>pyemaps</em> built-in database, call
+<p>To see all crystal names in the <em>pyEMAPS</em> built-in database, call
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.list_all_builtin_crystals">list_all_builtin_crystals</a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>
 <span class="n">cr</span><span class="o">.</span><span class="n">list_all_builtin_crystals</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Current list of built-in crystals in <em>pyemaps</em>:</p>
+<p>Current list of built-in crystals in <em>pyEMAPS</em>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;Aluminium&#39;</span><span class="p">,</span> <span class="s1">&#39;AluminiumOxide&#39;</span><span class="p">,</span> <span class="s1">&#39;Aluminium_FCC&#39;</span><span class="p">,</span> <span class="s1">&#39;BariumTitanate_180k&#39;</span><span class="p">,</span> <span class="s1">&#39;BariumTitanate_270k&#39;</span><span class="p">,</span>
 <span class="s1">&#39;BariumTitanate_Tetra&#39;</span><span class="p">,</span> <span class="s1">&#39;Boron_Tetra&#39;</span><span class="p">,</span> <span class="s1">&#39;CadmiumSelenide_Hex&#39;</span><span class="p">,</span> <span class="s1">&#39;CadmiumSulfide_Cubic&#39;</span><span class="p">,</span>
 <span class="s1">&#39;CadmiumSulfide_Hex&#39;</span><span class="p">,</span> <span class="s1">&#39;Chromium_BCC&#39;</span><span class="p">,</span> <span class="s1">&#39;CopperOxide&#39;</span><span class="p">,</span> <span class="s1">&#39;Copper_FCC&#39;</span><span class="p">,</span> <span class="s1">&#39;Cu2O_Cuprite&#39;</span><span class="p">,</span> <span class="s1">&#39;Diamond&#39;</span><span class="p">,</span>
@@ -233,7 +267,7 @@ between <a class="reference external" href="pyemaps.crystals.html#pyemaps.crysta
 <section id="experimental-diffraction-pattern-indexing">
 <h3>Experimental Diffraction Pattern Indexing<a class="headerlink" href="#experimental-diffraction-pattern-indexing" title="Permalink to this heading">¶</a></h3>
 <p>Electron diffraction patterns (DP) indexing is based on the template matching algorithm to
-compare the acquired DPs to pre-built ones - A DP database generated by pyemaps DPGEN module.</p>
+compare the acquired DPs to pre-built ones - A DP database generated by pyEMAPS DPGEN module.</p>
 <p>In this feature, the crystal orietations and phases are determined from the best match or fit
 to one of the DP in the pre-generated DP database:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>
@@ -249,7 +283,7 @@ The database will be saved in <em>dbfn</em>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ret</span><span class="p">,</span> <span class="n">mr</span><span class="p">,</span> <span class="n">mc</span> <span class="o">=</span><span class="n">al</span><span class="o">.</span><span class="n">loadDPDB</span><span class="p">(</span><span class="n">dbfn</span> <span class="o">=</span> <span class="n">dbfn</span><span class="p">,</span> <span class="n">bShowDBMap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>will be loading the database into pyemaps’ EDIOM module and ready for DP indexing.</p>
+<p>will be loading the database into pyEMAPS’ EDIOM module and ready for DP indexing.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">al</span><span class="o">.</span><span class="n">importSHExpImage</span><span class="p">(</span><span class="n">xifn</span><span class="p">,</span> <span class="n">bShow</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -283,15 +317,15 @@ without above restrictions.</p>
 </section>
 <section id="samples-code">
 <h2>Samples code<a class="headerlink" href="#samples-code" title="Permalink to this heading">¶</a></h2>
-<p>Sample scripts for exploring <em>pyemaps</em> features are available in
-pyemaps’ <em>samples</em> directory.</p>
-<p>To copy all sample scripts from <em>pyemaps</em> package installation directory
+<p>Sample scripts for exploring <em>pyEMAPS</em> features are available in
+pyEMAPS’ <em>samples</em> directory.</p>
+<p>To copy all sample scripts from <em>pyEMAPS</em> package installation directory
 to the current working directory, run:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pyemaps -cp</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pyemaps -cp</span>
 </pre></div>
 </div>
 <p>Below is a partial list of sample code:</p>
-<ul class="simple">
+<ul>
 <li><dl class="simple">
 <dt><em>si_dif.py</em>:</dt><dd><p>shows how kinematic diffraction patterns are generated and rendered with
 <em>matplotlib pyplot</em> module.</p>
@@ -321,13 +355,28 @@ modes: normal and large angle CBED.</p>
 </dl>
 </li>
 <li><dl class="simple">
-<dt><em>al_dpgen.py</em>:</dt><dd><p>generates a proprietory diffraction database file for silicon crystal.</p>
+<dt><em>al_dpgen.py</em>:</dt><dd><p>generates a proprietory diffraction database file for aluminium crystal. The
+database file is to be used with 4DSTEM’s <em>ediom</em> module functions.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt><a href="#id4"><span class="problematic" id="id5">*</span></a>al_ediom.py*(demo only), <a href="#id6"><span class="problematic" id="id7">*</span></a>adf.py*(available in full package only) :</dt><dd><p>indexes an experimental diffraction image for aluminium crystal,
-generates annular dark fields (ADF) from an experimental image.</p>
+<dt><em>al_ediom.py</em> (license activated features only):</dt><dd><p>indexes an experimental diffraction image for aluminium crystal.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>convert_image.py</em> (license activated features only):</dt><dd><p>converts any raw image into pyEMAPS proprietory small header formatted image .</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><em>adf.py</em> (license activated features only):</dt><dd><p>generates annular bright and dark fields, as well as a masked image from an experimental image.
+You must the example experimental diffraction image named <em>adftest900.im3</em> in the same directory.
+Due to the size of the file, you must downloaded it from <a class="reference external" href="https://zenodo.org/records/14028793/files/adftest900.im3?download=1">the official Zenodo site</a>
+and place it to the the same directory.</p>
+<p>Also, the mask image function requires the input mask image file to be pyEMAPS proprietory
+small header formatted image. See how to convert your mask image inout file to the format.</p>
 </dd>
 </dl>
 </li>
@@ -350,7 +399,8 @@ generates annular dark fields (ADF) from an experimental image.</p>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#enviroment-variables">Enviroment Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#quickstart-pyemaps">Quickstart pyemaps</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#license-activation">License Activation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quickstart-pyemaps">Quickstart pyEMAPS</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#kinematic-diffraction-simulation">Kinematic Diffraction Simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#bloch-wave-dynamic-diffraction-simulation">Bloch Wave Dynamic Diffraction Simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#experimental-diffraction-pattern-indexing">Experimental Diffraction Pattern Indexing</a></li>
@@ -361,7 +411,7 @@ generates annular dark fields (ADF) from an experimental image.</p>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualisation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licences for pyEMAPS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rn.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules, Classes and Interfaces</a></li>
 </ul>
@@ -405,7 +455,7 @@ generates annular dark fields (ADF) from an experimental image.</p>
         <li class="right" >
           <a href="requirements.html" title="Requirements"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.9 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.1.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Getting Started</a></li> 
       </ul>
     </div>

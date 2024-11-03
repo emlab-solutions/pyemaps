@@ -1,33 +1,30 @@
-# """
-# This file is part of pyemaps
-# ___________________________
-# pyemaps is free software for non-comercial use: you can 
-# redistribute it and/or modify it under the terms of the GNU General 
-# Public License as published by the Free Software Foundation, either 
-# version 3 of the License, or (at your option) any later version.
-# pyemaps is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# You should have received a copy of the GNU General Public License
-# along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
-# Contact supprort@emlabsoftware.com for any questions and comments.
-# ___________________________
+"""
+.. This file is part of pyEMAPS
+ 
+.. ----
 
-# Author:     EMLab Solutions, Inc.
-# Date:       May 07, 2022    
-# """
+.. pyEMAPS is free software. You can redistribute it and/or modify 
+.. it under the terms of the GNU General Public License as published 
+.. by the Free Software Foundation, either version 3 of the License, 
+.. or (at your option) any later version..
+
+.. pyEMAPS is distributed in the hope that it will be useful,
+.. but WITHOUT ANY WARRANTY; without even the implied warranty of
+.. MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.. GNU General Public License for more details.
+
+.. You should have received a copy of the GNU General Public License
+.. along with pyEMAPS.  If not, see `<https://www.gnu.org/licenses/>`_.
+
+.. Contact supprort@emlabsoftware.com for any questions and comments.
+
+.. ----
+
+.. Author:     EMLab Solutions, Inc.
+.. Date:       May 07, 2022  
 
 """
-Display is provided as a helper module. It serves as demonstration
-purpose only. It is implemented for a list of pyemaps simulation objects
-and multiprocess and pipe python objects. Currently this rendering
-functions may not be best fit for single display.
 
-Check :doc:`visualization` for examples of customizing your own 
-visualization methods rendering pyemaps simulations results.  
-
-"""
 import matplotlib, sys, os
 hasDisplay = True
 if 'linux' in sys.platform and "DISPLAY" not in os.environ:
@@ -54,7 +51,6 @@ DISPLAY_ONE_SIZE = 900
 PLOT_MULTIPLIER = 6
 
 clrs = ["#2973A5", "cyan", "limegreen", "yellow", "red"]
-# clrs=plt.get_cmap('binary')
 gclrs=plt.get_cmap('gray')
 
 TY_DIF = 1
@@ -650,7 +646,7 @@ def _getGridPos(i, nCols = 3):
 
     return nrows, ncols
 
-# image display for ediom module
+# image display for stem4d module
 
 
 def normalizeImage(img):
@@ -687,7 +683,7 @@ def displayXImage(img,
                 ds = None,
                 suptitle = ''):   
         """
-        Internal ediom helper function displaying image.
+        Internal stem4d helper function displaying image.
 
         :return:  
         :rtype: None
@@ -700,7 +696,7 @@ def displayXImage(img,
         clrs = ["#2973A5", "cyan", "limegreen", "yellow", "red"]
         qedDPI = 600
         gclrs=plt.get_cmap('gray')
-        EDIOM_TITLE = 'Pyemaps Preview - Ediom Diffraction Pattern Indexing'
+        STEM4D_TITLE = 'pyEMAPS 4DSTEM'
 
         nr,nc = fsize
 
@@ -711,7 +707,7 @@ def displayXImage(img,
 
         fig, ax = plt.subplots(figsize=bsize, dpi=qedDPI)
         
-        fig.canvas.set_window_title(EDIOM_TITLE)
+        fig.canvas.set_window_title(STEM4D_TITLE)
         # ax.set_xlabel(suptitle, fontsize=1.5)
         fig.suptitle(suptitle, va='top', fontsize=1.5)
         
@@ -756,7 +752,7 @@ def plot2Powder(pw1, pw2):
 
     fig, (ax1, ax2) = plt.subplots(nrows = 2)
     
-    title = 'PYEMAPS - Powder Diffraction'
+    title = 'pyEMAPS - Powder Diffraction'
     if fig.canvas.manager is not None:
         fig.canvas.manager.set_window_title(title)
     else:

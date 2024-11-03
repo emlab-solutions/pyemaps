@@ -1,26 +1,27 @@
 '''
-This file is part of pyemaps
-___________________________
+.. This file is part of pyEMAPS
+ 
+.. ----
 
-pyemaps is free software for non-comercial use: you can 
-redistribute it and/or modify it under the terms of the GNU General 
-Public License as published by the Free Software Foundation, either 
-version 3 of the License, or (at your option) any later version.
+.. pyEMAPS is free software. You can redistribute it and/or modify 
+.. it under the terms of the GNU General Public License as published 
+.. by the Free Software Foundation, either version 3 of the License, 
+.. or (at your option) any later version..
 
-pyemaps is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+.. pyEMAPS is distributed in the hope that it will be useful,
+.. but WITHOUT ANY WARRANTY; without even the implied warranty of
+.. MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.. GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
+.. You should have received a copy of the GNU General Public License
+.. along with pyEMAPS.  If not, see `<https://www.gnu.org/licenses/>`_.
 
-Contact supprort@emlabsoftware.com for any questions and comments.
-___________________________
+.. Contact supprort@emlabsoftware.com for any questions and comments.
 
+.. ----
 
-Author:             EMLab Solutions, Inc.
-Date Created:       May 07, 2022  
+.. Author:             EMLab Solutions, Inc.
+.. Date Created:       May 07, 2022  
 
 '''
 def add_dpgen(target):
@@ -75,7 +76,7 @@ def add_dpgen(target):
         binary formatted database file with extension .bin.
 
         The database created will be used for diffraction pattern indexing
-        and matchig functions in pyemaps EDIOM module.
+        and matchig functions in pyemaps STEM4D module.
         
         The generated database file is saved to directory pointed by environment variable
         *PYEMAPS_DATA* or in current working directory if *PYEMAPS_DATA* is not set.
@@ -109,7 +110,7 @@ def add_dpgen(target):
            :width: 75%
            :align: center
 
-        The diffraction patterns database file produced will be consumed by pyemaps ediom module
+        The diffraction patterns database file produced will be consumed by pyemaps stem4d module
         for experimental diffraction pattern serach and indexing.
 
         """

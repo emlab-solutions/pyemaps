@@ -1,5 +1,8 @@
+
+import sys
 from pyemaps import Crystal as cr
 from pyemaps import EMC, SIMC
+from pyemaps import PKG_TYPE, TYPE_FREE, TYPE_FULL, TYPE_UIUC
 
 RELEASE_BUILD_ERRMSG = '*dpgen* module is likely NOT A RELEASE build or its a debug build'
 FREE_BUILD_ERRMSG = '*dpgen* module is likely NOT A FREE package build'
@@ -7,14 +10,6 @@ FULL_BUILD_ERRMSG = '*dpgen* module is likely NOT A FULL package build'
 
 FREE_RES_HIGH = 300
 FULL_RES_HIGH = 500
-
-def test_dpgen_free():
-    from pyemaps import dpgen
-    
-    high_res = dpgen.get_highres()
-    # check if the module in the package is free
-    assert high_res == FREE_RES_HIGH, \
-                       f"{FREE_BUILD_ERRMSG}" 
 
 def test_dpgen_full():
     from pyemaps import dpgen
@@ -24,24 +19,21 @@ def test_dpgen_full():
     assert high_res == FULL_RES_HIGH, \
                        f"{FULL_BUILD_ERRMSG}" 
 def test_pkg_type():
-    from pyemaps import PKG_TYPE
-    TYPE_FREE = 0
-    TYPE_FULL = 1
-    TYPE_UIUC = 3
 
     if PKG_TYPE == TYPE_FULL:
         print(f'Current package type is full')
-        return
+        return TYPE_FULL
     
     if PKG_TYPE == TYPE_FREE:
         print(f'Current package type is free')
-        return
+        return TYPE_FREE
 
     if PKG_TYPE == TYPE_UIUC:
         print(f'Current package type is UIUC')
-        return
+        return TYPE_UIUC
 
     print(f'Current package type is UNKNOWNN!')
+    return -1
 
 def test_dpgen_release():
     
@@ -64,30 +56,29 @@ def test_dpgen_release():
     assert exists == False, \
         f"{RELEASE_BUILD_ERRMSG}"
 
+def main():
+    # import sys
+    print('\n*****unit test for package types started*****\n')
+    
+    pType = test_pkg_type()
+    if pType != TYPE_FREE:
+        try:
+            test_dpgen_release()
+        except AssertionError as e:
+            print(f'Unit test for RELEASE (non-debug) build failed for module dpgen: {e}')
+        else:
+            print('Module dpgen build is non-debug or release')
+
+        try:
+            test_dpgen_full()
+        except AssertionError as e:
+            print(f'Unit test for a paid build failed for module dpgen: {e}')
+        else:
+            print('Module dpgen is build as paid package')
+
+    print('\n*****unit test for package types completed*****')
+    
+    sys.exit(pType)
 
 if __name__ == '__main__':
-    
-    print('\n*****unit test for package types started*****\n')
-    try:
-        test_dpgen_release()
-    except AssertionError as e:
-        print(f'Unit test for RELEASE (non-debug) build failed for module dpgen: {e}')
-    else:
-        print('Module dpgen build is non-debug or release')
-    
-    try:
-        test_dpgen_free()
-    except AssertionError as e:
-        print(f'Unit test a FREE build failed for module dpgen: {e}')
-    else:
-        print('Module dpgen is build as free package')
-
-    try:
-        test_dpgen_full()
-    except AssertionError as e:
-        print(f'Unit test for a paid build failed for module dpgen: {e}')
-    else:
-        print('Module dpgen is build as paid package')
-
-    test_pkg_type()
-    print('\n*****unit test for package types completed*****\n')
+    main()

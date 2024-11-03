@@ -5,11 +5,11 @@ Frequently Asked Questions
 What's Likely the Cause of Installation Failure?
 ------------------------------------------------
 
-**pyemaps** installation includes version requirements on pip, 
+**pyEMAPS** installation includes version requirements on pip, 
 its setuptools and wheel that make downloading and installing the package correct and fast. 
 These tools and their right versions may not come with your *python* installation and environment. 
-Without them, pip tries to re-build **pyemaps** from source and will fail due to the fact 
-that **pyemaps** contains extensions modules. 
+Without them, pip tries to re-build **pyEMAPS** from source and will fail due to the fact 
+that **pyEMAPS** contains extensions modules. 
 
 Make sure you have updated versions of pip, setuptools, and wheel:
 
@@ -19,13 +19,13 @@ Make sure you have updated versions of pip, setuptools, and wheel:
 
 before trying :ref:`installation <installation>` again.
 
-How Do I Install and Run **pyemaps** in Anaconda Environment With Jupyter Notebook?
+How Do I Install and Run **pyEMAPS** in Anaconda Environment With Jupyter Notebook?
 ---------------------------------------------------------------------------------
 
-Installing pyemaps in an virtual environment provides isolation and prevents conflicts.
+Installing pyEMAPS in an virtual environment provides isolation and prevents conflicts.
 Anaconda and python's own virtual environment are good choices.
 
-Follow the steps below to install and run pyemaps in Anaconda with Jupyter Notebooks:
+Follow the steps below to install and run pyEMAPS in Anaconda with Jupyter Notebooks:
 
 * Install Anaconda. 
   
@@ -86,16 +86,16 @@ Follow the steps below to install and run pyemaps in Anaconda with Jupyter Noteb
 What can I do to speed up dynamic diffraction simulations?
 ---------------------------------------------------------
 
-**pyemaps** Bloch simulation, e. g. dynamic diffraction simulation costs
+**pyEMAPS** Bloch simulation, e. g. dynamic diffraction simulation costs
 significant computation resource and operations. As a result, it is much
 slower than that of kinematic simulation. 
 
-While pyemaps performance has improved significantly since its inception, 
+While pyEMAPS performance has improved significantly since its inception, 
 there are still rooms for enhancements and we are still looking for 
 opportunities to make constant progress.
 
 Meanwhile, you can also add to this effort in your simulation with 
-**pyemaps** by taking advantages of python features such as parallell 
+**pyEMAPS** by taking advantages of python features such as parallell 
 processing. 
 
 For example:

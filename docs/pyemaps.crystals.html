@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>pyemaps.crystals module &#8212; pyemaps 1.0.9 Stable documentation</title>
+    <title>pyemaps.crystals module &#8212; pyemaps 1.1.0 Stable documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -17,6 +17,7 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     
+    <link rel="shortcut icon" href="_static/pyemaps.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
   </head><body>
@@ -29,7 +30,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.9 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.1.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyemaps.crystals module</a></li> 
       </ul>
     </div>  
@@ -41,10 +42,6 @@
             
   <section id="module-pyemaps.crystals">
 <span id="pyemaps-crystals-module"></span><h1>pyemaps.crystals module<a class="headerlink" href="#module-pyemaps.crystals" title="Permalink to this heading">¶</a></h1>
-<p>Crystals module contains python classes and methods for creating,
-importing and loading crystal data from various sources. It also 
-provides the core interfaces to the backend diffraction simulations 
-and calculations.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyemaps.crystals.DW">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.crystals.</span></span><span class="sig-name descname"><span class="pre">DW</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.DW" title="Permalink to this definition">¶</a></dt>
@@ -475,29 +472,29 @@ the following data:</p>
 </dd>
 </dl>
 <p>The dictionary object example for Silicon:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>{&#39;cell&#39;:                                       
-    {&#39;a&#39;: &#39;5.4307&#39;,
-    &#39;b&#39;: &#39;5.4307&#39;,
-    &#39;c&#39;: &#39;5.4307&#39;,
-    &#39;alpha&#39;: &#39;90.0&#39;,
-    &#39;beta&#39;: &#39;90.0&#39;,
-    &#39;gamma&#39;: &#39;90.0&#39;},
-&#39;atoms&#39;:                                        
-    [
-        {&#39;symb&#39;: &#39;si&#39;,                          
-        &#39;x&#39;: &#39;0.125&#39;,                           
-        &#39;y&#39;: &#39;0.125&#39;,  
-        &#39;z&#39;: &#39;0.125&#39;,
-        &#39;d-w&#39;: &#39;0.4668&#39;,                        
-        &#39;occ&#39;: 1.00},                           
-    ],
-&#39;spg&#39;:                                          
-    {&#39;number&#39;: &#39;227&#39;                            
-    &#39;setting&#39;: &#39;2&#39;                              
-    },
-&#39;dw&#39;: &#39;iso&#39;                                     
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;cell&#39;</span><span class="p">:</span>                                       
+    <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="s1">&#39;5.4307&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="s1">&#39;5.4307&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="s1">&#39;5.4307&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="s1">&#39;90.0&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="s1">&#39;90.0&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="s1">&#39;90.0&#39;</span><span class="p">},</span>
+<span class="s1">&#39;atoms&#39;</span><span class="p">:</span>                                        
+    <span class="p">[</span>
+        <span class="p">{</span><span class="s1">&#39;symb&#39;</span><span class="p">:</span> <span class="s1">&#39;si&#39;</span><span class="p">,</span>                          
+        <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="s1">&#39;0.125&#39;</span><span class="p">,</span>                           
+        <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="s1">&#39;0.125&#39;</span><span class="p">,</span>  
+        <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="s1">&#39;0.125&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;d-w&#39;</span><span class="p">:</span> <span class="s1">&#39;0.4668&#39;</span><span class="p">,</span>                        
+        <span class="s1">&#39;occ&#39;</span><span class="p">:</span> <span class="mf">1.00</span><span class="p">},</span>                           
+    <span class="p">],</span>
+<span class="s1">&#39;spg&#39;</span><span class="p">:</span>                                          
+    <span class="p">{</span><span class="s1">&#39;number&#39;</span><span class="p">:</span> <span class="s1">&#39;227&#39;</span>                            
+    <span class="s1">&#39;setting&#39;</span><span class="p">:</span> <span class="s1">&#39;2&#39;</span>                              
+    <span class="p">},</span>
+<span class="s1">&#39;dw&#39;</span><span class="p">:</span> <span class="s1">&#39;iso&#39;</span>                                     
 
-}
+<span class="p">}</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -723,13 +720,13 @@ points in <em>sampling</em> parameter can make a big difference in pyemaps perfo
 </div>
 <p>The return of an array of structure factors in the following 
 python dictionary format:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>{
-    &#39;hkl&#39;: (h,k,l),         # Miller Indices 
-    &#39;sw&#39;: s,                # Sin(theta)/Wave length
-    &#39;ds&#39;: d,                # d-spacing value
-    &#39;amp_re&#39;: ar            # amplitude or real part 
-    &#39;phase_im&#39;: ph          # phase or imaginary part
-}
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;hkl&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">l</span><span class="p">),</span>         <span class="c1"># Miller Indices </span>
+    <span class="s1">&#39;sw&#39;</span><span class="p">:</span> <span class="n">s</span><span class="p">,</span>                <span class="c1"># Sin(theta)/Wave length</span>
+    <span class="s1">&#39;ds&#39;</span><span class="p">:</span> <span class="n">d</span><span class="p">,</span>                <span class="c1"># d-spacing value</span>
+    <span class="s1">&#39;amp_re&#39;</span><span class="p">:</span> <span class="n">ar</span>            <span class="c1"># amplitude or real part </span>
+    <span class="s1">&#39;phase_im&#39;</span><span class="p">:</span> <span class="n">ph</span>          <span class="c1"># phase or imaginary part</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -762,7 +759,7 @@ python dictionary format:</p>
 <dd><p>Generate a list diffraction patterns and save them in proprietory
 binary formatted database file with extension .bin.</p>
 <p>The database created will be used for diffraction pattern indexing
-and matchig functions in pyemaps EDIOM module.</p>
+and matchig functions in pyemaps STEM4D module.</p>
 <p>The generated database file is saved to directory pointed by environment variable
 <em>PYEMAPS_DATA</em> or in current working directory if <em>PYEMAPS_DATA</em> is not set.</p>
 <dl class="field-list simple">
@@ -788,7 +785,7 @@ graphic illustration of the vertices input.</p></li>
 <p>Input zone axis indexes define the vertices of the stereo projection map. The default
 for a cubic crystal is <em>DEF_VERTMAT</em> = [[0,0,1],[1,1,1],[0,1,1]].</p>
 <a class="reference internal image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png" class="align-center" src="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png" style="width: 75%;" /></a>
-<p>The diffraction patterns database file produced will be consumed by pyemaps ediom module
+<p>The diffraction patterns database file produced will be consumed by pyemaps stem4d module
 for experimental diffraction pattern serach and indexing.</p>
 </dd></dl>
 
@@ -898,13 +895,13 @@ stabel production soon. Its replacement is:
 </dd>
 </dl>
 <p>Example of the stereodiagram output:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>[
-    {
-        &quot;c&quot;: (x,y),              # center
-        &quot;r&quot;: rad,                # radius
-        &quot;idx&quot;: (h, k, l),        # Miller Index
-    }
-]    
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">),</span>              <span class="c1"># center</span>
+        <span class="s2">&quot;r&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>                <span class="c1"># radius</span>
+        <span class="s2">&quot;idx&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">l</span><span class="p">),</span>        <span class="c1"># Miller Index</span>
+    <span class="p">}</span>
+<span class="p">]</span>    
 </pre></div>
 </div>
 <p>To display the resulting stereodiagram, use 
@@ -1119,14 +1116,14 @@ for its definition and usage.</p>
 <p class="admonition-title">Note</p>
 <p>An example of Silicon atomic structure by pyemaps:</p>
 </div>
-<div class="highlight-console: notranslate"><div class="highlight"><pre><span></span>216
-    50.0 50.0 50.0 90.0 90.0 90.0
-SI           0.6788375000   0.6788375000   0.6788375000 
-SI           3.3941875000   3.3941875000   0.6788375000 
-SI           4.7518625000   2.0365125000   2.0365125000 
-SI           2.0365125000   4.7518625000   2.0365125000 
-SI           3.3941875000   0.6788375000   3.3941875000 
-...
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">216</span>
+<span class="go">    50.0 50.0 50.0 90.0 90.0 90.0</span>
+<span class="go">SI           0.6788375000   0.6788375000   0.6788375000 </span>
+<span class="go">SI           3.3941875000   3.3941875000   0.6788375000 </span>
+<span class="go">SI           4.7518625000   2.0365125000   2.0365125000 </span>
+<span class="go">SI           2.0365125000   4.7518625000   2.0365125000 </span>
+<span class="go">SI           3.3941875000   0.6788375000   3.3941875000 </span>
+<span class="go">...</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1463,7 +1460,7 @@ use this routine to determine the name of the crystal to load using
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualisation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licences for pyEMAPS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rn.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules, Classes and Interfaces</a></li>
 </ul>
@@ -1491,7 +1488,7 @@ use this routine to determine the name of the crystal to load using
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.9 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.1.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">pyemaps.crystals module</a></li> 
       </ul>
     </div>

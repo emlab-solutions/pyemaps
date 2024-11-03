@@ -1,6 +1,6 @@
 <!-- #  Open Source __pyEMAPS__ Development Guidelines -->
 
-1. <a id="contents"></a>[What's pyEMAPS](#overview)
+1. <a id="contents"></a>[What's in pyEMAPS](#overview)
 2. <a id="contents"></a>[Build pyEMAPS](#build)
 3. <a id="contents"></a>[Installation](#installation)
 4. <a id="contents"></a>[Testing](#test)
@@ -8,23 +8,57 @@
 5. <a id="contents"></a>[pyEMAPS Contributor License Agreement](#CLA)
 5. <a id="contents"></a>[Code of Conduct](#COC)
 
-## What's pyEMAPS [`↩`](#contents) <a id="overview"></a>
-__pyEMAPS__ is a python package providing interfaces into electron diffraction simulations and crystallogrphy calculations engines - __emaps__. Its main components are designed for electron microscope operations and simulations, including microscpe controls and crystal python classes. __pyEMAPS__ provides opportunities for users to automate simulations and calculations with common JSON data output and images of well known formats suited for further processing.  
+## What's in pyEMAPS [`↩`](#contents) <a id="overview"></a>
+**pyEMAPS** package is a collection of python modules and libraries designed 
+for transmission electron diffraction simulations and crystallographic calculations 
+for all crystal systems. The simulation is based on the theories of kinematical and 
+dynamical electron diffraction, as described by Spence and Zuo in the book of Electron Microdiffraction (Plenum, New York, 1992).
+
+The base version is free for personal and commercial use, while additional licensed features in 4DSTEM are available for enhanced functionality.
+
+### Features:
+Free base features:
+- Crystallography
+  - Crystal constructor
+  - Loading from a built-in crystal library
+  - CIF import
+  - Crystallographic transformations
+  - Real and reciprocal vector calculations
+  - Stereodiagram plotting
+  - Crystal Structure Factors Calculations
+
+- Electron diffraction pattern, dynamical
+  - Convergent beam electron diffraction
+  - Electron scattering Matrix
+  - Electron dispersion
+
+- Electron diffraction pattern, kinematical
+  - Selected area diffraction
+  - Kikuchi and high order Laue zone line geometry
+  - Convergent beam electron diffraction
+  - Electron powder diffraction simulations
+
+**Extended features** (requires license):
+- Electron diffraction patterns database builder and explore
+- Electron diffraction pattern indexing
+- Annular bright and dark field
+- Masked images 
 
 Check our full [pyemaps documentation](https://emlab-solutions.github.io/pyemaps) for details of __pyEMAPS__ python classes designs and their interfaces.
 
 We are looking for experts in electron microscope and crystallography, and/or python enthusiasts to join pyEMAPS project as contributors, please contact us at support@emlabsoftware.com if you are interested.
 
-We greatly appreciate your contributions to pyEMAPS and look forward to making it a tool for 
-the communty to accelaerate microscopy and crystallography education and research. If you benefit from __pyEMAPS__ in your microscopy and crystallography research and education, go to [PayPal](https://www.paypal.com/paypalme/pyemaps22) to donate. Your generous donations keep us in the business of providing software tools to the education and research communities. 
+We greatly appreciate your contributions to pyEMAPS and look forward to making it a tool for the communty to accelaerate microscopy and crystallography education and research. If you benefit from __pyEMAPS__ in your microscopy and crystallography research and education, go to [PayPal](https://www.paypal.com/paypalme/pyemaps22) to donate. Your generous donations keep us in the business of providing software tools to the education and research communities. 
+
+See instructions below for contributor:
 
 ## Build pyEMAPS [`↩`](#content) <a id="build"></a>
 
 Requirements and recommendations:
 * __Python__: Version == 3.7
 * __Operating Systems__: Windows
-* __VSCode__: code editing (recommended)
-* __MSVC Community 2019__: with build tools
+* __VSCode__: code editing (recommended, for contributors only)
+* __MSVC Community 2019__: with build tools (for contributors only)
 
 Current __pyEMAPS__ only support Windows and python 3.7. We are also looking for contributors to extend it to other platforms and python versions. 
 

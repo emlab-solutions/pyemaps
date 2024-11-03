@@ -1,37 +1,29 @@
-# '''
-# This file is part of pyemaps
-# ___________________________
+'''
+.. This file is part of pyEMAPS
+ 
+.. ----
 
-# pyemaps is free software for non-comercial use: you can 
-# redistribute it and/or modify it under the terms of the GNU General 
-# Public License as published by the Free Software Foundation, either 
-# version 3 of the License, or (at your option) any later version.
+.. pyEMAPS is free software. You can redistribute it and/or modify 
+.. it under the terms of the GNU General Public License as published 
+.. by the Free Software Foundation, either version 3 of the License, 
+.. or (at your option) any later version..
 
-# pyemaps is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+.. pyEMAPS is distributed in the hope that it will be useful,
+.. but WITHOUT ANY WARRANTY; without even the implied warranty of
+.. MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.. GNU General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
-# along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
+.. You should have received a copy of the GNU General Public License
+.. along with pyEMAPS.  If not, see `<https://www.gnu.org/licenses/>`_.
 
-# Contact supprort@emlabsoftware.com for any questions and comments.
-# ___________________________
+.. Contact supprort@emlabsoftware.com for any questions and comments.
 
+.. ----
 
-# Author:             EMLab Solutions, Inc.
-# Date Created:       May 07, 2022  
+.. Author:             EMLab Solutions, Inc.
+.. Date Created:       May 07, 2022 
 
-# '''
-
-"""
-
-Crystals module contains python classes and methods for creating,
-importing and loading crystal data from various sources. It also 
-provides the core interfaces to the backend diffraction simulations 
-and calculations.
-
-"""
+'''
 
 from enum import Enum
 import os
@@ -766,7 +758,7 @@ from .diffract.powder_dec import add_powder
 from .diffract.dpgen_dec import add_dpgen
 
 #---diffraction pattern indexing----
-# from .ediom.ediom_dec import add_ediom
+# from .stem4d.stem4d_dec import add_stem4d
 
 #---Stereodiagram---
 from .diffract.stereo_dec import add_stereo
@@ -778,7 +770,7 @@ from .diffract.dif_dec import add_dif
 #---Dynamic Diffraction Simulations---
 from .diffract.bloch_dec import add_bloch
 
-# @add_ediom
+# @add_stem4d
 @add_dpgen    
 @add_mxtal              
 @add_stereo              
@@ -895,7 +887,7 @@ class Crystal:
         
         The dictionary object example for Silicon:
 
-        .. code-block:: json
+        .. code-block:: python
 
             {'cell':                                       
                 {'a': '5.4307',
@@ -1408,7 +1400,7 @@ class Crystal:
     def list_all_builtin_crystals():
         
         """
-        
+
         To list all builtin crystals available in pyemaps built-in crystal database,
         use this routine to determine the name of the crystal to load using 
         `from_builtin <pyemaps.crystals.html#pyemaps.crystals.Crystal.from_builtin>`_.

@@ -3,10 +3,10 @@
 This file is part of pyemaps
 ___________________________
 
-pyemaps is free software for non-comercial use: you can 
-redistribute it and/or modify it under the terms of the GNU General 
-Public License as published by the Free Software Foundation, either 
-version 3 of the License, or (at your option) any later version.
+pyemaps is free software. You can redistribute it and/or modify 
+it under the terms of the GNU General Public License as published 
+by the Free Software Foundation, either version 3 of the License, 
+or (at your option) any later version.
 
 pyemaps is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,7 +24,7 @@ Date:       April 02, 2023
 
 This sample code is to demostrate basic usage of pyemaps' dpgen - 
 diffraction pattern (DP) generator module used as database
-for ediom module to search and index experimental diffraction 
+for stem4d module to search and index experimental diffraction 
 patterns images. 
 
 This script is for demonstration and only support crystal with 

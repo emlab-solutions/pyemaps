@@ -22,7 +22,7 @@ Author:     EMLab Solutions, Inc.
 Date:       April 02, 2023  
 
 This sample code is to demostrate using pyemaps' dpgen and 4dstem 
-modules named _stem4d_ to search and index experimental diffraction patterns images. 
+modules named stem4d to search and index experimental diffraction patterns images. 
 This script is for demonstration and only support crystal with 
 space group 225. 
 
@@ -38,6 +38,54 @@ from pyemaps import EMC
 
 current_file = Path(os.path.abspath(__file__))
 samples_path = current_file.parent.absolute()
+
+# class ediom:
+
+#     def __init__(self, xImgFn, 
+#                  zn=(0,0,1), res = 200, xa=(2,0,0), 
+#                  crystal_name = "Aluminium"):
+#         """
+#         This is a constructor for Electron diffraction Indexing and Orientation class. 
+
+#         :param xImgFn: experimental stack image (3D) file name
+#         :type xImgFn: String
+#         :param crystal_name: crystal name from builtin list
+#         :type crystal_name: String
+#         :raise CellValueError: if cell data validations fail.
+
+#         """
+#         # experimental file must exits
+#         # if not os.path.isfile(xImgFn):
+#         #     raise FileNotFoundError(f"The file '{xImgFn}' does not exist.")
+        
+#         # self.xImgFile = xImgFn
+#         # self.crystal_name = crystal_name
+#         setattr(self, 'xImgFile', xImgFn)
+#         setattr(self, 'cname', crystal_name)
+#         setattr(self, 'zone', zn)
+#         setattr(self, 'resolution', res)
+#         setattr(self, 'xaxis', xa)
+
+# @property
+# def xImgFile(self):
+#     return self.xImgFile
+
+# @property
+# def cname(self):
+#     return self.cname
+
+# @property
+# def zone(self):
+#     return self.zone
+
+# @property
+# def resolution(self):
+#     return self.resolution
+
+# @property
+# def xaxis(self):
+#     return self.xaxis
+
 
 def getDBFile():
     '''
@@ -75,6 +123,13 @@ def test_dp_indexing(cname = 'Aluminium'):
     if ret != 0:
         print(f'failed to generate a diffraction patterns databaes')
         return -1
+
+    # ret, mr, mc =cryst.loadDPDB(dbfn = dbfn, bShowDBMap=True)
+    
+    # if ret != 0 or mr <= 0 or mc <=0:
+    #     print(f"Error loading DP database from file {dbfn} into stem4d module")
+    #     cryst.release_stem4d()
+    #     exit(1)
 
     xifn = getDPImageFn()
     alimg = StackImage(xifn)

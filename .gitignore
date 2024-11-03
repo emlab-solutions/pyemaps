@@ -29,7 +29,7 @@ MANIFEST
 
 #Fortran library source directory
 emaps-save/
-ediom-save/
+stem4d-save/
 pyemaps_save/
 
 # PyInstaller
@@ -167,7 +167,7 @@ test/sanity/output*
 *.xyz
 
 # bloch image output file
-*.im3
+*adf*.im3
 
 # saved code
 *_save.py
@@ -181,6 +181,7 @@ fort.7
 
 # not to save sample code
 *samples/bt.py
+*samples/sh_converted*
 
 # .dat file
 *.dat
@@ -188,8 +189,13 @@ fort.7
 # .inv file
 *.inv
 
-# ediom source dir
-ediom/
+# stem4d source dir
+stem4d/
 emaps/
 extal/
 advisor/
+bloch/
+dif/
+
+# ignore generated icon file
+*docs/_static/pyemaps.ico

@@ -1,28 +1,28 @@
-# '''
-# This file is part of pyemaps
-# ___________________________
+'''
+This file is part of pyemaps
+___________________________
 
-# pyemaps is free software for non-comercial use: you can 
-# redistribute it and/or modify it under the terms of the GNU General 
-# Public License as published by the Free Software Foundation, either 
-# version 3 of the License, or (at your option) any later version.
+pyemaps is free software. You can redistribute it and/or modify 
+it under the terms of the GNU General Public License as published 
+by the Free Software Foundation, either version 3 of the License, 
+or (at your option) any later version..
 
-# pyemaps is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+pyemaps is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-# You should have received a copy of the GNU General Public License
-# along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
 
-# Contact supprort@emlabsoftware.com for any questions and comments.
-# ___________________________
+Contact supprort@emlabsoftware.com for any questions and comments.
+___________________________
 
 
-# Author:             EMLab Solutions, Inc.
-# Date Created:       May 07, 2022  
+Author:             EMLab Solutions, Inc.
+Date Created:       May 07, 2022  
 
-# '''
+'''
 from ast import keyword
 from ensurepip import version
 from multiprocessing import AuthenticationError
@@ -39,7 +39,7 @@ import os
 from pathlib import Path
 
 install_requires = [
-            'emaps >= 1.0.0',
+            'emaps >= 1.0.1',
             'numpy >= 1.21.2',
             'matplotlib >= 3.2.1'
             ]
@@ -67,6 +67,9 @@ def get_samples(sdn = 'samples'):
     # for full package only
     # sfile_list.append('al_db.bin')
     sfile_list.append('al.img')
+    sfile_list.append('mask.im3')
+    sfile_list.append('raw.img')
+
 
     return [os.path.join(sdn, os.path.basename(name)) for name in sfile_list]
 
@@ -157,6 +160,11 @@ setup(name                              ="pyemaps",
       package_dir                       = {'pyemaps':'',
                                            'pyemaps.CifFile':'CifFile/src'
                                             },
+      entry_points                      = {
+                                            'console_scripts': [
+                                            'pyemaps=pyemaps.__main__:main',  # This makes 'pyemaps' a command-line executable
+                                            ],
+                                            },
       install_requires                  = get_install_requires(),
       
       data_files                        = [('pyemaps', 
@@ -184,7 +192,7 @@ setup(name                              ="pyemaps",
                                                 'README.md',
                                                 'CONTRIBUTING.md'
                                                 ],
-                                            'pyemaps.ediom':['*.i', 
+                                            'pyemaps.stem4d':['*.i', 
                                                             '*.cpp',
                                                             '__pycache__/*.pyc'
                                                             ]

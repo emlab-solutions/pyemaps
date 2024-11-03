@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Overview &#8212; pyemaps 1.0.9 Stable documentation</title>
+    <title>Overview &#8212; pyemaps 1.1.0 Stable documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -17,10 +17,11 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     
+    <link rel="shortcut icon" href="_static/pyemaps.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Requirements" href="requirements.html" />
-    <link rel="prev" title="Welcome to pyemaps’ documentation!" href="index.html" /> 
+    <link rel="prev" title="Welcome to pyEMAPS’ documentation!" href="index.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -35,9 +36,9 @@
           <a href="requirements.html" title="Requirements"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Welcome to pyemaps’ documentation!"
+          <a href="index.html" title="Welcome to pyEMAPS’ documentation!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.9 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.1.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Overview</a></li> 
       </ul>
     </div>  
@@ -49,17 +50,20 @@
             
   <section id="overview">
 <h1>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h1>
-<p><strong>pyemaps</strong> package is a collection of python modules and libraries designed
+<p><strong>pyEMAPS</strong> package is a collection of python modules and libraries designed
 for transmission electron diffraction simulations and related crystallographic
 calculations for all crystal systems. The simulation is based on the theories
 of kinematical and dynamical electron diffraction, as described by Spence and Zuo
 in the book of Electron Microdiffraction (Plenum, New York, 1992).</p>
-<p>Pyemaps serves as the backbone of <a class="reference external" href="https://emaps.emlabsolutions.com">cloudEMAPS2.0</a>
-and can also be used as a fully functional Python package.</p>
-<p>Current features include:</p>
-<p><strong>Crystallography</strong></p>
-<blockquote>
-<div><ul class="simple">
+<p>PyEMAPS serves as the backbone of <a class="reference external" href="https://www.emlabsolutions.com/software/#cloudemapsop">cloudEMAPS on premise</a>
+and can also be used as a fully functional standalone Python package.</p>
+<p>The base version is free for personal and commercial use, while additional licensed features in 4DSTEM are available for enhanced functionality.</p>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this heading">¶</a></h2>
+<p>Free base features:</p>
+<ul class="simple">
+<li><p>Crystallography</p>
+<ul>
 <li><p>Crystal constructor</p></li>
 <li><p>Loading from a built-in crystal library</p></li>
 <li><p>CIF import</p></li>
@@ -68,60 +72,54 @@ and can also be used as a fully functional Python package.</p>
 <li><p>Stereodiagram plotting</p></li>
 <li><p>Crystal Structure Factors Calculations</p></li>
 </ul>
-</div></blockquote>
-<p><strong>Electron diffraction pattern, kinematical</strong></p>
-<blockquote>
-<div><ul class="simple">
+</li>
+<li><p>Electron diffraction pattern, dynamical</p>
+<ul>
+<li><p>Convergent beam electron diffraction</p></li>
+<li><p>Electron scattering Matrix</p></li>
+<li><p>Electron dispersion</p></li>
+</ul>
+</li>
+<li><p>Electron diffraction pattern, kinematical</p>
+<ul>
 <li><p>Selected area diffraction</p></li>
 <li><p>Kikuchi and high order Laue zone line geometry</p></li>
 <li><p>Convergent beam electron diffraction</p></li>
 <li><p>Electron powder diffraction simulations</p></li>
 </ul>
-</div></blockquote>
-<p><strong>Electron diffraction pattern, dynamical</strong></p>
+</li>
+</ul>
+<p><strong>Extended features</strong> (requires <a class="reference internal" href="usage.html#license-activation"><span class="std std-ref">License Activation</span></a>):</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Convergent beam electron diffraction</p></li>
-<li><p>Electron scattering Matrix</p></li>
-<li><p>Electron dispersion</p></li>
+<li><p>Electron diffraction patterns database builder and explore</p></li>
+<li><p>Electron diffraction pattern indexing</p></li>
+<li><p>Annular bright and dark field</p></li>
+<li><p>Masked images</p></li>
 </ul>
 </div></blockquote>
-<p><strong>New features in PREVIEW</strong> (starting from v1.0.2)</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Electron diffraction patterns database builder and explorer</p></li>
-<li><p><a class="reference internal" href="usage.html#experimental-diffraction-pattern-indexing"><span class="std std-ref">Electron diffraction pattern indexing</span></a></p></li>
-</ul>
-</div></blockquote>
+</section>
 <section id="in-development">
 <h2>In development<a class="headerlink" href="#in-development" title="Permalink to this heading">¶</a></h2>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
 <li><p>Coherent convergent beam electron diffraction</p></li>
 <li><p>Electron image simulation</p></li>
 <li><p>Pendellösung calculation</p></li>
 <li><p>Electron diffraction orientation mapping</p></li>
 </ul>
-</div></blockquote>
 </section>
 <section id="implementation">
 <h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this heading">¶</a></h2>
-<p><em>pyemaps</em> is implemented as the object-oriented python modules supported
+<p><em>pyEMAPS</em> is implemented as the object-oriented python modules supported
 by compiled Fortran 90 libraries that handle the backend computations.</p>
 <p>Check out the <a class="reference internal" href="usage.html"><span class="doc">Getting Started</span></a> section for further information, including how to
-<a class="reference internal" href="usage.html#installation"><span class="std std-ref">install</span></a> pyemaps package.</p>
+<a class="reference internal" href="usage.html#installation"><span class="std std-ref">install</span></a> pyEMAPS package.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><em>pyemaps</em> is currently under active production/stable development phase.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><strong>Developer</strong></p>
-<p>Pyemaps is developed by EMLab Solutions, Champaign, IL for non-commercial
-microscopy and crystallography research and education. We welcome community input,
-contributions, and donations <a class="reference external" href="https://www.paypal.com/paypalme/pyemaps22">PayPal</a>.
-Your generous support will help the development of free software to the electron
-microscopy and research communities.</p>
+<p><strong>Developer Contributors Wanted</strong></p>
+<p>Pyemaps is developed by EMLab Solutions, Champaign, IL for microscopy and crystallography research
+and education. We welcome community input, contributions, and donations <a class="reference external" href="https://www.paypal.com/paypalme/pyemaps22">PayPal</a>.
+Your generous support will help the development of free software to the electron microscopy and research communities.</p>
 </div>
 </section>
 </section>
@@ -136,6 +134,7 @@ microscopy and research communities.</p>
 <h3><a href="index.html">Table of Contents</a></h3>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#features">Features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#in-development">In development</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#implementation">Implementation</a></li>
 </ul>
@@ -144,7 +143,7 @@ microscopy and research communities.</p>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualisation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="license.html">Licence</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Licences for pyEMAPS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rn.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules, Classes and Interfaces</a></li>
 </ul>
@@ -152,7 +151,7 @@ microscopy and research communities.</p>
   <div>
     <h4>Previous topic</h4>
     <p class="topless"><a href="index.html"
-                          title="previous chapter">Welcome to pyemaps’ documentation!</a></p>
+                          title="previous chapter">Welcome to pyEMAPS’ documentation!</a></p>
   </div>
   <div>
     <h4>Next topic</h4>
@@ -186,9 +185,9 @@ microscopy and research communities.</p>
           <a href="requirements.html" title="Requirements"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Welcome to pyemaps’ documentation!"
+          <a href="index.html" title="Welcome to pyEMAPS’ documentation!"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.0.9 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.1.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Overview</a></li> 
       </ul>
     </div>
