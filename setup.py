@@ -67,6 +67,9 @@ def get_samples(sdn = 'samples'):
     # for full package only
     # sfile_list.append('al_db.bin')
     sfile_list.append('al.img')
+    sfile_list.append('mask.im3')
+    sfile_list.append('raw.img')
+
 
     return [os.path.join(sdn, os.path.basename(name)) for name in sfile_list]
 

@@ -54,7 +54,7 @@ def getDFFn():
     StackImage object creation. See document on StackImage class.
 
     '''
-    return os.path.join(samples_path, 'adftest30x30.im3')
+    return os.path.join(samples_path, 'adftest900.im3')
 
 def getMaskFn():
     '''

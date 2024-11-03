@@ -81,14 +81,14 @@
 <p>Cell constant data class create and validate crystal unit cell 
 lengths (a, b, c) and angles (alpha, beta, gamma).</p>
 <p>To create a Cell object using the following python dict object:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.4307&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;b&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.4307&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;c&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.4307&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;alpha&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;90.0&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;beta&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;90.0&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;gamma&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;90.0&quot;</span>
-<span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.4307&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;b&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.4307&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;c&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.4307&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;alpha&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;90.0&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;beta&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;90.0&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;gamma&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;90.0&quot;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Cell</span>
@@ -198,14 +198,14 @@ list object, as well as customization.</p>
 include atom symbol, positional data (x, y, z) and thermal coefficients
 as well as its occupancy.</p>
 <p>To create an isotropic Atom object with a python dict object:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;symb&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Si&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.125&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;y&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.125&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;z&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.125&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;d-w&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.4668&quot;</span><span class="p">,</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;symb&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Si&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.125&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;y&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.125&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;z&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.125&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;d-w&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.4668&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;occ&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.00&quot;</span><span class="w"> </span>
-<span class="p">}</span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Atom</span>
@@ -1366,32 +1366,32 @@ of (x,y,x,d-w,occ) where occ defaults to 1.00 if not provided.</p></li>
 </dd>
 </dl>
 <p>An example of a json file content:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
 <span class="w">    </span><span class="nt">&quot;cell&quot;</span><span class="p">:</span><span class="w"> </span>
-<span class="w">        </span><span class="p">{</span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.4307&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;b&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.4307&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;c&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.4307&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;alpha&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;90.0&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;beta&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;90.0&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;gamma&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;90.0&quot;</span>
-<span class="w">        </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;atoms&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="p">[</span>
-<span class="w">            </span><span class="p">{</span><span class="nt">&quot;symb&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;si&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.4307&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;b&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.4307&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;c&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.4307&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;alpha&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;90.0&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;beta&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;90.0&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">&quot;gamma&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;90.0&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;atoms&quot;</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="p">[</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="nt">&quot;symb&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;si&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">            </span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.125&quot;</span><span class="p">,</span><span class="w">  </span>
 <span class="w">            </span><span class="nt">&quot;y&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.125&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">            </span><span class="nt">&quot;z&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.125&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;z&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.125&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">            </span><span class="nt">&quot;d-w&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.4668&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">            </span><span class="nt">&quot;occ&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.00&quot;</span>
+<span class="w">            </span><span class="nt">&quot;occ&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.00&quot;</span><span class="w"></span>
 <span class="w">            </span><span class="p">}</span><span class="w"> </span>
-<span class="w">        </span><span class="p">],</span>
-<span class="w">    </span><span class="nt">&quot;spg&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="p">{</span><span class="nt">&quot;number&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;227&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">],</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;spg&quot;</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;number&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;227&quot;</span><span class="p">,</span><span class="w"></span>
 <span class="w">        </span><span class="nt">&quot;setting&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2&quot;</span><span class="w"> </span>
-<span class="w">        </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;dw&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;iso&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Silicon&quot;</span>
-<span class="p">}</span>
+<span class="w">        </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;dw&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;iso&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Silicon&quot;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1442,11 +1442,7 @@ of (x,y,x,d-w,occ) where occ defaults to 1.00 if not provided.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.crystals.Crystal.list_all_builtin_crystals">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_all_builtin_crystals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.list_all_builtin_crystals" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Noindex<span class="colon">:</span></dt>
-<dd class="field-odd"><p></p></dd>
-</dl>
-<p>To list all builtin crystals available in pyemaps built-in crystal database,
+<dd><p>To list all builtin crystals available in pyemaps built-in crystal database,
 use this routine to determine the name of the crystal to load using 
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.from_builtin">from_builtin</a>.</p>
 </dd></dl>
@@ -1654,7 +1650,7 @@ Miller index. For example, (3, 1, 0) will not be rendered.</p>
 </section>
 <section id="module-pyemaps.emcontrols">
 <span id="pyemaps-emcontrols-module"></span><h2>pyemaps.emcontrols module<a class="headerlink" href="#module-pyemaps.emcontrols" title="Permalink to this heading">¶</a></h2>
-<p>This class is a helper for handling pyemaps microscope controls.</p>
+<p>This class is a helper for handling pyEMAPS microscope controls.</p>
 <p>There are two controls classes this module defines: <a class="reference external" href="modules.html#pyemaps.emcontrols.EMControl">microscope controls</a>
 and <a class="reference external" href="modules.html#pyemaps.emcontrols.SIMControl">simulations controls</a>.</p>
 <p>Since the latter changes much less frequently than the former, 
@@ -1761,7 +1757,7 @@ simulation control is embedded as a member of a microscope controls class.</p>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_CBED_DSIZE">
-<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_CBED_DSIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.16</span>&#160; </em><a class="headerlink" href="#pyemaps.emcontrols.DEF_CBED_DSIZE" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_CBED_DSIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.16</span> </em><a class="headerlink" href="#pyemaps.emcontrols.DEF_CBED_DSIZE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </section>
@@ -2392,6 +2388,8 @@ diretcory set by the variable or return current working directory.</p>
 <span id="pyemaps-kdiffs-module"></span><h2>pyemaps.kdiffs module<a class="headerlink" href="#module-pyemaps.kdiffs" title="Permalink to this heading">¶</a></h2>
 <p>Kinematic diffraction module is designed to handle kinematic simulation
 data. It is composed of Point, Line and Disk class objects.</p>
+<blockquote>
+<div></div></blockquote>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyemaps.kdiffs.Point">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.kdiffs.</span></span><span class="sig-name descname"><span class="pre">Point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.kdiffs.Point" title="Permalink to this definition">¶</a></dt>

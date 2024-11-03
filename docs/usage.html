@@ -53,7 +53,7 @@
 <section id="installation">
 <span id="id1"></span><h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h2>
 <p>To use pyEMAPS, first install it using pip:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>pyemaps
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>pip install pyemaps
 </pre></div>
 </div>
 <p>where .venv is the python virtual environment.</p>
@@ -86,12 +86,12 @@ for storing your simulation and calculation results.</p>
 <li><p>Current working directory.</p></li>
 </ol>
 <p>The layout of the pyEMAPS data home directory is as follows:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)=</span>&lt;<span class="nb">local</span><span class="w"> </span>directory&gt;<span class="w">  </span><span class="c1"># pyemaps data home, must have read and write permisions</span>
-<span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/crystals<span class="w">           </span><span class="c1"># hosts all custom crystal data files (.xtl, .cif)</span>
-<span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/dif<span class="w">                </span><span class="c1"># location for all kinematic diffraction simulation output</span>
-<span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/bloch<span class="w">              </span><span class="c1"># location for all Bloch dynamic simulations images output files</span>
-<span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/stereo<span class="w">             </span><span class="c1"># location for all stereodiagram output files</span>
-<span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/mxtal<span class="w">              </span><span class="c1"># place for all crystal constructor output files such as *.xyz</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)=</span>&lt;<span class="nb">local</span> directory&gt;  <span class="c1"># pyemaps data home, must have read and write permisions</span>
+<span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/crystals           <span class="c1"># hosts all custom crystal data files (.xtl, .cif)</span>
+<span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/dif                <span class="c1"># location for all kinematic diffraction simulation output</span>
+<span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/bloch              <span class="c1"># location for all Bloch dynamic simulations images output files</span>
+<span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/stereo             <span class="c1"># location for all stereodiagram output files</span>
+<span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/mxtal              <span class="c1"># place for all crystal constructor output files such as *.xyz</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -152,7 +152,7 @@ To import the class:</p>
 </pre></div>
 </div>
 <p>Before starting pyEMAPS diffraction simulation, the crystal
-object must be created and loaded. The following example
+object must be created and data loaded. The following example
 creates a <em>si</em> crystal object by loading it from pyEMAPS
 built-in database for Silicon crystal using
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.from_builtin">from_builtin</a></p>
@@ -325,7 +325,7 @@ to the current working directory, run:</p>
 </pre></div>
 </div>
 <p>Below is a partial list of sample code:</p>
-<ul class="simple">
+<ul>
 <li><dl class="simple">
 <dt><em>si_dif.py</em>:</dt><dd><p>shows how kinematic diffraction patterns are generated and rendered with
 <em>matplotlib pyplot</em> module.</p>
@@ -355,7 +355,8 @@ modes: normal and large angle CBED.</p>
 </dl>
 </li>
 <li><dl class="simple">
-<dt><em>al_dpgen.py</em>:</dt><dd><p>generates a proprietory diffraction database file for aluminium crystal.</p>
+<dt><em>al_dpgen.py</em>:</dt><dd><p>generates a proprietory diffraction database file for aluminium crystal. The
+database file is to be used with 4DSTEM’s <em>ediom</em> module functions.</p>
 </dd>
 </dl>
 </li>
@@ -365,7 +366,17 @@ modes: normal and large angle CBED.</p>
 </dl>
 </li>
 <li><dl class="simple">
-<dt><em>adf.py</em> (license activated features only):</dt><dd><p>generates annular bright and dark fields from an experimental image.</p>
+<dt><em>convert_image.py</em> (license activated features only):</dt><dd><p>converts any raw image into pyEMAPS proprietory small header formatted image .</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><em>adf.py</em> (license activated features only):</dt><dd><p>generates annular bright and dark fields, as well as a masked image from an experimental image.
+You must the example experimental diffraction image named <em>adftest900.im3</em> in the same directory.
+Due to the size of the file, you must downloaded it from <a class="reference external" href="https://zenodo.org/records/14028793/files/adftest900.im3?download=1">the official Zenodo site</a>
+and place it to the the same directory.</p>
+<p>Also, the mask image function requires the input mask image file to be pyEMAPS proprietory
+small header formatted image. See how to convert your mask image inout file to the format.</p>
 </dd>
 </dl>
 </li>

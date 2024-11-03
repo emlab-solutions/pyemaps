@@ -130,7 +130,7 @@ To import the class:
    from pyemaps import Crystal
 
 Before starting pyEMAPS diffraction simulation, the crystal
-object must be created and loaded. The following example
+object must be created and data loaded. The following example
 creates a *si* crystal object by loading it from pyEMAPS 
 built-in database for Silicon crystal using 
 `from_builtin <pyemaps.crystals.html#pyemaps.crystals.Crystal.from_builtin>`_ 
@@ -370,9 +370,11 @@ Below is a partial list of sample code:
 
 * *adf.py* (license activated features only):
    generates annular bright and dark fields, as well as a masked image from an experimental image.
-   You must also have your own experimental image file named *adftest30x30.im3* in the same directory.
+   You must the example experimental diffraction image named *adftest900.im3* in the same directory.
+   Due to the size of the file, you must downloaded it from `the official Zenodo site <https://zenodo.org/records/14028793/files/adftest900.im3?download=1>`_
+   and place it to the the same directory.
 
-   The mask image function requires the input mask image file to be pyEMAPS proprietory
+   Also, the mask image function requires the input mask image file to be pyEMAPS proprietory
    small header formatted image. See how to convert your mask image inout file to the format. 
    
 More samples code will be added as more features and releases are available. 

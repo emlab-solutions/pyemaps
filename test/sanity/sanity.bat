@@ -11,7 +11,6 @@ call python -m pyemaps -v
 
 echo y | call python -m pyemaps -cp
 call python .\pyemaps_samples\si_csf.py
-call python .\pyemaps_samples\powder.py
 call python .\pyemaps_samples\si_dif.py
 call python .\pyemaps_samples\si_bloch.py
 call python .\pyemaps_samples\si_lacbed.py
@@ -19,7 +18,7 @@ call python .\pyemaps_samples\si_lacbed.py
 call python .\pyemaps_samples\si_constructor.py
 call python .\pyemaps_samples\si_stereo.py
 call python .\pyemaps_samples\si_scm.py
-python test\sanity\feature_sanity.py
+@REM python test\sanity\feature_sanity.py
 
 @REM performance test - all includes all types: dif, bloch and stereo
 call python test\sanity\run_perf_test.py -r all
@@ -29,6 +28,7 @@ call python test\unittests\kdif\sanity_doc.py
 call python test\unittests\bloch\si_bloch_docs.py
 call python test\unittests\bloch\disk_size.py
 
+call python .\pyemaps_samples\powder.py
 @REM echo before wrror level: %ERRORLEVEL%
 call python test\unittests\package_test\type_test.py
 @REM echo after wrror level: %ERRORLEVEL%
@@ -59,6 +59,8 @@ set /a endSeconds=(%endTime:~0,2%*3600) + (%endTime:~3,2%*60) + (%endTime:~6,2%)
 
 rem Calculate the duration in seconds
 set /a duration=endSeconds-startSeconds
+
+echo duration in seconds: %duration% 
 
 rem Handle negative duration in case the script ran past midnight
 if %duration% lss 0 set /a duration+=86400

@@ -13,7 +13,6 @@ Crystals
     :members: Cell, Atom, SPG, Crystal
     :undoc-members:
     :show-inheritance:
-    :noindex:
 
 Microscope and Simulation Controls
 ----------------------------------
@@ -23,8 +22,6 @@ Microscope and Simulation Controls
     :members: 
     :undoc-members:
     :show-inheritance:
-    :noindex:
-
 
 Kinematic Diffractions
 ----------------------
@@ -34,7 +31,6 @@ Kinematic Diffractions
     :members: Point, Line, Disk, Index, diffPattern
     :undoc-members:
     :show-inheritance:
-    :noindex:
 
 Dynamic Diffraction
 -------------------
@@ -44,7 +40,6 @@ Dynamic Diffraction
    :members:
    :undoc-members:
    :show-inheritance:
-   :noindex:
 
 .. _builtin visualization functions:
 
@@ -56,7 +51,6 @@ Images Classes
    :members:
    :undoc-members:
    :show-inheritance:
-   :noindex:
 
 Display
 -------
@@ -67,7 +61,6 @@ Display
    :imported-members:
    :undoc-members:
    :show-inheritance:
-   :noindex:
 
 File Utilities
 --------------
@@ -77,7 +70,6 @@ File Utilities
    :imported-members:
    :undoc-members:
    :show-inheritance:
-   :noindex:
 
 
 Error Handling
@@ -88,7 +80,6 @@ Error Handling
     :members: 
     :undoc-members:
     :show-inheritance:
-    :noindex:
 
 .. Kinematical Diffractions Simulation Module
 .. ------------------------------------------
