@@ -1,10 +1,10 @@
 Release Notes
 =============
 
-Version 1.1.0 Stable
+Version 1.1.1 Stable
 -------------------- 
 
-10-30-2024 
+11-02-2024 
 ~~~~~~~~~~
 
 What's New?
