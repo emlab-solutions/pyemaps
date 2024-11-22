@@ -67,7 +67,7 @@ def show_diffract(dp, md=1, name = 'Diamond'):
     
     #validate diffraction mode
     if md <1 or md > 2:
-        print(f'diffraction mode provided {md} not supported')
+        print(f'Diffraction mode provided {md} not supported')
         return 1
     
     #set image title

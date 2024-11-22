@@ -193,7 +193,7 @@ def add_csf(target):
         nb, ret = csf.generate_sf(kv, smax, sftype, aptype)
         
         if ret != 0 and nb <= 0:
-            print(f'Error running generating structure factor for {self.name}')
+            print(f'Error generating structure factor for {self.name}')
             self.cleanCSF()
             return sfs
 
@@ -201,7 +201,7 @@ def add_csf(target):
             ret = 0
             ret,h,k,l,s,d,sf1,sf2 = csf.get_sf(i)
             if ret != 0: 
-                print(f'Error running generating sructure factor for {self.name}')
+                print(f'Error generating sructure factor for {self.name}')
                 self.cleanCSF()
                 return sfs
             

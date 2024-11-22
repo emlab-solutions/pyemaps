@@ -53,11 +53,11 @@ def al_dpdb(cname='Aluminium'):
                                    res = res)
 #   DP == Diffraction Pattern
     if ret != 0:
-        print(f'failed to generate a DP databaes')
+        print(f'failed to generate a DP or diffraction pattern databaes')
         return -1
 
     if dbfn is None or not os.path.exists(dbfn):
-        print(f'Error finding generated DP database file')
+        print(f'Error finding generated DP or diffraction pattern database file')
         return -1
 
 

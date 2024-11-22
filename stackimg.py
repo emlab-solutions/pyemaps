@@ -21,7 +21,7 @@
 .. ----
 
 '''
-    
+product_name = "pyEMAPS"
 from . import stem4d, send, ediom
 
 from . import (E_INT, EM_INT,
@@ -127,7 +127,7 @@ class StackImage():
         The type of the image file 
 
         - E_RAW: raw image files with image data at an `noffset` from the beginning of the file. 
-        - E_SH: small header (pyemaps propietory). Header is a tuple of three short integers 
+        - E_SH: small header (pyEMAPS propietory). Header is a tuple of three short integers 
           and data type represented also by a short integer. Total bytes of the header or the offset
           is 8)
         - E_NPY: numpy array.
@@ -252,18 +252,33 @@ class StackImage():
         if img_format == E_NPY:
             ret = ximage.setImage_from_numpy(self.data)
 
-# load proprietory small header formatted image file
+        # load proprietory small header formatted image file
         if img_format == E_SH:
             ret = stem4d.loadXImage(self.fname, rmode = rmode, stack = stack)
-# load raw image file            
+                
+        # load raw image file            
         if img_format == E_RAW:
             ret = stem4d.loadRawImage(self.fname, 
                           self.noffset, self.ndtype, 
                           self.dim[0], self.dim[1], self.dim[2], 
                           rmode = rmode, stack=stack)
+            
+        # spell out license issues here before bailing out
+        if ret == stem4d.LICENSE_EXPIRED:
+            print(f"Your {product_name} license has expired. ")
+            print("Upgrade your license by purchasing a full license token by contact support.")
+            print("Contact support@emlabsoftware.com if you think you have a valid license and the problem persists.")
+        elif ret == stem4d.LICENSE_NONEXISTENT:
+            print(f"Fail to find {product_name} license.")
+            print("Contact support@emlabsoftware.com if you think you have a valid license and the problem persists.")
+            print(f"Run \"pyemaps -l trial\" to obtain a free 7-day trial {product_name} license.")
+            print(f"Or, contact support@emlabsoftware.com to purchase a {product_name} license activation token.")
+        elif ret == stem4d.LICENSE_OTHERS:
+            print(f'Unknown error retrieving {product_name} license info!')
+            print(f'If persists, contact support@emlabsoftware.com')
 
         if ret != 0:
-            raise XDPImageError("Failed to import the image into stem4d module")
+            raise XDPImageError("Failed to import the image into pyEMAPS")
         
         self._dim = (ximage.h.ncol,ximage.h.nrow,ximage.h.nlayer)
         self._data = ximage.getImageData(stack)
@@ -524,7 +539,7 @@ class StackImage():
         
         ret, fmask = ediom.getFitMap(flen)
         if ret != 0:
-            print(f'Python ----Failed to get for map')
+            print(f'Python ----Failed to get fit map')
             return ret
 
         displayXImage(fmask.reshape(fr,fc), 
@@ -700,7 +715,6 @@ class StackImage():
         except Exception as e:
             raise XDPImageError(f"Error loading image for stem4d analysis: {e}") from e
         
-        # print(f'debug:experimental image depth: {self._dim}')
         self.viewExpImage(title='Experimental Diffraction Image - input')
 
         edc = stem4d.cvar.edc
@@ -799,13 +813,13 @@ class StackImage():
         
         if not isinstance(center, tuple) or len(center) !=2 or \
            not all(isinstance(x, (int, float)) for x in center):
-            print(f'Invalid ADF detector center')
+            print(f'Invalid annular dark or bright field detector center')
             return -2, None
         
         if not isinstance(rads, tuple) or len(rads) !=2 or \
            not all(isinstance(x, (int, float)) for x in rads) or \
            rads[0] == rads[1]:
-            print(f'Invalid ADF detector inner and outer radius, it must be a pair of numerals')
+            print(f'Invalid annular dark or bright field detector inner and outer radius, it must be a pair of numerals')
             return -3, None
                
         try:
@@ -818,7 +832,7 @@ class StackImage():
                            rads[0], rads[1], 
                            scol)
         if ret != 0:
-            print(f'Failed to generate ADF image for experimental image {self.fname}')
+            print(f'Failed to generate annular dark or bright field image for experimental image {self.fname}')
             return -4, None
         
         adfimg = stem4d.cvar.ximg

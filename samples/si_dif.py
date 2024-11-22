@@ -28,7 +28,7 @@ by pyemaps by changing zone axis
 try:
     from pyemaps import DEF_CBED_DSIZE, DEF_MODE
 except ImportError as e:
-    print(f'Importing error: {e}')
+    print(f'pyEmaps importing error: {e}')
     exit(1)
 
 from pyemaps import EMC, DPError,EMCError

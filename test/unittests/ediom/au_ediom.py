@@ -102,7 +102,7 @@ def test_ediom_from_SHfile_al():
     ret, mr, mc =cryst.loadDPDB(dbfn = dpdbfn, bShowDBMap=True)
     
     if ret != 0 or mr <= 0 or mc <=0:
-        print(f"Error loading DP database from file {dpdbfn}")
+        print(f"Error loading diffraction pattern database from file {dpdbfn}")
         cryst.release_ediom()
         exit(1)
 
