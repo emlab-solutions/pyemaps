@@ -188,7 +188,7 @@ if PKG_TYPE != TYPE_FREE:
         from emaps import stem4d
         
     except ImportError as e:
-        print(f'Failure to import supporting module(s) for 4DSTEM module')
+        print(f'Failure to import 4DSTEM modules: {e}')
         print(f'4DSTEM feature are not available. Contact support@emlabsoftware if issue persistes')
     else:
         E_INT = stem4d.E_INT 

@@ -40,8 +40,8 @@ if __name__ == '__main__':
         bimgs = si.generateBloch(sample_thickness=(200, 1000, 100), bSave=True)
 
     except (CrystalClassError, BlochError) as e:
-        print(f'error: generate and write bloch image data1: {e.message}')
+        print(f'error: generate and write bloch image data: {e.message}')
     except Exception as e:
-        print(f'error: generate and write bloch image data2: ' + str(e))
+        print(f'error: generate and write bloch image data: ' + str(e))
    
    

@@ -159,11 +159,11 @@ def add_dpgen(target):
         dpgen.cleanup()
 
         if ret != 0:
-            print(f'Error running generating diffraction patterns for {self.name}')
+            print(f'Error generating diffraction patterns for {self.name}')
             return -1, final_fp
 
         print('*******************************************************************************')
-        print(f'* The DP database for {self.name} has been generated successfully')
+        print(f'* The diffraction pattern database for {self.name} has been generated successfully')
         print(f'* and saved in:')
         print(f'* {final_fp}')
         print('*******************************************************************************')

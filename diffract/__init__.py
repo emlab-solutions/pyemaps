@@ -66,5 +66,5 @@ try:
     from emaps import mxtal
 
 except ImportError as e:
-    print(f'no mxtal module found in emaps')
+    print(f'no mxtal module found in simulation module')
     

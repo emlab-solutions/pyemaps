@@ -213,8 +213,8 @@ def add_dif(target):
             
             dif.setsamplecontrols(tx0, ty0, dx0, dy0)
         else:
-            print(f'tilt and def values: {tx0},{ty0}, {dx0}, {dy0}')
-            raise EMCError('Control parameters invalid: tilt and deflections')
+            print(f'tilt and deflection values: {tx0},{ty0}, {dx0}, {dy0}')
+            raise EMCError('Control parameters invalid: tilt and deflection')
 
         if cl is not None and vt is not None:
             dif.setemcontrols(cl, vt)

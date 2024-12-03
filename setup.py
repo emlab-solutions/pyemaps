@@ -36,10 +36,13 @@ from numpy.distutils.core import Extension, setup
 from numpy.distutils.command.build_ext import build_ext as numpy_build_ext
 
 import os
+
+os.environ["DISTUTILS_USE_SDK"] = "1"
+os.environ["MSSdk"] = "1"
 from pathlib import Path
 
 install_requires = [
-            'emaps >= 1.0.5',
+            'emaps >= 1.0.7',
             'numpy >= 1.21.2',
             'matplotlib >= 3.2.1'
             ]

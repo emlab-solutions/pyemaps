@@ -97,17 +97,15 @@ def main():
         from .samples.si_pyemaps import run_si_sample
         
         from emaps import PKG_TYPE, TYPE_FREE, TYPE_FULL, TYPE_UIUC
-        if PKG_TYPE != TYPE_FREE:
-            from emaps import stem4d 
         
     except ImportError as e:
-        print(f"Error: importing built-in sample: {e}")
+        print(f"Error: importing built-in sample and pyemaps constants from backend: {e}")
         
     import argparse
     import datetime
     import pkg_resources
 
-    parser = argparse.ArgumentParser(description="pyEMAPS command line.",  
+    parser = argparse.ArgumentParser(description="pyEMAPS command line tool.",  
                                      formatter_class=argparse.RawTextHelpFormatter)
     
     parser.add_argument("-c", 
@@ -130,12 +128,12 @@ def main():
                             const='info',   
                             default=None,   
                             metavar='trial|info|<LICENSE_ACTIVATION_TOKEN>',
-                            help="""activate license for full package with 4D STEM features.
+                            help="""activate license for full package with 4D STEM features. Options are:
 - trial: to activate a trial license, this option requires internet connection.
 - info: to display current license details, no internet connection is needed.
 - <LICENSE_ACTIVATION_TOKEN>: to activate license with license token with or without internet**.
 The token is obtained from EMLab Solutions, Inc. by writing to support@emlabsoftware.com.
-**No internet is required after license is activated, as license check is all local.""", 
+**No internet is required after license is activated, as all functions including license check are local.""", 
                             required=False
                             )
     parser.add_argument("-s", 
@@ -154,9 +152,6 @@ The token is obtained from EMLab Solutions, Inc. by writing to support@emlabsoft
     try:
         args = parser.parse_args()
     except argparse.ArgumentTypeError as e:
-        parser.print_help()
-        exit(1)
-    except SystemExit as e:
         parser.print_help()
         exit(1)
 
@@ -219,8 +214,6 @@ The token is obtained from EMLab Solutions, Inc. by writing to support@emlabsoft
                 exit(1)
 
         exit(0)
-
-    
 
 if __name__ == '__main__':
     main()  

@@ -36,9 +36,9 @@ def test_mxtal():
             print(f'crytsal data to generate mxtal: {si}')
             mx = si.generateMxtal(bound=0.1)
     except (CrystalClassError, MxtalError) as e:
-        print(f'error: generating mxtal data: {e.message}')
+        print(f'error: generating crystal structure data: {e.message}')
     except Exception as e:
-        print(f'error: generating mxtal data: {e}')
+        print(f'error: generating crystal structure data: {e}')
     else:
         print(f'\nCrystal Structure Data Generated for {si.name}:')
         si.printXYZ(mx)

@@ -71,7 +71,7 @@ def find_dpi():
         import ctypes
     except ImportError as e:
         print(f'failed to find display resolution') 
-        print(f'supported python version: >= 3.6')
+        print(f'supported python version: == 3.7')
         print(f'Use default dpi of 96')
 
         return dpi
@@ -226,10 +226,8 @@ class DifPlotter:
         self.ax.set_ylim([-1.0, 1.0])
 
     def call_back(self):
-        # print(f'got inside call_back')
         while self.pipe.poll():
             command = self.pipe.recv()
-            # print(f'data rceived: {command}')
             if command is None:
                 self.terminate()
                 return False
@@ -264,12 +262,9 @@ class DifPlotter:
 
     def showImage(self):
         
-        # print(f'got inside call showImage: {hasDisplay}')
         if isLinux() and not hasDisplay:
             return
         plt.show()
-        # self.canvas.draw()
-        # self.canvas.show()
         
 
     def position_fig(self, x, y):
@@ -328,10 +323,8 @@ class DifPlotter:
 
         timer = self.canvas.new_timer(interval=100)
         
-        # print(f'got inside call after before canvas new timer call: {hasDisplay}')
         timer.add_callback(self.call_back)
         
-        # print(f'got inside call after after canvas new timer call: {hasDisplay}')
         timer.start()
 
         self.showImage()

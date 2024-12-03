@@ -40,15 +40,15 @@ def bt_bloch():
                bimg = f.result()
 
             except (BlochError, EMCError) as e:
-                print(f'generated an exception: {e.message}') 
+                print(f'Generated an exception: {e.message}') 
                 return bimg
             except Exception as e:
-                print(f'failed to generate diffraction patterns: {e}') 
+                print(f'Failed to generate diffraction patterns: {e}') 
                 return bimg
             else: 
                 
                 toc = time.perf_counter()
-                print(f'time to run bloch for {cname} is {toc-tic}')
+                print(f'Time to run bloch for {cname} is {toc-tic}')
                 showBloch(bimg, bSave=True, layout='table') 
             
 
