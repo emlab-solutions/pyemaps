@@ -1,6 +1,19 @@
 Release Notes
 =============
 
+Version 1.1.2 Stable
+-------------------- 
+
+12-03-2024 
+~~~~~~~~~~
+
+Improvements
+~~~~~~~~~~~~
+
+- Bug fixes.
+- User based license storage. All authenticated users on the system should be able to use pyEMAPS 4D STEM features. 
+  See the section on license activation :ref:`License Activation` for how to activate icense for each user.
+
 Version 1.1.1 Stable
 -------------------- 
 

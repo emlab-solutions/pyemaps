@@ -370,11 +370,10 @@ Below is a partial list of sample code:
 
 * *adf.py* (license activated features only):
    generates annular bright and dark fields, as well as a masked image from an experimental image.
-   You must the example experimental diffraction image named *adftest900.im3* in the same directory.
-   Due to the size of the file, you must downloaded it from `the official Zenodo site <https://zenodo.org/records/14028793/files/adftest900.im3?download=1>`_
-   and place it to the the same directory.
+   You must have the example experimental diffraction image named *adftest900.im3* in the same directory.
+   The experimental diffraction image can be downloaded from `the official Zenodo site <https://zenodo.org/records/14028793/files/adftest900.im3?download=1>`_.
 
    Also, the mask image function requires the input mask image file to be pyEMAPS proprietory
-   small header formatted image. See how to convert your mask image inout file to the format. 
+   small header formatted image. See *convert_image.py* sample code on how to convert your raw mask image input file before using it. 
    
 More samples code will be added as more features and releases are available. 
