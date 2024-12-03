@@ -133,7 +133,7 @@ def main():
 - info: to display current license details, no internet connection is needed.
 - <LICENSE_ACTIVATION_TOKEN>: to activate license with license token with or without internet**.
 The token is obtained from EMLab Solutions, Inc. by writing to support@emlabsoftware.com.
-**No internet is required after license is activated, as all finctions including license check are local.""", 
+**No internet is required after license is activated, as all functions including license check are local.""", 
                             required=False
                             )
     parser.add_argument("-s", 
