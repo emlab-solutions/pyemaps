@@ -266,7 +266,7 @@ class StackImage():
         # spell out license issues here before bailing out
         if ret == stem4d.LICENSE_EXPIRED:
             print(f"Your {product_name} license has expired. ")
-            print("Upgrade your license by purchasing a full license token by contact support.")
+            print("Upgrade your license by purchasing a full license token by contacting support@emlabsoftware.com.")
             print("Contact support@emlabsoftware.com if you think you have a valid license and the problem persists.")
         elif ret == stem4d.LICENSE_NONEXISTENT:
             print(f"Fail to find {product_name} license.")
