@@ -1,0 +1,73 @@
+name: Run Batch Script Tests If there are changes
+
+on:
+  schedule:
+    - cron: '0 5 * * *' # Runs at midnight CDT (5:00 AM UTC)
+  workflow_dispatch: # Allow manual triggering as well
+
+jobs:
+  run-tests:
+    runs-on: windows-latest # Use a Windows runner for batch scripts
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: autotest_sz/setup-workflow  # Replace with the branch name you want to use
+          fetch-depth: 0                    # Fetch full history to compare commits
+
+      # Step 2: Detect changes in the branch
+      - name: Check for changes in the branch
+        id: changes
+        run: |
+          MONITORED_PATH="./"
+          LATEST_COMMIT=$(git rev-parse HEAD)
+          LAST_COMMIT=$(cat .github/last_commit || echo "")
+
+          if [ "$LATEST_COMMIT" != "$LAST_COMMIT" ] && git diff --quiet $LAST_COMMIT $LATEST_COMMIT -- $MONITORED_PATH; then
+            echo "changes_detected=true" >> $GITHUB_ENV
+            echo $LATEST_COMMIT > .github/last_commit
+          else
+            echo "changes_detected=false" >> $GITHUB_ENV
+            run echo "No changes detected! Exiting wihtout testing"
+            exit 0
+          fi
+
+          echo $LATEST_COMMIT > .github/last_commit
+
+
+      # Step 3.1: Install Python and dependencies
+      - name: Set up Python
+        if: env.changes_detected == 'true'  # Only run if changes are detected
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.7  # Specify the Python version you need
+
+      # Step 3.2: Install dependencies
+      - name: Install dependencies
+        if: env.changes_detected == 'true'  # Only run if changes are detected
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ./requirements.txt
+
+      # Step 4: Navigate to the 'test' directory and run the batch script
+      - name: Run batch script testsif there are changes
+        run: |
+          if: env.changes_detected == 'true'
+          run: echo "Changes detected in the branch. Running tests."
+          .\test\sanity\sanity.bat > githubsanity_test_results.log 2>&1
+      
+      # Step 5: Annotate failures
+      - name: Annotate test failures
+        if: failure()  # Only run if the job fails
+        run: |
+          echo "::error file=test/test_output.log,line=1::Test failure detected. Check the log for details."
+
+      # Step 6: Upload logs for debugging
+      - name: Upload test log
+        if: always()  # Upload log regardless of job status
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-log
+          path: test/sanity/sanity_test_results.log.log
