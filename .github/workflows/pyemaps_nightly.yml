@@ -16,7 +16,13 @@ jobs:
         with:
           ref: autotest_sz                  # Replace with the branch name you want to use
           fetch-depth: 0                    # Fetch full history to compare commits
-          path: sanity-nightly              # checkout the repo to the sanity-nightly directory
+          #path: sanity-nightly              # checkout the repo to the sanity-nightly directory
+          
+      # Step 1.1: Move the checked-out repository to a specific directory (e.g., sanity-nightly)
+      - name: Move repository to a specific directory
+        run: |
+          mkdir sanity-nightly
+          move * sanity-nightly/
 
       # Step 2: Detect changes in the branch
       - name: Check for changes in the branch
