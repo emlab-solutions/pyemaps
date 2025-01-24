@@ -27,10 +27,8 @@ jobs:
           LAST_COMMIT=$(cat .github/last_commit || echo "")
 
           if [ "$LATEST_COMMIT" != "$LAST_COMMIT" ] && git diff --quiet $LAST_COMMIT $LATEST_COMMIT -- $MONITORED_PATH; then
-            echo "changes_detected=true" >> $GITHUB_ENV
             echo $LATEST_COMMIT > .github/last_commit
           else
-            echo "changes_detected=false" >> $GITHUB_ENV
             run echo "No changes detected! Exiting wihtout testing"
             exit 0
           fi
