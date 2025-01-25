@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 0                    # Fetch full history to compare commits
           
       # Step 1.1: Move the checked-out repository to a specific directory (e.g., sanity-nightly)
-      - name: Move repository to a specific directory
+      - name: Move repository to a nightly testing directory
         run: |
           mkdir sanity-nightly
           move * sanity-nightly/
