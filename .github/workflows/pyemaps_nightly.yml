@@ -25,7 +25,7 @@ jobs:
         shell: bash
         id: changes
         run: |
-          MONITORED_PATH=".\"
+          MONITORED_PATH="%CD%"
           LATEST_COMMIT=$(git rev-parse HEAD)
           LAST_COMMIT=$(cat .github/last_commit || echo "")
 
