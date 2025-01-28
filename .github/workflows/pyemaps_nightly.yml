@@ -23,7 +23,7 @@ jobs:
       # Step 1.1: Move the checked-out repository to a specific directory (e.g., sanity-nightly)
       - name: Move repository to a nightly testing directory
         run: |
-          if ( exist sanity-nightly ) rmdir /s /q sanity-nightly
+          if exist sanity-nightly rmdir /s /q sanity-nightly
           mkdir sanity-nightly
           for %f in (*) do if not "%f"=="sanity-nightly" move "%f" "sanity-nightly"
 
