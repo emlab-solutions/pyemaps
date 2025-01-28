@@ -59,7 +59,10 @@ jobs:
           
           # Check the size of the downloaded installer to confirm it's not corrupt
           $installerSize = (Get-Item "vs_installer.exe").length
-          Write-Host "Installer file size: $installerSize bytes"
+          $installerSize = (Get-Item "vs_installer.exe").length
+          $installerSizeKB = [math]::round($installerSize / 1KB, 2)  # Converts bytes to KB
+          $installerSizeMB = [math]::round($installerSize / 1MB, 2)  # Converts bytes to MB
+          Write-Host "Installer file size: $installerSizeKB KB ($installerSizeMB MB)"
           
           # Check if the installer exists
           if (Test-Path "vs_installer.exe") {
