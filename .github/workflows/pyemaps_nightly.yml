@@ -59,14 +59,14 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel build requests
 
       # Step 3.3: Build the package using a batch file
-      - shell: cmd
       - name: Build the package
+      - shell: cmd
         run: |
           ./sanity-nightly/pyemaps/build.bat
 
       # Step 4: Navigate to the 'test' directory and run the batch script
-      - shell: cmd
       - name: Run batch script tests if there are changes
+      - shell: cmd
         run: |
           run: echo "Changes detected in the branch. Running tests."
           ./sanity-nightly/pyemaps/test/sanity/githut-sanity.bat > ./sanity-nightly/pyemaps/test/githubsanity_test_results.log 2>&1
