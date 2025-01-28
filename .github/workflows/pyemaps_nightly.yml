@@ -41,8 +41,23 @@ jobs:
           fi
 
           echo $LATEST_COMMIT > .github/last_commit
+      
+      # Step 2: Install Visual Studio 2019 and Build Tools
+      - name: Set up Visual Studio 2019 and Build Tools
+        run: |
+          # Install Visual Studio 2019 with Build Tools and necessary workloads
+          Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vs_installer.exe -OutFile vs_installer.exe
+          Start-Process -FilePath .\vs_installer.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.NativeDesktop', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--includeRecommended' -NoNewWindow -Wait
 
-      # Step 3: Create a specific directory for the nightly sanity test results (e.g., sanity-nightly)
+      # Step 2.1: Set up Developer Command Prompt for Visual Studio
+      - name: Set up Developer Command Prompt for Visual Studio
+        run: |
+          # Locate the Visual Studio installation using vswhere
+          $VS_PATH = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
+          # Set up the Developer Command Prompt environment
+          & "$VS_PATH\Common7\Tools\VsDevCmd.bat"
+          
+      # Step 4: Create a specific directory for the nightly sanity test results (e.g., sanity-nightly)
       - name: Create nightly testing directory
         shell: cmd
         run: |
@@ -50,38 +65,38 @@ jobs:
           if exist sanity-nightly rmdir /s /q sanity-nightly
           mkdir sanity-nightly
             
-      # Step 3.1: Install Python and dependencies
+      # Step 4.1: Install Python and dependencies
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.7  # Specify the Python version you need
 
-      #Step 3.2: Install dependencies
+      #Step 4.2: Install dependencies
       - name: Install build dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel build requests numpy
           
-      # Step 3.3: Build the package using a batch file
+      # Step 4.3: Build the package using a batch file
       - name: Build the package
         shell: cmd
         run: |
           echo "Building pyEMAPS....."
           .\build.bat
 
-      # Step 4: Navigate to the 'test' directory and run the batch script
+      # Step 5: Navigate to the 'test' directory and run the batch script
       - name: Run batch script tests if there are changes
         shell: cmd
         run: |
           echo "Running sanity tests...."
           .\test\sanity\githut-sanity.bat > .\sanity-nightly\githubsanity_test_results.log 2>&1
       
-      # Step 5: Annotate failures
+      # Step 6: Annotate failures
       - name: Annotate test failures
         if: failure()  # Only run if the job fails
         run: |
           echo "::error file=.\sanity-nightly\githubsanity_test_results.log,line=1::Test failure detected. Check the log for details."
 
-      # Step 6: Upload logs for debugging
+      # Step 7: Upload logs for debugging
       - name: Upload test log
         if: always()  # Upload log regardless of job status
         uses: actions/upload-artifact@v3
