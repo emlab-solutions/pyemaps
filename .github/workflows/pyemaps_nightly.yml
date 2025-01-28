@@ -51,7 +51,12 @@ jobs:
           if (Test-Path "vs_installer.exe") {
               Write-Host "vs_installer.exe found. Proceeding with installation."
               # Run the installer
-              Start-Process -FilePath .\vs_installer.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.NativeDesktop', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--includeRecommended' -NoNewWindow -Wait
+              try {
+                  Start-Process -FilePath .\vs_installer.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.NativeDesktop', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--includeRecommended' -NoNewWindow -Wait
+              } catch {
+                  Write-Host "Error occurred while starting the installer: $_"
+                  exit 1
+              }
           } else {
               Write-Host "vs_installer.exe not found. Exiting..."
               exit 1
