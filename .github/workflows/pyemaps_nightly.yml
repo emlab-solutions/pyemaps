@@ -47,16 +47,15 @@ jobs:
         run: |
           # Install Visual Studio 2019 with Build Tools and necessary workloads
           Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vs_installer.exe -OutFile vs_installer.exe
-          run: |
-            # Check if the installer exists
-            if (Test-Path "vs_installer.exe") {
-                Write-Host "vs_installer.exe found. Proceeding with installation."
-                # Run the installer
-                Start-Process -FilePath .\vs_installer.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.NativeDesktop', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--includeRecommended' -NoNewWindow -Wait
-            } else {
-                Write-Host "vs_installer.exe not found. Exiting..."
-                exit 1
-            }
+          # Check if the installer exists
+          if (Test-Path "vs_installer.exe") {
+              Write-Host "vs_installer.exe found. Proceeding with installation."
+              # Run the installer
+              Start-Process -FilePath .\vs_installer.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.NativeDesktop', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--includeRecommended' -NoNewWindow -Wait
+          } else {
+              Write-Host "vs_installer.exe not found. Exiting..."
+              exit 1
+          }
         
       # Step 2.0: Install Visual Studio 2019 and Build Tools
       - name: Install Visual Studio 2019 and Build Tools
