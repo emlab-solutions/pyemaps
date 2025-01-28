@@ -26,7 +26,7 @@ jobs:
         run: |
           if exist sanity-nightly rmdir /s /q sanity-nightly
           mkdir sanity-nightly
-          for %f in (*) do if not "%f"=="sanity-nightly" move "%f" "sanity-nightly"
+          for %%f in (*) do if not "%%f"=="sanity-nightly" move "%%f" "sanity-nightly"
 
       # Step 2: Detect changes in the branch
       - name: Check for changes in the branch
