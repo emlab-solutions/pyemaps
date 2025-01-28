@@ -19,6 +19,7 @@ jobs:
         with:
           ref: autotest_sz                  # Replace with the branch name you want to use
           fetch-depth: 0                    # Fetch full history to compare commits
+          path: pyemaps                    # Check out directly into "pyemaps" folder
           
       # Step 1.1: Move the checked-out repository to a specific directory (e.g., sanity-nightly)
       - name: Move repository to a nightly testing directory
