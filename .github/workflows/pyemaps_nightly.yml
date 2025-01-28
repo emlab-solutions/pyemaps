@@ -19,7 +19,6 @@ jobs:
         with:
           ref: autotest_sz                  # Replace with the branch name you want to use
           fetch-depth: 0                    # Fetch full history to compare commits
-          path: pyemaps                    # Check out directly into "pyemaps" folder
           
       # Step 1.1: Move the checked-out repository to a specific directory (e.g., sanity-nightly)
       - name: Move repository to a nightly testing directory
@@ -28,12 +27,7 @@ jobs:
           echo "current working directory is: " %CD%
           if exist sanity-nightly rmdir /s /q sanity-nightly
           mkdir sanity-nightly
-
-          if exist sanity-nightly
-            for %%f in (*) do if not "%%f"=="sanity-nightly" move "%%f" "sanity-nightly"
-          else
-            run echo "Nightly directory creation failed!"
-            exit 0
+          for %%f in (*) do if not "%%f"=="sanity-nightly" move "%%f" "sanity-nightly"
             
 
       # Step 2: Detect changes in the branch
