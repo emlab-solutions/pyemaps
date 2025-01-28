@@ -43,11 +43,27 @@ jobs:
           echo $LATEST_COMMIT > .github/last_commit
       
       # Step 2: Install Visual Studio 2019 and Build Tools
-      - name: Set up Visual Studio 2019 and Build Tools
+      - name: Download Visual Studio 2019 and Build Tools
         run: |
           # Install Visual Studio 2019 with Build Tools and necessary workloads
           Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vs_installer.exe -OutFile vs_installer.exe
-          Start-Process -FilePath .\vs_installer.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.NativeDesktop', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--includeRecommended' -NoNewWindow -Wait
+          run: |
+            $installerPath = "vs_installer.exe"
+            
+            # Check if the installer exists
+            if (Test-Path $installerPath) {
+                Write-Host "vs_installer.exe found. Proceeding with installation."
+                # Run the installer
+                Start-Process -FilePath .\vs_installer.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.NativeDesktop', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--includeRecommended' -NoNewWindow -Wait
+            } else {
+                Write-Host "vs_installer.exe not found. Exiting..."
+                exit 1
+            }
+        
+      # Step 2.0: Install Visual Studio 2019 and Build Tools
+      - name: Install Visual Studio 2019 and Build Tools
+        run: |    
+          Start-Process -FilePath .\vs_installer.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--includeRecommended' -NoNewWindow -Wait
 
       # Step 2.1: Set up Developer Command Prompt for Visual Studio
       - name: Set up Developer Command Prompt for Visual Studio
