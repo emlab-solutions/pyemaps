@@ -58,6 +58,15 @@ jobs:
         run: |
           python -m pip install --upgrade pip setuptools wheel build requests
 
+      # Step 3.2.1: Build the package using a batch file
+      - name: List files in sanity-nightly\pyemaps
+        shell: cmd
+        run: |
+          dir sanity-nightly\pyemaps
+          if not exist sanity-nightly rmdir /s /q sanity-nightly
+            echo Directory does not exist
+          echo %CD%
+          
       # Step 3.3: Build the package using a batch file
       - name: Build the package
         shell: cmd
