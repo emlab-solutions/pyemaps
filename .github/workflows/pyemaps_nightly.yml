@@ -46,7 +46,13 @@ jobs:
       - name: Download Visual Studio 2019 and Build Tools
         run: |
           # Delete any existing installer if it exists
-          Remove-Item "vs_installer.exe" -Force
+          # Check if vs_installer.exe exists before removing it
+          if (Test-Path "vs_installer.exe") {
+              Remove-Item "vs_installer.exe" -Force
+              Write-Host "vs_installer.exe removed."
+          } else {
+              Write-Host "vs_installer.exe not found. Skipping removal."
+          }
           
           # Install Visual Studio 2019 with Build Tools and necessary workloads
           Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vs_installer.exe -OutFile vs_installer.exe
