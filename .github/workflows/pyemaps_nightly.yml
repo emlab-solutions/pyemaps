@@ -94,7 +94,8 @@ jobs:
       - name: Set up Developer Command Prompt for Visual Studio
         run: |
           # Locate the Visual Studio installation using vswhere
-          $VS_PATH = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
+          #$VS_PATH = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
+          $VS_PATH = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -all
           # Set up the Developer Command Prompt environment
           & "$VS_PATH\Common7\Tools\VsDevCmd.bat"
           
