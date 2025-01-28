@@ -62,7 +62,7 @@ jobs:
       - name: Build the package
         shell: cmd
         run: |
-          ./sanity-nightly/pyemaps/build.bat
+          sanity-nightly\pyemaps\build.bat
 
       # Step 4: Navigate to the 'test' directory and run the batch script
       - name: Run batch script tests if there are changes
