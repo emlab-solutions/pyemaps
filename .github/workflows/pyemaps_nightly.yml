@@ -60,27 +60,19 @@ jobs:
       - name: Install build dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel build requests
-
-      # Step 3.2.1: Build the package using a batch file
-      - name: List files in sanity-nightly\pyemaps
-        shell: cmd
-        run: |
-          dir sanity-nightly\pyemaps
-          if not exist sanity-nightly rmdir /s /q sanity-nightly
-            echo Directory does not exist
-          echo %CD%
           
       # Step 3.3: Build the package using a batch file
       - name: Build the package
         shell: cmd
         run: |
+          echo "Building pyEMAPS....."
           .\build.bat
 
       # Step 4: Navigate to the 'test' directory and run the batch script
       - name: Run batch script tests if there are changes
         shell: cmd
         run: |
-          run: echo "Changes detected in the branch. Running tests."
+          echo "Running sanity tests...."
           .\test\sanity\githut-sanity.bat > .\sanity-nightly\githubsanity_test_results.log 2>&1
       
       # Step 5: Annotate failures
