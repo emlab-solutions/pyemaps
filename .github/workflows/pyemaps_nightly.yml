@@ -26,12 +26,13 @@ jobs:
         run: |
           if exist sanity-nightly rmdir /s /q sanity-nightly
           mkdir sanity-nightly
-          
-          if not exist sanity-nightly
-            run echo "No changes detected! Exiting wihtout testing"
+
+          if exist sanity-nightly
+            for %%f in (*) do if not "%%f"=="sanity-nightly" move "%%f" "sanity-nightly"
+          else
+            run echo "Nightly directory creation failed!"
             exit 0
             
-          for %%f in (*) do if not "%%f"=="sanity-nightly" move "%%f" "sanity-nightly"
 
       # Step 2: Detect changes in the branch
       - name: Check for changes in the branch
