@@ -24,7 +24,7 @@ jobs:
       - name: Move repository to a nightly testing directory
         shell: cmd
         run: |
-          run echo "current working directory is: " %CD%
+          echo "current working directory is: " %CD%
           if exist sanity-nightly rmdir /s /q sanity-nightly
           mkdir sanity-nightly
 
