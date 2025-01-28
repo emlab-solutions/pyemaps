@@ -20,7 +20,7 @@ jobs:
           ref: autotest_sz                  # Replace with the branch name you want to use
           fetch-depth: 0                    # Fetch full history to compare commits
           
-      # Step 1: Detect changes in the branch
+      # Step 2: Detect changes in the branch
       - name: Check for changes in the branch
         shell: bash
         id: changes
@@ -42,14 +42,13 @@ jobs:
 
           echo $LATEST_COMMIT > .github/last_commit
 
-      # Step 2: Create a specific directory (e.g., sanity-nightly)
-      - name: Move repository to a nightly testing directory
+      # Step 3: Create a specific directory for the nightly sanity test results (e.g., sanity-nightly)
+      - name: Create nightly testing directory
         shell: cmd
         run: |
           echo "current working directory is: " %CD%
           if exist sanity-nightly rmdir /s /q sanity-nightly
           mkdir sanity-nightly
-          # for %%f in (*) do if not "%%f"=="sanity-nightly" move "%%f" "sanity-nightly"
             
       # Step 3.1: Install Python and dependencies
       - name: Set up Python
