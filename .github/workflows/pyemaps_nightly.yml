@@ -55,38 +55,40 @@ jobs:
           }
           
           # Install Visual Studio 2019 with Build Tools and necessary workloads
-          Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vs_BuildTools.exe -OutFile vs_installer.exe
+          # Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vs_community.exe -OutFile vs_installer.exe
+          Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vs_BuildTools.exe -OutFile vs_buildtools.exe
           
           # Check the size of the downloaded installer to confirm it's not corrupt
-          $installerSize = (Get-Item "vs_installer.exe").length
-          $installerSize = (Get-Item "vs_installer.exe").length
-          $installerSizeKB = [math]::round($installerSize / 1KB, 2)  # Converts bytes to KB
-          $installerSizeMB = [math]::round($installerSize / 1MB, 2)  # Converts bytes to MB
-          Write-Host "Installer file size: $installerSizeKB KB ($installerSizeMB MB)"
+          # $installerSize = (Get-Item "vs_installer.exe").length
+          # $installerSize = (Get-Item "vs_installer.exe").length
+          # $installerSizeKB = [math]::round($installerSize / 1KB, 2)  # Converts bytes to KB
+          # $installerSizeMB = [math]::round($installerSize / 1MB, 2)  # Converts bytes to MB
+          # Write-Host "Installer file size: $installerSizeKB KB ($installerSizeMB MB)"
           
           # Check if the installer exists
-          if (Test-Path "vs_installer.exe") {
-              Write-Host "vs_installer.exe found. Proceeding with installation."
-              $fileAttributes = (Get-Item "vs_installer.exe").Attributes
+          if (Test-Path "vs_buildtools.exe") {
+              Write-Host "vs_buildtools.exe found. Proceeding with installation."
+              $fileAttributes = (Get-Item "vs_buildtools.exe").Attributes
               Write-Host "File attributes: $fileAttributes"
               
               # Run the installer
               try {
-                  Start-Process -FilePath .\vs_installer.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.NativeDesktop', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--includeRecommended' -NoNewWindow -Wait
+          # Start-Process -FilePath .\vs_installer.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.NativeDesktop', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--includeRecommended' -NoNewWindow -Wait
+              Start-Process -FilePath .\vs_buildtools.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--add', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64', '--includeRecommended' -NoNewWindow -Wait
               } catch {
                   Write-Host "Error occurred while starting the installer: $_"
                   exit 1
               }
           } else {
-              Write-Host "vs_installer.exe not found. Exiting..."
+              Write-Host "vs_buildtools.exe not found. Exiting..."
               exit 1
           }
         
       # Step 2.0: Install Visual Studio 2019 and Build Tools
-      - name: Install Visual Studio 2019 and Build Tools
-        shell: powershell
-        run: |    
-          Start-Process -FilePath .\vs_installer.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--includeRecommended' -NoNewWindow -Wait
+      # - name: Install Visual Studio 2019 and Build Tools
+      # shell: powershell
+      # run: |    
+      #   Start-Process -FilePath .\vs_installer.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--includeRecommended' -NoNewWindow -Wait
 
       # Step 2.1: Set up Developer Command Prompt for Visual Studio
       - name: Set up Developer Command Prompt for Visual Studio
