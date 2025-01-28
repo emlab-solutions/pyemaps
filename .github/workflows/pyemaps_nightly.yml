@@ -50,6 +50,9 @@ jobs:
           # Check if the installer exists
           if (Test-Path "vs_installer.exe") {
               Write-Host "vs_installer.exe found. Proceeding with installation."
+              $fileAttributes = (Get-Item "vs_installer.exe").Attributes
+              Write-Host "File attributes: $fileAttributes"
+              
               # Run the installer
               try {
                   Start-Process -FilePath .\vs_installer.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.NativeDesktop', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--includeRecommended' -NoNewWindow -Wait
