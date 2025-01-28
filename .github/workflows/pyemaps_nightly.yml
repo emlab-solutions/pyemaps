@@ -45,8 +45,16 @@ jobs:
       # Step 2: Install Visual Studio 2019 and Build Tools
       - name: Download Visual Studio 2019 and Build Tools
         run: |
+          # Delete any existing installer if it exists
+          Remove-Item "vs_installer.exe" -Force
+          
           # Install Visual Studio 2019 with Build Tools and necessary workloads
           Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vs_installer.exe -OutFile vs_installer.exe
+          
+          # Check the size of the downloaded installer to confirm it's not corrupt
+          $installerSize = (Get-Item "vs_installer.exe").length
+          Write-Host "Installer file size: $installerSize bytes"
+          
           # Check if the installer exists
           if (Test-Path "vs_installer.exe") {
               Write-Host "vs_installer.exe found. Proceeding with installation."
