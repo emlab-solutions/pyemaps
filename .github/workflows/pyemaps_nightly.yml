@@ -44,7 +44,7 @@ jobs:
       
       # Step 2: Install Visual Studio 2019 and Build Tools
       - name: Download Visual Studio 2019 and Build Tools
-        shell: pwsh
+        shell: powershell
         run: |
           # Install Visual Studio 2019 with Build Tools and necessary workloads
           Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vs_installer.exe -OutFile vs_installer.exe
@@ -63,6 +63,7 @@ jobs:
         
       # Step 2.0: Install Visual Studio 2019 and Build Tools
       - name: Install Visual Studio 2019 and Build Tools
+        shell: powershell
         run: |    
           Start-Process -FilePath .\vs_installer.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--includeRecommended' -NoNewWindow -Wait
 
