@@ -312,14 +312,14 @@ def build_package(repo_test = True):
     #  build the source distribution
     
     if sys.platform == 'win32':
-        os.system('python -m build --verbose -s -n')
+        os.system('python -m build -s -n')
     else:
         os.system('python3 -m build -s -n') 
 
     #  build the wheel distribution (linrary build)
     
     if sys.platform == 'win32':
-        os.system('python -m build --verbose -w -n')
+        os.system('python -m build -w -n')
     else:
         os.system('python3 -m build -w -n')
 
