@@ -30,6 +30,7 @@ jobs:
 
       # Step 2: Detect changes in the branch
       - name: Check for changes in the branch
+        shell: bash
         id: changes
         run: |
           MONITORED_PATH="sanity-nightly/pyemaps/"
