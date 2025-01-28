@@ -55,7 +55,7 @@ jobs:
           }
           
           # Install Visual Studio 2019 with Build Tools and necessary workloads
-          Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vs_Buildtools.exe -OutFile vs_installer.exe
+          Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vs_BuildTools.exe -OutFile vs_installer.exe
           
           # Check the size of the downloaded installer to confirm it's not corrupt
           $installerSize = (Get-Item "vs_installer.exe").length
