@@ -47,16 +47,16 @@ jobs:
         run: |
           # Delete any existing installer if it exists
           # Check if vs_installer.exe exists before removing it
-          if (Test-Path "vs_installer.exe") {
-              Remove-Item "vs_installer.exe" -Force
-              Write-Host "vs_installer.exe removed."
+          if (Test-Path "vs_buildtools.exe") {
+              Remove-Item "vs_buildtools.exe" -Force
+              Write-Host "vs_buildtools.exe removed."
           } else {
-              Write-Host "vs_installer.exe not found. Skipping removal."
+              Write-Host "vs_buildtools.exe not found. Skipping removal."
           }
           
           # Install Visual Studio 2019 with Build Tools and necessary workloads
           # Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vs_community.exe -OutFile vs_installer.exe
-          Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vs_BuildTools.exe -OutFile vs_buildtools.exe
+          Invoke-WebRequest -Uri https://aka.ms/vs/14/release/vs_BuildTools.exe -OutFile vs_buildtools.exe
           
           # Check the size of the downloaded installer to confirm it's not corrupt
           # $installerSize = (Get-Item "vs_installer.exe").length
