@@ -27,8 +27,12 @@ jobs:
         run: |
           MONITORED_PATH="%CD%"
           LATEST_COMMIT=$(git rev-parse HEAD)
-          LAST_COMMIT=$(cat .github/last_commit || echo "")
-
+          # Check if .github/last_commit exists, if not, set LAST_COMMIT to empty string
+          if [ -f ".github/last_commit" ]; then
+              LAST_COMMIT=$(cat .github/last_commit)
+          else
+              LAST_COMMIT=""
+          fi
           if [ "$LATEST_COMMIT" != "$LAST_COMMIT" ] && git diff --quiet $LAST_COMMIT $LATEST_COMMIT -- $MONITORED_PATH; then
             echo $LATEST_COMMIT > .github/last_commit
           else
