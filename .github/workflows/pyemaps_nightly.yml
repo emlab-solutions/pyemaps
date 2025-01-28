@@ -49,7 +49,7 @@ jobs:
           Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vs_installer.exe -OutFile vs_installer.exe
           run: |
             # Check if the installer exists
-            if (Test-Path "vs_installer.exe) {
+            if (Test-Path "vs_installer.exe") {
                 Write-Host "vs_installer.exe found. Proceeding with installation."
                 # Run the installer
                 Start-Process -FilePath .\vs_installer.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.NativeDesktop', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--includeRecommended' -NoNewWindow -Wait
