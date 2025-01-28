@@ -26,6 +26,11 @@ jobs:
         run: |
           if exist sanity-nightly rmdir /s /q sanity-nightly
           mkdir sanity-nightly
+          
+          if not exist sanity-nightly
+            run echo "No changes detected! Exiting wihtout testing"
+            exit 0
+            
           for %%f in (*) do if not "%%f"=="sanity-nightly" move "%%f" "sanity-nightly"
 
       # Step 2: Detect changes in the branch
@@ -33,7 +38,7 @@ jobs:
         shell: bash
         id: changes
         run: |
-          MONITORED_PATH="sanity-nightly/pyemaps/"
+          MONITORED_PATH="sanity-nightly\pyemaps\"
           LATEST_COMMIT=$(git rev-parse HEAD)
           LAST_COMMIT=$(cat .github/last_commit || echo "")
 
