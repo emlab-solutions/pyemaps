@@ -1,9 +1,12 @@
-name: Run-Batch-Script-PyEMAPS-Sanity-Tests-If-there-are-changes
+name: Run Batch Script PyEMAPS Sanity Tests If there are changes
 
 on:
-  schedule:
-    - cron: '0 5 * * *' # Runs at midnight CDT (5:00 AM UTC)
-  workflow_dispatch: # Allow manual triggering as well
+  # schedule:
+  #   - cron: '0 5 * * *' # Runs at midnight CDT (5:00 AM UTC)
+  # workflow_dispatch: # Allow manual triggering as well
+  push:
+    branches: [ autotest_sz ]
+
 
 jobs:
   run-tests:
