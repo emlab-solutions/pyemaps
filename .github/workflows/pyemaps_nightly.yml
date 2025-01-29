@@ -231,8 +231,8 @@ jobs:
           # $compile_cmd = "cl.exe"
           # & $compile_cmd
           
-          # Write-Host echo "Building pyEMAPS....."
-          # cmd /c .\build.bat
+          Write-Host echo "Building pyEMAPS....."
+          cmd /c .\build.bat
 
       # Step 5: Navigate to the 'test' directory and run the batch script
       - name: Run batch script tests if there are changes
