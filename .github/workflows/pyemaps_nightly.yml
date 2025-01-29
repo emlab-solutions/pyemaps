@@ -95,7 +95,12 @@ jobs:
         run: |
           # Locate the Visual Studio installation using vswhere
           #$VS_PATH = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
-          $VS_PATH = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -version [16.0,17.0) -property installationPath
+          $VS_PATH = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -version "16.0" -property installationPath
+          # Check if VS_PATH is empty (i.e., VS2019 is not installed)
+          if (-not $VS_PATH) {
+              Write-Host "Visual Studio 2019 not found, falling back to latest version."
+              $VS_PATH = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
+          }
           # Set up the Developer Command Prompt environment
           $VsDevCmdPath = Join-Path $VS_PATH "Common7\Tools\VsDevCmd.bat"
           & $VsDevCmdPath
