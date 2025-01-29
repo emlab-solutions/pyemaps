@@ -157,22 +157,22 @@ jobs:
           
           # Write-Host "Visual Studio environment setup complete."
           
-      - name: Run cl.exe compilation
-        run: |
-          $msvcPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.42.34433\bin\Hostx64\x64"
-          $env:Path += ";$msvcPath"
+      # - name: Run cl.exe compilation
+      #   run: |
+      #     $msvcPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.42.34433\bin\Hostx64\x64"
+      #     $env:Path += ";$msvcPath"
           
-          # Verify again
-          Write-Host "Checking for cl.exe..."
-          $clCommand = Get-Command cl.exe -ErrorAction SilentlyContinue
+      #     # Verify again
+      #     Write-Host "Checking for cl.exe..."
+      #     $clCommand = Get-Command cl.exe -ErrorAction SilentlyContinue
 
-          if ($clCommand) {
-              Write-Host "cl.exe found at: $($clCommand.Source)"
-              cmd /c cl.exe
-          } else {
-              Write-Host "Error: cl.exe not found."
-          }
-          #shell: cmd
+      #     if ($clCommand) {
+      #         Write-Host "cl.exe found at: $($clCommand.Source)"
+      #         cmd /c cl.exe
+      #     } else {
+      #         Write-Host "Error: cl.exe not found."
+      #     }
+      #     #shell: cmd
           
       # Step 4: Create a specific directory for the nightly sanity test results (e.g., sanity-nightly)
       - name: Create nightly testing directory
@@ -197,6 +197,19 @@ jobs:
       - name: Build the package
         shell: cmd
         run: |
+          $msvcPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.42.34433\bin\Hostx64\x64"
+          $env:Path += ";$msvcPath"
+          
+          # Verify again
+          Write-Host "Checking for cl.exe..."
+          $clCommand = Get-Command cl.exe -ErrorAction SilentlyContinue
+
+          if ($clCommand) {
+              Write-Host "cl.exe found at: $($clCommand.Source)"
+              cmd /c cl.exe
+          } else {
+              Write-Host "Error: cl.exe not found."
+          }
           echo "Building pyEMAPS....."
           .\build.bat
 
