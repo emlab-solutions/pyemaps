@@ -159,8 +159,13 @@ jobs:
           
       - name: Run cl.exe compilation
         run: |
-          cl.exe /c /nologo /O2 /W3 /GL /DNDEBUG /MD -IC:\hostedtoolcache\windows\Python\3.7.9\x64\lib\site-packages\numpy\core\include -Ibuild\src.win-amd64-3.7\numpy\distutils\include -IC:\hostedtoolcache\windows\Python\3.7.9\x64\include -IC:\hostedtoolcache\windows\Python\3.7.9\x64\Include /TcD:\a\pyemaps\pyemaps\CifFile\src/lib/lex.yy.c /Fobuild\temp.win-amd64-cpython-37\Release\a\pyemaps\pyemaps\CifFile\src\lib\lex.yy.obj /Wall /Zi /nologo /D _CRT_SECURE_NO_WARNINGS /EHsc
-        shell: cmd
+          $msvcPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.42.34433\bin\Hostx64\x64"
+          $env:Path += ";$msvcPath"
+          
+          # Verify again
+          Write-Host "Checking for cl.exe..."
+          Get-Command cl.exe -ErrorAction SilentlyContinue
+          shell: cmd
           
       # Step 4: Create a specific directory for the nightly sanity test results (e.g., sanity-nightly)
       - name: Create nightly testing directory
