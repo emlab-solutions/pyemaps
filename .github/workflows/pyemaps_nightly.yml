@@ -164,7 +164,13 @@ jobs:
           
           # Verify again
           Write-Host "Checking for cl.exe..."
-          Get-Command cl.exe -ErrorAction SilentlyContinue
+          $clCommand = Get-Command cl.exe -ErrorAction SilentlyContinue
+
+          if ($clCommand) {
+              Write-Host "cl.exe found at: $($clCommand.Source)"
+          } else {
+              Write-Host "Error: cl.exe not found."
+          }
           #shell: cmd
           
       # Step 4: Create a specific directory for the nightly sanity test results (e.g., sanity-nightly)
