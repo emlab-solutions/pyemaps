@@ -120,15 +120,27 @@ jobs:
               Write-Host "Error: VsDevCmd.bat not found at $VsDevCmdPath"
               exit 1
           }
-          #& $VsDevCmdPath
-          #& "$VS_PATH\Common7\Tools\VsDevCmd.bat"
+          # ✅ DEBUG: Run VsDevCmd.bat and capture output
+          Write-Host "Executing VsDevCmd.bat..."
+          $vsOutput = cmd /c "call `"$VsDevCmdPath`" && set"
           
-          # Correct way to persist environment variables for later steps
-          cmd /c "call `"$VsDevCmdPath`" && set" | ForEach-Object {
+          if (-not $vsOutput) {
+              Write-Host "Error: VsDevCmd.bat execution failed or returned no output."
+              exit 1
+          }
+          
+          # ✅ DEBUG: Print output to check if environment variables are set
+          Write-Host "VsDevCmd.bat Output:"
+          Write-Host $vsOutput
+          
+          # ✅ Store environment variables for later steps
+          $vsOutput | ForEach-Object {
               if ($_ -match "^(.*?)=(.*)$") {
                   echo "$($_.Groups[1].Value)=$($_.Groups[2].Value)" >> $env:GITHUB_ENV
               }
           }
+
+          Write-Host "Visual Studio environment setup complete."
           
       - name: Run cl.exe compilation
         run: |
