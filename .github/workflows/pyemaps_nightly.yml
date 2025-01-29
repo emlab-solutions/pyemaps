@@ -122,28 +122,40 @@ jobs:
           }
           # ✅ DEBUG: Run VsDevCmd.bat and capture output
           Write-Host "Executing VsDevCmd.bat..."
-          $vsOutput = cmd /c "call `"$VsDevCmdPath`" && set"
-         
-          if (-not $vsOutput -or $vsOutput.Length -eq 0) {
-              Write-Host "Error: VsDevCmd.bat execution failed or returned no output."
+          #$vsOutput = cmd /c "call `"$VsDevCmdPath`" && set"
+          $vsOutputArray = & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" 2>&1 | Out-String
+
+          # DEBUG: Print the output to verify it's not null
+          Write-Host "VsDevCmd.bat Output: $vsOutputArray"
+          # if (-not $vsOutput -or $vsOutput.Length -eq 0) {
+          #     Write-Host "Error: VsDevCmd.bat execution failed or returned no output."
+          #     exit 1
+          # }
+
+          # Check if VsDevCmd.bat output is valid before processing
+          if ($null -ne $vsOutputArray -and $vsOutputArray.Length -gt 0) {
+              $vsOutputArray -split "`r`n" | ForEach-Object {
+                  Write-Host $_
+              }
+          } else {
+              Write-Host "ERROR: VsDevCmd.bat output is empty or null."
               exit 1
           }
-
-          # ✅ Split output into lines to ensure it can be processed
-          $vsOutputArray = $vsOutput -split "`r`n"
+          # # ✅ Split output into lines to ensure it can be processed
+          # $vsOutputArray = $vsOutput -split "`r`n"
           
-          # ✅ DEBUG: Print output to check if environment variables are set
-          Write-Host "VsDevCmd.bat Output:"
-          Write-Host ($vsOutputArray -join "`n")
+          # # ✅ DEBUG: Print output to check if environment variables are set
+          # Write-Host "VsDevCmd.bat Output:"
+          # Write-Host ($vsOutputArray -join "`n")
           
-          # ✅ Store environment variables for later steps
-          $vsOutputArray | ForEach-Object {
-              if ($_ -match "^(.*?)=(.*)$") {
-                  echo "$($_.Groups[1].Value)=$($_.Groups[2].Value)" >> $env:GITHUB_ENV
-              }
-          }
+          # # ✅ Store environment variables for later steps
+          # $vsOutputArray | ForEach-Object {
+          #     if ($_ -match "^(.*?)=(.*)$") {
+          #         echo "$($_.Groups[1].Value)=$($_.Groups[2].Value)" >> $env:GITHUB_ENV
+          #     }
+          # }
           
-          Write-Host "Visual Studio environment setup complete."
+          # Write-Host "Visual Studio environment setup complete."
           
       - name: Run cl.exe compilation
         run: |
