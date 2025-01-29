@@ -168,6 +168,7 @@ jobs:
 
           if ($clCommand) {
               Write-Host "cl.exe found at: $($clCommand.Source)"
+              cmd /c cl.exe
           } else {
               Write-Host "Error: cl.exe not found."
           }
