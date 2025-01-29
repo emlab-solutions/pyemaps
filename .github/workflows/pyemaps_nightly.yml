@@ -209,18 +209,30 @@ jobs:
           # } else {
           #     Write-Host "Error: cl.exe not found."
           # }
+          Write-Host "Setting up MSVC environment..."
+          $vs_env_command = '"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat" && set'
+          $envVars = cmd /c $vs_env_command | ForEach-Object {
+              $name, $value = $_ -split '=', 2
+              Set-Item -Path "Env:\$name" -Value $value
+          }
           
-          Write-Host echo "Setting up MSVC environment....."
-          $vs_env_command = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-          & $vs_env_command
+          Write-Host "MSVC environment setup complete."
+          Write-Host "Testing MSVC environment..."
+          Get-Command cl.exe  # This should work now
+          
+          Write-Host "Compiling test..."
+          cl.exe
+          # Write-Host echo "Setting up MSVC environment....."
+          # $vs_env_command = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          # & $vs_env_command
 
-          Write-Host echo "Testing MSVC environment....."
-          #$compile_cmd = "cl.exe /c /nologo /O2 /W3 /GL /DNDEBUG /MD -IC:\hostedtoolcache\windows\Python\3.7.9\x64\lib\site-packages\numpy\core\include -Ibuild\src.win-amd64-3.7\numpy\distutils\include -IC:\hostedtoolcache\windows\Python\3.7.9\x64\include -IC:\hostedtoolcache\windows\Python\3.7.9\x64\Include /TcD:\a\pyemaps\pyemaps\CifFile\src/lib/lex.yy.c /Fobuild\temp.win-amd64-cpython-37\Release\a\pyemaps\pyemaps\CifFile\src\lib\lex.yy.obj /Wall /Zi /nologo /D _CRT_SECURE_NO_WARNINGS /EHsc"
-          $compile_cmd = "cl.exe"
-          & $compile_cmd
+          # Write-Host echo "Testing MSVC environment....."
+          # #$compile_cmd = "cl.exe /c /nologo /O2 /W3 /GL /DNDEBUG /MD -IC:\hostedtoolcache\windows\Python\3.7.9\x64\lib\site-packages\numpy\core\include -Ibuild\src.win-amd64-3.7\numpy\distutils\include -IC:\hostedtoolcache\windows\Python\3.7.9\x64\include -IC:\hostedtoolcache\windows\Python\3.7.9\x64\Include /TcD:\a\pyemaps\pyemaps\CifFile\src/lib/lex.yy.c /Fobuild\temp.win-amd64-cpython-37\Release\a\pyemaps\pyemaps\CifFile\src\lib\lex.yy.obj /Wall /Zi /nologo /D _CRT_SECURE_NO_WARNINGS /EHsc"
+          # $compile_cmd = "cl.exe"
+          # & $compile_cmd
           
-          Write-Host echo "Building pyEMAPS....."
-          cmd /c .\build.bat
+          # Write-Host echo "Building pyEMAPS....."
+          # cmd /c .\build.bat
 
       # Step 5: Navigate to the 'test' directory and run the batch script
       - name: Run batch script tests if there are changes
