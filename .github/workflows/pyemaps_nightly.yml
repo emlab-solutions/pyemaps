@@ -165,7 +165,7 @@ jobs:
           # Verify again
           Write-Host "Checking for cl.exe..."
           Get-Command cl.exe -ErrorAction SilentlyContinue
-          shell: cmd
+          #shell: cmd
           
       # Step 4: Create a specific directory for the nightly sanity test results (e.g., sanity-nightly)
       - name: Create nightly testing directory
