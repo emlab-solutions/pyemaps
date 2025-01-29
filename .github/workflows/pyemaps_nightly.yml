@@ -101,12 +101,28 @@ jobs:
               Write-Host "Visual Studio 2019 not found, falling back to latest version."
               $VS_PATH = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
           }
-          echo "VS_PATH=$VS_PATH" >> $GITHUB_ENV
+          # Debugging: Print the VS installation path
+          Write-Host "Visual Studio Path: $VS_PATH"
+
+          if (-not $VS_PATH) {
+              Write-Host "Error: Visual Studio installation path not found."
+              exit 1
+          }
+          
+          echo "VS_PATH=$VS_PATH" >> $env:GITHUB_ENV
           
           # Set up the Developer Command Prompt environment
           $VsDevCmdPath = Join-Path $VS_PATH "Common7\Tools\VsDevCmd.bat" 
+          # Debugging: Print the VsDevCmd.bat path
+          Write-Host "VsDevCmd Path: $VsDevCmdPath"
+          
+          if (-not (Test-Path $VsDevCmdPath)) {
+              Write-Host "Error: VsDevCmd.bat not found at $VsDevCmdPath"
+              exit 1
+          }
           #& $VsDevCmdPath
           #& "$VS_PATH\Common7\Tools\VsDevCmd.bat"
+          
           # Correct way to persist environment variables for later steps
           cmd /c "call `"$VsDevCmdPath`" && set" | ForEach-Object {
               if ($_ -match "^(.*?)=(.*)$") {
