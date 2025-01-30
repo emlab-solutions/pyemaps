@@ -384,12 +384,11 @@ class DifPlotter:
         else:
             display_size = DISPLAY_ONE_SIZE
 
-        self.fig, self.axes = plt.subplots(figsize=(display_size/curr_dpi,
+        self.fig, self.axes = plt.subplots(nrows=n1,
+                                           ncols=n2,
+                                           figsize=(display_size/curr_dpi,
                                                     display_size/curr_dpi), 
-                                            squeeze=False, 
-                                            # clip_on=True,
-                                            nrows=n1, 
-                                            ncols=n2) #setting image size in pixels
+                                           squeeze=False) #setting image size in pixels
         for x in self.axes.ravel():
             x.axis("off")
             x.set_aspect('equal')
