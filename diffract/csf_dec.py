@@ -93,7 +93,7 @@ def add_csf(target):
         mi = "     h k l \t\t: Miller Index"
         print(mi)
         # ssw = str(f"     s-w   \t\t: Sin(\u03F4)/Wavelength <= {sfs[0]['smax']}")
-        ssw = str(f"     s-w   \t\t: Sin(ϴ)/Wavelength <= {sfs[0]['smax']}")
+        ssw = str(f"     s-w   \t\t: Sin(theta)/Wavelength <= {sfs[0]['smax']}")
         print(ssw )
         dss = "     d-s   \t\t: D-Spacing"
         print(dss)
