@@ -43,8 +43,8 @@ def add_csf(target):
         
     sf_type_lookup = ['X-ray Structure Factors',
                   'Electron Strcture Factors in kV',
-                  'Electron Structure Factor in 1/\u212B',
-                  'Electron Absorption Structure Factor in 1/\u212B^2']
+                  'Electron Structure Factor in 1/lamda',
+                  'Electron Absorption Structure Factor in 1/lamda^2']
 
     sf_ap_flag = [('real', 'imaginary'), ('amplitude', 'phase')]
 
