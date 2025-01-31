@@ -151,7 +151,7 @@ jobs:
           echo "Initializing Conda..."
           $env:Path += ";C:\Miniconda\Scripts;C:\Miniconda\condabin"
           # Persist PATH for future steps
-          echo "PATH=$env:Path"  | Out-File -Append -FilePath $env:GITHUB_ENV
+          echo "PATH=$env:Path" | Out-File -Append -FilePath $env:GITHUB_ENV
           conda --version
           
           echo "Creating and activating Python 3.7 environment..."
@@ -198,8 +198,11 @@ jobs:
           Write-Host echo "Building pyEMAPS....."
           & conda run -n py37_env cmd /c .\build.bat
           
+          Write-Host echo "uninstalling pyEMAPS....."
+          & conda run -n py37_env python -m pip uninstall pyemaps
+         
           Write-Host echo "installing pyEMAPS....."
-          & conda run -n py37_env python -m pip install .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl --user --force-reinstall
+          & conda run -n py37_env python -m pip install .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl --user
 
           Write-Host echo "Checking for pyemaps....."
           & conda run -n py37_env pyemaps -c
