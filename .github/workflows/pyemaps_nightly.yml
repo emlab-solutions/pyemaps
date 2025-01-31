@@ -18,7 +18,8 @@ jobs:
         shell: pwsh
         run: |
           echo "Initializing Conda..."
-          $env:Path += ";C:\Miniconda\Scripts;C:\Miniconda\condabin"
+          #$env:Path += ";C:\Miniconda\Scripts;C:\Miniconda\condabin"
+          echo "C:\Miniconda\Scripts;C:\Miniconda\condabin" | Out-File -Append -FilePath $env:GITHUB_ENV
           
           echo "Creating and activating Python 3.7 environment..."
           & conda create --name py37_env python=3.7 -y
@@ -27,7 +28,7 @@ jobs:
       - name: Verify Conda Installation
         shell: pwsh
         run: |
-          $env:Path += ";C:\Miniconda\Scripts;C:\Miniconda\condabin"
+          #$env:Path += ";C:\Miniconda\Scripts;C:\Miniconda\condabin"
           & conda run -n py37_env pip install --upgrade pip setuptools wheel build requests numpy
           Write-Host "Conda virtual environment setup successfully."
           exit 0
