@@ -27,6 +27,7 @@ jobs:
       - name: Verify Conda Installation
         shell: pwsh
         run: |
+          $env:Path += ";C:\Miniconda\Scripts;C:\Miniconda\condabin"
           & conda run -n py37_env pip install --upgrade pip setuptools wheel build requests numpy
           Write-Host "Conda virtual environment setup successfully."
           exit 0
