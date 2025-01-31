@@ -161,9 +161,9 @@ jobs:
           echo "Setting write permissions for Conda environment..."
           icacls "C:\Miniconda\envs\py37_env" /grant Everyone:F /T /C /Q
           
-          # Activate the environment
-          echo "Activating Conda environment..."
-          conda activate py37_env
+          # # Activate the environment
+          # echo "Activating Conda environment..."
+          # conda activate py37_env
           
       # Step 4.2: Install Python and dependencies in conda virtual environment
       - name: Install Python and dependencies
