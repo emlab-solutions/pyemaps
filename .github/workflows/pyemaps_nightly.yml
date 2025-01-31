@@ -198,6 +198,9 @@ jobs:
           Write-Host echo "Building pyEMAPS....."
           & conda run -n py37_env cmd /c .\build.bat
 
+          Write-Host echo "Checking for pyemaps....."
+          & conda run -n py37_env pyemaps -c
+
       # Step 5: Navigate to the 'test' directory and run the batch script
       - name: Run batch script tests if there are changes
         #shell: cmd
