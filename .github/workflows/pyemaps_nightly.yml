@@ -139,11 +139,29 @@ jobs:
           if exist sanity-nightly rmdir /s /q sanity-nightly
           mkdir sanity-nightly
             
+      # # Step 4.1: Install Python and dependencies
+      # - name: Set up Python
+      #   uses: actions/setup-python@v4
+      #   with:
+      #     python-version: 3.7  # Specify the Python version you need
+      
       # Step 4.1: Install Python and dependencies
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.7  # Specify the Python version you need
+      - name: Initialize Conda and Create Python 3.7 Environment
+        shell: pwsh
+        run: |
+          echo "Initializing Conda..."
+          & "C:\Miniconda\Scripts\activate"
+          
+          echo "Creating and activating Python 3.7 environment..."
+          conda create --name py37_env python=3.7 -y
+          conda activate py37_env
+
+      - name: Verify Conda Installation
+        shell: pwsh
+        run: |
+          conda --version
+          conda env list
+          conda info
 
       #Step 4.2: Install dependencies
       - name: Install build dependencies
