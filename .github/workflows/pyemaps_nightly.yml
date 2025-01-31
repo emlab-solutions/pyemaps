@@ -159,8 +159,8 @@ jobs:
 
           # Grant full write permissions to Conda environment directory
           echo "Setting write permissions for Conda environment..."
-          Start-Process icacls "C:\Miniconda\envs\py37_env" -ArgumentList "/grant", "Everyone:F", "/T", "/C", "/Q" -Verb RunAs
-          
+          Start-Process -FilePath "icacls" -ArgumentList "C:\Miniconda\envs\py37_env", "/grant", "Everyone:F", "/T", "/C", "/Q" -Verb RunAs
+
           # # Activate the environment
           # echo "Activating Conda environment..."
           # conda activate py37_env
