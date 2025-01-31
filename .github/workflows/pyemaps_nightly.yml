@@ -158,11 +158,11 @@ jobs:
           & conda create --name py37_env python=3.7 -y
           
       # Step 4.2: Install Python and dependencies in conda virtual environment
-      - name: Verify Conda Installation
+      - name: Install Python and dependencies
         shell: pwsh
         run: |
           #$env:Path += ";C:\Miniconda\Scripts;C:\Miniconda\condabin"
-          & conda run -n py37_env pip install --upgrade pip setuptools wheel build requests numpy
+          & conda run -n py37_env C:\Miniconda\envs\py37_env\python.exe -m pip install --upgrade pip setuptools wheel build requests numpy
           Write-Host "Conda virtual environment setup successfully."
           exit 0
       
