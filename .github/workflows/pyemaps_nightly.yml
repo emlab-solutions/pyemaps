@@ -42,14 +42,14 @@ jobs:
 
           echo $LATEST_COMMIT > .github/last_commit
       
-      # Step 2: Install Visual Studio 2019 and Build Tools
+      # Step 3: Install Visual Studio 2019 and Build Tools
       - name: Download Visual Studio 2019 and Build Tools
         run: |
           # Delete any existing installer if it exists
           # Check if vs_installer.exe exists before removing it
           if (Test-Path "vs_buildtools.exe") {
               Remove-Item "vs_buildtools.exe" -Force
-              Write-Host "vs_buildtools.exe removed."
+              Write-Host "Existing vs_buildtools.exe removed."
           } else {
               Write-Host "vs_buildtools.exe not found. Skipping removal."
           }
@@ -57,13 +57,6 @@ jobs:
           # Install Visual Studio 2019 with Build Tools and necessary workloads
           # Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vs_community.exe -OutFile vs_installer.exe
           Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vs_BuildTools.exe -OutFile vs_buildtools.exe
-          
-          # Check the size of the downloaded installer to confirm it's not corrupt
-          # $installerSize = (Get-Item "vs_installer.exe").length
-          # $installerSize = (Get-Item "vs_installer.exe").length
-          # $installerSizeKB = [math]::round($installerSize / 1KB, 2)  # Converts bytes to KB
-          # $installerSizeMB = [math]::round($installerSize / 1MB, 2)  # Converts bytes to MB
-          # Write-Host "Installer file size: $installerSizeKB KB ($installerSizeMB MB)"
           
           # Check if the installer exists
           if (Test-Path "vs_buildtools.exe") {
@@ -73,8 +66,7 @@ jobs:
               
               # Run the installer
               try {
-          # Start-Process -FilePath .\vs_installer.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.NativeDesktop', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--includeRecommended' -NoNewWindow -Wait
-              Start-Process -FilePath .\vs_buildtools.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--add', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64', '--includeRecommended' -NoNewWindow -Wait
+                Start-Process -FilePath .\vs_buildtools.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--add', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64', '--includeRecommended' -NoNewWindow -Wait
               } catch {
                   Write-Host "Error occurred while starting the installer: $_"
                   exit 1
@@ -90,11 +82,10 @@ jobs:
       # run: |    
       #   Start-Process -FilePath .\vs_installer.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--includeRecommended' -NoNewWindow -Wait
 
-      # Step 2.1: Set up Developer Command Prompt for Visual Studio
+      # Step 3.1: Set up Developer Command Prompt for Visual Studio
       - name: Set up Developer Command Prompt for Visual Studio
         run: |
           # Locate the Visual Studio installation using vswhere
-          #$VS_PATH = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
           $VS_PATH = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -version "16.0" -property installationPath
           # Check if VS_PATH is empty (i.e., VS2019 is not installed)
           if (-not $VS_PATH) {
@@ -113,6 +104,7 @@ jobs:
           
           # Set up the Developer Command Prompt environment
           $VsDevCmdPath = Join-Path $VS_PATH "Common7\Tools\VsDevCmd.bat" 
+          
           # Debugging: Print the VsDevCmd.bat path
           Write-Host "VsDevCmd Path: $VsDevCmdPath"
           
@@ -122,15 +114,10 @@ jobs:
           }
           # ✅ DEBUG: Run VsDevCmd.bat and capture output
           Write-Host "Executing VsDevCmd.bat..."
-          #$vsOutput = cmd /c "call `"$VsDevCmdPath`" && set"
           $vsOutputArray = & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" 2>&1 | Out-String
 
           # DEBUG: Print the output to verify it's not null
           Write-Host "VsDevCmd.bat Output: $vsOutputArray"
-          # if (-not $vsOutput -or $vsOutput.Length -eq 0) {
-          #     Write-Host "Error: VsDevCmd.bat execution failed or returned no output."
-          #     exit 1
-          # }
 
           # Check if VsDevCmd.bat output is valid before processing
           if ($null -ne $vsOutputArray -and $vsOutputArray.Length -gt 0) {
@@ -141,38 +128,8 @@ jobs:
               Write-Host "ERROR: VsDevCmd.bat output is empty or null."
               exit 1
           }
-          # # ✅ Split output into lines to ensure it can be processed
-          # $vsOutputArray = $vsOutput -split "`r`n"
           
-          # # ✅ DEBUG: Print output to check if environment variables are set
-          # Write-Host "VsDevCmd.bat Output:"
-          # Write-Host ($vsOutputArray -join "`n")
-          
-          # # ✅ Store environment variables for later steps
-          # $vsOutputArray | ForEach-Object {
-          #     if ($_ -match "^(.*?)=(.*)$") {
-          #         echo "$($_.Groups[1].Value)=$($_.Groups[2].Value)" >> $env:GITHUB_ENV
-          #     }
-          # }
-          
-          # Write-Host "Visual Studio environment setup complete."
-          
-      # - name: Run cl.exe compilation
-      #   run: |
-      #     $msvcPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.42.34433\bin\Hostx64\x64"
-      #     $env:Path += ";$msvcPath"
-          
-      #     # Verify again
-      #     Write-Host "Checking for cl.exe..."
-      #     $clCommand = Get-Command cl.exe -ErrorAction SilentlyContinue
-
-      #     if ($clCommand) {
-      #         Write-Host "cl.exe found at: $($clCommand.Source)"
-      #         cmd /c cl.exe
-      #     } else {
-      #         Write-Host "Error: cl.exe not found."
-      #     }
-      #     #shell: cmd
+          Write-Host "Visual Studio environment setup complete."
           
       # Step 4: Create a specific directory for the nightly sanity test results (e.g., sanity-nightly)
       - name: Create nightly testing directory
@@ -196,19 +153,6 @@ jobs:
       # Step 4.3: Build the package using a batch file
       - name: Build the package
         run: |
-          # $msvcPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.42.34433\bin\Hostx64\x64"
-          # $env:Path += ";$msvcPath"
-          
-          # # Verify again
-          # Write-Host "Checking for cl.exe..."
-          # $clCommand = Get-Command cl.exe -ErrorAction SilentlyContinue
-
-          # if ($clCommand) {
-          #     Write-Host "cl.exe found at: $($clCommand.Source)"
-          #     cmd /c cl.exe
-          # } else {
-          #     Write-Host "Error: cl.exe not found."
-          # }
           Write-Host "Setting up MSVC environment..."
           $vs_env_command = '"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat" && set'
           $envVars = cmd /c $vs_env_command | ForEach-Object {
@@ -222,15 +166,6 @@ jobs:
           
           Write-Host "Compiling test..."
           cl.exe
-          # Write-Host echo "Setting up MSVC environment....."
-          # $vs_env_command = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-          # & $vs_env_command
-
-          # Write-Host echo "Testing MSVC environment....."
-          # #$compile_cmd = "cl.exe /c /nologo /O2 /W3 /GL /DNDEBUG /MD -IC:\hostedtoolcache\windows\Python\3.7.9\x64\lib\site-packages\numpy\core\include -Ibuild\src.win-amd64-3.7\numpy\distutils\include -IC:\hostedtoolcache\windows\Python\3.7.9\x64\include -IC:\hostedtoolcache\windows\Python\3.7.9\x64\Include /TcD:\a\pyemaps\pyemaps\CifFile\src/lib/lex.yy.c /Fobuild\temp.win-amd64-cpython-37\Release\a\pyemaps\pyemaps\CifFile\src\lib\lex.yy.obj /Wall /Zi /nologo /D _CRT_SECURE_NO_WARNINGS /EHsc"
-          # $compile_cmd = "cl.exe"
-          # & $compile_cmd
-          
           Write-Host echo "Building pyEMAPS....."
           cmd /c .\build.bat
 
