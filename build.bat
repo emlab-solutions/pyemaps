@@ -54,7 +54,7 @@ for /f "tokens=1,2 delims=:" %%i in ('python "%batch_dir%build_pyemaps" -v "%Ver
 echo Built wheel file directory: "%batch_dir%"
 echo Built wheel file directory: "%whl_fname%"
 echo Built wheel file name from python: "%batch_dir%%whl_fname%"
-call pip install "%batch_dir%%whl_fname%" --user
+@REM call pip install "%batch_dir%%whl_fname%" --user
 
 echo ###################################################
 echo %PYPIREPO% repository package build completed
