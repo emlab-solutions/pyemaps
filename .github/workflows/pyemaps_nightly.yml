@@ -144,45 +144,93 @@ jobs:
       #   uses: actions/setup-python@v4
       #   with:
       #     python-version: 3.7  # Specify the Python version you need
-      # Step 4.1: Install Python and dependencies in conda virtual environment
-      - name: Initialize Conda and Create Python 3.7 Environment
-        shell: pwsh
-        run: |
-          echo "Initializing Conda..."
-          $env:Path += ";C:\Miniconda\Scripts;C:\Miniconda\condabin"
-          # Persist PATH for future steps
-          echo "PATH=$env:Path" | Out-File -Append -FilePath $env:GITHUB_ENV
-          conda --version
+      # # Step 4.1: Install Python and dependencies in conda virtual environment
+      # - name: Initialize Conda and Create Python 3.7 Environment
+      #   shell: pwsh
+      #   run: |
+      #     echo "Initializing Conda..."
+      #     $env:Path += ";C:\Miniconda\Scripts;C:\Miniconda\condabin"
+      #     # Persist PATH for future steps
+      #     echo "PATH=$env:Path" | Out-File -Append -FilePath $env:GITHUB_ENV
+      #     conda --version
           
-          echo "Creating and activating Python 3.7 environment..."
-          & conda create --name py37_env python=3.7 -y
+      #     echo "Creating and activating Python 3.7 environment..."
+      #     & conda create --name py37_env python=3.7 -y
 
-          # Grant full write permissions to Conda environment directory
-          echo "Setting write permissions for Conda environment..."
-          Start-Process -FilePath "icacls" -ArgumentList "C:\Miniconda\envs\py37_env", "/grant", "Everyone:F", "/T", "/C", "/Q" -Verb RunAs
+      #     # Grant full write permissions to Conda environment directory
+      #     echo "Setting write permissions for Conda environment..."
+      #     Start-Process -FilePath "icacls" -ArgumentList "C:\Miniconda\envs\py37_env", "/grant", "Everyone:F", "/T", "/C", "/Q" -Verb RunAs
 
-          # # Activate the environment
-          # echo "Activating Conda environment..."
-          # conda activate py37_env
+      #     # # Activate the environment
+      #     # echo "Activating Conda environment..."
+      #     # conda activate py37_env
+      
+      # ✅ DEBUG
+      # Step 4.1 Using existing Miniconda setup
+      - name: Set Up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniconda-version: "latest"
+          activate-environment: py37_env
+          python-version: "3.7"
+          auto-activate-base: false
           
       # Step 4.2: Install Python and dependencies in conda virtual environment
       - name: Install Python and dependencies
-        shell: pwsh
         run: |
-          #$env:Path += ";C:\Miniconda\Scripts;C:\Miniconda\condabin"
-          & conda run -n py37_env python -m pip install --upgrade pip setuptools wheel build requests numpy
-          Write-Host "Conda virtual environment setup successfully."
-          exit 0
+          echo "Verifying conda environment..."
+          conda info
+          conda list
+          conda install -n py37_env pip setuptools wheel build requests numpy
+          conda run -n py37_env pip install --upgrade pip
+          
+      # # Step 4.2: Install Python and dependencies in conda virtual environment
+      # - name: Install Python and dependencies
+      #   shell: pwsh
+      #   run: |
+      #     & conda run -n py37_env python -m pip install --upgrade pip setuptools wheel build requests numpy
+      #     Write-Host "Conda virtual environment setup successfully."
+      #     exit 0
       
       # #Step 4.2: Install dependencies
       # - name: Install build dependencies
       #   run: |
       #     python -m pip install --upgrade pip setuptools wheel build requests numpy
           
+      # # Step 4.3: Build the package using a batch file
+      # - name: Build the package
+      #   run: |
+      #     Write-Host "Setting up MSVC environment..."
+      #     $vs_env_command = '"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat" && set'
+      #     $envVars = cmd /c $vs_env_command | ForEach-Object {
+      #         $name, $value = $_ -split '=', 2
+      #         Set-Item -Path "Env:\$name" -Value $value
+      #     }
+          
+      #     Write-Host "MSVC environment setup complete."
+      #     Write-Host "Testing MSVC environment..."
+      #     Get-Command cl.exe  # This should work now
+          
+      #     Write-Host "Compiling test..."
+      #     cl.exe
+      #     Write-Host echo "Building pyEMAPS....."
+      #     & conda run -n py37_env cmd /c .\build.bat
+          
+      #     # Write-Host echo "uninstalling pyEMAPS....."
+      #     # & conda run -n py37_env python -m pip uninstall pyemaps
+         
+      #     Write-Host echo "installing pyEMAPS....."
+      #     & conda run -n py37_env python -m pip install .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl --user
+          
+      #     Write-Host echo "Checking conda python packages....."
+      #     & conda run -n py37_env python -m pip list
+
+      #     Write-Host echo "Checking for pyemaps....."
+      #     & conda run -n py37_env pyemaps -c  
       # Step 4.3: Build the package using a batch file
       - name: Build the package
         run: |
-          Write-Host "Setting up MSVC environment..."
+          echo "Setting up MSVC environment..."
           $vs_env_command = '"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat" && set'
           $envVars = cmd /c $vs_env_command | ForEach-Object {
               $name, $value = $_ -split '=', 2
@@ -195,27 +243,27 @@ jobs:
           
           Write-Host "Compiling test..."
           cl.exe
-          Write-Host echo "Building pyEMAPS....."
-          & conda run -n py37_env cmd /c .\build.bat
           
-          # Write-Host echo "uninstalling pyEMAPS....."
-          # & conda run -n py37_env python -m pip uninstall pyemaps
-         
+          # Write-Host echo "Building pyEMAPS....."
+          # & conda run -n py37_env cmd /c .\build.bat
+          
+          Write-Host echo "Building pyEMAPS....."
+          cmd /c .\build.bat
+      
           Write-Host echo "installing pyEMAPS....."
-          & conda run -n py37_env python -m pip install .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl --user
+          pip install .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl --user
           
           Write-Host echo "Checking conda python packages....."
-          & conda run -n py37_env python -m pip list
+          pip list
 
           Write-Host echo "Checking for pyemaps....."
-          & conda run -n py37_env pyemaps -c
+          pyemaps -c
 
       # Step 5: Navigate to the 'test' directory and run the batch script
       - name: Run batch script tests if there are changes
-        #shell: cmd
         run: |
           echo "Running sanity tests...."
-          & conda run -n py37_env cmd /c .\test\sanity\githut-sanity.bat > .\sanity-nightly\githubsanity_test_results.log 2>&1
+          cmd /c .\test\sanity\githut-sanity.bat > .\sanity-nightly\githubsanity_test_results.log 2>&1
       
       # Step 6: Annotate failures
       - name: Annotate test failures
