@@ -18,8 +18,10 @@ jobs:
         shell: pwsh
         run: |
           echo "Initializing Conda..."
-          #$env:Path += ";C:\Miniconda\Scripts;C:\Miniconda\condabin"
-          echo "C:\Miniconda\Scripts;C:\Miniconda\condabin" | Out-File -Append -FilePath $env:GITHUB_ENV
+          $env:Path += ";C:\Miniconda\Scripts;C:\Miniconda\condabin"
+          # Persist PATH for future steps
+          echo "PATH=$env:Path"  | Out-File -Append -FilePath $env:GITHUB_ENV
+          conda --version
           
           echo "Creating and activating Python 3.7 environment..."
           & conda create --name py37_env python=3.7 -y
