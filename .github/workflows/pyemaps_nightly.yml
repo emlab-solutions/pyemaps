@@ -13,6 +13,24 @@ jobs:
     runs-on: windows-latest # Use a Windows runner for batch scripts
 
     steps:
+      # Step 0.1: Install Python and dependencies in conda virtual environment
+      - name: Initialize Conda and Create Python 3.7 Environment
+        shell: pwsh
+        run: |
+          echo "Initializing Conda..."
+          $env:Path += ";C:\Miniconda\Scripts;C:\Miniconda\condabin"
+          
+          echo "Creating and activating Python 3.7 environment..."
+          & conda create --name py37_env python=3.7 -y
+          
+      # Step 0.2: Install Python and dependencies in conda virtual environment
+      - name: Verify Conda Installation
+        shell: pwsh
+        run: |
+          & conda run -n py37_env pip install --upgrade pip setuptools wheel build requests numpy
+          Write-Host "Conda virtual environment setup successfully."
+          exit 0
+          
       # Step 1: Checkout latest
       - name: Checkout code
         uses: actions/checkout@v3
@@ -145,24 +163,6 @@ jobs:
       #   with:
       #     python-version: 3.7  # Specify the Python version you need
       
-      # Step 4.1: Install Python and dependencies in conda virtual environment
-      - name: Initialize Conda and Create Python 3.7 Environment
-        shell: cmd
-        run: |
-          echo "Initializing Conda..."
-          set PATH=%PATH%;C:\Miniconda\Scripts;C:\Miniconda\condabin
-          
-          echo "Creating and activating Python 3.7 environment..."
-          call conda create --name py37_env python=3.7 -y
-          
-          call conda activate py37_env
-
-      - name: Verify Conda Installation
-        shell: cmd
-        run: |
-          call conda --version
-          call conda env list
-          call conda info
 
       #Step 4.2: Install dependencies
       - name: Install build dependencies
