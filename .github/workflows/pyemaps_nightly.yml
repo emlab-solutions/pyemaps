@@ -203,6 +203,9 @@ jobs:
          
           Write-Host echo "installing pyEMAPS....."
           & conda run -n py37_env python -m pip install .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl --user
+          
+          Write-Host echo "Checking conda python packages....."
+          & conda run -n py37_env python -m pip list
 
           Write-Host echo "Checking for pyemaps....."
           & conda run -n py37_env pyemaps -c
