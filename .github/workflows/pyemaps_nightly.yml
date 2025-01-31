@@ -145,23 +145,24 @@ jobs:
       #   with:
       #     python-version: 3.7  # Specify the Python version you need
       
-      # Step 4.1: Install Python and dependencies
+      # Step 4.1: Install Python and dependencies in conda virtual environment
       - name: Initialize Conda and Create Python 3.7 Environment
-        shell: pwsh
+        shell: cmd
         run: |
           echo "Initializing Conda..."
-          $env:Path += ";C:\Miniconda\Scripts;C:\Miniconda\condabin"
+          set PATH=%PATH%;C:\Miniconda\Scripts;C:\Miniconda\condabin
           
           echo "Creating and activating Python 3.7 environment..."
-          conda create --name py37_env python=3.7 -y
-          conda activate py37_env
+          call conda create --name py37_env python=3.7 -y
+          
+          call conda activate py37_env
 
       - name: Verify Conda Installation
-        shell: pwsh
+        shell: cmd
         run: |
-          conda --version
-          conda env list
-          conda info
+          call conda --version
+          call conda env list
+          call conda info
 
       #Step 4.2: Install dependencies
       - name: Install build dependencies
