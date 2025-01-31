@@ -150,7 +150,7 @@ jobs:
         shell: pwsh
         run: |
           echo "Initializing Conda..."
-          & "C:\Miniconda\Scripts\activate"
+          $env:Path += ";C:\Miniconda\Scripts;C:\Miniconda\condabin"
           
           echo "Creating and activating Python 3.7 environment..."
           conda create --name py37_env python=3.7 -y
