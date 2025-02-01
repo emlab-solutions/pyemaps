@@ -264,13 +264,19 @@ jobs:
           Write-Host echo "Checking conda python packages....."
           conda run -n py37_env pip list
 
-          Write-Host echo "Checking for pyemaps....."
-          conda run -n py37_env cmd /c pyemaps -c
-
-      # Step 5: Navigate to the 'test' directory and run the batch script
+      # Step 5: Checking for pyemaps install in conda environment
+      - name: Verifying pyemaps build nd install
+        shell: bash
+        run: |
+          conda activate py37_env
+          
+          echo "Checking for pyemaps....."
+          pyemaps -c
+          
+      # Step 5.1: Navigate to the 'test' directory and run the batch script
       - name: Run batch script tests if there are changes
         run: |
-          echo "Running sanity tests...."
+          Write-Host echo "Running sanity tests...."
           conda run -n py37_env cmd /c .\test\sanity\githut-sanity.bat > .\sanity-nightly\githubsanity_test_results.log 2>&1
       
       # Step 6: Annotate failures
