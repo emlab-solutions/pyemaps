@@ -178,6 +178,8 @@ jobs:
       # Step 4.2: Install Python and dependencies in conda virtual environment
       - name: Install Python and dependencies
         run: |
+          echo "Setting classic solver..."
+          conda config --set solver classic
           echo "Verifying conda environment..."
           conda info
           conda list
