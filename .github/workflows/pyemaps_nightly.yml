@@ -181,9 +181,14 @@ jobs:
         run: |
           echo "Setting classic solver..."
           conda config --set solver classic
+
+          echo "activate the conda environment..."
+          conda activate py37_env
+          
           echo "Verifying conda environment..."
           conda info
           conda list
+          C:\Users\runneradmin\miniconda3\envs\py37_env\python.exe -m pip install --upgrade pip
           conda install -n py37_env pip setuptools wheel build requests numpy
           conda run -n py37_env pip install --upgrade pip
           
