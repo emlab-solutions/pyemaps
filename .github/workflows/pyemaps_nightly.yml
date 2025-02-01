@@ -268,10 +268,10 @@ jobs:
       - name: Verifying pyemaps build nd install
         shell: bash
         run: |
-          conda activate py37_env
+          # conda activate py37_env
           
-          echo "Checking for pyemaps....."
-          pyemaps -c
+          echo "Checking for pyemaps inside the conda environment....."
+          conda run -n py37_env C:\Users\runneradmin\miniconda3\envs\py37_env\Scripts\pyemaps.exe -c
           
       # Step 5.1: Navigate to the 'test' directory and run the batch script
       - name: Run batch script tests if there are changes
