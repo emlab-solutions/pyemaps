@@ -259,13 +259,13 @@ jobs:
           conda run -n py37_env cmd /c .\build.bat
       
           Write-Host echo "installing pyEMAPS....."
-          conda run -n py37_env python -m pip install .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl --user
+          conda run -n py37_env pip install .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl --user
           
           Write-Host echo "Checking conda python packages....."
           conda run -n py37_env pip list
 
           Write-Host echo "Checking for pyemaps....."
-          conda run -n py37_env pyemaps -c
+          conda run -n py37_env cmd /c pyemaps -c
 
       # Step 5: Navigate to the 'test' directory and run the batch script
       - name: Run batch script tests if there are changes
