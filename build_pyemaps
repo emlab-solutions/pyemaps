@@ -22,7 +22,7 @@ from multiprocessing.sharedctypes import Value
 import os
 from shutil import move
 from pathlib import Path
-from packaging.tags import sys_tags
+# from packaging.tags import sys_tags
 
 pyPackageName = 'pyemaps'
 bwheel ='dist\\'
