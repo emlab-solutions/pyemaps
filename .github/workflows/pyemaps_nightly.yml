@@ -189,7 +189,7 @@ jobs:
           conda info
           conda run -n py37_env pip list
           conda run -n py37_env pip install --upgrade pip
-          conda run -n py37_env pip install setuptools wheel requests numpy "build<0.10"
+          conda run -n py37_env pip install setuptools wheel requests numpy build
           # conda run -n py37_env pip install --upgrade pip
           
       # # Step 4.2: Install Python and dependencies in conda virtual environment
@@ -254,6 +254,8 @@ jobs:
           
           Write-Host echo "Building pyEMAPS....."
           conda run -n py37_env cmd /c .\build.bat
+
+          cmd /c ls -l .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl
       
           Write-Host echo "installing pyEMAPS....."
           conda run -n py37_env pip install .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl --user
