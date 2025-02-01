@@ -264,6 +264,9 @@ jobs:
           Write-Host echo "Checking conda python packages....."
           conda run -n py37_env pip list
 
+          write echo "livness test of pyemaps in conda environment..."
+          conda run -n py37_env cmd /c C:\Users\runneradmin\miniconda3\envs\py37_env\Scripts\pyemaps.exe -c
+
       # Step 5: Checking for pyemaps install in conda environment
       - name: Verifying pyemaps build nd install
         shell: bash
