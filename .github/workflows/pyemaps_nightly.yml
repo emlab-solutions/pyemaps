@@ -189,7 +189,7 @@ jobs:
           conda info
           conda list
           C:\Users\runneradmin\miniconda3\envs\py37_env\python.exe -m pip install --upgrade pip
-          conda install -n py37_env pip setuptools wheel build requests numpy
+          conda install -n py37_env pip setuptools wheel requests numpy "build<0.10"
           conda run -n py37_env pip install --upgrade pip
           
       # # Step 4.2: Install Python and dependencies in conda virtual environment
