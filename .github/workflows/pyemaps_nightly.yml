@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 0                    # Fetch full history to compare commits
           
       # Step 2: Detect changes in the branch
-      - name: Check for changes in the branch
+      - name: Check for changes in the branch, this may not be needed for push triggered workflow, but it may be for time triggered automation
         shell: bash
         id: changes
         run: |
@@ -159,7 +159,7 @@ jobs:
 
           echo "Setting conda environment for running pyemaps tests..."
           
-      # Step 4.3: Setting up PATH variable for running pyemaps [options]  
+      # Step 4.3: Setting up PATH variable for running pyemaps [options] and tests 
       - name: Add user script directory to PATH
         run: echo "C:\Users\runneradmin\AppData\Roaming\Python\Python37\Scripts" | Out-File -Append -Encoding utf8 $env:GITHUB_PATH   
         
@@ -174,16 +174,15 @@ jobs:
           }
           
           Write-Host "MSVC environment setup complete."
+          
           Write-Host "Testing MSVC environment..."
           Get-Command cl.exe  # This should work now
           
-          Write-Host "Compiler liveness test..."
-          cl.exe
+          # Write-Host "Compiler liveness test..."
+          # cl.exe
           
           Write-Host echo "Building pyEMAPS....."
           conda run -n py37_env cmd /c .\build.bat
-
-          # cmd /c ls -l .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl
       
           Write-Host echo "installing pyEMAPS....."
           conda run -n py37_env pip install .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl --user
