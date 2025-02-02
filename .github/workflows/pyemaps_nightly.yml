@@ -55,7 +55,6 @@ jobs:
           }
           
           # Install Visual Studio 2019 with Build Tools and necessary workloads
-          # Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vs_community.exe -OutFile vs_installer.exe
           Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vs_BuildTools.exe -OutFile vs_buildtools.exe
           
           # Check if the installer exists
@@ -66,7 +65,7 @@ jobs:
               
               # Run the installer
               try {
-                Start-Process -FilePath .\vs_buildtools.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--add', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64', '--includeRecommended' -NoNewWindow -Wait
+                  Start-Process -FilePath .\vs_buildtools.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--add', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64', '--includeRecommended' -NoNewWindow -Wait
               } catch {
                   Write-Host "Error occurred while starting the installer: $_"
                   exit 1
@@ -76,12 +75,6 @@ jobs:
               exit 1
           }
         
-      # Step 2.0: Install Visual Studio 2019 and Build Tools
-      # - name: Install Visual Studio 2019 and Build Tools
-      # shell: powershell
-      # run: |    
-      #   Start-Process -FilePath .\vs_installer.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--includeRecommended' -NoNewWindow -Wait
-
       # Step 3.1: Set up Developer Command Prompt for Visual Studio
       - name: Set up Developer Command Prompt for Visual Studio
         run: |
@@ -105,7 +98,6 @@ jobs:
           # Set up the Developer Command Prompt environment
           $VsDevCmdPath = Join-Path $VS_PATH "Common7\Tools\VsDevCmd.bat" 
           
-          # Debugging: Print the VsDevCmd.bat path
           Write-Host "VsDevCmd Path: $VsDevCmdPath"
           
           if (-not (Test-Path $VsDevCmdPath)) {
@@ -129,7 +121,7 @@ jobs:
               exit 1
           }
           
-          Write-Host "Visual Studio environment setup complete."
+          Write-Host "Visual Studio environment setup complete..."
           
       # Step 4: Create a specific directory for the nightly sanity test results (e.g., sanity-nightly)
       - name: Create nightly testing directory
@@ -138,32 +130,6 @@ jobs:
           echo "current working directory is: " %CD%
           if exist sanity-nightly rmdir /s /q sanity-nightly
           mkdir sanity-nightly
-            
-      # # Step 4.1: Install Python and dependencies
-      # - name: Set up Python
-      #   uses: actions/setup-python@v4
-      #   with:
-      #     python-version: 3.7  # Specify the Python version you need
-      # # Step 4.1: Install Python and dependencies in conda virtual environment
-      # - name: Initialize Conda and Create Python 3.7 Environment
-      #   shell: pwsh
-      #   run: |
-      #     echo "Initializing Conda..."
-      #     $env:Path += ";C:\Miniconda\Scripts;C:\Miniconda\condabin"
-      #     # Persist PATH for future steps
-      #     echo "PATH=$env:Path" | Out-File -Append -FilePath $env:GITHUB_ENV
-      #     conda --version
-          
-      #     echo "Creating and activating Python 3.7 environment..."
-      #     & conda create --name py37_env python=3.7 -y
-
-      #     # Grant full write permissions to Conda environment directory
-      #     echo "Setting write permissions for Conda environment..."
-      #     Start-Process -FilePath "icacls" -ArgumentList "C:\Miniconda\envs\py37_env", "/grant", "Everyone:F", "/T", "/C", "/Q" -Verb RunAs
-
-      #     # # Activate the environment
-      #     # echo "Activating Conda environment..."
-      #     # conda activate py37_env
       
       # ✅ DEBUG
       # Step 4.1 Using existing Miniconda setup
@@ -186,58 +152,14 @@ jobs:
           conda activate py37_env
           
           echo "Verifying conda environment..."
-          conda info
-          conda run -n py37_env pip list
+          # conda info
+          # conda run -n py37_env pip list
           conda run -n py37_env pip install --upgrade pip
           conda run -n py37_env pip install setuptools wheel requests numpy build
-          
-      # Step 4.3: Install Python and dependencies in conda virtual environment 
-      - name: Add user script directory to PATH
-        run: echo "C:\Users\runneradmin\AppData\Roaming\Python\Python37\Scripts" | Out-File -Append -Encoding utf8 $env:GITHUB_PATH
-          
-      # # Step 4.2: Install Python and dependencies in conda virtual environment
-      # - name: Install Python and dependencies
-      #   shell: pwsh
-      #   run: |
-      #     & conda run -n py37_env python -m pip install --upgrade pip setuptools wheel build requests numpy
-      #     Write-Host "Conda virtual environment setup successfully."
-      #     exit 0
-      
-      # #Step 4.2: Install dependencies
-      # - name: Install build dependencies
-      #   run: |
-      #     python -m pip install --upgrade pip setuptools wheel build requests numpy
-          
-      # # Step 4.3: Build the package using a batch file
-      # - name: Build the package
-      #   run: |
-      #     Write-Host "Setting up MSVC environment..."
-      #     $vs_env_command = '"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat" && set'
-      #     $envVars = cmd /c $vs_env_command | ForEach-Object {
-      #         $name, $value = $_ -split '=', 2
-      #         Set-Item -Path "Env:\$name" -Value $value
-      #     }
-          
-      #     Write-Host "MSVC environment setup complete."
-      #     Write-Host "Testing MSVC environment..."
-      #     Get-Command cl.exe  # This should work now
-          
-      #     Write-Host "Compiling test..."
-      #     cl.exe
-      #     Write-Host echo "Building pyEMAPS....."
-      #     & conda run -n py37_env cmd /c .\build.bat
-          
-      #     # Write-Host echo "uninstalling pyEMAPS....."
-      #     # & conda run -n py37_env python -m pip uninstall pyemaps
-         
-      #     Write-Host echo "installing pyEMAPS....."
-      #     & conda run -n py37_env python -m pip install .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl --user
-          
-      #     Write-Host echo "Checking conda python packages....."
-      #     & conda run -n py37_env python -m pip list
 
-      #     Write-Host echo "Checking for pyemaps....."
-      #     & conda run -n py37_env pyemaps -c  
+          echo "Setting conda environment for running pyemaps tests..."
+          run: echo "C:\Users\runneradmin\AppData\Roaming\Python\Python37\Scripts" | Out-File -Append -Encoding utf8 $env:GITHUB_PATH
+           
       # Step 4.3: Build the package using a batch file
       - name: Build the package
         run: |
@@ -252,13 +174,13 @@ jobs:
           Write-Host "Testing MSVC environment..."
           Get-Command cl.exe  # This should work now
           
-          Write-Host "Compiling test..."
+          Write-Host "Compiler liveness test..."
           cl.exe
           
           Write-Host echo "Building pyEMAPS....."
           conda run -n py37_env cmd /c .\build.bat
 
-          cmd /c ls -l .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl
+          # cmd /c ls -l .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl
       
           Write-Host echo "installing pyEMAPS....."
           conda run -n py37_env pip install .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl --user
@@ -268,17 +190,8 @@ jobs:
 
           write echo "livness test of pyemaps in conda environment..."
           conda run -n py37_env pyemaps -c
-
-      # # Step 5: Checking for pyemaps install in conda environment
-      # - name: Verifying pyemaps build and install
-      #   shell: bash
-      #   run: |
-      #     # conda activate py37_env
           
-      #     echo "Checking for pyemaps inside the conda environment....."
-      #     conda run -n py37_env C:\Users\runneradmin\miniconda3\envs\py37_env\Scripts\pyemaps.exe -c
-          
-      # Step 5: Navigate to the 'test' directory and run the batch script
+      # Step 5: Run pyemaps sanity tests
       - name: Run batch script tests if there are changes
         run: |
           Write-Host echo "Running sanity tests...."
