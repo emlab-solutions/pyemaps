@@ -111,13 +111,13 @@ pyemaps_cifreader = Extension("pyemaps.CifFile.StarScan",
         sources                = get_cifreader_source(),  # Replace with your source files
         extra_compile_args=[
                     "/Wall",                # Enable all warnings
-                    "/Zi",                  # Generate debug info
+                    # "/Zi",                  # Generate debug info
                     "/nologo",              # Suppress the MSVC logo
                     "/D _CRT_SECURE_NO_WARNINGS",  # Disable CRT warnings (optional)
                     "/EHsc",                # Enable exception handling (for C++)
         ],
         extra_link_args=[
-        "/DEBUG",               # Generate debug symbols for linking
+        # "/DEBUG",               # Generate debug symbols for linking
         ]   
 )
 
