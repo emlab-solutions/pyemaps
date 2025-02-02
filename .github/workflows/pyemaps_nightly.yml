@@ -140,6 +140,7 @@ jobs:
           activate-environment: py37_env
           python-version: "3.7"
           auto-activate-base: false
+          conda-remove-defaults: true
           channel-priority: flexible  # Ensures compatibility with the classic solver
           
       # Step 4.2: Install Python and dependencies in conda virtual environment
