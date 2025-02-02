@@ -158,9 +158,12 @@ jobs:
           conda run -n py37_env pip install setuptools wheel requests numpy build
 
           echo "Setting conda environment for running pyemaps tests..."
-          run: echo "C:\Users\runneradmin\AppData\Roaming\Python\Python37\Scripts" | Out-File -Append -Encoding utf8 $env:GITHUB_PATH
-           
-      # Step 4.3: Build the package using a batch file
+          
+      # Step 4.3: Setting up PATH variable for running pyemaps [options]  
+      - name: Add user script directory to PATH
+        run: echo "C:\Users\runneradmin\AppData\Roaming\Python\Python37\Scripts" | Out-File -Append -Encoding utf8 $env:GITHUB_PATH   
+        
+      # Step 4.4: Build the package using a batch file
       - name: Build the package
         run: |
           echo "Setting up MSVC environment..."
