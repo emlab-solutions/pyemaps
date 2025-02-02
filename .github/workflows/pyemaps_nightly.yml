@@ -190,7 +190,10 @@ jobs:
           conda run -n py37_env pip list
           conda run -n py37_env pip install --upgrade pip
           conda run -n py37_env pip install setuptools wheel requests numpy build
-          # conda run -n py37_env pip install --upgrade pip
+          
+      # Step 4.3: Install Python and dependencies in conda virtual environment 
+      - name: Add user script directory to PATH
+        run: echo "C:\Users\runneradmin\AppData\Roaming\Python\Python37\Scripts" | Out-File -Append -Encoding utf8 $env:GITHUB_PATH
           
       # # Step 4.2: Install Python and dependencies in conda virtual environment
       # - name: Install Python and dependencies
@@ -264,8 +267,8 @@ jobs:
           conda run -n py37_env pip list
 
           write echo "livness test of pyemaps in conda environment..."
-          conda run -n py37_env cmd /c ls -l C:\Users\runneradmin\miniconda3\envs\py37_env\Scripts
-          conda run -n py37_env python -m pyemaps.exe -c
+          # conda run -n py37_env cmd /c ls -l C:\Users\runneradmin\miniconda3\envs\py37_env\Scripts
+          conda run -n py37_env pyemaps -c
 
       # Step 5: Checking for pyemaps install in conda environment
       - name: Verifying pyemaps build nd install
