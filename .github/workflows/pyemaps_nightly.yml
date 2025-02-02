@@ -10,7 +10,7 @@ on:
 
 jobs:
   run-tests:
-    runs-on: windows-latest # Use a Windows runner for batch scripts
+    runs-on: windows-2019                  # Use a Windows runner for batch scripts
 
     steps:        
       # Step 1: Checkout latest
@@ -106,7 +106,7 @@ jobs:
           }
           # ✅ DEBUG: Run VsDevCmd.bat and capture output
           Write-Host "Executing VsDevCmd.bat..."
-          $vsOutputArray = & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" 2>&1 | Out-String
+          $vsOutputArray = & "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat" 2>&1 | Out-String
 
           # DEBUG: Print the output to verify it's not null
           Write-Host "VsDevCmd.bat Output: $vsOutputArray"
@@ -168,7 +168,7 @@ jobs:
       - name: Build pyEMAPS package
         run: |
           echo "Setting up MSVC environment..."
-          $vs_env_command = '"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat" && set'
+          $vs_env_command = '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat" && set'
           $envVars = cmd /c $vs_env_command | ForEach-Object {
               $name, $value = $_ -split '=', 2
               Set-Item -Path "Env:\$name" -Value $value
