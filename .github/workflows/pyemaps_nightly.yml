@@ -267,19 +267,18 @@ jobs:
           conda run -n py37_env pip list
 
           write echo "livness test of pyemaps in conda environment..."
-          # conda run -n py37_env cmd /c ls -l C:\Users\runneradmin\miniconda3\envs\py37_env\Scripts
           conda run -n py37_env pyemaps -c
 
-      # Step 5: Checking for pyemaps install in conda environment
-      - name: Verifying pyemaps build nd install
-        shell: bash
-        run: |
-          # conda activate py37_env
+      # # Step 5: Checking for pyemaps install in conda environment
+      # - name: Verifying pyemaps build and install
+      #   shell: bash
+      #   run: |
+      #     # conda activate py37_env
           
-          echo "Checking for pyemaps inside the conda environment....."
-          conda run -n py37_env C:\Users\runneradmin\miniconda3\envs\py37_env\Scripts\pyemaps.exe -c
+      #     echo "Checking for pyemaps inside the conda environment....."
+      #     conda run -n py37_env C:\Users\runneradmin\miniconda3\envs\py37_env\Scripts\pyemaps.exe -c
           
-      # Step 5.1: Navigate to the 'test' directory and run the batch script
+      # Step 5: Navigate to the 'test' directory and run the batch script
       - name: Run batch script tests if there are changes
         run: |
           Write-Host echo "Running sanity tests...."
