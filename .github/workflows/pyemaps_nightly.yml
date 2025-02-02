@@ -17,7 +17,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: autotest_sz                  # Replace with the branch name you want to use
+          ref: main                         # Replace with the branch name you want to use
           fetch-depth: 0                    # Fetch full history to compare commits
           
       # Step 2: Detect changes in the branch
