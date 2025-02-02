@@ -1,0 +1,215 @@
+name: Run Batch Script PyEMAPS Sanity Tests If there are changes
+
+on:
+  # schedule:
+  #   - cron: '0 5 * * *' # Runs at midnight CDT (5:00 AM UTC)
+  # workflow_dispatch: # Allow manual triggering as well
+  push:
+    branches: [ autotest_sz ]
+
+
+jobs:
+  run-tests:
+    runs-on: windows-2019                  # Use a Windows runner for batch scripts
+
+    steps:        
+      # Step 1: Checkout latest
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          ref: autotest_sz                  # Replace with the branch name you want to use
+          fetch-depth: 0                    # Fetch full history to compare commits
+          
+      # Step 2: Detect changes in the branch
+      - name: Check for changes in the branch, this may not be needed for push triggered workflow, but it may be for time triggered automation
+        shell: bash
+        id: changes
+        run: |
+          MONITORED_PATH="%CD%"
+          LATEST_COMMIT=$(git rev-parse HEAD)
+          # Check if .github/last_commit exists, if not, set LAST_COMMIT to empty string
+          if [ -f ".github/last_commit" ]; then
+              LAST_COMMIT=$(cat .github/last_commit)
+          else
+              LAST_COMMIT=""
+          fi
+          if [ "$LATEST_COMMIT" != "$LAST_COMMIT" ] && git diff --quiet $LAST_COMMIT $LATEST_COMMIT -- $MONITORED_PATH; then
+            echo $LATEST_COMMIT > .github/last_commit
+          else
+            run echo "No changes detected! Exiting wihtout testing"
+            exit 0
+          fi
+
+          echo $LATEST_COMMIT > .github/last_commit
+      
+      # Step 3: Install Visual Studio 2019 and Build Tools
+      - name: Download Visual Studio 2019 and Build Tools
+        run: |
+          # Delete any existing installer if it exists
+          # Check if vs_installer.exe exists before removing it
+          if (Test-Path "vs_buildtools.exe") {
+              Remove-Item "vs_buildtools.exe" -Force
+              Write-Host "Existing vs_buildtools.exe removed."
+          } else {
+              Write-Host "vs_buildtools.exe not found. Skipping removal."
+          }
+          
+          # Install Visual Studio 2019 with Build Tools and necessary workloads
+          Invoke-WebRequest -Uri https://aka.ms/vs/16/release/vs_BuildTools.exe -OutFile vs_buildtools.exe
+          
+          # Check if the installer exists
+          if (Test-Path "vs_buildtools.exe") {
+              Write-Host "vs_buildtools.exe found. Proceeding with installation."
+              $fileAttributes = (Get-Item "vs_buildtools.exe").Attributes
+              Write-Host "File attributes: $fileAttributes"
+              
+              # Run the installer
+              try {
+                  Start-Process -FilePath .\vs_buildtools.exe -ArgumentList '--quiet', '--wait', '--add', 'Microsoft.VisualStudio.Workload.VCTools', '--add', 'Microsoft.VisualStudio.Component.VC.Tools.x86.x64', '--includeRecommended' -NoNewWindow -Wait
+              } catch {
+                  Write-Host "Error occurred while starting the installer: $_"
+                  exit 1
+              }
+          } else {
+              Write-Host "vs_buildtools.exe not found. Exiting..."
+              exit 1
+          }
+        
+      # Step 3.1: Set up Developer Command Prompt for Visual Studio
+      - name: Set up Developer Command Prompt for Visual Studio
+        run: |
+          # Locate the Visual Studio installation using vswhere
+          $VS_PATH = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -version "16.0" -property installationPath
+          # Check if VS_PATH is empty (i.e., VS2019 is not installed)
+          if (-not $VS_PATH) {
+              Write-Host "Visual Studio 2019 not found, falling back to latest version."
+              $VS_PATH = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
+          }
+          # Debugging: Print the VS installation path
+          Write-Host "Visual Studio Path: $VS_PATH"
+
+          if (-not $VS_PATH) {
+              Write-Host "Error: Visual Studio installation path not found."
+              exit 1
+          }
+          
+          echo "VS_PATH=$VS_PATH" >> $env:GITHUB_ENV
+          
+          # Set up the Developer Command Prompt environment
+          $VsDevCmdPath = Join-Path $VS_PATH "Common7\Tools\VsDevCmd.bat" 
+          
+          Write-Host "VsDevCmd Path: $VsDevCmdPath"
+          
+          if (-not (Test-Path $VsDevCmdPath)) {
+              Write-Host "Error: VsDevCmd.bat not found at $VsDevCmdPath"
+              exit 1
+          }
+          # ✅ DEBUG: Run VsDevCmd.bat and capture output
+          Write-Host "Executing VsDevCmd.bat..."
+          $vsOutputArray = & "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat" 2>&1 | Out-String
+
+          # DEBUG: Print the output to verify it's not null
+          Write-Host "VsDevCmd.bat Output: $vsOutputArray"
+
+          # Check if VsDevCmd.bat output is valid before processing
+          if ($null -ne $vsOutputArray -and $vsOutputArray.Length -gt 0) {
+              $vsOutputArray -split "`r`n" | ForEach-Object {
+                  Write-Host $_
+              }
+          } else {
+              Write-Host "ERROR: VsDevCmd.bat output is empty or null."
+              exit 1
+          }
+          
+          Write-Host "Visual Studio environment setup complete..."
+          
+      # Step 4: Create a specific directory for the nightly sanity test results (e.g., sanity-nightly)
+      - name: Create nightly testing directory
+        shell: cmd
+        run: |
+          echo "current working directory is: " %CD%
+          if exist sanity-nightly rmdir /s /q sanity-nightly
+          mkdir sanity-nightly
+      
+      # ✅ DEBUG
+      # Step 4.1 Using existing Miniconda setup
+      - name: Set Up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniconda-version: "latest"
+          activate-environment: py37_env
+          python-version: "3.7"
+          auto-activate-base: false
+          conda-remove-defaults: true
+          channel-priority: flexible  # Ensures compatibility with the classic solver
+          
+      # Step 4.2: Install Python and dependencies in conda virtual environment
+      - name: Install Python and dependencies
+        run: |
+          echo "Setting classic solver..."
+          conda config --set solver classic
+
+          echo "activate the conda environment..."
+          conda activate py37_env
+          
+          echo "Verifying conda environment..."
+          # conda info
+          # conda run -n py37_env pip list
+          conda run -n py37_env pip install --upgrade pip
+          conda run -n py37_env pip install setuptools wheel requests numpy build
+
+          echo "Setting conda environment for running pyemaps tests..."
+          
+      # Step 4.3: Setting up PATH variable for running pyemaps [options] and tests 
+      - name: Add user script directory to PATH
+        run: echo "C:\Users\runneradmin\AppData\Roaming\Python\Python37\Scripts" | Out-File -Append -Encoding utf8 $env:GITHUB_PATH   
+        
+      # Step 4.4: Build the package using a batch file
+      - name: Build pyEMAPS package
+        run: |
+          echo "Setting up MSVC environment..."
+          $vs_env_command = '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat" && set'
+          $envVars = cmd /c $vs_env_command | ForEach-Object {
+              $name, $value = $_ -split '=', 2
+              Set-Item -Path "Env:\$name" -Value $value
+          }
+          
+          Write-Host "MSVC environment setup complete."
+          
+          Write-Host "Testing MSVC environment..."
+          Get-Command cl.exe  # This should work now
+          
+          # Write-Host "Compiler liveness test..."
+          # cl.exe
+          
+          Write-Host echo "Building pyEMAPS....."
+          conda run -n py37_env cmd /c .\build.bat
+      
+          Write-Host echo "installing pyEMAPS....."
+          conda run -n py37_env pip install .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl --user
+          
+          Write-Host echo "Checking conda python packages....."
+          conda run -n py37_env pip list
+
+          write echo "livness test of pyemaps in conda environment..."
+          conda run -n py37_env pyemaps -c
+          
+      # Step 5: Run pyemaps sanity tests
+      - name: Run batch script tests if there are changes
+        run: |
+          Write-Host echo "Running sanity tests...."
+          conda run -n py37_env cmd /c .\test\sanity\githut-sanity.bat > .\sanity-nightly\githubsanity_test_results.log 2>&1
+      
+      # Step 6: Annotate failures
+      - name: Annotate test failures
+        if: failure()  # Only run if the job fails
+        run: |
+          echo "::error file=.\sanity-nightly\githubsanity_test_results.log,line=1::Test failure detected. Check the log for details."
+
+      # Step 7: Upload logs for debugging
+      - name: Upload test log
+        if: always()  # Upload log regardless of job status
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-log
+          path: .\sanity-nightly\githubsanity_test_results.log

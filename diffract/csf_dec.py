@@ -43,8 +43,8 @@ def add_csf(target):
         
     sf_type_lookup = ['X-ray Structure Factors',
                   'Electron Strcture Factors in kV',
-                  'Electron Structure Factor in 1/\u212B',
-                  'Electron Absorption Structure Factor in 1/\u212B^2']
+                  'Electron Structure Factor in 1/lambda',
+                  'Electron Absorption Structure Factor in 1/lambda^2']
 
     sf_ap_flag = [('real', 'imaginary'), ('amplitude', 'phase')]
 
@@ -92,7 +92,8 @@ def add_csf(target):
 
         mi = "     h k l \t\t: Miller Index"
         print(mi)
-        ssw = str(f"     s-w   \t\t: Sin(\u03F4)/Wavelength <= {sfs[0]['smax']}")
+        # ssw = str(f"     s-w   \t\t: Sin(\u03F4)/Wavelength <= {sfs[0]['smax']}")
+        ssw = str(f"     s-w   \t\t: Sin(theta)/Wavelength <= {sfs[0]['smax']}")
         print(ssw )
         dss = "     d-s   \t\t: D-Spacing"
         print(dss)

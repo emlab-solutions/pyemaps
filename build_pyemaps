@@ -22,7 +22,7 @@ from multiprocessing.sharedctypes import Value
 import os
 from shutil import move
 from pathlib import Path
-from packaging.tags import sys_tags
+# from packaging.tags import sys_tags
 
 pyPackageName = 'pyemaps'
 bwheel ='dist\\'
@@ -452,7 +452,7 @@ def get_wheel(v):
         print(f'Composed wheel file name: {wheel_filename}')
         return wheel_filename
     
-    print(f"Python tag {desired_python_tag} not found in available tags.")
+    # print(f"Python tag {desired_python_tag} not found in available tags.")
 
     return ""
 

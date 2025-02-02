@@ -22,45 +22,40 @@
 @REM # Author:             EMLab Solutions, Inc.
 @REM # Date Created:       May 07, 2022  
 
-
-@REM -------------Build using EMLab Pypi package repsitory for versions--------------
-@REM For EMLab Solutions build for publishing in pypi repository 
-@REM if you are making a local build, please use build.bat instead 
-
 @REM # '''
 @echo off
 
-set PYPIREPO=%1
+set "Ver=1.0.0"
 
-if "%PYPIREPO%" == "" (
-    echo Usage: local.bat pypi_repo_type
-    echo        pypi_repo_type: test or prod
-    echo        test: upload package testpypi.org repos
-    echo        prod: upload package pypi.org repos for public download
-    goto:eof
+if "%~1"=="" (
+    echo Usage: local.bat [version]
+    echo        version: N.N.N where N is any numberal, default to 1.0.0
+    @REM goto:eof
+) else (
+    set "Ver=%~1"
+    echo got here and value: "%Ver%"
 )
 
+echo pyEMAPS version to be built: "%Ver%"
+
+@REM -------------Uninstalling existing pyEMAPS package----------------
 call python -m pip uninstall -y pyemaps
 
 set whl_fname=''
 set batch_dir=%~dp0
-if "%PYPIREPO%" == "test" (
-    
-    for /f "tokens=1,2 delims=:" %%i in ('python "%batch_dir%build_pyemaps" -t') do (
+
+@REM -------------Build without using EMLab Pypi package repsitory for versions--------------
+@REM Use this script to build pyEMAPS for your own pyEMAPS package or for testing
+
+for /f "tokens=1,2 delims=:" %%i in ('python "%batch_dir%build_pyemaps" -v "%Ver%"') do (
         if "%%i"=="wheel file name" set whl_fname=%%j
     )
-) else (
-    
-    for /f "tokens=1,2 delims=:" %%i in ('python "%batch_dir%build_pyemaps"') do (
-        if "%%i"=="wheel file name" set whl_fname=%%j
-    )
-)
 
-echo Captured wheel file name from python: "%batch_dir%%whl_fname%"
-call pip install "%batch_dir%%whl_fname%"
+echo Built wheel file directory: "%batch_dir%"
+echo Built wheel file directory: "%whl_fname%"
+echo Built wheel file name from python: "%batch_dir%%whl_fname%"
+@REM call pip install "%batch_dir%%whl_fname%" --user
 
-
-@REM if "%PYPIREPO%" == "test" (
 echo ###################################################
 echo %PYPIREPO% repository package build completed
 echo ###################################################
