@@ -28,7 +28,7 @@ dynamic diffraction patterns.
 
 """
 
-def generate_lacbed_images(name = 'Silicon', bShow=False):
+def generate_lacbed_images(name = 'Silicon', bSave = False, bShow=False):
     
     from pyemaps import Crystal as cryst
 
@@ -39,7 +39,7 @@ def generate_lacbed_images(name = 'Silicon', bShow=False):
                             sampling = 10,
                             nType = 1, 
                             sample_thickness=(1000,1000,100),
-                            bSave=True)
+                            bSave=bSave)
     except Exception as e:
         print(f'Faild to obtain large angle CBED images: {e}') 
         return
@@ -47,11 +47,12 @@ def generate_lacbed_images(name = 'Silicon', bShow=False):
     if bShow:        
         imgs.sort()
         showBloch(imgs,bClose=True)
+    return imgs
 
 
 from pyemaps import showBloch
 
 if __name__ == '__main__':
     
-    generate_lacbed_images(bShow=True)
+    generate_lacbed_images(bSave=True, bShow=True)
         

@@ -2,31 +2,11 @@
 from pyemaps import showBloch
 import os
 from pathlib import Path
+import pickle
+from sanity_base import get_current_folder, get_crystal_filename, get_cifdata_dir, get_builtin_dir, get_baseline_filename
+from sanity_base import feat_list
 
-
-feat_list=[
-            'dif', 
-           'bloch', 
-           'stereo', 
-           'mxtal'
-           ]
-
-def get_cifdata_dir():
-
-    current_path = Path(os.path.abspath(__file__))
-
-    test_path = current_path.parent.parent.absolute()
-
-    return os.path.join(test_path, 'cifdata')
-
-
-def get_builtin_dir():
-    import pyemaps
-    from pathlib import Path
-
-    return(Path(pyemaps.__file__).parent.absolute())
-
-def run_feat_list(cnflist, ty=1, bShow=True, bSave=False, feat_type='dif'):
+def run_feat_list(cnflist, ty=1, bShow=True, bSave=False, feat_type=feat_list[0], baseline=True):
     from pyemaps import Crystal as cr
     import time
     from pyemaps import DPList,CrystalClassError, EMC,showBloch, showDif, showStereo
@@ -35,25 +15,42 @@ def run_feat_list(cnflist, ty=1, bShow=True, bSave=False, feat_type='dif'):
     failure_cases=[]
     failure_count = 0
 
+    basline_Compare_failure_cases=[]
+    basline_Compare_failure_count = 0
+    
+    if baseline:
+        bShow=False 
+        bSave=False
+        bfilename = get_baseline_filename(feat_type, ty)
+        # Load baseline data
+        with open(bfilename, "rb") as f:
+            bdata = pickle.load(f)
+        # for d in bdata:
+        #     if d[0] == '1010100':
+        #         l=len(d[1]['xyz'])
+        #         print(f'data for {d[0]}: {l}')
+        #         sys.exit()
+
+    res = None
     for cfn in cnflist: 
         
         tic = time.perf_counter()
         try:    
-            cf = cr.from_xtl(cfn) if ty==1 else cr.from_cif(cfn) 
-                           
-            if feat_type == 'bloch':
-                bimgs = cf.generateBloch()
+            cf = cr.from_xtl(cfn) if ty==1 else cr.from_cif(cfn)                      
 
-            if feat_type == 'dif':
+            if feat_type == feat_list[0]:
                 emc, cf_dp = cf.generateDP()
-                dpl = DPList(cf.name)
-                dpl.add(emc, cf_dp)
+                res = DPList(cf.name)
+                res.add(emc, cf_dp)
 
-            if feat_type == 'stereo':
-                s = cf.generateStereo()
+            if feat_type == feat_list[1]:
+                res = cf.generateBloch()
+
+            if feat_type == feat_list[2]:
+                res = cf.generateStereo()
             
-            if feat_type=='mxtal':
-                mx = cf.generateMxtal()
+            if feat_type==feat_list[3]:
+                res = cf.generateMxtal()
 
             toc = time.perf_counter()
         except CrystalClassError as e:
@@ -68,23 +65,62 @@ def run_feat_list(cnflist, ty=1, bShow=True, bSave=False, feat_type='dif'):
                 continue
         else:
             print(f"-------generating {feat_type} for {cfn} succeeded with time: {toc - tic:0.4f}")
+            if baseline:
+                ffn = get_crystal_filename(cfn)
+                
+                msg = 'Kinematic diffraction'
+                if feat_type == feat_list[1]:
+                    msg = 'Dynamic diffraction'
+                
+                if feat_type == feat_list[2]:
+                    msg = 'StereoDiagram'
+                
+                if feat_type == feat_list[3]:
+                    msg = 'Crystal structure'
+
+                # comparing the latest results with baseline
+                if not (ffn, res) in bdata:
+                    basline_Compare_failure_count += 1
+                    basline_Compare_failure_cases.append(cfn)
+                    print(f'{msg} result comparisom with baseline failed for: {cfn}')
+                # elif feat_type == feat_list[3]:
+                #     bfound = False
+                #     for (fn, m) in bdata:
+                #         if fn == ffn:
+                #             bfound = True
+                #             if cf.compareXYZ(m, res):
+                #                 print(f'{msg} result matches baseline for: {cfn}')
+                #             else:
+                #                 print(f'{msg} result matches baseline for: {cfn}')
+                #     if not bfound:
+                #         print(f'{msg} result not found in baseline for: {cfn}')
+                                
+                else:    
+                    print(f'{msg} result matches baseline for: {cfn}')
+
+                tic = time.perf_counter()
+                print(f"-------comparing basline {feat_type} for {cfn} succeeded with time: {tic-toc:0.4f}\n")
+                  
+                continue    
             if bShow:
-                if feat_type == 'bloch':
-                    if bimgs is not None:
-                        showBloch(bimgs, bSave = bSave, bClose=True)
+                if feat_type == feat_list[1]:
+                    if res is not None:
+                        showBloch(res, bSave = bSave, bClose=True)
                     else:
                         failure_count += 1
                         failure_cases.append(cfn)
                         print('Bloch image invalid')
-                if feat_type == 'dif':
-                    showDif(dpl, bSave=bSave, bClose=True)
-                if feat_type == 'stereo':
-                    showStereo([(EMC(), s)], name=cf.name, bSave=bSave, bClose=True)
+                if feat_type == feat_list[0]:
+                    showDif(res, bSave=bSave, bClose=True)
 
-    return failure_count, failure_cases
+                if feat_type == feat_list[2]:
+                    showStereo([(EMC(), res)], name=cf.name, bSave=bSave, bClose=True)
+                    
+    return failure_count, failure_cases, basline_Compare_failure_count, basline_Compare_failure_cases
 
-def run_features_test(data_ty=1, bShow=True, bSave=False, feat_type = 'dif'):
+def run_features_test(data_ty=1, bShow=True, bSave=False, feat_type = feat_list[0], baseline = True):
     
+    # print(f'Before test call')
     if data_ty ==1:
         data_dir = os.path.join(get_builtin_dir(), "cdata")
         data_ext = '.xtl'
@@ -97,48 +133,7 @@ def run_features_test(data_ty=1, bShow=True, bSave=False, feat_type = 'dif'):
     for f in os.listdir(data_dir):
         if f.endswith(data_ext):
             test_cases.append(os.path.join(data_dir, f))
-
-    return run_feat_list(test_cases, ty=data_ty, bShow = bShow, bSave=bSave, feat_type=feat_type)
-
-def run_metrics():
-    from pyemaps import Crystal as cr
-    si = cr.from_builtin('Silicon')
-    
-    vd = si.d2r()
-    print(f'\nDefault real space to reciprocal space transform: \n{vd}')
-    vd = si.r2d()
-    print(f'\nDefault reciprocal space to real space transform: \n{vd}')
-
-    # real to reciprocal transformation
-    v = (1.0, 1.0, 2.0)
-    v_recip = si.d2r(v) 
-    print(f'\nReal space to reciprocal space transform for {v}:\n{v_recip}')
-  
-    
-    #reciprocal to real transformation
-    v_ = si.r2d(v_recip) # v_ ~= v
-    print(f'\nReciprocal space to real space transform for {v_recip}:\n{v_}')
-
-    #angle in real space
-    v1 = (1.0, 1.0, 2.0)
-    v2 = (1.0, 1.0, 1.0)
-    real_a = si.angle(v1, v2)
-    print(f'\nAngle in real space by vectors {v1} and {v2}: \n{real_a} \u00B0')
-
-    #angle in reciprocal space
-    recip_a = si.angle(v1, v2, ty = 1)
-    print(f'\nAngle in reciprocal space by vectors {v1} and {v2}: \n{recip_a} \u00B0')
-
-    #vector length in real space
-    r_vlen = si.vlen(v)
-    print(f'\nLength in real space for vector {v}:\n{r_vlen} in \u212B')
-
-    #vector length in reciprocal space
-    recip_vlen = si.vlen(v, ty = 1)
-    print(f'\nLength in reciprocal space for vector {v}:\n{recip_vlen} in 1/\u212B')
-
-    #wave length with high voltage of 200 V
-    print(f'\nWave length with high voltage of 200 kV:\n{si.wavelength(200)} \u212B')
+    return run_feat_list(test_cases, ty=data_ty, bShow = bShow, bSave=bSave, feat_type=feat_type, baseline=baseline)
 
 def print_filelist(fpl):
     flist = []
@@ -150,31 +145,89 @@ def print_filelist(fpl):
     
 if __name__ == '__main__':
 
-    # run_metrics()
+    import argparse, sys
+    # import time
+
+    parser = argparse.ArgumentParser(description="Choice for feature testing: GUI or just baseline comparison")
+    parser.add_argument("-b", "--baseline", 
+                        nargs='?', 
+                        const='info',   
+                        default=None,   
+                        metavar='diff|bloch|stereo|mxtal|all',
+                        help="""Running this tool compares new results with the baseline results.""", 
+                        required=False
+                        )
+    # parser.add_argument("-b", "--baseline",
+    #                     default=False, 
+    #                     action='store_true',
+    #                     help="Comparing baseline results without displaying", 
+    #                     required=False)
+    
+    args = parser.parse_args()
+
+    base = args.baseline
+
+    # print(f'call with baseline arguement: {base}')
+
+    bline = True
+    f = feat_list[0]
+    if base is None:
+        bline = False
+    else:
+        f = base
+        if f not in feat_list and f != 'all':
+            print(f'Option value invalide!')
+            sys.exit(1)
     res = {}
-    for f in feat_list:
-        res[f]=[]
+    fres=[]
+    
+    if f == 'all':
+        for fl in feat_list:
+            res[fl]=[]
+            for dt in range(1,3):
+                fc, fcase, bcc, bccase = run_features_test(data_ty=dt, bShow = True, feat_type = fl, baseline= bline)
+                fres.append((fc, fcase, bcc, bccase))
+
+            print(f'\n\n\n<<<<<<<<<<<<<Summary of pyemaps Feature Sanity Runs - {fl}>>>>>>>>>>>>>>>\n\n\n')
+            print(f"\n\n{fl} Feature Test Results:")  
+            for dt in range(1,3):
+                fc, fcase, bcc, bccase = fres[dt-1]
+                data_type = 'builtin Crystal Data' if dt == 1 else 'CIF Crystal Data'
+                print(f"<<{data_type.upper()} Tests>>:")  
+                if fc != 0:
+                    print(f'    ------ Current Run Failure count: {fc} ------')
+                    print(f'    Failure cases')
+                    print_filelist(fcase)   
+                else:
+                    print(f'    ++++++ All tests run successfully ++++++')
+
+                if bcc != 0:
+                    print(f'    ------Baseline Result Comparison Failure Count: {bcc} ------')
+                    print(f'    Failure cases')
+                    print_filelist(bccase)   
+                else:
+                    print(f'    ++++++ Success! All tests matches baseline ++++++')
+    else:
         for dt in range(1,3):
-            # if dt == 1:
-            #     continue
-            fc, fl = run_features_test(data_ty=dt, bShow = True, feat_type = f)
-            res[f].append((fc, fl))
+            fc, fcase, bcc, bccase = run_features_test(data_ty=dt, bShow = True, feat_type = f, baseline= bline)
+            fres.append((fc, fcase, bcc, bccase))
 
-    print(f'\n\n\n<<<<<<<<<<<<<Summary of pyemaps Feature Sanity Runs>>>>>>>>>>>>>>>\n\n\n')
-
-    for f in feat_list:
-        fres = res[f]
+        print(f'\n\n\n<<<<<<<<<<<<<Summary of pyemaps Feature Sanity Runs - {f}>>>>>>>>>>>>>>>\n\n\n')
         print(f"\n\n{f} Feature Test Results:")  
         for dt in range(1,3):
-            # if dt == 1:
-            #     continue
-            # print(f'list index: {dt}')
-            fc, fl = fres[dt-1]
+            fc, fcase, bcc, bccase = fres[dt-1]
             data_type = 'builtin Crystal Data' if dt == 1 else 'CIF Crystal Data'
             print(f"<<{data_type.upper()} Tests>>:")  
             if fc != 0:
-                print(f'    ------ Failure count: {fc} ------')
+                print(f'    ------ Current Run Failure count: {fc} ------')
                 print(f'    Failure cases')
-                print_filelist(fl)   
+                print_filelist(fcase)   
             else:
-                print(f'    ++++++ All tests passed ++++++')
+                print(f'    ++++++ All tests run successfully ++++++')
+
+            if bcc != 0:
+                print(f'    ------Baseline Result Comparison Failure Count: {bcc} ------')
+                print(f'    Failure cases')
+                print_filelist(bccase)   
+            else:
+                print(f'    ++++++ Success! All tests matches baseline ++++++')

@@ -9,8 +9,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     run = args.run
-    # print(f'run is {run}')
-
     if run is not None and run in perf_fname_dict:
         # print(f'run is {run}')
         run_perf(ty=run)
@@ -30,3 +28,5 @@ if __name__ == '__main__':
         for k in perf_fname_dict:
             gen_perf_baseline(ty=k)
         exit(0)
+
+    print(f'Performance test must have arguements of -bl or -r')

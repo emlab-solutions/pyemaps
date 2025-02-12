@@ -25,22 +25,24 @@ Date:       May 31, 2022
 This sample code is to demonstrate how to generate powder diffraction.
 '''
 
-def runPowderTests():
+def runPowderTests(bPrint=True):
     from pyemaps import Crystal as cryst
-    from pyemaps import plot2Powder
-    import time
 
     si = cryst.from_builtin('Silicon')
-    print(si)
+    if bPrint:
+        print(si)
     psi = si.generatePowder() 
 
-    # si.plotPowder(psi)
     di = cryst.from_builtin('Diamond')
-    print(di)
+    if bPrint:
+        print(di)
     pdi = di.generatePowder(absp = 1)
 
-    plot2Powder(psi, pdi)
+    return (psi, pdi)
 
 if __name__ == "__main__":
     
-    runPowderTests()
+    from pyemaps import plot2Powder
+    psi, pdi = runPowderTests()
+    
+    plot2Powder(psi, pdi)

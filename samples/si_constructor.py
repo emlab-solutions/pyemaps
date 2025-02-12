@@ -25,14 +25,15 @@ Date:       October 21, 2022
 This sample code is to demonstrate how to generate .xyz crystal 
 construction data that can be visualized by Jmol and cloudEMAPS 2.0. 
 '''
-def test_mxtal():
+def test_mxtal(bPrint=True, bSave=True):
     
     from pyemaps import Crystal as cr
     from pyemaps import CrystalClassError
     from pyemaps import MxtalError
+    mx=None
     try:
         si = cr.from_builtin('Silicon')
-        if si:
+        if si and bPrint:
             print(f'crytsal data to generate mxtal: {si}')
             mx = si.generateMxtal(bound=0.1)
     except (CrystalClassError, MxtalError) as e:
@@ -40,7 +41,11 @@ def test_mxtal():
     except Exception as e:
         print(f'error: generating crystal structure data: {e}')
     else:
-        print(f'\nCrystal Structure Data Generated for {si.name}:')
-        si.printXYZ(mx)
+        if bPrint:
+            print(f'\nCrystal Structure Data Generated for {si.name}:')
+            si.printXYZ(mx)
+        if bSave:
+            si.writeXYZ(mx)
+        return mx
 if __name__ == "__main__":
     test_mxtal()

@@ -16,7 +16,7 @@ def get_baseline_fname(ty='dif'):
 
     perf_fname = perf_fname_dict[ty]   
     current_path = Path(os.path.abspath(__file__))
-    perf_bfn = os.path.join(current_path.parent.absolute(), perf_fname)
+    perf_bfn = os.path.join(current_path.parent.absolute(), 'baseline', 'perf', perf_fname)
 
     return perf_bfn
 

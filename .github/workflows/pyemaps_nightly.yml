@@ -5,7 +5,7 @@ on:
   #   - cron: '0 5 * * *' # Runs at midnight CDT (5:00 AM UTC)
   # workflow_dispatch: # Allow manual triggering as well
   push:
-    branches: [ main ]
+    branches: [ pytest ]
 
 
 jobs:
@@ -17,7 +17,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         with:
-          ref: main                         # Replace with the branch name you want to use
+          ref: pytest                         # Replace with the branch name you want to use
           fetch-depth: 0                    # Fetch full history to compare commits
           
       # Step 2: Detect changes in the branch

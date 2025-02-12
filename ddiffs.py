@@ -1,4 +1,5 @@
 '''
+
 .. This file is part of pyEMAPS
  
 .. ----
@@ -22,6 +23,7 @@
 
 .. Author:     EMLab Solutions, Inc.
 .. Date:       July 17, 2022    
+
 '''
 
 from . import EMC
@@ -86,8 +88,43 @@ class BlochImgs:
     def __getitem__(self, key):
 
         '''
-        Array like method for retrieving DP
 
+        Array like method for retrieving DP
+        
         '''
         
         return self._blochList[key]
+    
+    def __contains__(self, emc, b):
+        '''
+
+        Given a dynamic image in 2-d array and corresponding simulation controls,
+        test if the pair is part of dynamic diffraction paterns list. Internal
+        function used for == operator overload.
+
+        '''
+        if not isinstance(emc, EMC) or \
+           not hasattr(b, "__len__") or \
+           b.ndim != 2:
+            raise BlochListError('failed to add Bloch image object')
+        
+        import numpy as np
+        for (e,c) in self._blochList:
+            if e == emc and np.allclose(c, b, atol=1e-6): return True
+        return False
+    
+    def __eq__(self, other):
+        '''
+        
+        Overloading == operator for the class
+
+        '''
+        if self._name != other._name:
+            return False
+        for (e,b) in self._blochList:
+            if not other.__contains__(e,b):
+                return False
+        for (e,b) in other._blochList:
+            if not self.__contains__(e,b):
+                return False
+        return True

@@ -1,6 +1,10 @@
 
 @echo off 
 @REM basic usage
+@REM ******** running this for github workflow ********
+
+@REM        Must be run under pyemaps directory
+
 @REM --------------  starting time --------------  
 set startTime=%time%
 echo Script started at %startTime%
@@ -10,27 +14,24 @@ call pyemaps -c
 call pyemaps -v
 
 echo y | call pyemaps -cp
-call python .\pyemaps_samples\si_csf.py
-@REM call python .\pyemaps_samples\si_dif.py
-@REM call python .\pyemaps_samples\si_bloch.py
-@REM call python .\pyemaps_samples\si_lacbed.py
-@REM call python .\pyemaps_samples\si_rawblochimgs.py
-call python .\pyemaps_samples\si_constructor.py
-@REM call python .\pyemaps_samples\si_stereo.py
-@REM call python .\pyemaps_samples\si_scm.py
-@REM python test\sanity\feature_sanity.py
+python .\test\sanity\run_samples.py all
+python .\test\sanity\feature_sanity.py -b diff
+python .\test\sanity\feature_sanity.py -b bloch
+python .\test\sanity\feature_sanity.py -b stereo
+python .\test\sanity\feature_sanity.py -b mxtal
 
 @REM performance test - all includes all types: dif, bloch and stereo
-call python test\sanity\run_perf_test.py -r all
-@REM unit test: EMC SIMC class basic function tests
-call python test\unittests\emc\test1.py
-@REM call python test\unittests\kdif\sanity_doc.py
-@REM call python test\unittests\bloch\si_bloch_docs.py
-call python test\unittests\bloch\disk_size.py
+call python .\test\sanity\run_perf_test.py -r all
+
+@REM unit test test
+call python .\test\unittests\kdif\sanity_doc.py
+call python .\test\unittests\bloch\si_bloch_docs.py
+call python .\test\unittests\emc\test1.py
+call python .\test\unittests\bloch\disk_size.py
 
 @REM call python .\pyemaps_samples\powder.py
 @REM echo before wrror level: %ERRORLEVEL%
-call python test\unittests\package_test\type_test.py
+call python .\test\unittests\package_test\type_test.py
 @REM echo after wrror level: %ERRORLEVEL%
 set return_code=%ERRORLEVEL%
 

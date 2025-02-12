@@ -27,11 +27,11 @@ factors.
 '''
 c_name = 'Silicon'
 
-def runCSFTests():
+def runCSFTests(bPrint=True):
     from pyemaps import Crystal as cr
     si = cr.from_builtin(c_name)
-    
-    print(si)
+    if bPrint:
+        print(si)
     # generate diffraction on the crystal instance with all default controls
     # parameters, default controls returned as the first output ignored
     v = 100
@@ -51,8 +51,8 @@ def runCSFTests():
         for j in ampl:
             
             sfs = si.generateCSF(kv = v, smax = sm, sftype = i, aptype = j)
-            
-            si.printCSF(sfs)
-
+            if bPrint:
+                si.printCSF(sfs)
+    return sfs
 if __name__ == "__main__":
     runCSFTests()

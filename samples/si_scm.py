@@ -48,7 +48,7 @@ def runSCMTests():
             )
     ds = 0.25
     ib_coords = (0, 0)
-    
+    lscm = []
     try:
         
         ns, s = si.beginBloch(em_controls = ec, 
@@ -89,6 +89,7 @@ def runSCMTests():
             ib_coords = s[randnum]
             try:
                 nd, si_scm, si_ev, si_beams = si.getSCMatrix(ib_coords = ib_coords)
+                lscm.append(dict(ib=ib_coords, ndim=nd, scm=si_scm, ev=si_ev, beams=si_beams))
             except Exception:
                 print(f'Error obtaining scattering matrix at random sampling points {ib_coords}')
             else:
@@ -104,6 +105,50 @@ def runSCMTests():
         ncb, cbs = si.getCalculatedBeams(bPrint=True)
     # cleanup 
     si.endBloch()
+    return (dict(ncb=ncb, cbs=cbs), lscm)
 
+def runSCMFullTests():
+
+    from pyemaps import Crystal as cr
+    from pyemaps import BlochError, EMC, SIMC
+    
+    si = cr.from_builtin(c_name)
+    
+    # -----generate scattering matrix on this crystal instance----- 
+    #      controls set as follows. 
+
+    #      For a list beams coordinates 
+    #      to generate more scattering matrix, run cr.printIBDetails()
+    
+    ec =EMC(cl=200,
+            tilt=(0.0, 0.0),
+            simc = SIMC(gmax=2.0, excitation=(1.0,2.0))
+            )
+    ds = 0.25
+    
+    lscm = []
+    try:
+        
+        ns, s = si.beginBloch(em_controls = ec, 
+                        dbsize = ds)
+
+    except Exception as e:
+        print(f'Failed to generate scattering matrix {e}')
+    else:
+        # get the scattering matrix and associated eigen values now
+        try:
+            for i in range(ns):
+                ndim, si_scm, si_ev, si_beams = si.getSCMatrix(ib_coords = s[i])
+                lscm.append(dict(ib=s[i], ndim=ndim, scm=si_scm, ev=si_ev, beams=si_beams))
+        except BlochError as e:
+            print(f'Failed to generate scattering matrix {e.message}')
+        except Exception as e:
+            print(f'Failed to generate scattering matrix {e}')
+        
+        # show a list of calculated beams for current bloch session
+        ncb, cbs = si.getCalculatedBeams(bPrint=False)
+    # cleanup 
+    si.endBloch()
+    return (dict(ncb=ncb, cbs=cbs), lscm)
 if __name__ == "__main__":
-    runSCMTests()
+    runSCMTests() #only sampling and print out two of the results
