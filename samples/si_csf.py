@@ -54,5 +54,6 @@ def runCSFTests(bPrint=True):
             if bPrint:
                 si.printCSF(sfs)
     return sfs
+    
 if __name__ == "__main__":
     runCSFTests()
