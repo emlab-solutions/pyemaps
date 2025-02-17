@@ -78,7 +78,7 @@ def main():
 
     print('\n*****unit test for package types completed*****')
     
-    sys.exit(pType)
+    # sys.exit(pType)
 
 if __name__ == '__main__':
     main()

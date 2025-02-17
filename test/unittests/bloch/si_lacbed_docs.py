@@ -2,7 +2,7 @@ from pyemaps import EMC, DEF_CBED_DSIZE
 
 MAX_PROCWORKERS = 4
 
-def generate_lacbed_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt'):
+def generate_lacbed_images(name = 'Silicon', bSave=True):
     
     from pyemaps import Crystal as cryst
     from pyemaps import SIMC
@@ -23,7 +23,7 @@ def generate_lacbed_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'til
                                 det_size = 218,
                                 sample_thickness = sth,
                                 nType = TY_LACBED,
-                                bSave = True
+                                bSave = bSave
                                 )
     except Exception as e:
             print(f'Generated an exception: {e}') 
@@ -32,8 +32,11 @@ def generate_lacbed_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'til
     bimgs.sort()
     return bimgs 
 
+def main():
+    from pyemaps import showBloch
+    imgs = generate_lacbed_images()
+    showBloch(imgs, bClose=True)
+
 if __name__ == '__main__':
     
-    from pyemaps import showBloch
-
-    imgs = generate_lacbed_images()
+    main()

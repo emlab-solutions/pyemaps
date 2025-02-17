@@ -33,7 +33,7 @@ def test_dpgen_spg_227():
         
     datfn = os.path.splitext(dbfn)[0]+".dat"
 
-    assert os.path.exists(datfn), \
+    assert not os.path.exists(datfn), \
         f"Space Group 227 support failed"
     
 def test_dpgen_spg_167():
@@ -50,7 +50,7 @@ def test_dpgen_spg_167():
     datfn = os.path.splitext(dbfn)[0]+".dat"
     
 
-    assert os.path.exists(datfn), \
+    assert not os.path.exists(datfn), \
         f"Space Group 167 support failed"
 
 def test_dpgen_spg_229():

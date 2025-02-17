@@ -2,7 +2,7 @@ from pyemaps import EMC, DEF_CBED_DSIZE
 
 MAX_PROCWORKERS = 4
 
-def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt'):
+def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt', bSave=True):
     
     from pyemaps import Crystal as cryst
     from pyemaps import SIMC
@@ -20,7 +20,7 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
                                 cl=1000,
                                 simc=simc),
                                 sample_thickness = sth,
-                                bSave = True
+                                bSave = bSave
                                 )
     except Exception as e:
             print(f'Generated an exception: {e}') 
@@ -28,11 +28,14 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
             
     bimgs.sort()
     return bimgs 
-
-if __name__ == '__main__':
-    
+def main():
+     
     from pyemaps import showBloch
 
     imgs = generate_bloch_images()
     if imgs is not None:
         showBloch(imgs, cShow=True, layout='table', bSave = True, bClose=True)
+
+if __name__ == '__main__':
+    
+    main()

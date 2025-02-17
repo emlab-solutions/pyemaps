@@ -40,9 +40,12 @@ def runPowderTests(bPrint=True):
 
     return (psi, pdi)
 
-if __name__ == "__main__":
+def main():
     
     from pyemaps import plot2Powder
     psi, pdi = runPowderTests()
     
     plot2Powder(psi, pdi)
+
+if __name__ == "__main__":
+    main()

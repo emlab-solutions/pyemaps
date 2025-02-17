@@ -1,4 +1,4 @@
-def run_kdiffraction():
+def run_kdiffraction(bShow=True, bSave=True, bPrint=True):
 
     from pyemaps import Crystal             #----pyemaps crystal module
     from pyemaps import DPList, showDif     #----Helper modules
@@ -9,12 +9,15 @@ def run_kdiffraction():
                                             #----emc: associated microscope and 
                                             #            simulation control object
                                             #----si_dp: diffraction pattern generated
-    print(si_dp)                            #----raw representation of kinematic diffraction pattern 
+    if bPrint: print(si_dp)                            #----raw representation of kinematic diffraction pattern 
 
-    dpl = DPList('Silicon')                 #----create a diffraction pattern list to hold the results
+    dpl = DPList('Silcon')                 #----create a diffraction pattern list to hold the results
     dpl.add(emc, si_dp)                     #----can add more if desired
 
-    showDif(dpl, bClose=False)              #----visual representation of diffraction pattern
+    if bShow:
+        showDif(dpl, bClose=True, bSave=bSave)   
+        
+    return dpl           #----visual representation of diffraction pattern
     
 if __name__ == '__main__':
     run_kdiffraction()

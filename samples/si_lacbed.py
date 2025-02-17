@@ -49,10 +49,11 @@ def generate_lacbed_images(name = 'Silicon', bSave = False, bShow=False):
         showBloch(imgs,bClose=True)
     return imgs
 
+def main():
+    generate_lacbed_images(bSave=True, bShow=True)
 
 from pyemaps import showBloch
 
 if __name__ == '__main__':
-    
-    generate_lacbed_images(bSave=True, bShow=True)
+    main()
         

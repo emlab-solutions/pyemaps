@@ -1,0 +1,1917 @@
+Script started at 17:15:39.24
+PyEMAPS - Transmission Electron Diffraction Simulations In Python
+© 2021-2025 EMLab Solutions, Inc. All rights reserved.
+pyEMAPS version 3.2.1 stable with 4dstem.
+PyEMAPS - Transmission Electron Diffraction Simulations In Python
+© 2021-2025 EMLab Solutions, Inc. All rights reserved.
+Version 3.2.1 stable with 4DSTEM.
+--------------------------------
+Copy pyemaps samples into pyemaps_samples in current directory?
+ [Y/n] Copied sample code: adf.py in pyemaps package to C:\Users\sharon\dev_space\pyemaps_root\pyemaps\pyemaps_samples\adf.py
+Copied sample code: al.img in pyemaps package to C:\Users\sharon\dev_space\pyemaps_root\pyemaps\pyemaps_samples\al.img
+Copied sample code: al_dpgen.py in pyemaps package to C:\Users\sharon\dev_space\pyemaps_root\pyemaps\pyemaps_samples\al_dpgen.py
+Copied sample code: al_ediom.py in pyemaps package to C:\Users\sharon\dev_space\pyemaps_root\pyemaps\pyemaps_samples\al_ediom.py
+Copied sample code: convert_image.py in pyemaps package to C:\Users\sharon\dev_space\pyemaps_root\pyemaps\pyemaps_samples\convert_image.py
+Copied sample code: dm_diff.py in pyemaps package to C:\Users\sharon\dev_space\pyemaps_root\pyemaps\pyemaps_samples\dm_diff.py
+Copied sample code: mask.im3 in pyemaps package to C:\Users\sharon\dev_space\pyemaps_root\pyemaps\pyemaps_samples\mask.im3
+Copied sample code: powder.py in pyemaps package to C:\Users\sharon\dev_space\pyemaps_root\pyemaps\pyemaps_samples\powder.py
+Copied sample code: raw.img in pyemaps package to C:\Users\sharon\dev_space\pyemaps_root\pyemaps\pyemaps_samples\raw.img
+Copied sample code: si_bloch.py in pyemaps package to C:\Users\sharon\dev_space\pyemaps_root\pyemaps\pyemaps_samples\si_bloch.py
+Copied sample code: si_constructor.py in pyemaps package to C:\Users\sharon\dev_space\pyemaps_root\pyemaps\pyemaps_samples\si_constructor.py
+Copied sample code: si_csf.py in pyemaps package to C:\Users\sharon\dev_space\pyemaps_root\pyemaps\pyemaps_samples\si_csf.py
+Copied sample code: si_dif.py in pyemaps package to C:\Users\sharon\dev_space\pyemaps_root\pyemaps\pyemaps_samples\si_dif.py
+Copied sample code: si_lacbed.py in pyemaps package to C:\Users\sharon\dev_space\pyemaps_root\pyemaps\pyemaps_samples\si_lacbed.py
+Copied sample code: si_scm.py in pyemaps package to C:\Users\sharon\dev_space\pyemaps_root\pyemaps\pyemaps_samples\si_scm.py
+Copied sample code: si_stereo.py in pyemaps package to C:\Users\sharon\dev_space\pyemaps_root\pyemaps\pyemaps_samples\si_stereo.py
+Run sample code by typing: "python pyemaps_samples\<sample>"
+------------------generating new results and comparing them with baseline for feature: diff----------------
+++++++Baseline match SUCCEEDED for kinematic diffraction sample test.
+------------------generating new results and comparing them with baseline for feature: bloch----------------
+++++++Baseline match SUCCEEDED for dynamic diffraction sample test.
+------------------generating new results and comparing them with baseline for feature: lacbed----------------
+++++++Baseline match SUCCEEDED for LACBED sample test.
+------------------generating new results and comparing them with baseline for feature: scm----------------
+Baseline match SUCCEEDED for Scattering matrix sample test.
+------------------generating new results and comparing them with baseline for feature: stereo----------------
+Baseline match SUCCEEDED for Stereogram sample test.
+------------------generating new results and comparing them with baseline for feature: powder----------------
+Baseline match SUCCEEDED for Powder diffraction sample test.
+------------------generating new results and comparing them with baseline for feature: csf----------------
+Baseline match SUCCEEDED for Crystal Structure Factor sample test.
+------------------generating new results and comparing them with baseline for feature: mxtal----------------
+Baseline match SUCCEEDED for Crystal Structure Calculation sample test.
+Done with samples sanity tests 
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Aluminium.xtl succeeded with time: 0.0066
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\AluminiumOxide.xtl succeeded with time: 0.0065
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Aluminium_FCC.xtl succeeded with time: 0.0026
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\BariumTitanate_180k.xtl succeeded with time: 0.0076
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\BariumTitanate_270k.xtl succeeded with time: 0.0072
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\BariumTitanate_Tetra.xtl succeeded with time: 0.0064
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\BiMnO3.xtl succeeded with time: 0.0851
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Boron_Tetra.xtl succeeded with time: 0.0216
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\CadmiumSelenide_Hex.xtl succeeded with time: 0.0105
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\CadmiumSulfide_Cubic.xtl succeeded with time: 0.0049
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\CadmiumSulfide_Hex.xtl succeeded with time: 0.0097
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Chromium_BCC.xtl succeeded with time: 0.0026
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\CopperOxide.xtl succeeded with time: 0.0042
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Copper_FCC.xtl succeeded with time: 0.0020
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\CoSb3_Skutterudite.xtl succeeded with time: 0.0399
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Cu2O_Cuprite.xtl succeeded with time: 0.0061
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Diamond.xtl succeeded with time: 0.0017
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\ErbiumPyrogermanate.xtl succeeded with time: 0.0356
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\FePd_Tetra.xtl succeeded with time: 0.0043
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\FeS2_Pyrite.xtl succeeded with time: 0.0118
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\GalliumAntimonide.xtl succeeded with time: 0.0054
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\GalliumArsenide.xtl succeeded with time: 0.0044
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\GalliumNitride.xtl succeeded with time: 0.0052
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Germanium.xtl succeeded with time: 0.0034
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Gold_FCC.xtl succeeded with time: 0.0025
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\IndiumArsenide.xtl succeeded with time: 0.0050
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\LaMnO3.xtl succeeded with time: 0.0164
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\LeadZirconateTitanate.xtl succeeded with time: 0.0082
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Li2MnO3.xtl succeeded with time: 0.0134
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\limno2.xtl succeeded with time: 0.0035
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\NaFeO2.xtl succeeded with time: 0.0037
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Nb3Sn.xtl succeeded with time: 0.0111
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Pentacene.xtl succeeded with time: 0.0471
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Silicon.xtl succeeded with time: 0.0036
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\StrontiumTitanate.xtl succeeded with time: 0.0064
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\TelluriumDioxide.xtl succeeded with time: 0.0120
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\TinDioxide_RT.xtl succeeded with time: 0.0089
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\TitaniumDioxide_Anatase.xtl succeeded with time: 0.0046
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\TitaniumDioxide_Rutile.xtl succeeded with time: 0.0079
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\TungstenDiselenide.xtl succeeded with time: 0.0123
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\VanadiumDioxide_RT.xtl succeeded with time: 0.0299
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\ZincOxide.xtl succeeded with time: 0.0056
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Zinc_HCP.xtl succeeded with time: 0.0041
+-------generating diff for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\ZirconiumNitride.xtl succeeded with time: 0.0035
+------------------Running and comparing baseline for feature - difffor built-in ----------------
+++++++ Current run SUCCEEDED +++++++
+------- Time in comparing diff baseline for Aluminium: 0.0008
+------- Time in comparing diff baseline for AluminiumOxide: 0.0018
+------- Time in comparing diff baseline for Aluminium_FCC: 0.0008
+------- Time in comparing diff baseline for BariumTitanate_180k: 0.0099
+------- Time in comparing diff baseline for BariumTitanate_270k: 0.0050
+------- Time in comparing diff baseline for BariumTitanate_Tetra: 0.0043
+------- Time in comparing diff baseline for BiMnO3: 0.0045
+------- Time in comparing diff baseline for Boron_Tetra: 0.0040
+------- Time in comparing diff baseline for CadmiumSelenide_Hex: 0.0114
+------- Time in comparing diff baseline for CadmiumSulfide_Cubic: 0.0023
+------- Time in comparing diff baseline for CadmiumSulfide_Hex: 0.0115
+------- Time in comparing diff baseline for Chromium_BCC: 0.0008
+------- Time in comparing diff baseline for CopperOxide: 0.0016
+------- Time in comparing diff baseline for Copper_FCC: 0.0004
+------- Time in comparing diff baseline for CoSb3_Skutterudite: 0.0313
+------- Time in comparing diff baseline for Cu2O_Cuprite: 0.0021
+------- Time in comparing diff baseline for Diamond: 0.0001
+------- Time in comparing diff baseline for ErbiumPyrogermanate: 0.0443
+------- Time in comparing diff baseline for FePd_Tetra: 0.0020
+------- Time in comparing diff baseline for FeS2_Pyrite: 0.0058
+------- Time in comparing diff baseline for GalliumAntimonide: 0.0023
+------- Time in comparing diff baseline for GalliumArsenide: 0.0008
+------- Time in comparing diff baseline for GalliumNitride: 0.0030
+------- Time in comparing diff baseline for Germanium: 0.0002
+------- Time in comparing diff baseline for Gold_FCC: 0.0008
+------- Time in comparing diff baseline for IndiumArsenide: 0.0020
+------- Time in comparing diff baseline for LaMnO3: 0.0137
+------- Time in comparing diff baseline for LeadZirconateTitanate: 0.0120
+------- Time in comparing diff baseline for Li2MnO3: 0.0038
+------- Time in comparing diff baseline for limno2: 0.0005
+------- Time in comparing diff baseline for NaFeO2: 0.0003
+------- Time in comparing diff baseline for Nb3Sn: 0.0093
+------- Time in comparing diff baseline for Pentacene: 0.0005
+------- Time in comparing diff baseline for Silicon: 0.0006
+------- Time in comparing diff baseline for StrontiumTitanate: 0.0029
+------- Time in comparing diff baseline for TelluriumDioxide: 0.0076
+------- Time in comparing diff baseline for TinDioxide_RT: 0.0146
+------- Time in comparing diff baseline for TitaniumDioxide_Anatase: 0.0006
+------- Time in comparing diff baseline for TitaniumDioxide_Rutile: 0.0118
+------- Time in comparing diff baseline for TungstenDiselenide: 0.0220
+------- Time in comparing diff baseline for VanadiumDioxide_RT: 0.0090
+------- Time in comparing diff baseline for ZincOxide: 0.0034
+------- Time in comparing diff baseline for Zinc_HCP: 0.0016
+------- Time in comparing diff baseline for ZirconiumNitride: 0.0012
+++++++ Baseline comparison SUCCEEDED +++++++
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010100.cif succeeded with time: 0.2902
+
+Info: closest matching space group information found in pyemaps: [(164, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010101.cif succeeded with time: 0.0172
+
+Info: closest matching space group information found in pyemaps: [(164, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010102.cif succeeded with time: 0.0168
+
+Info: closest matching space group information found in pyemaps: [(62, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010103.cif succeeded with time: 0.1283
+
+Info: closest matching space group information found in pyemaps: [(194, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010104.cif succeeded with time: 0.0493
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010105.cif succeeded with time: 0.0570
+
+Info: closest matching space group information found in pyemaps: [(120, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010106.cif succeeded with time: 0.0231
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010107.cif succeeded with time: 0.0488
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010108.cif succeeded with time: 0.0520
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010109.cif succeeded with time: 0.0506
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010110.cif succeeded with time: 0.0519
+
+Info: closest matching space group information found in pyemaps: [(198, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010111.cif succeeded with time: 0.0303
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010112.cif succeeded with time: 0.0552
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010113.cif succeeded with time: 0.0101
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010114.cif succeeded with time: 0.0094
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010116.cif succeeded with time: 0.0166
+
+Info: closest matching space group information found in pyemaps: [(216, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010117.cif succeeded with time: 0.0139
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010118.cif succeeded with time: 0.0299
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010119.cif succeeded with time: 0.0299
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010120.cif succeeded with time: 0.0305
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010121.cif succeeded with time: 0.0272
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010122.cif succeeded with time: 0.0228
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010123.cif succeeded with time: 0.0212
+
+Info: closest matching space group information found in pyemaps: [(208, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010124.cif succeeded with time: 0.0197
+
+Info: closest matching space group information found in pyemaps: [(208, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010125.cif succeeded with time: 0.0232
+
+Info: closest matching space group information found in pyemaps: [(208, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010126.cif succeeded with time: 0.0298
+
+Info: closest matching space group information found in pyemaps: [(208, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010127.cif succeeded with time: 0.0252
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010128.cif succeeded with time: 0.0485
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010129.cif succeeded with time: 0.0459
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010130.cif succeeded with time: 0.0620
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010131.cif succeeded with time: 0.0481
+
+Info: closest matching space group information found in pyemaps: [(208, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010132.cif succeeded with time: 0.0189
+
+Info: closest matching space group information found in pyemaps: [(208, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010133.cif succeeded with time: 0.0206
+
+Info: closest matching space group information found in pyemaps: [(217, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010134.cif succeeded with time: 0.0134
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010135.cif succeeded with time: 0.0192
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010136.cif succeeded with time: 0.0197
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010137.cif succeeded with time: 0.0192
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010138.cif succeeded with time: 0.0172
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010139.cif succeeded with time: 0.0179
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010140.cif succeeded with time: 0.0171
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010141.cif succeeded with time: 0.0186
+
+Info: closest matching space group information found in pyemaps: [(82, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010142.cif succeeded with time: 0.0089
+
+Info: closest matching space group information found in pyemaps: [(82, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010143.cif succeeded with time: 0.0094
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010144.cif succeeded with time: 0.0318
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010145.cif succeeded with time: 0.0709
+
+Info: closest matching space group information found in pyemaps: [(216, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010146.cif succeeded with time: 0.0125
+
+Info: closest matching space group information found in pyemaps: [(19, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010147.cif succeeded with time: 0.0359
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010148.cif succeeded with time: 0.0144
+
+Info: closest matching space group information found in pyemaps: [(205, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010149.cif succeeded with time: 0.0154
+
+Info: closest matching space group information found in pyemaps: [(205, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010150.cif succeeded with time: 0.0152
+
+Info: closest matching space group information found in pyemaps: [(143, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010151.cif succeeded with time: 0.0439
+
+Info: closest matching space group information found in pyemaps: [(216, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010152.cif succeeded with time: 0.0133
+
+Info: closest matching space group information found in pyemaps: [(86, 2)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010153.cif succeeded with time: 0.0348
+
+Info: closest matching space group information found in pyemaps: [(205, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010154.cif succeeded with time: 0.0340
+
+Info: closest matching space group information found in pyemaps: [(163, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010155.cif succeeded with time: 0.0257
+
+Info: closest matching space group information found in pyemaps: [(227, 2)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010156.cif succeeded with time: 0.0379
+
+Info: closest matching space group information found in pyemaps: [(227, 2)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010157.cif succeeded with time: 0.0393
+
+Info: closest matching space group information found in pyemaps: [(123, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010158.cif succeeded with time: 0.0120
+
+Info: closest matching space group information found in pyemaps: [(20, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010159.cif succeeded with time: 0.0270
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010160.cif succeeded with time: 0.0124
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010161.cif succeeded with time: 0.0126
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010162.cif succeeded with time: 0.0113
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010163.cif succeeded with time: 0.0113
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010164.cif succeeded with time: 0.0135
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010165.cif succeeded with time: 0.0114
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010166.cif succeeded with time: 0.0115
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010167.cif succeeded with time: 0.0149
+
+Info: closest matching space group information found in pyemaps: [(186, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010168.cif succeeded with time: 0.0098
+
+Info: closest matching space group information found in pyemaps: [(186, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010169.cif succeeded with time: 0.0114
+
+Info: closest matching space group information found in pyemaps: [(220, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010170.cif succeeded with time: 0.0290
+
+Info: closest matching space group information found in pyemaps: [(220, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010171.cif succeeded with time: 0.0299
+
+Info: closest matching space group information found in pyemaps: [(220, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010172.cif succeeded with time: 0.0349
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010173.cif succeeded with time: 0.0280
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010174.cif succeeded with time: 0.0280
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010175.cif succeeded with time: 0.0280
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010176.cif succeeded with time: 0.0292
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010177.cif succeeded with time: 0.0282
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010178.cif succeeded with time: 0.0290
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010179.cif succeeded with time: 0.0287
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010180.cif succeeded with time: 0.0289
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010181.cif succeeded with time: 0.0274
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010182.cif succeeded with time: 0.0278
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010183.cif succeeded with time: 0.0288
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010184.cif succeeded with time: 0.0268
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010185.cif succeeded with time: 0.0265
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010186.cif succeeded with time: 0.0269
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010187.cif succeeded with time: 0.0289
+
+Info: closest matching space group information found in pyemaps: [(12, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010188.cif succeeded with time: 0.0200
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010189.cif succeeded with time: 0.0287
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010190.cif succeeded with time: 0.0275
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010191.cif succeeded with time: 0.0287
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010192.cif succeeded with time: 0.0285
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010193.cif succeeded with time: 0.0264
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010194.cif succeeded with time: 0.0286
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010196.cif succeeded with time: 0.0292
+
+Info: closest matching space group information found in pyemaps: [(167, 2)]
+-------generating diff for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010199.cif succeeded with time: 0.0289
+------------------Running and comparing baseline for CIF Crystals ----------------
+++++++ Current run SUCCEEDED +++++++
+------- Time in comparing diff baseline for 1010100: 0.0302
+------- Time in comparing diff baseline for 1010101: 0.0210
+------- Time in comparing diff baseline for 1010102: 0.0127
+------- Time in comparing diff baseline for 1010103: 0.0150
+------- Time in comparing diff baseline for 1010104: 0.0274
+------- Time in comparing diff baseline for 1010105: 0.0033
+------- Time in comparing diff baseline for 1010106: 0.0028
+------- Time in comparing diff baseline for 1010107: 0.0042
+------- Time in comparing diff baseline for 1010108: 0.0081
+------- Time in comparing diff baseline for 1010109: 0.0063
+------- Time in comparing diff baseline for 1010110: 0.0121
+------- Time in comparing diff baseline for 1010111: 0.0110
+------- Time in comparing diff baseline for 1010112: 0.0024
+------- Time in comparing diff baseline for 1010113: 0.0027
+------- Time in comparing diff baseline for 1010114: 0.0019
+------- Time in comparing diff baseline for 1010116: 0.0026
+------- Time in comparing diff baseline for 1010117: 0.0013
+------- Time in comparing diff baseline for 1010118: 0.0239
+------- Time in comparing diff baseline for 1010119: 0.0277
+------- Time in comparing diff baseline for 1010120: 0.0294
+------- Time in comparing diff baseline for 1010121: 0.0241
+------- Time in comparing diff baseline for 1010122: 0.0150
+------- Time in comparing diff baseline for 1010123: 0.0117
+------- Time in comparing diff baseline for 1010124: 0.0038
+------- Time in comparing diff baseline for 1010125: 0.0065
+------- Time in comparing diff baseline for 1010126: 0.0090
+------- Time in comparing diff baseline for 1010127: 0.0152
+------- Time in comparing diff baseline for 1010128: 0.0043
+------- Time in comparing diff baseline for 1010129: 0.0020
+------- Time in comparing diff baseline for 1010130: 0.0047
+------- Time in comparing diff baseline for 1010131: 0.0034
+------- Time in comparing diff baseline for 1010132: 0.0020
+------- Time in comparing diff baseline for 1010133: 0.0059
+------- Time in comparing diff baseline for 1010134: 0.0019
+------- Time in comparing diff baseline for 1010135: 0.0080
+------- Time in comparing diff baseline for 1010136: 0.0127
+------- Time in comparing diff baseline for 1010137: 0.0079
+------- Time in comparing diff baseline for 1010138: 0.0045
+------- Time in comparing diff baseline for 1010139: 0.0076
+------- Time in comparing diff baseline for 1010140: 0.0043
+------- Time in comparing diff baseline for 1010141: 0.0111
+------- Time in comparing diff baseline for 1010142: 0.0007
+------- Time in comparing diff baseline for 1010143: 0.0018
+------- Time in comparing diff baseline for 1010144: 0.0174
+------- Time in comparing diff baseline for 1010145: 0.0146
+------- Time in comparing diff baseline for 1010146: 0.0038
+------- Time in comparing diff baseline for 1010147: 0.0596
+------- Time in comparing diff baseline for 1010148: 0.0012
+------- Time in comparing diff baseline for 1010149: 0.0017
+------- Time in comparing diff baseline for 1010150: 0.0022
+------- Time in comparing diff baseline for 1010151: 0.0129
+------- Time in comparing diff baseline for 1010152: 0.0038
+------- Time in comparing diff baseline for 1010153: 0.0263
+------- Time in comparing diff baseline for 1010154: 0.0151
+------- Time in comparing diff baseline for 1010155: 0.0477
+------- Time in comparing diff baseline for 1010156: 0.0042
+------- Time in comparing diff baseline for 1010157: 0.0044
+------- Time in comparing diff baseline for 1010158: 0.0045
+------- Time in comparing diff baseline for 1010159: 0.0346
+------- Time in comparing diff baseline for 1010160: 0.0052
+------- Time in comparing diff baseline for 1010161: 0.0084
+------- Time in comparing diff baseline for 1010162: 0.0037
+------- Time in comparing diff baseline for 1010163: 0.0036
+------- Time in comparing diff baseline for 1010164: 0.0126
+------- Time in comparing diff baseline for 1010165: 0.0027
+------- Time in comparing diff baseline for 1010166: 0.0035
+------- Time in comparing diff baseline for 1010167: 0.0085
+------- Time in comparing diff baseline for 1010168: 0.0029
+------- Time in comparing diff baseline for 1010169: 0.0085
+------- Time in comparing diff baseline for 1010170: 0.0395
+------- Time in comparing diff baseline for 1010171: 0.0110
+------- Time in comparing diff baseline for 1010172: 0.0254
+------- Time in comparing diff baseline for 1010173: 0.0095
+------- Time in comparing diff baseline for 1010174: 0.0105
+------- Time in comparing diff baseline for 1010175: 0.0092
+------- Time in comparing diff baseline for 1010176: 0.0112
+------- Time in comparing diff baseline for 1010177: 0.0134
+------- Time in comparing diff baseline for 1010178: 0.0160
+------- Time in comparing diff baseline for 1010179: 0.0126
+------- Time in comparing diff baseline for 1010180: 0.0105
+------- Time in comparing diff baseline for 1010181: 0.0122
+------- Time in comparing diff baseline for 1010182: 0.0136
+------- Time in comparing diff baseline for 1010183: 0.0112
+------- Time in comparing diff baseline for 1010184: 0.0106
+------- Time in comparing diff baseline for 1010185: 0.0063
+------- Time in comparing diff baseline for 1010186: 0.0066
+------- Time in comparing diff baseline for 1010187: 0.0125
+------- Time in comparing diff baseline for 1010188: 0.0100
+------- Time in comparing diff baseline for 1010189: 0.0093
+------- Time in comparing diff baseline for 1010190: 0.0066
+------- Time in comparing diff baseline for 1010191: 0.0098
+------- Time in comparing diff baseline for 1010192: 0.0146
+------- Time in comparing diff baseline for 1010193: 0.0060
+------- Time in comparing diff baseline for 1010194: 0.0144
+------- Time in comparing diff baseline for 1010196: 0.0100
+------- Time in comparing diff baseline for 1010199: 0.0055
+++++++ Baseline comparison SUCCEEDED +++++++
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Aluminium.xtl succeeded with time: 0.0131
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\AluminiumOxide.xtl succeeded with time: 0.0286
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Aluminium_FCC.xtl succeeded with time: 0.0142
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\BariumTitanate_180k.xtl succeeded with time: 0.2009
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\BariumTitanate_270k.xtl succeeded with time: 0.0840
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\BariumTitanate_Tetra.xtl succeeded with time: 0.1805
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\BiMnO3.xtl succeeded with time: 6.9055
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Boron_Tetra.xtl succeeded with time: 5.3024
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\CadmiumSelenide_Hex.xtl succeeded with time: 0.3060
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\CadmiumSulfide_Cubic.xtl succeeded with time: 0.0503
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\CadmiumSulfide_Hex.xtl succeeded with time: 0.1588
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Chromium_BCC.xtl succeeded with time: 0.0151
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\CopperOxide.xtl succeeded with time: 0.0658
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Copper_FCC.xtl succeeded with time: 0.0095
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\CoSb3_Skutterudite.xtl succeeded with time: 1.9651
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Cu2O_Cuprite.xtl succeeded with time: 0.3591
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Diamond.xtl succeeded with time: 0.0092
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\ErbiumPyrogermanate.xtl succeeded with time: 2.6173
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\FePd_Tetra.xtl succeeded with time: 0.0418
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\FeS2_Pyrite.xtl succeeded with time: 1.1106
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\GalliumAntimonide.xtl succeeded with time: 0.0826
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\GalliumArsenide.xtl succeeded with time: 0.0614
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\GalliumNitride.xtl succeeded with time: 0.0889
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Germanium.xtl succeeded with time: 0.0574
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Gold_FCC.xtl succeeded with time: 0.0181
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\IndiumArsenide.xtl succeeded with time: 0.0835
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\LaMnO3.xtl succeeded with time: 3.0166
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\LeadZirconateTitanate.xtl succeeded with time: 0.2391
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Li2MnO3.xtl succeeded with time: 0.3464
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\limno2.xtl succeeded with time: 0.0080
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\NaFeO2.xtl succeeded with time: 0.0100
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Nb3Sn.xtl succeeded with time: 0.8713
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Pentacene.xtl succeeded with time: 2.4186
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Silicon.xtl succeeded with time: 0.0419
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\StrontiumTitanate.xtl succeeded with time: 0.1991
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\TelluriumDioxide.xtl succeeded with time: 0.5135
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\TinDioxide_RT.xtl succeeded with time: 0.4485
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\TitaniumDioxide_Anatase.xtl succeeded with time: 0.0406
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\TitaniumDioxide_Rutile.xtl succeeded with time: 0.4681
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\TungstenDiselenide.xtl succeeded with time: 0.0819
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\VanadiumDioxide_RT.xtl succeeded with time: 4.5134
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\ZincOxide.xtl succeeded with time: 0.0859
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Zinc_HCP.xtl succeeded with time: 0.0370
+-------generating bloch for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\ZirconiumNitride.xtl succeeded with time: 0.0415
+------------------Running and comparing baseline for feature - blochfor built-in ----------------
+++++++ Current run SUCCEEDED +++++++
+------- Time in comparing bloch baseline for Aluminium: 0.0057
+------- Time in comparing bloch baseline for AluminiumOxide: 0.0050
+------- Time in comparing bloch baseline for Aluminium_FCC: 0.0050
+------- Time in comparing bloch baseline for BariumTitanate_180k: 0.0046
+------- Time in comparing bloch baseline for BariumTitanate_270k: 0.0048
+------- Time in comparing bloch baseline for BariumTitanate_Tetra: 0.0048
+------- Time in comparing bloch baseline for BiMnO3: 0.0053
+------- Time in comparing bloch baseline for Boron_Tetra: 0.0048
+------- Time in comparing bloch baseline for CadmiumSelenide_Hex: 0.0048
+------- Time in comparing bloch baseline for CadmiumSulfide_Cubic: 0.0047
+------- Time in comparing bloch baseline for CadmiumSulfide_Hex: 0.0046
+------- Time in comparing bloch baseline for Chromium_BCC: 0.0048
+------- Time in comparing bloch baseline for CopperOxide: 0.0056
+------- Time in comparing bloch baseline for Copper_FCC: 0.0054
+------- Time in comparing bloch baseline for CoSb3_Skutterudite: 0.0061
+------- Time in comparing bloch baseline for Cu2O_Cuprite: 0.0049
+------- Time in comparing bloch baseline for Diamond: 0.0048
+------- Time in comparing bloch baseline for ErbiumPyrogermanate: 0.0051
+------- Time in comparing bloch baseline for FePd_Tetra: 0.0051
+------- Time in comparing bloch baseline for FeS2_Pyrite: 0.0048
+------- Time in comparing bloch baseline for GalliumAntimonide: 0.0048
+------- Time in comparing bloch baseline for GalliumArsenide: 0.0046
+------- Time in comparing bloch baseline for GalliumNitride: 0.0050
+------- Time in comparing bloch baseline for Germanium: 0.0048
+------- Time in comparing bloch baseline for Gold_FCC: 0.0050
+------- Time in comparing bloch baseline for IndiumArsenide: 0.0047
+------- Time in comparing bloch baseline for LaMnO3: 0.0047
+------- Time in comparing bloch baseline for LeadZirconateTitanate: 0.0051
+------- Time in comparing bloch baseline for Li2MnO3: 0.0062
+------- Time in comparing bloch baseline for limno2: 0.0055
+------- Time in comparing bloch baseline for NaFeO2: 0.0065
+------- Time in comparing bloch baseline for Nb3Sn: 0.0051
+------- Time in comparing bloch baseline for Pentacene: 0.0050
+------- Time in comparing bloch baseline for Silicon: 0.0057
+------- Time in comparing bloch baseline for StrontiumTitanate: 0.0061
+------- Time in comparing bloch baseline for TelluriumDioxide: 0.0049
+------- Time in comparing bloch baseline for TinDioxide_RT: 0.0049
+------- Time in comparing bloch baseline for TitaniumDioxide_Anatase: 0.0049
+------- Time in comparing bloch baseline for TitaniumDioxide_Rutile: 0.0049
+------- Time in comparing bloch baseline for TungstenDiselenide: 0.0049
+------- Time in comparing bloch baseline for VanadiumDioxide_RT: 0.0048
+------- Time in comparing bloch baseline for ZincOxide: 0.0048
+------- Time in comparing bloch baseline for Zinc_HCP: 0.0047
+------- Time in comparing bloch baseline for ZirconiumNitride: 0.0048
+++++++ Baseline comparison SUCCEEDED +++++++
+
+Info: closest matching space group information found in pyemaps: [(205, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010150.cif succeeded with time: 1.0369
+
+Info: closest matching space group information found in pyemaps: [(143, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010151.cif succeeded with time: 1.3802
+
+Info: closest matching space group information found in pyemaps: [(216, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010152.cif succeeded with time: 0.0808
+
+Info: closest matching space group information found in pyemaps: [(86, 2)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010153.cif succeeded with time: 4.1332
+
+Info: closest matching space group information found in pyemaps: [(205, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010154.cif succeeded with time: 4.2270
+
+Info: closest matching space group information found in pyemaps: [(163, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010155.cif succeeded with time: 0.5714
+
+Info: closest matching space group information found in pyemaps: [(227, 2)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010156.cif succeeded with time: 0.8868
+
+Info: closest matching space group information found in pyemaps: [(227, 2)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010157.cif succeeded with time: 0.8865
+
+Info: closest matching space group information found in pyemaps: [(123, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010158.cif succeeded with time: 0.1952
+
+Info: closest matching space group information found in pyemaps: [(20, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010159.cif succeeded with time: 2.2794
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010160.cif succeeded with time: 0.0475
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010161.cif succeeded with time: 0.0474
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010162.cif succeeded with time: 0.0521
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010163.cif succeeded with time: 0.0489
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010164.cif succeeded with time: 0.0481
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010165.cif succeeded with time: 0.0480
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010166.cif succeeded with time: 0.0480
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010167.cif succeeded with time: 0.1985
+
+Info: closest matching space group information found in pyemaps: [(186, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010168.cif succeeded with time: 0.0910
+
+Info: closest matching space group information found in pyemaps: [(186, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010169.cif succeeded with time: 0.1319
+
+Info: closest matching space group information found in pyemaps: [(220, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010170.cif succeeded with time: 1.4618
+
+Info: closest matching space group information found in pyemaps: [(220, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010171.cif succeeded with time: 2.2959
+
+Info: closest matching space group information found in pyemaps: [(220, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010172.cif succeeded with time: 2.4914
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010173.cif succeeded with time: 0.4808
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010174.cif succeeded with time: 0.7185
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010175.cif succeeded with time: 0.7328
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010176.cif succeeded with time: 0.8893
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010177.cif succeeded with time: 0.4974
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010178.cif succeeded with time: 0.7348
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010179.cif succeeded with time: 0.7333
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010180.cif succeeded with time: 0.9014
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010181.cif succeeded with time: 0.4917
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010182.cif succeeded with time: 0.5200
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010183.cif succeeded with time: 0.7436
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010184.cif succeeded with time: 0.4717
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010185.cif succeeded with time: 0.4686
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010186.cif succeeded with time: 0.4584
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010187.cif succeeded with time: 0.9081
+
+Info: closest matching space group information found in pyemaps: [(12, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010188.cif succeeded with time: 0.6966
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010189.cif succeeded with time: 0.7382
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010190.cif succeeded with time: 0.9134
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010191.cif succeeded with time: 0.9043
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010192.cif succeeded with time: 0.6794
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010193.cif succeeded with time: 0.4906
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010194.cif succeeded with time: 0.9448
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010196.cif succeeded with time: 0.8699
+
+Info: closest matching space group information found in pyemaps: [(167, 2)]
+-------generating bloch for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010199.cif succeeded with time: 3.3470
+------------------Running and comparing baseline for CIF Crystals ----------------
+++++++ Current run SUCCEEDED +++++++
+------- Time in comparing bloch baseline for 1010150: 0.0072
+------- Time in comparing bloch baseline for 1010151: 0.0049
+------- Time in comparing bloch baseline for 1010152: 0.0049
+------- Time in comparing bloch baseline for 1010153: 0.0048
+------- Time in comparing bloch baseline for 1010154: 0.0050
+------- Time in comparing bloch baseline for 1010155: 0.0047
+------- Time in comparing bloch baseline for 1010156: 0.0050
+------- Time in comparing bloch baseline for 1010157: 0.0047
+------- Time in comparing bloch baseline for 1010158: 0.0051
+------- Time in comparing bloch baseline for 1010159: 0.0046
+------- Time in comparing bloch baseline for 1010160: 0.0048
+------- Time in comparing bloch baseline for 1010161: 0.0047
+------- Time in comparing bloch baseline for 1010162: 0.0049
+------- Time in comparing bloch baseline for 1010163: 0.0052
+------- Time in comparing bloch baseline for 1010164: 0.0054
+------- Time in comparing bloch baseline for 1010165: 0.0048
+------- Time in comparing bloch baseline for 1010166: 0.0050
+------- Time in comparing bloch baseline for 1010167: 0.0050
+------- Time in comparing bloch baseline for 1010168: 0.0051
+------- Time in comparing bloch baseline for 1010169: 0.0048
+------- Time in comparing bloch baseline for 1010170: 0.0049
+------- Time in comparing bloch baseline for 1010171: 0.0050
+------- Time in comparing bloch baseline for 1010172: 0.0050
+------- Time in comparing bloch baseline for 1010173: 0.0052
+------- Time in comparing bloch baseline for 1010174: 0.0055
+------- Time in comparing bloch baseline for 1010175: 0.0047
+------- Time in comparing bloch baseline for 1010176: 0.0049
+------- Time in comparing bloch baseline for 1010177: 0.0050
+------- Time in comparing bloch baseline for 1010178: 0.0049
+------- Time in comparing bloch baseline for 1010179: 0.0047
+------- Time in comparing bloch baseline for 1010180: 0.0048
+------- Time in comparing bloch baseline for 1010181: 0.0049
+------- Time in comparing bloch baseline for 1010182: 0.0047
+------- Time in comparing bloch baseline for 1010183: 0.0049
+------- Time in comparing bloch baseline for 1010184: 0.0048
+------- Time in comparing bloch baseline for 1010185: 0.0049
+------- Time in comparing bloch baseline for 1010186: 0.0046
+------- Time in comparing bloch baseline for 1010187: 0.0050
+------- Time in comparing bloch baseline for 1010188: 0.0045
+------- Time in comparing bloch baseline for 1010189: 0.0048
+------- Time in comparing bloch baseline for 1010190: 0.0056
+------- Time in comparing bloch baseline for 1010191: 0.0061
+------- Time in comparing bloch baseline for 1010192: 0.0045
+------- Time in comparing bloch baseline for 1010193: 0.0045
+------- Time in comparing bloch baseline for 1010194: 0.0045
+------- Time in comparing bloch baseline for 1010196: 0.0047
+------- Time in comparing bloch baseline for 1010199: 0.0046
+++++++ Baseline comparison SUCCEEDED +++++++
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Aluminium.xtl succeeded with time: 0.0015
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\AluminiumOxide.xtl succeeded with time: 0.0017
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Aluminium_FCC.xtl succeeded with time: 0.0012
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\BariumTitanate_180k.xtl succeeded with time: 0.0015
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\BariumTitanate_270k.xtl succeeded with time: 0.0016
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\BariumTitanate_Tetra.xtl succeeded with time: 0.0015
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\BiMnO3.xtl succeeded with time: 0.0024
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Boron_Tetra.xtl succeeded with time: 0.0016
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\CadmiumSelenide_Hex.xtl succeeded with time: 0.0019
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\CadmiumSulfide_Cubic.xtl succeeded with time: 0.0013
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\CadmiumSulfide_Hex.xtl succeeded with time: 0.0015
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Chromium_BCC.xtl succeeded with time: 0.0012
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\CopperOxide.xtl succeeded with time: 0.0013
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Copper_FCC.xtl succeeded with time: 0.0011
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\CoSb3_Skutterudite.xtl succeeded with time: 0.0013
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Cu2O_Cuprite.xtl succeeded with time: 0.0015
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Diamond.xtl succeeded with time: 0.0011
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\ErbiumPyrogermanate.xtl succeeded with time: 0.0016
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\FePd_Tetra.xtl succeeded with time: 0.0014
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\FeS2_Pyrite.xtl succeeded with time: 0.0016
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\GalliumAntimonide.xtl succeeded with time: 0.0012
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\GalliumArsenide.xtl succeeded with time: 0.0015
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\GalliumNitride.xtl succeeded with time: 0.0015
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Germanium.xtl succeeded with time: 0.0012
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Gold_FCC.xtl succeeded with time: 0.0011
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\IndiumArsenide.xtl succeeded with time: 0.0012
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\LaMnO3.xtl succeeded with time: 0.0014
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\LeadZirconateTitanate.xtl succeeded with time: 0.0013
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Li2MnO3.xtl succeeded with time: 0.0017
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\limno2.xtl succeeded with time: 0.0015
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\NaFeO2.xtl succeeded with time: 0.0014
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Nb3Sn.xtl succeeded with time: 0.0013
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Pentacene.xtl succeeded with time: 0.0025
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Silicon.xtl succeeded with time: 0.0014
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\StrontiumTitanate.xtl succeeded with time: 0.0015
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\TelluriumDioxide.xtl succeeded with time: 0.0014
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\TinDioxide_RT.xtl succeeded with time: 0.0012
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\TitaniumDioxide_Anatase.xtl succeeded with time: 0.0012
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\TitaniumDioxide_Rutile.xtl succeeded with time: 0.0012
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\TungstenDiselenide.xtl succeeded with time: 0.0014
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\VanadiumDioxide_RT.xtl succeeded with time: 0.0014
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\ZincOxide.xtl succeeded with time: 0.0014
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Zinc_HCP.xtl succeeded with time: 0.0014
+-------generating stereo for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\ZirconiumNitride.xtl succeeded with time: 0.0011
+------------------Running and comparing baseline for feature - stereofor built-in ----------------
+++++++ Current run SUCCEEDED +++++++
+------- Time in comparing stereo baseline for Aluminium: 0.0001
+------- Time in comparing stereo baseline for AluminiumOxide: 0.0001
+------- Time in comparing stereo baseline for Aluminium_FCC: 0.0001
+------- Time in comparing stereo baseline for BariumTitanate_180k: 0.0001
+------- Time in comparing stereo baseline for BariumTitanate_270k: 0.0001
+------- Time in comparing stereo baseline for BariumTitanate_Tetra: 0.0001
+------- Time in comparing stereo baseline for BiMnO3: 0.0001
+------- Time in comparing stereo baseline for Boron_Tetra: 0.0001
+------- Time in comparing stereo baseline for CadmiumSelenide_Hex: 0.0001
+------- Time in comparing stereo baseline for CadmiumSulfide_Cubic: 0.0001
+------- Time in comparing stereo baseline for CadmiumSulfide_Hex: 0.0001
+------- Time in comparing stereo baseline for Chromium_BCC: 0.0001
+------- Time in comparing stereo baseline for CopperOxide: 0.0001
+------- Time in comparing stereo baseline for Copper_FCC: 0.0001
+------- Time in comparing stereo baseline for CoSb3_Skutterudite: 0.0001
+------- Time in comparing stereo baseline for Cu2O_Cuprite: 0.0001
+------- Time in comparing stereo baseline for Diamond: 0.0001
+------- Time in comparing stereo baseline for ErbiumPyrogermanate: 0.0001
+------- Time in comparing stereo baseline for FePd_Tetra: 0.0001
+------- Time in comparing stereo baseline for FeS2_Pyrite: 0.0001
+------- Time in comparing stereo baseline for GalliumAntimonide: 0.0001
+------- Time in comparing stereo baseline for GalliumArsenide: 0.0001
+------- Time in comparing stereo baseline for GalliumNitride: 0.0001
+------- Time in comparing stereo baseline for Germanium: 0.0001
+------- Time in comparing stereo baseline for Gold_FCC: 0.0001
+------- Time in comparing stereo baseline for IndiumArsenide: 0.0001
+------- Time in comparing stereo baseline for LaMnO3: 0.0001
+------- Time in comparing stereo baseline for LeadZirconateTitanate: 0.0001
+------- Time in comparing stereo baseline for Li2MnO3: 0.0001
+------- Time in comparing stereo baseline for limno2: 0.0001
+------- Time in comparing stereo baseline for NaFeO2: 0.0001
+------- Time in comparing stereo baseline for Nb3Sn: 0.0001
+------- Time in comparing stereo baseline for Pentacene: 0.0001
+------- Time in comparing stereo baseline for Silicon: 0.0001
+------- Time in comparing stereo baseline for StrontiumTitanate: 0.0001
+------- Time in comparing stereo baseline for TelluriumDioxide: 0.0001
+------- Time in comparing stereo baseline for TinDioxide_RT: 0.0001
+------- Time in comparing stereo baseline for TitaniumDioxide_Anatase: 0.0001
+------- Time in comparing stereo baseline for TitaniumDioxide_Rutile: 0.0001
+------- Time in comparing stereo baseline for TungstenDiselenide: 0.0001
+------- Time in comparing stereo baseline for VanadiumDioxide_RT: 0.0001
+------- Time in comparing stereo baseline for ZincOxide: 0.0001
+------- Time in comparing stereo baseline for Zinc_HCP: 0.0001
+------- Time in comparing stereo baseline for ZirconiumNitride: 0.0001
+++++++ Baseline comparison SUCCEEDED +++++++
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010100.cif succeeded with time: 0.0136
+
+Info: closest matching space group information found in pyemaps: [(164, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010101.cif succeeded with time: 0.0052
+
+Info: closest matching space group information found in pyemaps: [(164, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010102.cif succeeded with time: 0.0057
+
+Info: closest matching space group information found in pyemaps: [(62, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010103.cif succeeded with time: 0.0085
+
+Info: closest matching space group information found in pyemaps: [(194, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010104.cif succeeded with time: 0.0087
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010105.cif succeeded with time: 0.0391
+
+Info: closest matching space group information found in pyemaps: [(120, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010106.cif succeeded with time: 0.0057
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010107.cif succeeded with time: 0.0391
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010108.cif succeeded with time: 0.0393
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010109.cif succeeded with time: 0.0383
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010110.cif succeeded with time: 0.0385
+
+Info: closest matching space group information found in pyemaps: [(198, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010111.cif succeeded with time: 0.0064
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010112.cif succeeded with time: 0.0387
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010113.cif succeeded with time: 0.0060
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010114.cif succeeded with time: 0.0058
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010116.cif succeeded with time: 0.0127
+
+Info: closest matching space group information found in pyemaps: [(216, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010117.cif succeeded with time: 0.0088
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010118.cif succeeded with time: 0.0097
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010119.cif succeeded with time: 0.0101
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010120.cif succeeded with time: 0.0097
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010121.cif succeeded with time: 0.0100
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010122.cif succeeded with time: 0.0095
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010123.cif succeeded with time: 0.0093
+
+Info: closest matching space group information found in pyemaps: [(208, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010124.cif succeeded with time: 0.0069
+
+Info: closest matching space group information found in pyemaps: [(208, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010125.cif succeeded with time: 0.0068
+
+Info: closest matching space group information found in pyemaps: [(208, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010126.cif succeeded with time: 0.0068
+
+Info: closest matching space group information found in pyemaps: [(208, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010127.cif succeeded with time: 0.0066
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010128.cif succeeded with time: 0.0381
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010129.cif succeeded with time: 0.0378
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010130.cif succeeded with time: 0.0379
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010131.cif succeeded with time: 0.0378
+
+Info: closest matching space group information found in pyemaps: [(208, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010132.cif succeeded with time: 0.0074
+
+Info: closest matching space group information found in pyemaps: [(208, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010133.cif succeeded with time: 0.0067
+
+Info: closest matching space group information found in pyemaps: [(217, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010134.cif succeeded with time: 0.0084
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010135.cif succeeded with time: 0.0079
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010136.cif succeeded with time: 0.0081
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010137.cif succeeded with time: 0.0079
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010138.cif succeeded with time: 0.0081
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010139.cif succeeded with time: 0.0080
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010140.cif succeeded with time: 0.0080
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010141.cif succeeded with time: 0.0081
+
+Info: closest matching space group information found in pyemaps: [(82, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010142.cif succeeded with time: 0.0046
+
+Info: closest matching space group information found in pyemaps: [(82, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010143.cif succeeded with time: 0.0045
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010144.cif succeeded with time: 0.0130
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010145.cif succeeded with time: 0.0131
+
+Info: closest matching space group information found in pyemaps: [(216, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010146.cif succeeded with time: 0.0085
+
+Info: closest matching space group information found in pyemaps: [(19, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010147.cif succeeded with time: 0.0048
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010148.cif succeeded with time: 0.0123
+
+Info: closest matching space group information found in pyemaps: [(205, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010149.cif succeeded with time: 0.0062
+
+Info: closest matching space group information found in pyemaps: [(205, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010150.cif succeeded with time: 0.0062
+
+Info: closest matching space group information found in pyemaps: [(143, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010151.cif succeeded with time: 0.0065
+
+Info: closest matching space group information found in pyemaps: [(216, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010152.cif succeeded with time: 0.0084
+
+Info: closest matching space group information found in pyemaps: [(86, 2)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010153.cif succeeded with time: 0.0054
+
+Info: closest matching space group information found in pyemaps: [(205, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010154.cif succeeded with time: 0.0056
+
+Info: closest matching space group information found in pyemaps: [(163, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010155.cif succeeded with time: 0.0060
+
+Info: closest matching space group information found in pyemaps: [(227, 2)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010156.cif succeeded with time: 0.0439
+
+Info: closest matching space group information found in pyemaps: [(227, 2)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010157.cif succeeded with time: 0.0223
+
+Info: closest matching space group information found in pyemaps: [(123, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010158.cif succeeded with time: 0.0060
+
+Info: closest matching space group information found in pyemaps: [(20, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010159.cif succeeded with time: 0.0052
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010160.cif succeeded with time: 0.0061
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010161.cif succeeded with time: 0.0064
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010162.cif succeeded with time: 0.0061
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010163.cif succeeded with time: 0.0060
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010164.cif succeeded with time: 0.0059
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010165.cif succeeded with time: 0.0059
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010166.cif succeeded with time: 0.0064
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010167.cif succeeded with time: 0.0092
+
+Info: closest matching space group information found in pyemaps: [(186, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010168.cif succeeded with time: 0.0055
+
+Info: closest matching space group information found in pyemaps: [(186, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010169.cif succeeded with time: 0.0052
+
+Info: closest matching space group information found in pyemaps: [(220, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010170.cif succeeded with time: 0.0072
+
+Info: closest matching space group information found in pyemaps: [(220, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010171.cif succeeded with time: 0.0074
+
+Info: closest matching space group information found in pyemaps: [(220, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010172.cif succeeded with time: 0.0075
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010173.cif succeeded with time: 0.0127
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010174.cif succeeded with time: 0.0129
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010175.cif succeeded with time: 0.0127
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010176.cif succeeded with time: 0.0126
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010177.cif succeeded with time: 0.0130
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010178.cif succeeded with time: 0.0128
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010179.cif succeeded with time: 0.0127
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010180.cif succeeded with time: 0.0127
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010181.cif succeeded with time: 0.0131
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010182.cif succeeded with time: 0.0129
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010183.cif succeeded with time: 0.0128
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010184.cif succeeded with time: 0.0128
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010185.cif succeeded with time: 0.0129
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010186.cif succeeded with time: 0.0126
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010187.cif succeeded with time: 0.0126
+
+Info: closest matching space group information found in pyemaps: [(12, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010188.cif succeeded with time: 0.0051
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010189.cif succeeded with time: 0.0129
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010190.cif succeeded with time: 0.0126
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010191.cif succeeded with time: 0.0126
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010192.cif succeeded with time: 0.0126
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010193.cif succeeded with time: 0.0125
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010194.cif succeeded with time: 0.0127
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010196.cif succeeded with time: 0.0127
+
+Info: closest matching space group information found in pyemaps: [(167, 2)]
+-------generating stereo for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010199.cif succeeded with time: 0.0055
+------------------Running and comparing baseline for CIF Crystals ----------------
+++++++ Current run SUCCEEDED +++++++
+------- Time in comparing stereo baseline for 1010100: 0.0001
+------- Time in comparing stereo baseline for 1010101: 0.0001
+------- Time in comparing stereo baseline for 1010102: 0.0001
+------- Time in comparing stereo baseline for 1010103: 0.0001
+------- Time in comparing stereo baseline for 1010104: 0.0001
+------- Time in comparing stereo baseline for 1010105: 0.0001
+------- Time in comparing stereo baseline for 1010106: 0.0001
+------- Time in comparing stereo baseline for 1010107: 0.0001
+------- Time in comparing stereo baseline for 1010108: 0.0001
+------- Time in comparing stereo baseline for 1010109: 0.0001
+------- Time in comparing stereo baseline for 1010110: 0.0001
+------- Time in comparing stereo baseline for 1010111: 0.0001
+------- Time in comparing stereo baseline for 1010112: 0.0001
+------- Time in comparing stereo baseline for 1010113: 0.0001
+------- Time in comparing stereo baseline for 1010114: 0.0001
+------- Time in comparing stereo baseline for 1010116: 0.0001
+------- Time in comparing stereo baseline for 1010117: 0.0001
+------- Time in comparing stereo baseline for 1010118: 0.0001
+------- Time in comparing stereo baseline for 1010119: 0.0001
+------- Time in comparing stereo baseline for 1010120: 0.0001
+------- Time in comparing stereo baseline for 1010121: 0.0001
+------- Time in comparing stereo baseline for 1010122: 0.0001
+------- Time in comparing stereo baseline for 1010123: 0.0001
+------- Time in comparing stereo baseline for 1010124: 0.0001
+------- Time in comparing stereo baseline for 1010125: 0.0001
+------- Time in comparing stereo baseline for 1010126: 0.0001
+------- Time in comparing stereo baseline for 1010127: 0.0001
+------- Time in comparing stereo baseline for 1010128: 0.0001
+------- Time in comparing stereo baseline for 1010129: 0.0001
+------- Time in comparing stereo baseline for 1010130: 0.0001
+------- Time in comparing stereo baseline for 1010131: 0.0001
+------- Time in comparing stereo baseline for 1010132: 0.0001
+------- Time in comparing stereo baseline for 1010133: 0.0001
+------- Time in comparing stereo baseline for 1010134: 0.0001
+------- Time in comparing stereo baseline for 1010135: 0.0001
+------- Time in comparing stereo baseline for 1010136: 0.0001
+------- Time in comparing stereo baseline for 1010137: 0.0001
+------- Time in comparing stereo baseline for 1010138: 0.0001
+------- Time in comparing stereo baseline for 1010139: 0.0001
+------- Time in comparing stereo baseline for 1010140: 0.0001
+------- Time in comparing stereo baseline for 1010141: 0.0001
+------- Time in comparing stereo baseline for 1010142: 0.0001
+------- Time in comparing stereo baseline for 1010143: 0.0001
+------- Time in comparing stereo baseline for 1010144: 0.0001
+------- Time in comparing stereo baseline for 1010145: 0.0001
+------- Time in comparing stereo baseline for 1010146: 0.0001
+------- Time in comparing stereo baseline for 1010147: 0.0001
+------- Time in comparing stereo baseline for 1010148: 0.0001
+------- Time in comparing stereo baseline for 1010149: 0.0001
+------- Time in comparing stereo baseline for 1010150: 0.0001
+------- Time in comparing stereo baseline for 1010151: 0.0001
+------- Time in comparing stereo baseline for 1010152: 0.0001
+------- Time in comparing stereo baseline for 1010153: 0.0001
+------- Time in comparing stereo baseline for 1010154: 0.0001
+------- Time in comparing stereo baseline for 1010155: 0.0001
+------- Time in comparing stereo baseline for 1010156: 0.0001
+------- Time in comparing stereo baseline for 1010157: 0.0001
+------- Time in comparing stereo baseline for 1010158: 0.0001
+------- Time in comparing stereo baseline for 1010159: 0.0001
+------- Time in comparing stereo baseline for 1010160: 0.0001
+------- Time in comparing stereo baseline for 1010161: 0.0001
+------- Time in comparing stereo baseline for 1010162: 0.0001
+------- Time in comparing stereo baseline for 1010163: 0.0001
+------- Time in comparing stereo baseline for 1010164: 0.0001
+------- Time in comparing stereo baseline for 1010165: 0.0001
+------- Time in comparing stereo baseline for 1010166: 0.0001
+------- Time in comparing stereo baseline for 1010167: 0.0001
+------- Time in comparing stereo baseline for 1010168: 0.0001
+------- Time in comparing stereo baseline for 1010169: 0.0001
+------- Time in comparing stereo baseline for 1010170: 0.0001
+------- Time in comparing stereo baseline for 1010171: 0.0001
+------- Time in comparing stereo baseline for 1010172: 0.0001
+------- Time in comparing stereo baseline for 1010173: 0.0001
+------- Time in comparing stereo baseline for 1010174: 0.0001
+------- Time in comparing stereo baseline for 1010175: 0.0001
+------- Time in comparing stereo baseline for 1010176: 0.0001
+------- Time in comparing stereo baseline for 1010177: 0.0001
+------- Time in comparing stereo baseline for 1010178: 0.0001
+------- Time in comparing stereo baseline for 1010179: 0.0001
+------- Time in comparing stereo baseline for 1010180: 0.0001
+------- Time in comparing stereo baseline for 1010181: 0.0001
+------- Time in comparing stereo baseline for 1010182: 0.0001
+------- Time in comparing stereo baseline for 1010183: 0.0001
+------- Time in comparing stereo baseline for 1010184: 0.0001
+------- Time in comparing stereo baseline for 1010185: 0.0001
+------- Time in comparing stereo baseline for 1010186: 0.0001
+------- Time in comparing stereo baseline for 1010187: 0.0001
+------- Time in comparing stereo baseline for 1010188: 0.0001
+------- Time in comparing stereo baseline for 1010189: 0.0001
+------- Time in comparing stereo baseline for 1010190: 0.0001
+------- Time in comparing stereo baseline for 1010191: 0.0001
+------- Time in comparing stereo baseline for 1010192: 0.0001
+------- Time in comparing stereo baseline for 1010193: 0.0001
+------- Time in comparing stereo baseline for 1010194: 0.0001
+------- Time in comparing stereo baseline for 1010196: 0.0001
+------- Time in comparing stereo baseline for 1010199: 0.0001
+++++++ Baseline comparison SUCCEEDED +++++++
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Aluminium.xtl succeeded with time: 0.0016
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\AluminiumOxide.xtl succeeded with time: 0.0038
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Aluminium_FCC.xtl succeeded with time: 0.0013
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\BariumTitanate_180k.xtl succeeded with time: 0.0014
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\BariumTitanate_270k.xtl succeeded with time: 0.0020
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\BariumTitanate_Tetra.xtl succeeded with time: 0.0015
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\BiMnO3.xtl succeeded with time: 0.0102
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Boron_Tetra.xtl succeeded with time: 0.0058
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\CadmiumSelenide_Hex.xtl succeeded with time: 0.0013
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\CadmiumSulfide_Cubic.xtl succeeded with time: 0.0017
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\CadmiumSulfide_Hex.xtl succeeded with time: 0.0012
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Chromium_BCC.xtl succeeded with time: 0.0011
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\CopperOxide.xtl succeeded with time: 0.0017
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Copper_FCC.xtl succeeded with time: 0.0012
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\CoSb3_Skutterudite.xtl succeeded with time: 0.0039
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Cu2O_Cuprite.xtl succeeded with time: 0.0015
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Diamond.xtl succeeded with time: 0.0015
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\ErbiumPyrogermanate.xtl succeeded with time: 0.0054
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\FePd_Tetra.xtl succeeded with time: 0.0013
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\FeS2_Pyrite.xtl succeeded with time: 0.0024
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\GalliumAntimonide.xtl succeeded with time: 0.0020
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\GalliumArsenide.xtl succeeded with time: 0.0016
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\GalliumNitride.xtl succeeded with time: 0.0011
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Germanium.xtl succeeded with time: 0.0023
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Gold_FCC.xtl succeeded with time: 0.0011
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\IndiumArsenide.xtl succeeded with time: 0.0015
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\LaMnO3.xtl succeeded with time: 0.0030
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\LeadZirconateTitanate.xtl succeeded with time: 0.0022
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Li2MnO3.xtl succeeded with time: 0.0060
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\limno2.xtl succeeded with time: 0.0022
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\NaFeO2.xtl succeeded with time: 0.0021
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Nb3Sn.xtl succeeded with time: 0.0016
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Pentacene.xtl succeeded with time: 0.0057
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Silicon.xtl succeeded with time: 0.0018
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\StrontiumTitanate.xtl succeeded with time: 0.0014
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\TelluriumDioxide.xtl succeeded with time: 0.0023
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\TinDioxide_RT.xtl succeeded with time: 0.0014
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\TitaniumDioxide_Anatase.xtl succeeded with time: 0.0022
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\TitaniumDioxide_Rutile.xtl succeeded with time: 0.0015
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\TungstenDiselenide.xtl succeeded with time: 0.0014
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\VanadiumDioxide_RT.xtl succeeded with time: 0.0056
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\ZincOxide.xtl succeeded with time: 0.0015
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\Zinc_HCP.xtl succeeded with time: 0.0010
+-------generating mxtal for C:\Users\sharon\anaconda3\envs\pyemaps_build\lib\site-packages\pyemaps\cdata\ZirconiumNitride.xtl succeeded with time: 0.0015
+------------------Running and comparing baseline for feature - mxtalfor built-in ----------------
+++++++ Current run SUCCEEDED +++++++
+------- Time in comparing mxtal baseline for Aluminium: 0.0070
+------- Time in comparing mxtal baseline for AluminiumOxide: 0.0526
+------- Time in comparing mxtal baseline for Aluminium_FCC: 0.0071
+------- Time in comparing mxtal baseline for BariumTitanate_180k: 0.0087
+------- Time in comparing mxtal baseline for BariumTitanate_270k: 0.0175
+------- Time in comparing mxtal baseline for BariumTitanate_Tetra: 0.0088
+------- Time in comparing mxtal baseline for BiMnO3: 0.1573
+------- Time in comparing mxtal baseline for Boron_Tetra: 0.0869
+------- Time in comparing mxtal baseline for CadmiumSelenide_Hex: 0.0070
+------- Time in comparing mxtal baseline for CadmiumSulfide_Cubic: 0.0138
+------- Time in comparing mxtal baseline for CadmiumSulfide_Hex: 0.0071
+------- Time in comparing mxtal baseline for Chromium_BCC: 0.0035
+------- Time in comparing mxtal baseline for CopperOxide: 0.0139
+------- Time in comparing mxtal baseline for Copper_FCC: 0.0071
+------- Time in comparing mxtal baseline for CoSb3_Skutterudite: 0.0560
+------- Time in comparing mxtal baseline for Cu2O_Cuprite: 0.0106
+------- Time in comparing mxtal baseline for Diamond: 0.0141
+------- Time in comparing mxtal baseline for ErbiumPyrogermanate: 0.0765
+------- Time in comparing mxtal baseline for FePd_Tetra: 0.0036
+------- Time in comparing mxtal baseline for FeS2_Pyrite: 0.0209
+------- Time in comparing mxtal baseline for GalliumAntimonide: 0.0139
+------- Time in comparing mxtal baseline for GalliumArsenide: 0.0138
+------- Time in comparing mxtal baseline for GalliumNitride: 0.0071
+------- Time in comparing mxtal baseline for Germanium: 0.0275
+------- Time in comparing mxtal baseline for Gold_FCC: 0.0071
+------- Time in comparing mxtal baseline for IndiumArsenide: 0.0141
+------- Time in comparing mxtal baseline for LaMnO3: 0.0350
+------- Time in comparing mxtal baseline for LeadZirconateTitanate: 0.0209
+------- Time in comparing mxtal baseline for Li2MnO3: 0.0834
+------- Time in comparing mxtal baseline for limno2: 0.0207
+------- Time in comparing mxtal baseline for NaFeO2: 0.0209
+------- Time in comparing mxtal baseline for Nb3Sn: 0.0139
+------- Time in comparing mxtal baseline for Pentacene: 0.0622
+------- Time in comparing mxtal baseline for Silicon: 0.0141
+------- Time in comparing mxtal baseline for StrontiumTitanate: 0.0089
+------- Time in comparing mxtal baseline for TelluriumDioxide: 0.0203
+------- Time in comparing mxtal baseline for TinDioxide_RT: 0.0093
+------- Time in comparing mxtal baseline for TitaniumDioxide_Anatase: 0.0198
+------- Time in comparing mxtal baseline for TitaniumDioxide_Rutile: 0.0103
+------- Time in comparing mxtal baseline for TungstenDiselenide: 0.0104
+------- Time in comparing mxtal baseline for VanadiumDioxide_RT: 0.0855
+------- Time in comparing mxtal baseline for ZincOxide: 0.0072
+------- Time in comparing mxtal baseline for Zinc_HCP: 0.0036
+------- Time in comparing mxtal baseline for ZirconiumNitride: 0.0143
+++++++ Baseline comparison SUCCEEDED +++++++
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010100.cif succeeded with time: 0.1156
+
+Info: closest matching space group information found in pyemaps: [(164, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010101.cif succeeded with time: 0.0061
+
+Info: closest matching space group information found in pyemaps: [(164, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010102.cif succeeded with time: 0.0061
+
+Info: closest matching space group information found in pyemaps: [(62, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010103.cif succeeded with time: 0.0181
+
+Info: closest matching space group information found in pyemaps: [(194, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010104.cif succeeded with time: 0.0151
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010105.cif succeeded with time: 0.0469
+
+Info: closest matching space group information found in pyemaps: [(120, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010106.cif succeeded with time: 0.0095
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010107.cif succeeded with time: 0.0445
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010108.cif succeeded with time: 0.0455
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010109.cif succeeded with time: 0.0446
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010110.cif succeeded with time: 0.0447
+
+Info: closest matching space group information found in pyemaps: [(198, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010111.cif succeeded with time: 0.0094
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010112.cif succeeded with time: 0.0488
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010113.cif succeeded with time: 0.0063
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010114.cif succeeded with time: 0.0061
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010116.cif succeeded with time: 0.0132
+
+Info: closest matching space group information found in pyemaps: [(216, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010117.cif succeeded with time: 0.0097
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010118.cif succeeded with time: 0.0095
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010119.cif succeeded with time: 0.0095
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010120.cif succeeded with time: 0.0099
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010121.cif succeeded with time: 0.0097
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010122.cif succeeded with time: 0.0097
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010123.cif succeeded with time: 0.0096
+
+Info: closest matching space group information found in pyemaps: [(208, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010124.cif succeeded with time: 0.0075
+
+Info: closest matching space group information found in pyemaps: [(208, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010125.cif succeeded with time: 0.0077
+
+Info: closest matching space group information found in pyemaps: [(208, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010126.cif succeeded with time: 0.0078
+
+Info: closest matching space group information found in pyemaps: [(208, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010127.cif succeeded with time: 0.0073
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010128.cif succeeded with time: 0.0436
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010129.cif succeeded with time: 0.0443
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010130.cif succeeded with time: 0.0441
+
+Info: closest matching space group information found in pyemaps: [(227, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010131.cif succeeded with time: 0.0445
+
+Info: closest matching space group information found in pyemaps: [(208, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010132.cif succeeded with time: 0.0082
+
+Info: closest matching space group information found in pyemaps: [(208, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010133.cif succeeded with time: 0.0081
+
+Info: closest matching space group information found in pyemaps: [(217, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010134.cif succeeded with time: 0.0091
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010135.cif succeeded with time: 0.0121
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010136.cif succeeded with time: 0.0118
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010137.cif succeeded with time: 0.0124
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010138.cif succeeded with time: 0.0119
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010139.cif succeeded with time: 0.0118
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010140.cif succeeded with time: 0.0117
+
+Info: closest matching space group information found in pyemaps: [(202, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010141.cif succeeded with time: 0.0613
+
+Info: closest matching space group information found in pyemaps: [(82, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010142.cif succeeded with time: 0.0060
+
+Info: closest matching space group information found in pyemaps: [(82, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010143.cif succeeded with time: 0.0053
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010144.cif succeeded with time: 0.0155
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010145.cif succeeded with time: 0.0172
+
+Info: closest matching space group information found in pyemaps: [(216, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010146.cif succeeded with time: 0.0091
+
+Info: closest matching space group information found in pyemaps: [(19, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010147.cif succeeded with time: 0.0062
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010148.cif succeeded with time: 0.0126
+
+Info: closest matching space group information found in pyemaps: [(205, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010149.cif succeeded with time: 0.0071
+
+Info: closest matching space group information found in pyemaps: [(205, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010150.cif succeeded with time: 0.0071
+
+Info: closest matching space group information found in pyemaps: [(143, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010151.cif succeeded with time: 0.0085
+
+Info: closest matching space group information found in pyemaps: [(216, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010152.cif succeeded with time: 0.0091
+
+Info: closest matching space group information found in pyemaps: [(86, 2)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010153.cif succeeded with time: 0.0084
+
+Info: closest matching space group information found in pyemaps: [(205, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010154.cif succeeded with time: 0.0091
+
+Info: closest matching space group information found in pyemaps: [(163, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010155.cif succeeded with time: 0.0072
+
+Info: closest matching space group information found in pyemaps: [(227, 2)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010156.cif succeeded with time: 0.0337
+
+Info: closest matching space group information found in pyemaps: [(227, 2)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010157.cif succeeded with time: 0.0338
+
+Info: closest matching space group information found in pyemaps: [(123, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010158.cif succeeded with time: 0.0060
+
+Info: closest matching space group information found in pyemaps: [(20, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010159.cif succeeded with time: 0.0085
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010160.cif succeeded with time: 0.0067
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010161.cif succeeded with time: 0.0069
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010162.cif succeeded with time: 0.0068
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010163.cif succeeded with time: 0.0067
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010164.cif succeeded with time: 0.0066
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010165.cif succeeded with time: 0.0070
+
+Info: closest matching space group information found in pyemaps: [(139, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010166.cif succeeded with time: 0.0066
+
+Info: closest matching space group information found in pyemaps: [(221, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010167.cif succeeded with time: 0.0093
+
+Info: closest matching space group information found in pyemaps: [(186, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010168.cif succeeded with time: 0.0052
+
+Info: closest matching space group information found in pyemaps: [(186, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010169.cif succeeded with time: 0.0052
+
+Info: closest matching space group information found in pyemaps: [(220, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010170.cif succeeded with time: 0.0101
+
+Info: closest matching space group information found in pyemaps: [(220, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010171.cif succeeded with time: 0.0119
+
+Info: closest matching space group information found in pyemaps: [(220, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010172.cif succeeded with time: 0.0121
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010173.cif succeeded with time: 0.0167
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010174.cif succeeded with time: 0.0167
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010175.cif succeeded with time: 0.0164
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010176.cif succeeded with time: 0.0165
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010177.cif succeeded with time: 0.0166
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010178.cif succeeded with time: 0.0168
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010179.cif succeeded with time: 0.0169
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010180.cif succeeded with time: 0.0166
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010181.cif succeeded with time: 0.0171
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010182.cif succeeded with time: 0.0165
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010183.cif succeeded with time: 0.0165
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010184.cif succeeded with time: 0.0163
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010185.cif succeeded with time: 0.0167
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010186.cif succeeded with time: 0.0164
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010187.cif succeeded with time: 0.0166
+
+Info: closest matching space group information found in pyemaps: [(12, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010188.cif succeeded with time: 0.0063
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010189.cif succeeded with time: 0.0167
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010190.cif succeeded with time: 0.0168
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010191.cif succeeded with time: 0.0165
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010192.cif succeeded with time: 0.0165
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010193.cif succeeded with time: 0.0149
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010194.cif succeeded with time: 0.0149
+
+Info: closest matching space group information found in pyemaps: [(225, 1)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010196.cif succeeded with time: 0.0145
+
+Info: closest matching space group information found in pyemaps: [(167, 2)]
+-------generating mxtal for C:\Users\sharon\dev_space\pyemaps_root\pyemaps\test\cifdata\1010199.cif succeeded with time: 0.0065
+------------------Running and comparing baseline for CIF Crystals ----------------
+++++++ Current run SUCCEEDED +++++++
+------- Time in comparing mxtal baseline for 1010100: 0.9522
+------- Time in comparing mxtal baseline for 1010101: 0.0158
+------- Time in comparing mxtal baseline for 1010102: 0.0156
+------- Time in comparing mxtal baseline for 1010103: 0.1574
+------- Time in comparing mxtal baseline for 1010104: 0.1091
+------- Time in comparing mxtal baseline for 1010105: 0.1358
+------- Time in comparing mxtal baseline for 1010106: 0.0683
+------- Time in comparing mxtal baseline for 1010107: 0.0958
+------- Time in comparing mxtal baseline for 1010108: 0.0948
+------- Time in comparing mxtal baseline for 1010109: 0.0946
+------- Time in comparing mxtal baseline for 1010110: 0.0953
+------- Time in comparing mxtal baseline for 1010111: 0.0542
+------- Time in comparing mxtal baseline for 1010112: 0.1630
+------- Time in comparing mxtal baseline for 1010113: 0.0103
+------- Time in comparing mxtal baseline for 1010114: 0.0101
+------- Time in comparing mxtal baseline for 1010116: 0.0134
+------- Time in comparing mxtal baseline for 1010117: 0.0135
+------- Time in comparing mxtal baseline for 1010118: 0.0085
+------- Time in comparing mxtal baseline for 1010119: 0.0085
+------- Time in comparing mxtal baseline for 1010120: 0.0084
+------- Time in comparing mxtal baseline for 1010121: 0.0085
+------- Time in comparing mxtal baseline for 1010122: 0.0084
+------- Time in comparing mxtal baseline for 1010123: 0.0084
+------- Time in comparing mxtal baseline for 1010124: 0.0169
+------- Time in comparing mxtal baseline for 1010125: 0.0171
+------- Time in comparing mxtal baseline for 1010126: 0.0167
+------- Time in comparing mxtal baseline for 1010127: 0.0169
+------- Time in comparing mxtal baseline for 1010128: 0.0950
+------- Time in comparing mxtal baseline for 1010129: 0.0947
+------- Time in comparing mxtal baseline for 1010130: 0.0965
+------- Time in comparing mxtal baseline for 1010131: 0.0897
+------- Time in comparing mxtal baseline for 1010132: 0.0269
+------- Time in comparing mxtal baseline for 1010133: 0.0270
+------- Time in comparing mxtal baseline for 1010134: 0.0171
+------- Time in comparing mxtal baseline for 1010135: 0.0681
+------- Time in comparing mxtal baseline for 1010136: 0.0616
+------- Time in comparing mxtal baseline for 1010137: 0.0688
+------- Time in comparing mxtal baseline for 1010138: 0.0614
+------- Time in comparing mxtal baseline for 1010139: 0.0625
+------- Time in comparing mxtal baseline for 1010140: 0.0616
+------- Time in comparing mxtal baseline for 1010141: 0.0614
+------- Time in comparing mxtal baseline for 1010142: 0.0205
+------- Time in comparing mxtal baseline for 1010143: 0.0206
+------- Time in comparing mxtal baseline for 1010144: 0.0677
+------- Time in comparing mxtal baseline for 1010145: 0.0675
+------- Time in comparing mxtal baseline for 1010146: 0.0138
+------- Time in comparing mxtal baseline for 1010147: 0.0275
+------- Time in comparing mxtal baseline for 1010148: 0.0069
+------- Time in comparing mxtal baseline for 1010149: 0.0205
+------- Time in comparing mxtal baseline for 1010150: 0.0207
+------- Time in comparing mxtal baseline for 1010151: 0.0406
+------- Time in comparing mxtal baseline for 1010152: 0.0137
+------- Time in comparing mxtal baseline for 1010153: 0.0549
+------- Time in comparing mxtal baseline for 1010154: 0.0557
+------- Time in comparing mxtal baseline for 1010155: 0.0261
+------- Time in comparing mxtal baseline for 1010156: 0.1297
+------- Time in comparing mxtal baseline for 1010157: 0.1490
+------- Time in comparing mxtal baseline for 1010158: 0.0104
+------- Time in comparing mxtal baseline for 1010159: 0.0539
+------- Time in comparing mxtal baseline for 1010160: 0.0171
+------- Time in comparing mxtal baseline for 1010161: 0.0171
+------- Time in comparing mxtal baseline for 1010162: 0.0171
+------- Time in comparing mxtal baseline for 1010163: 0.0170
+------- Time in comparing mxtal baseline for 1010164: 0.0170
+------- Time in comparing mxtal baseline for 1010165: 0.0169
+------- Time in comparing mxtal baseline for 1010166: 0.0169
+------- Time in comparing mxtal baseline for 1010167: 0.0069
+------- Time in comparing mxtal baseline for 1010168: 0.0068
+------- Time in comparing mxtal baseline for 1010169: 0.0067
+------- Time in comparing mxtal baseline for 1010170: 0.0472
+------- Time in comparing mxtal baseline for 1010171: 0.0742
+------- Time in comparing mxtal baseline for 1010172: 0.0743
+------- Time in comparing mxtal baseline for 1010173: 0.0608
+------- Time in comparing mxtal baseline for 1010174: 0.0610
+------- Time in comparing mxtal baseline for 1010175: 0.0607
+------- Time in comparing mxtal baseline for 1010176: 0.0614
+------- Time in comparing mxtal baseline for 1010177: 0.0617
+------- Time in comparing mxtal baseline for 1010178: 0.0606
+------- Time in comparing mxtal baseline for 1010179: 0.0615
+------- Time in comparing mxtal baseline for 1010180: 0.0609
+------- Time in comparing mxtal baseline for 1010181: 0.0610
+------- Time in comparing mxtal baseline for 1010182: 0.0604
+------- Time in comparing mxtal baseline for 1010183: 0.0612
+------- Time in comparing mxtal baseline for 1010184: 0.0613
+------- Time in comparing mxtal baseline for 1010185: 0.0617
+------- Time in comparing mxtal baseline for 1010186: 0.0610
+------- Time in comparing mxtal baseline for 1010187: 0.0606
+------- Time in comparing mxtal baseline for 1010188: 0.0242
+------- Time in comparing mxtal baseline for 1010189: 0.0609
+------- Time in comparing mxtal baseline for 1010190: 0.0609
+------- Time in comparing mxtal baseline for 1010191: 0.0609
+------- Time in comparing mxtal baseline for 1010192: 0.0605
+------- Time in comparing mxtal baseline for 1010193: 0.0613
+------- Time in comparing mxtal baseline for 1010194: 0.0615
+------- Time in comparing mxtal baseline for 1010196: 0.0608
+------- Time in comparing mxtal baseline for 1010199: 0.0338
+++++++ Baseline comparison SUCCEEDED +++++++
+Done with features sanity tests 
+------------------generating new results and comparing them with baseline for feature: diff----------------
+++++++ Baseline comparison SUCCEEDED for diff unit test +++++++
+------------------generating new results and comparing them with baseline for feature: bloch----------------
+++++++ Baseline comparison SUCCEEDED for bloch unit test +++++++
+------------------generating new results and comparing them with baseline for feature: lacbed----------------
+++++++ Baseline comparison SUCCEEDED for lacbed unit test +++++++
++++++ Unit tests SUCCEEDED +++++
+
+Done with unit tests 
+
+---------successfully run builtin crystal for dif performance----------
+
+dif = Aluminium: stays the same for Aluminium
+dif + AluminiumOxide: by 0.002630699999999986 or 31%
+dif + Aluminium_FCC: by 0.0019365000000001187 or 46%
+dif = BariumTitanate_180k: stays the same for BariumTitanate_180k
+dif = BariumTitanate_270k: stays the same for BariumTitanate_270k
+dif = BariumTitanate_Tetra: stays the same for BariumTitanate_Tetra
+dif - BiMnO3: by 0.013851799999999859 or 21%
+dif = Boron_Tetra: stays the same for Boron_Tetra
+dif + CadmiumSelenide_Hex: by 0.0017443999999999793 or 15%
+dif = CadmiumSulfide_Cubic: stays the same for CadmiumSulfide_Cubic
+dif = CadmiumSulfide_Hex: stays the same for CadmiumSulfide_Hex
+dif = Chromium_BCC: stays the same for Chromium_BCC
+dif = CopperOxide: stays the same for CopperOxide
+dif = Copper_FCC: stays the same for Copper_FCC
+dif - CoSb3_Skutterudite: by 0.004147300000000076 or 21%
+dif = Cu2O_Cuprite: stays the same for Cu2O_Cuprite
+dif + Diamond: by 0.0012092999999997467 or 41%
+dif - ErbiumPyrogermanate: by 0.008091999999999988 or 31%
+dif = FePd_Tetra: stays the same for FePd_Tetra
+dif = FeS2_Pyrite: stays the same for FeS2_Pyrite
+dif = GalliumAntimonide: stays the same for GalliumAntimonide
+dif + GalliumArsenide: by 0.001222999999999974 or 27%
+dif = GalliumNitride: stays the same for GalliumNitride
+dif = Germanium: stays the same for Germanium
+dif = Gold_FCC: stays the same for Gold_FCC
+dif = IndiumArsenide: stays the same for IndiumArsenide
+dif = LaMnO3: stays the same for LaMnO3
+dif + LeadZirconateTitanate: by 0.0012566000000000521 or 14%
+dif - Li2MnO3: by 0.003125700000000009 or 33%
+dif = limno2: stays the same for limno2
+dif + NaFeO2: by 0.0011197000000000568 or 25%
+dif = Nb3Sn: stays the same for Nb3Sn
+dif - Pentacene: by 0.014568900000000218 or 49%
+dif = Silicon: stays the same for Silicon
+dif + StrontiumTitanate: by 0.0018564999999999277 or 25%
+dif = TelluriumDioxide: stays the same for TelluriumDioxide
+dif = TinDioxide_RT: stays the same for TinDioxide_RT
+dif + TitaniumDioxide_Anatase: by 0.0044816000000000855 or 51%
+dif = TitaniumDioxide_Rutile: stays the same for TitaniumDioxide_Rutile
+dif = TungstenDiselenide: stays the same for TungstenDiselenide
+dif - VanadiumDioxide_RT: by 0.004180199999999967 or 18%
+dif = ZincOxide: stays the same for ZincOxide
+dif + Zinc_HCP: by 0.0010155999999998944 or 21%
+dif = ZirconiumNitride: stays the same for ZirconiumNitride
+
+---------successfully run builtin crystal for bloch performance----------
+
+bloch + Aluminium: by 0.02256310000000017 or 63%
+bloch + AluminiumOxide: by 0.03097339999999993 or 52%
+bloch + Aluminium_FCC: by 0.010802999999999896 or 43%
+bloch + BariumTitanate_180k: by 0.16088869999999988 or 44%
+bloch + BariumTitanate_270k: by 0.04289540000000036 or 33%
+bloch + BariumTitanate_Tetra: by 0.1013917000000002 or 35%
+bloch + BiMnO3: by 9.954078299999999 or 59%
+bloch + Boron_Tetra: by 10.6944418 or 67%
+bloch + CadmiumSelenide_Hex: by 0.27266319999999666 or 49%
+bloch + CadmiumSulfide_Cubic: by 0.06351380000000084 or 54%
+bloch + CadmiumSulfide_Hex: by 0.12202620000000053 or 42%
+bloch + Chromium_BCC: by 0.057132300000001024 or 77%
+bloch + CopperOxide: by 0.03512350000000097 or 43%
+bloch + Copper_FCC: by 0.013223399999994001 or 57%
+bloch + CoSb3_Skutterudite: by 2.230621499999998 or 54%
+bloch + Cu2O_Cuprite: by 0.3081510999999999 or 43%
+bloch + Diamond: by 0.01486410000000049 or 61%
+bloch + ErbiumPyrogermanate: by 3.0541106999999954 or 54%
+bloch + FePd_Tetra: by 0.02742539999999849 or 40%
+bloch + FeS2_Pyrite: by 0.9523304999999986 or 46%
+bloch + GalliumAntimonide: by 0.07803180000000154 or 50%
+bloch + GalliumArsenide: by 0.054792000000002616 or 58%
+bloch + GalliumNitride: by 0.09904950000000667 or 57%
+bloch + Germanium: by 0.0531212000000032 or 51%
+bloch + Gold_FCC: by 0.017807100000002407 or 53%
+bloch + IndiumArsenide: by 0.06221810000000261 or 47%
+bloch + LaMnO3: by 2.8547731000000027 or 57%
+bloch + LeadZirconateTitanate: by 0.2523053000000033 or 54%
+bloch + Li2MnO3: by 0.5459496999999978 or 63%
+bloch + limno2: by 0.023175800000000635 or 74%
+bloch + NaFeO2: by 0.020652099999995954 or 74%
+bloch + Nb3Sn: by 0.8867159999999963 or 49%
+bloch + Pentacene: by 5.367055400000012 or 70%
+bloch + Silicon: by 0.04229399999999828 or 51%
+bloch + StrontiumTitanate: by 0.14779039999999455 or 43%
+bloch + TelluriumDioxide: by 0.5191504999999879 or 53%
+bloch + TinDioxide_RT: by 0.4905238999999959 or 52%
+bloch + TitaniumDioxide_Anatase: by 0.04895879999999053 or 57%
+bloch + TitaniumDioxide_Rutile: by 0.4660002999999939 or 49%
+bloch + TungstenDiselenide: by 0.09224170000000242 or 53%
+bloch + VanadiumDioxide_RT: by 10.284938599999997 or 70%
+bloch + ZincOxide: by 0.06411090000000286 or 39%
+bloch + Zinc_HCP: by 0.06468710000000755 or 67%
+bloch + ZirconiumNitride: by 0.06513650000000126 or 63%
+
+---------successfully run builtin crystal for stereo performance----------
+
+stereo = Aluminium: stays the same for Aluminium
+stereo = AluminiumOxide: stays the same for AluminiumOxide
+stereo = Aluminium_FCC: stays the same for Aluminium_FCC
+stereo = BariumTitanate_180k: stays the same for BariumTitanate_180k
+stereo = BariumTitanate_270k: stays the same for BariumTitanate_270k
+stereo = BariumTitanate_Tetra: stays the same for BariumTitanate_Tetra
+stereo = BiMnO3: stays the same for BiMnO3
+stereo = Boron_Tetra: stays the same for Boron_Tetra
+stereo = CadmiumSelenide_Hex: stays the same for CadmiumSelenide_Hex
+stereo = CadmiumSulfide_Cubic: stays the same for CadmiumSulfide_Cubic
+stereo = CadmiumSulfide_Hex: stays the same for CadmiumSulfide_Hex
+stereo = Chromium_BCC: stays the same for Chromium_BCC
+stereo = CopperOxide: stays the same for CopperOxide
+stereo = Copper_FCC: stays the same for Copper_FCC
+stereo = CoSb3_Skutterudite: stays the same for CoSb3_Skutterudite
+stereo = Cu2O_Cuprite: stays the same for Cu2O_Cuprite
+stereo = Diamond: stays the same for Diamond
+stereo = ErbiumPyrogermanate: stays the same for ErbiumPyrogermanate
+stereo = FePd_Tetra: stays the same for FePd_Tetra
+stereo = FeS2_Pyrite: stays the same for FeS2_Pyrite
+stereo = GalliumAntimonide: stays the same for GalliumAntimonide
+stereo = GalliumArsenide: stays the same for GalliumArsenide
+stereo = GalliumNitride: stays the same for GalliumNitride
+stereo = Germanium: stays the same for Germanium
+stereo = Gold_FCC: stays the same for Gold_FCC
+stereo = IndiumArsenide: stays the same for IndiumArsenide
+stereo = LaMnO3: stays the same for LaMnO3
+stereo = LeadZirconateTitanate: stays the same for LeadZirconateTitanate
+stereo = Li2MnO3: stays the same for Li2MnO3
+stereo = limno2: stays the same for limno2
+stereo = NaFeO2: stays the same for NaFeO2
+stereo = Nb3Sn: stays the same for Nb3Sn
+stereo = Pentacene: stays the same for Pentacene
+stereo = Silicon: stays the same for Silicon
+stereo = StrontiumTitanate: stays the same for StrontiumTitanate
+stereo = TelluriumDioxide: stays the same for TelluriumDioxide
+stereo = TinDioxide_RT: stays the same for TinDioxide_RT
+stereo = TitaniumDioxide_Anatase: stays the same for TitaniumDioxide_Anatase
+stereo = TitaniumDioxide_Rutile: stays the same for TitaniumDioxide_Rutile
+stereo = TungstenDiselenide: stays the same for TungstenDiselenide
+stereo = VanadiumDioxide_RT: stays the same for VanadiumDioxide_RT
+stereo = ZincOxide: stays the same for ZincOxide
+stereo = Zinc_HCP: stays the same for Zinc_HCP
+stereo = ZirconiumNitride: stays the same for ZirconiumNitride
+Done with performance tests 
+Script ended at 17:18:09.10
+Script duration: 6 hours 44 minutes 21 seconds
+Invalid number.  Numeric constants are either decimal (17),
+hexadecimal (0x11), or octal (021).
+
+
