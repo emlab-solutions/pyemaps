@@ -110,7 +110,7 @@ def compare_feature_baseline(feature=feat_list[0]):
             tic = time.perf_counter()
             if not r in bdata:
                 basline_Compare_failure_count +=1
-                basline_Compare_failure_cases.append(r[0] + '.xtl' if t == TY_BUILTIN else '.cif') 
+                basline_Compare_failure_cases.append(r[0] + ('.xtl' if t == TY_BUILTIN else '.cif')) 
             toc = time.perf_counter()
             print(f"------- Time in comparing {feature} baseline for {r[0]}: {toc - tic:0.4f}")
         

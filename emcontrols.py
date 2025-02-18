@@ -99,7 +99,8 @@ Microscope control constants and default values
 """
 
 from . import  EMCError
-
+import math
+EMC_TOLERANCE = 1.0e-07
 
 sdefault = ' [**default**]'
 from pyemaps import (
@@ -302,14 +303,14 @@ class SIMControl:
        if not isinstance(gv, (int, float)):
             raise EMCError('gctl values must be a numeral')
        
-       self._gctl = gv
+       self._gctl = int(gv)
 
     @zctl.setter
     def zctl(self, zv):
        if not isinstance(zv, (int, float)):
             raise EMCError('zctl values must be a numeral')
         
-       self._zctl = zv
+       self._zctl = int(zv)
 
     @omega.setter
     def omega(self, ov):
@@ -343,7 +344,36 @@ class SIMControl:
 
     def __eq__(self, other):
 
-        return self.__dict__== other.__dict__
+        if not isinstance(other, SIMControl):
+            print('Comparing object does not match')
+            return False
+
+        if self._intensity != other.intensity or \
+            self._zctl != other.zctl or \
+            self._gctl != other.gctl or \
+            self._sth != other.sth or \
+            self._sampling != other.sampling:
+            print(f'intensity, zctl, gctl sampling and slice numer does not match:')
+            return False
+
+        for a, b in zip(self._excitation, other.excitation):
+            if not math.isclose(a, b, abs_tol=EMC_TOLERANCE):
+                print(f'excitation does not match: {self._excitation} != {other.excitation}')
+                return False
+
+        if not math.isclose(self._gmax, other.gmax, abs_tol=EMC_TOLERANCE):
+            print(f'gmax does not match: {self._gmax} != {other.gmax}')
+            return False
+
+        if not math.isclose(self._bmin, other.bmin, abs_tol=EMC_TOLERANCE):
+            print(f'bmin does not match: {self._bmin} != {other.bmin}')
+            return False
+        
+        if not math.isclose(self._omega, other.omega, abs_tol=EMC_TOLERANCE):
+            print(f'omega does not match: {self._omega} != {other.omega}')
+            return False
+        
+        return True
     
     def _str_prop(self, k) -> str:
         '''internal - out formatted string for k attributes'''
@@ -681,14 +711,14 @@ class EMControl:
 
     @cl.setter
     def cl(self, clen):
-        if not isinstance(clen, int) and not isinstance(clen, float):
+        if not isinstance(clen, (int, float)):
            raise ValueError("Camera length must be of number")
         
         self._cl = clen
     
     @vt.setter
     def vt(self, kv):
-        if not isinstance(kv, int) and not isinstance(kv, float):
+        if not isinstance(kv, (int,float)):
            raise EMCError("Voltage must be of integer")
         
         self._vt = kv
@@ -800,8 +830,45 @@ class EMControl:
     def __eq__(self, other):
         if not isinstance(other, EMControl):
            raise EMCError("Comparison must be done with another EMControl object")
- 
-        return self.__dict__ == other.__dict__
+           
+        if self.mode != other.mode or \
+           self._pix_size != other.pix_size or \
+           self._det_size != other.det_size or \
+           self._zone != other.zone or \
+           self._xaxis !=other.xaxis:
+            print(f'integer controls: mode pix_size det_size zone or xaxis do not match:')
+            return False
+        
+        if not math.isclose(self._aperture, other.aperture, abs_tol=EMC_TOLERANCE):
+            print(f'aperture controls: does not match: {self._aperture} != {other.aperture}')
+            return False
+        
+        if not math.isclose(self._dsize, other.dsize, abs_tol=EMC_TOLERANCE):
+            print(f'dsize controls: does not match: {self._dsize} != {other.dsize}')
+            return False
+        
+        if not math.isclose(self._vt, other.vt, abs_tol=EMC_TOLERANCE):
+            print(f'vt controls: does not match: {self._vt} != {other.vt}')
+            return False
+        
+        if not math.isclose(self._cl, other.cl, abs_tol=EMC_TOLERANCE):
+            print(f'cl controls: does not match: {self._cl} != {other.cl}')
+            return False
+        
+        for d1, d2 in zip(self._defl, other.defl):
+            if not math.isclose(d1, d2, abs_tol=EMC_TOLERANCE):
+                print(f'defl controls: does not match: {self._defl} != {other.defl}')
+                return False
+            
+        for t1, t2 in zip(self._tilt, other.tilt):
+            if not math.isclose(t1, t2, abs_tol=EMC_TOLERANCE):
+                print(f'tilt controls: does not match: {self._tilt} != {other.tilt}')
+                return False
+            
+        if not self._simc == other.simc:
+            return False
+        
+        return True
 
     def _str_prop(self, k) -> str:
         '''internal'''
