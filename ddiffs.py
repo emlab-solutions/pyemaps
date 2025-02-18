@@ -120,7 +120,7 @@ class BlochImgs:
         Overloading == operator for the class
 
         '''
-        if self._blochList.ndim != other.blochList.ndim:
+        if len(self._blochList) != len(other.blochList):
             print(f'Dimension of bloch image differs: {self._blochList.ndim} and {other.blochList.ndim}')
             return False
         
