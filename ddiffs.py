@@ -110,7 +110,8 @@ class BlochImgs:
         
         import numpy as np
         for (e,c) in self._blochList:
-            if e == emc and np.allclose(c, b, atol=1e-6): return True
+            if e == emc and np.allclose(c, b, atol=1e-6): 
+                return True
         return False
     
     def __eq__(self, other):
@@ -119,12 +120,20 @@ class BlochImgs:
         Overloading == operator for the class
 
         '''
-        if self._name != other._name:
+        if self._blochList.ndim != other.blochList.ndim:
+            print(f'Dimension of bloch image differs: {self._blochList.ndim} and {other.blochList.ndim}')
             return False
+        
+        if self._name != other._name:
+            print(f'Dimension of bloch image differs: {self._name} and {other._name}')
+            return False
+        
         for (e,b) in self._blochList:
             if not other.__contains__(e,b):
+                print(f'Current bloch image differs from comparing at: {e} for {self._name}')
                 return False
         for (e,b) in other._blochList:
             if not self.__contains__(e,b):
+                print(f'Comparing bloch image differs from current image at: {e} for {self._name}')
                 return False
         return True
