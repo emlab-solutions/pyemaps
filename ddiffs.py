@@ -28,6 +28,9 @@
 
 from . import EMC
 from . import BlochListError
+
+BLOCH_TALERANCE = 1.0e-05
+
 class BlochImgs:
 
     '''
@@ -110,7 +113,7 @@ class BlochImgs:
         
         import numpy as np
         for (e,c) in self._blochList:
-            if e == emc and np.allclose(c, b, atol=1e-6): 
+            if e == emc and np.allclose(c, b, atol=BLOCH_TALERANCE): 
                 return True
         return False
     
