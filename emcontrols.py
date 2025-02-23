@@ -353,24 +353,24 @@ class SIMControl:
             self._gctl != other.gctl or \
             self._sth != other.sth or \
             self._sampling != other.sampling:
-            print(f'intensity, zctl, gctl sampling and slice numer does not match:')
+            # print(f'intensity, zctl, gctl sampling and slice numer does not match:')
             return False
 
         for a, b in zip(self._excitation, other.excitation):
             if not math.isclose(a, b, abs_tol=EMC_TOLERANCE):
-                print(f'excitation does not match: {self._excitation} != {other.excitation}')
+                # print(f'excitation does not match: {self._excitation} != {other.excitation}')
                 return False
 
         if not math.isclose(self._gmax, other.gmax, abs_tol=EMC_TOLERANCE):
-            print(f'gmax does not match: {self._gmax} != {other.gmax}')
+            # print(f'gmax does not match: {self._gmax} != {other.gmax}')
             return False
 
         if not math.isclose(self._bmin, other.bmin, abs_tol=EMC_TOLERANCE):
-            print(f'bmin does not match: {self._bmin} != {other.bmin}')
+            # print(f'bmin does not match: {self._bmin} != {other.bmin}')
             return False
         
         if not math.isclose(self._omega, other.omega, abs_tol=EMC_TOLERANCE):
-            print(f'omega does not match: {self._omega} != {other.omega}')
+            # print(f'omega does not match: {self._omega} != {other.omega}')
             return False
         
         return True
@@ -836,33 +836,33 @@ class EMControl:
            self._det_size != other.det_size or \
            self._zone != other.zone or \
            self._xaxis !=other.xaxis:
-            print(f'integer controls: mode pix_size det_size zone or xaxis do not match:')
+            # print(f'integer controls: mode pix_size det_size zone or xaxis do not match:')
             return False
         
         if not math.isclose(self._aperture, other.aperture, abs_tol=EMC_TOLERANCE):
-            print(f'aperture controls: does not match: {self._aperture} != {other.aperture}')
+            # print(f'aperture controls: does not match: {self._aperture} != {other.aperture}')
             return False
         
         if not math.isclose(self._dsize, other.dsize, abs_tol=EMC_TOLERANCE):
-            print(f'dsize controls: does not match: {self._dsize} != {other.dsize}')
+            # print(f'dsize controls: does not match: {self._dsize} != {other.dsize}')
             return False
         
         if not math.isclose(self._vt, other.vt, abs_tol=EMC_TOLERANCE):
-            print(f'vt controls: does not match: {self._vt} != {other.vt}')
+            # print(f'vt controls: does not match: {self._vt} != {other.vt}')
             return False
         
         if not math.isclose(self._cl, other.cl, abs_tol=EMC_TOLERANCE):
-            print(f'cl controls: does not match: {self._cl} != {other.cl}')
+            # print(f'cl controls: does not match: {self._cl} != {other.cl}')
             return False
         
         for d1, d2 in zip(self._defl, other.defl):
             if not math.isclose(d1, d2, abs_tol=EMC_TOLERANCE):
-                print(f'defl controls: does not match: {self._defl} != {other.defl}')
+                # print(f'defl controls: does not match: {self._defl} != {other.defl}')
                 return False
             
         for t1, t2 in zip(self._tilt, other.tilt):
             if not math.isclose(t1, t2, abs_tol=EMC_TOLERANCE):
-                print(f'tilt controls: does not match: {self._tilt} != {other.tilt}')
+                # print(f'tilt controls: does not match: {self._tilt} != {other.tilt}')
                 return False
             
         if not self._simc == other.simc:

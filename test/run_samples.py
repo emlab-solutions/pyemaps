@@ -23,7 +23,7 @@ def compare_samples_baseline(feature):
        for k in em_keys:
               dpl = generate_difs(ckey=k, mode=2)
               if not (k, dpl) in bdata:
-                     print(f'Baseline match FAILED  for kinematic diffraction sample test for control: {k}.')
+                     print(f'--------Baseline match FAILED  for kinematic diffraction sample test for control: {k}.')
                      return
        print(f'++++++Baseline match SUCCEEDED for kinematic diffraction sample test.')
 
@@ -34,7 +34,7 @@ def compare_samples_baseline(feature):
        for k in em_keys:
             imgs = generate_bloch_images(ckey=k)
             if not (k, imgs) in bdata:
-                     print(f'Baseline match FAILED  for dynamic diffraction sample test for control: {k}.')
+                     print(f'--------Baseline match FAILED  for dynamic diffraction sample test for control: {k}.')
                      return
        print(f'++++++Baseline match SUCCEEDED for dynamic diffraction sample test.')
 
@@ -42,7 +42,7 @@ def compare_samples_baseline(feature):
         from pyemaps.samples.si_lacbed import generate_lacbed_images
         imgs = generate_lacbed_images()
         if not imgs == bdata:
-              print(f'Baseline match FAILED  for LACBED sample test.')
+              print(f'--------Baseline match FAILED  for LACBED sample test.')
               return
         print(f'++++++Baseline match SUCCEEDED for LACBED sample test.')
 
@@ -50,33 +50,33 @@ def compare_samples_baseline(feature):
         from pyemaps.samples.si_stereo import generate_stereo
         stereo = generate_stereo(ckey='tilt')
         if stereo != bdata:
-             print(f'Baseline match FAILED for Stereogram sample test.')
+             print(f'--------Baseline match FAILED for Stereogram sample test.')
              return
-        print(f'Baseline match SUCCEEDED for Stereogram sample test.')
+        print(f'++++++Baseline match SUCCEEDED for Stereogram sample test.')
 
     if feature == 'csf':
         from pyemaps.samples.si_csf import runCSFTests
         csf = runCSFTests(bPrint=False)
         if csf != bdata:
-             print(f'Baseline match FAILED for Crystal Structure Factor sample test.')
+             print(f'--------Baseline match FAILED for Crystal Structure Factor sample test.')
              return
-        print(f'Baseline match SUCCEEDED for Crystal Structure Factor sample test.')
+        print(f'++++++Baseline match SUCCEEDED for Crystal Structure Factor sample test.')
 
     if feature == 'mxtal':
         from pyemaps.samples.si_constructor import test_mxtal
         mx = test_mxtal(bPrint=False, bSave=False)
         if mx != bdata:
-             print(f'Baseline match FAILED for Crystal Structure Calculation sample test.')
+             print(f'--------Baseline match FAILED for Crystal Structure Calculation sample test.')
              return
-        print(f'Baseline match SUCCEEDED for Crystal Structure Calculation sample test.')
+        print(f'++++++Baseline match SUCCEEDED for Crystal Structure Calculation sample test.')
     
     if feature == 'scm':
         from pyemaps.samples.si_scm import runSCMFullTests
-
+        SCM_TOLERANCE= 1.0e-06
         scm = runSCMFullTests()
         if not scm[0]['ncb'] == bdata[0]['ncb'] or \
            not np.allclose(scm[0]['cbs'], bdata[0]['cbs']):
-             print(f'Baseline match FAILED for Scattering matrix sample test.')
+             print(f'--------Baseline match FAILED for Scattering matrix sample test.')
              return
         for s in scm[1]:
               ib, ndim, sm, ev, beams = s['ib'], s['ndim'], s['scm'], s['ev'], s['beams'] 
@@ -90,16 +90,16 @@ def compare_samples_baseline(feature):
                           bFound= False 
                           continue 
                           
-                     if not np.allclose(sm, bsm, atol=1.0e-06) or \
-                            not np.allclose(ev, bev, atol=1.0e-06) or \
-                            not np.allclose(beams, bbeams, atol=1.0e-06) :                          
+                     if not np.allclose(sm, bsm, atol=SCM_TOLERANCE) or \
+                            not np.allclose(ev, bev, atol=SCM_TOLERANCE) or \
+                            not np.allclose(beams, bbeams, atol=SCM_TOLERANCE) :                          
                           bFound= False 
                           continue
                      bFound = True
               if not bFound:
                      print(f'Baseline match FAILED for Scattering matrix sample test.')
                      return
-        print(f'Baseline match SUCCEEDED for Scattering matrix sample test.')   
+        print(f'++++++Baseline match SUCCEEDED for Scattering matrix sample test.')   
         
     if feature == 'powder':
         from pyemaps.samples.powder import runPowderTests
@@ -108,9 +108,9 @@ def compare_samples_baseline(feature):
         sil, dil = dl
         bsil, bdil = bdata
         if not np.allclose(sil, bsil) or not np.allclose(dil, bdil):
-             print(f'Baseline match FAILED for Powder diffraction sample test.')
+             print(f'--------Baseline match FAILED for Powder diffraction sample test.')
              return
-        print(f'Baseline match SUCCEEDED for Powder diffraction sample test.')   
+        print(f'++++++Baseline match SUCCEEDED for Powder diffraction sample test.')   
 
     # if feature == 'dpgen':    TODO later
     #     from pyemaps.samples.al_dpgen import al_dpdb
