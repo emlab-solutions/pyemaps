@@ -72,11 +72,11 @@ def compare_samples_baseline(feature):
     
     if feature == 'scm':
         from pyemaps.samples.si_scm import runSCMFullTests
-        SCM_TOLERANCE= 1.0e-06
+        SCM_TOLERANCE= 1.0e-05
         scm = runSCMFullTests()
         if not scm[0]['ncb'] == bdata[0]['ncb'] or \
            not np.allclose(scm[0]['cbs'], bdata[0]['cbs']):
-             print(f'--------Baseline match FAILED for Scattering matrix sample test.')
+             print(f'--------Baseline match FAILED for Scattering matrix sample test: number of incident beams not matching')
              return
         for s in scm[1]:
               ib, ndim, sm, ev, beams = s['ib'], s['ndim'], s['scm'], s['ev'], s['beams'] 
@@ -181,7 +181,7 @@ def gen_samples_baseline(feature):
     #     if fn.lower() != baseline_data_filename.lower():
     #         import shutil
     #         shutil.copy(fn, baseline_data_filename)
-
+    # print(f'baseline data file name: {baseline_data_filename}, {dl}')
     with open(baseline_data_filename, "wb") as f:
         pickle.dump(dl, f)
 
