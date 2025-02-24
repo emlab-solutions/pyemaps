@@ -29,7 +29,7 @@
 from . import EMC
 from . import BlochListError
 
-BLOCH_TALERANCE = 1.0e-05
+BLOCH_TOLERANCE = 1.0e-04
 
 class BlochImgs:
 
@@ -109,12 +109,18 @@ class BlochImgs:
         if not isinstance(emc, EMC) or \
            not hasattr(b, "__len__") or \
            b.ndim != 2:
-            raise BlochListError('failed to add Bloch image object')
+            raise BlochListError('invalid Bloch image object')
         
         import numpy as np
+        
+        shape_given = b.shape
+        
         for (e,c) in self._blochList:
-            if e == emc and np.allclose(c, b, atol=BLOCH_TALERANCE): 
+            if e != emc or c.shape != shape_given:
+                continue
+            if np.allclose(c, b, atol=BLOCH_TOLERANCE): 
                 return True
+        
         return False
     
     def __eq__(self, other):
@@ -124,11 +130,11 @@ class BlochImgs:
 
         '''
         if len(self._blochList) != len(other.blochList):
-            print(f'Dimension of bloch image differs: {self._blochList.ndim} and {other.blochList.ndim}')
+            print(f'Dimension of bloch image differs')
             return False
         
         if self._name != other._name:
-            print(f'Dimension of bloch image differs: {self._name} and {other._name}')
+            print(f'Name of bloch image differs')
             return False
         
         if len(self._blochList) != len(other.blochList):
@@ -136,10 +142,6 @@ class BlochImgs:
         
         for (e,b) in self._blochList:
             if not other.__contains__(e,b):
-                print(f'Current bloch image differs from comparing at: {e} for {self._name}')
+                print(f'Current bloch image differs from baseline')
                 return False
-        # for (e,b) in other._blochList:
-        #     if not self.__contains__(e,b):
-        #         print(f'Comparing bloch image differs from current image at: {e} for {self._name}')
-        #         return False
         return True

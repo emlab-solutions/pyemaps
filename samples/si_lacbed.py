@@ -43,9 +43,9 @@ def generate_lacbed_images(name = 'Silicon', bSave = False, bShow=False):
     except Exception as e:
         print(f'Faild to obtain large angle CBED images: {e}') 
         return
-
-    if bShow:        
-        imgs.sort()
+       
+    imgs.sort()
+    if bShow: 
         showBloch(imgs,bClose=True)
     return imgs
 

@@ -23,8 +23,8 @@ def compare_samples_baseline(feature):
        for k in em_keys:
               dpl = generate_difs(ckey=k, mode=2)
               if not (k, dpl) in bdata:
-                     print(f'--------Baseline match FAILED  for kinematic diffraction sample test for control: {k}.')
-                     return
+                print(f'--------Baseline match FAILED  for kinematic diffraction sample test for control: {k}.')
+                return
        print(f'++++++Baseline match SUCCEEDED for kinematic diffraction sample test.')
 
        
@@ -34,16 +34,16 @@ def compare_samples_baseline(feature):
        for k in em_keys:
             imgs = generate_bloch_images(ckey=k)
             if not (k, imgs) in bdata:
-                     print(f'--------Baseline match FAILED  for dynamic diffraction sample test for control: {k}.')
-                     return
+                print(f'--------Baseline match FAILED  for dynamic diffraction sample test for control: {k}.')
+                return
        print(f'++++++Baseline match SUCCEEDED for dynamic diffraction sample test.')
 
     if feature == 'lacbed':
         from pyemaps.samples.si_lacbed import generate_lacbed_images
         imgs = generate_lacbed_images()
-        if not imgs == bdata:
-              print(f'--------Baseline match FAILED  for LACBED sample test.')
-              return
+        if imgs != bdata:
+            print(f'--------Baseline match FAILED  for LACBED sample test.')
+            return
         print(f'++++++Baseline match SUCCEEDED for LACBED sample test.')
 
     if feature == 'stereo':
