@@ -78,26 +78,27 @@ def compare_samples_baseline(feature):
            not np.allclose(scm[0]['cbs'], bdata[0]['cbs']):
              print(f'--------Baseline match FAILED for Scattering matrix sample test: number of incident beams not matching')
              return
+             
         for s in scm[1]:
               ib, ndim, sm, ev, beams = s['ib'], s['ndim'], s['scm'], s['ev'], s['beams'] 
               bFound = False
               for b in bdata[1]: 
-                     bib, bndim, bsm, bev, bbeams = b['ib'], b['ndim'], b['scm'], b['ev'], b['beams']  
-                     if bib != ib:
-                          continue
+                bib, bndim, bsm, bev, bbeams = b['ib'], b['ndim'], b['scm'], b['ev'], b['beams']  
+                if bib != ib:
+                    continue
 
-                     if ndim != bndim:
-                          bFound= False 
-                          continue 
-                          
-                     if not np.allclose(sm, bsm, atol=SCM_TOLERANCE) or \
-                            not np.allclose(ev, bev, atol=SCM_TOLERANCE) or \
-                            not np.allclose(beams, bbeams, atol=SCM_TOLERANCE) :                          
-                          bFound= False 
-                          continue
-                     bFound = True
+                if ndim != bndim:
+                    continue 
+                    
+                if not np.allclose(sm, bsm, atol=SCM_TOLERANCE) or \
+                    not np.allclose(ev, bev, atol=SCM_TOLERANCE) or \
+                    not np.allclose(beams, bbeams, atol=SCM_TOLERANCE) :  
+                    continue
+                bFound = True
+                break
+
               if not bFound:
-                     print(f'Baseline match FAILED for Scattering matrix sample test.')
+                     print(f'--------*Baseline match FAILED for Scattering matrix sample test.')
                      return
         print(f'++++++Baseline match SUCCEEDED for Scattering matrix sample test.')   
         
