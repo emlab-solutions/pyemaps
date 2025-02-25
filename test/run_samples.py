@@ -106,14 +106,21 @@ def compare_samples_baseline(feature):
                     print(f'----Baseline match FAILED for Scattering matrix shape differ at {ib}')
                     return 
                     
-                norm_sm = sm / np.linalg.norm(sm, axis=1)
-                norm_bsm = bsm / np.linalg.norm(bsm, axis=1)
+                norm_sm = sm / np.linalg.norm(sm, axis=0)
+                norm_bsm = bsm / np.linalg.norm(bsm, axis=0)
 
                 if norm_sm.shape != norm_bsm.shape:  
                     print(f'----Baseline match FAILED for Scattering matrix shape differ after normalization at {ib}')
                     return     
+                
+                sort_norm_sm = np.abs(np.sort(norm_sm, axis=0))
+                sort_norm_bsm = np.abs(np.sort(norm_bsm, axis=0))
 
-                if not np.allclose(np.abs(np.sort(norm_sm, axis=0)), np.abs(np.sort(norm_bsm, axis=0)), atol=SCM_TOLERANCE):   
+                if not np.allclose(sort_norm_sm, sort_norm_bsm, atol=SCM_TOLERANCE):
+                    mismatch = ~np.isclose(sort_norm_sm,sort_norm_bsm, tol=SCM_TOLERANCE)
+                    print("Mismatched indices:", np.where(mismatch))
+                    print("Current mismatched values:", sort_norm_sm[mismatch])
+                    print("basline mismatched values:", sort_norm_bsm[mismatch])
                     print(f'----Baseline match FAILED for Scattering matrix sample test at {ib}') 
                     print(f'----current Scattering matrix: {norm_sm}') 
                     print(f'----basline Scattering matrix: {norm_bsm}')
