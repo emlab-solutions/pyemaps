@@ -115,8 +115,8 @@ def compare_samples_baseline(feature):
 
                 if not np.allclose(np.abs(np.sort(norm_sm, axis=0)), np.abs(np.sort(norm_bsm, axis=0)), atol=SCM_TOLERANCE):   
                     print(f'----Baseline match FAILED for Scattering matrix sample test at {ib}') 
-                    print(f'----current Scattering matrix: {sm}') 
-                    print(f'----basline Scattering matrix: {bsm}')
+                    print(f'----current Scattering matrix: {norm_sm}') 
+                    print(f'----basline Scattering matrix: {norm_bsm}')
                     return 
                 
                 break    
