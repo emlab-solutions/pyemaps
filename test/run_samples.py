@@ -74,8 +74,11 @@ def compare_samples_baseline(feature):
         from pyemaps.samples.si_scm import runSCMFullTests
         SCM_TOLERANCE= 1.0e-05
         scm = runSCMFullTests()
+
         if not scm[0]['ncb'] == bdata[0]['ncb'] or \
-           not np.allclose(scm[0]['cbs'], bdata[0]['cbs']):
+           scm[0]['cbs'].shape != bdata[0]['cbs'].shape or \
+           not np.allclose(scm[0]['cbs'], bdata[0]['cbs']) or \
+           not np.array_equal(np.sort(scm[0]['cbs'], axis=0), np.sort(bdata[0]['cbs'], axis=0)):
              print(f'--------Baseline match FAILED for Scattering matrix sample test: number of incident beams not matching')
              return
              
@@ -89,16 +92,17 @@ def compare_samples_baseline(feature):
 
                 if ndim != bndim:
                     continue 
-                    
+    
                 if not np.allclose(sm, bsm, atol=SCM_TOLERANCE) or \
                     not np.allclose(ev, bev, atol=SCM_TOLERANCE) or \
-                    not np.allclose(beams, bbeams, atol=SCM_TOLERANCE) :  
+                    beams.shape != bbeams.shape or \
+                    not np.array_equal(np.sort(beams, axis=0), np.sort(bbeams, axis=0)) :  
                     continue
                 bFound = True
                 break
 
               if not bFound:
-                     print(f'--------*Baseline match FAILED for Scattering matrix sample test.')
+                     print(f'--------*Baseline match FAILED for Scattering matrix sample test: {s}')
                      return
         print(f'++++++Baseline match SUCCEEDED for Scattering matrix sample test.')   
         
@@ -213,7 +217,7 @@ def run_sample_gui(feature = "diff"):
     
     if feature == 'scm':
         import pyemaps.samples.si_scm as scm 
-        scm.runSCMFullTests()
+        scm.runSCMTests()
 
     if feature == 'powder':
         import pyemaps.samples.powder as powder
