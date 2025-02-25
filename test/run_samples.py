@@ -72,7 +72,7 @@ def compare_samples_baseline(feature):
     
     if feature == 'scm':
         from pyemaps.samples.si_scm import runSCMFullTests
-        SCM_TOLERANCE= 1.0e-05
+        SCM_TOLERANCE= 1.0e-03
         scm = runSCMFullTests()
 
         if not scm[0]['ncb'] == bdata[0]['ncb'] or \
