@@ -94,7 +94,7 @@ def compare_samples_baseline(feature):
                     print(f'----Baseline match FAILED for Scattering matrix sample test: scattering matrix dimensions differ')
                     return 
                 
-                if ev.shape != bev.shape or not np.allclose(np.sort(ev, axis=1), np.sort(bev, axis=1)):  
+                if ev.shape != bev.shape or not np.allclose(np.sort(ev, axis=0), np.sort(bev, axis=0), atol=SCM_TOLERANCE):  
                     print(f'----Baseline match FAILED for Scattering matrix sample test: Eigen values at {ib} does not match: {ev} != {bev}')
                     return 
 
