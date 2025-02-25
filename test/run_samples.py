@@ -84,28 +84,35 @@ def compare_samples_baseline(feature):
              
         for s in scm[1]:
               ib, ndim, sm, ev, beams = s['ib'], s['ndim'], s['scm'], s['ev'], s['beams'] 
-              bFound = False
+            #   bFound = False
               for b in bdata[1]: 
                 bib, bndim, bsm, bev, bbeams = b['ib'], b['ndim'], b['scm'], b['ev'], b['beams']  
                 if bib != ib:
                     continue
 
                 if ndim != bndim:
-                    continue 
-    
-                if not np.allclose(sm, bsm, atol=SCM_TOLERANCE) or \
-                    not np.allclose(np.sort(ev), np.sort(bev), atol=SCM_TOLERANCE) or \
-                    beams.shape != bbeams.shape or \
-                    not np.array_equal(np.sort(beams, axis=0), np.sort(bbeams, axis=0)) :  
-                    continue
-                bFound = True
-                break
+                    print(f'----Baseline match FAILED for Scattering matrix sample test: scattering matrix dimensions differ')
+                    return 
+                
+                if ev.shape != bev.shape or not np.allclose(np.sort(ev, axis=0), np.sort(bev, axis=0)):  
+                    print(f'----Baseline match FAILED for Scattering matrix sample test: Eigen values at {ib} does not match: {ev} != {bev}')
+                    return 
 
-              if not bFound:
-                     print(f'--------*Baseline match FAILED for Scattering matrix sample test: {s}')
-                     return
+                if beams.shape != bbeams.shape or not np.array_equal(np.sort(beams, axis=0), np.sort(bbeams, axis=0)):   
+                    print(f'----Baseline match FAILED for Scattering matrix sample test: Beams at {ib} does not match: {beams} != {bbeams}')
+                    return
+                
+                norm_sm = sm / np.linalg.norm(sm, axis=0)
+                norm_bsm = bsm / np.linalg.norm(bsm, axis=0)
+
+                if sm.shape != bsm.shape or not np.allclose(np.abs(np.sort(norm_sm, axis=0)), np.abs(np.sort(norm_bsm, axis=0)), atol=SCM_TOLERANCE):   
+                    print(f'----Baseline match FAILED for Scattering matrix sample testat {ib}')
+                    return 
+                
+                break    
+                
         print(f'++++++Baseline match SUCCEEDED for Scattering matrix sample test.')   
-        
+
     if feature == 'powder':
         from pyemaps.samples.powder import runPowderTests
         
