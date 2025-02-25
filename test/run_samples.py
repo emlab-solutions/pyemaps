@@ -102,11 +102,21 @@ def compare_samples_baseline(feature):
                     print(f'----Baseline match FAILED for Scattering matrix sample test: Beams at {ib} does not match: {beams} != {bbeams}')
                     return
                 
+                if sm.shape != bsm.shape:  
+                    print(f'----Baseline match FAILED for Scattering matrix shape differ at {ib}')
+                    return 
+                    
                 norm_sm = sm / np.linalg.norm(sm, axis=0)
                 norm_bsm = bsm / np.linalg.norm(bsm, axis=0)
 
-                if sm.shape != bsm.shape or not np.allclose(np.abs(np.sort(norm_sm, axis=0)), np.abs(np.sort(norm_bsm, axis=0)), atol=SCM_TOLERANCE):   
-                    print(f'----Baseline match FAILED for Scattering matrix sample testat {ib}')
+                if norm_sm.shape != norm_bsm.shape:  
+                    print(f'----Baseline match FAILED for Scattering matrix shape differ after normalization at {ib}')
+                    return     
+
+                if not np.allclose(np.abs(np.sort(norm_sm, axis=0)), np.abs(np.sort(norm_bsm, axis=0)), atol=SCM_TOLERANCE):   
+                    print(f'----Baseline match FAILED for Scattering matrix sample test at {ib}') 
+                    print(f'----current Scattering matrix sample test at {norm_sm}') 
+                    print(f'----basline Scattering matrix sample test at {norm_bsm}')
                     return 
                 
                 break    
