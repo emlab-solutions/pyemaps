@@ -117,7 +117,7 @@ def compare_samples_baseline(feature):
                 sort_norm_bsm = np.abs(np.sort(norm_bsm, axis=0))
 
                 if not np.allclose(sort_norm_sm, sort_norm_bsm, atol=SCM_TOLERANCE):
-                    mismatch = ~np.isclose(sort_norm_sm,sort_norm_bsm, tol=SCM_TOLERANCE)
+                    mismatch = ~np.isclose(sort_norm_sm,sort_norm_bsm, atol=SCM_TOLERANCE)
                     print("Mismatched indices:", np.where(mismatch))
                     print("Current mismatched values:", sort_norm_sm[mismatch])
                     print("basline mismatched values:", sort_norm_bsm[mismatch])
