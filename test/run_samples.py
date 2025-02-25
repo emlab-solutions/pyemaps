@@ -94,7 +94,7 @@ def compare_samples_baseline(feature):
                     continue 
     
                 if not np.allclose(sm, bsm, atol=SCM_TOLERANCE) or \
-                    not np.allclose(ev, bev, atol=SCM_TOLERANCE) or \
+                    not np.allclose(np.sort(ev), np.sort(bev), atol=SCM_TOLERANCE) or \
                     beams.shape != bbeams.shape or \
                     not np.array_equal(np.sort(beams, axis=0), np.sort(bbeams, axis=0)) :  
                     continue
