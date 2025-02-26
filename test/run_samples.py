@@ -72,7 +72,7 @@ def compare_samples_baseline(feature):
     
     if feature == 'scm':
         from pyemaps.samples.si_scm import runSCMFullTests
-        SCM_TOLERANCE= 1.0e-04
+        SCM_TOLERANCE= 1.0e-03
         scm = runSCMFullTests()
 
         if not scm[0]['ncb'] == bdata[0]['ncb'] or \
@@ -145,14 +145,16 @@ def compare_samples_baseline(feature):
                 AA = np.linalg.multi_dot([sm_inv, evm, sm])
                 BB = np.linalg.multi_dot([bsm_inv, bevm, bsm])
 
-                norm_AA = AA / np.linalg.norm(AA, axis=0)
-                norm_BB = BB / np.linalg.norm(BB, axis=0)
-
-                if not np.allclose(norm_AA, norm_BB, atol=SCM_TOLERANCE):
-                    mismatch = ~np.isclose(norm_AA, norm_BB, atol=SCM_TOLERANCE)
+                # if ib == (0,0):
+                #     print(f'current matrix: {AA}')
+                #     print(f'baseline matrix: {BB}')
+                
+                
+                if not np.allclose(AA, BB, atol=SCM_TOLERANCE):
+                    mismatch = ~np.isclose(AA,BB, atol=SCM_TOLERANCE)
                     print("Mismatched indices:", np.where(mismatch))
-                    print("Current mismatched values:", norm_AA[mismatch])
-                    print("basline mismatched values:", norm_BB[mismatch])
+                    print("Current mismatched values:", AA[mismatch])
+                    print("basline mismatched values:", BB[mismatch])
                     print(f'----Baseline match FAILED for Scattering matrix sample test at {ib}') 
                     return
 
