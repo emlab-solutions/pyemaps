@@ -72,7 +72,7 @@ def compare_samples_baseline(feature):
     
     if feature == 'scm':
         from pyemaps.samples.si_scm import runSCMFullTests
-        SCM_TOLERANCE= 1.0e-01
+        SCM_TOLERANCE= 1.0e-04
         scm = runSCMFullTests()
 
         if not scm[0]['ncb'] == bdata[0]['ncb'] or \
@@ -105,26 +105,58 @@ def compare_samples_baseline(feature):
                     print(f'----Baseline match FAILED for Scattering matrix shape differ at {ib}')
                     return 
                     
-                norm_sm = sm / np.linalg.norm(sm, axis=0)
-                norm_bsm = bsm / np.linalg.norm(bsm, axis=0)
+                # norm_sm = sm / np.linalg.norm(sm, axis=0)
+                # norm_bsm = bsm / np.linalg.norm(bsm, axis=0)
 
-                if norm_sm.shape != norm_bsm.shape:  
-                    print(f'----Baseline match FAILED for Scattering matrix shape differ after normalization at {ib}')
-                    return     
+                # if norm_sm.shape != norm_bsm.shape:  
+                #     print(f'----Baseline match FAILED for Scattering matrix shape differ after normalization at {ib}')
+                #     return     
                 
-                sort_norm_sm = np.abs(np.sort(norm_sm, axis=0))
-                sort_norm_bsm = np.abs(np.sort(norm_bsm, axis=0))
+                # sort_norm_sm = np.abs(np.sort(norm_sm, axis=0))
+                # sort_norm_bsm = np.abs(np.sort(norm_bsm, axis=0))
 
-                if not np.allclose(sort_norm_sm, sort_norm_bsm, atol=SCM_TOLERANCE):
-                    mismatch = ~np.isclose(sort_norm_sm,sort_norm_bsm, atol=SCM_TOLERANCE)
+                # if not np.allclose(sort_norm_sm, sort_norm_bsm, atol=SCM_TOLERANCE):
+                #     mismatch = ~np.isclose(sort_norm_sm,sort_norm_bsm, atol=SCM_TOLERANCE)
+                #     print("Mismatched indices:", np.where(mismatch))
+                #     print("Current mismatched values:", sort_norm_sm[mismatch])
+                #     print("basline mismatched values:", sort_norm_bsm[mismatch])
+                #     print(f'----Baseline match FAILED for Scattering matrix sample test at {ib}') 
+                    # return
+
+                # Create a matrix with eigen values as diagnal elements
+
+                evm = np.diag(ev)
+                bevm = np.diag(bev)
+
+                # Find the inverses of the eigenvectors matrices
+                det_sm = np.linalg.det(sm)
+                if np.abs(det_sm) < 1e-05:
+                    print(f'----Baseline match FAILED: invalid eigenvector vectors generated.')
+                    return
+                sm_inv = np.linalg.inv(sm)
+
+                det_bsm = np.linalg.det(bsm)
+                if np.abs(det_bsm) < 1e-05:
+                    print(f'----Baseline match FAILED: invalid eigenvector matrix from baseline.')
+                    return
+                bsm_inv = np.linalg.inv(bsm)
+                
+                # Compute the original matrices from emaps backend
+                AA = np.linalg.multi_dot([sm_inv, evm, sm])
+                BB = np.linalg.multi_dot([bsm_inv, bevm, bsm])
+
+                if ib == (0,0):
+                    print(f'current matrix: {AA}')
+                    print(f'baseline matrix: {BB}')
+                
+                if not np.allclose(AA, BB, atol=SCM_TOLERANCE):
+                    mismatch = ~np.isclose(AA,BB, atol=SCM_TOLERANCE)
                     print("Mismatched indices:", np.where(mismatch))
-                    print("Current mismatched values:", sort_norm_sm[mismatch])
-                    print("basline mismatched values:", sort_norm_bsm[mismatch])
+                    print("Current mismatched values:", AA[mismatch])
+                    print("basline mismatched values:", BB[mismatch])
                     print(f'----Baseline match FAILED for Scattering matrix sample test at {ib}') 
-                    print(f'----current Scattering matrix: {norm_sm}') 
-                    print(f'----basline Scattering matrix: {norm_bsm}')
-                    return 
-                
+                    return
+
                 break    
                 
         print(f'++++++Baseline match SUCCEEDED for Scattering matrix sample test.')   
