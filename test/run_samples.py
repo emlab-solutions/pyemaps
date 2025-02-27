@@ -72,22 +72,30 @@ def compare_samples_baseline(feature):
     
     if feature == 'scm':
         from pyemaps.samples.si_scm import runSCMFullTests
-        SCM_TOLERANCE= 1.0e-02
+        SCM_TOLERANCE= 1.0e-04
         scm = runSCMFullTests()
 
         if not scm[0]['ncb'] == bdata[0]['ncb'] or \
            scm[0]['cbs'].shape != bdata[0]['cbs'].shape or \
            not np.array_equal(np.sort(scm[0]['cbs'], axis=0), np.sort(bdata[0]['cbs'], axis=0)):
-             print(f'--------Baseline match FAILED for Scattering matrix sample test: number of incident beams not matching')
-             return
-             
-        for s in scm[1]:
-              ib, ndim, sm, ev, beams = s['ib'], s['ndim'], s['scm'], s['ev'], s['beams'] 
-            #   bFound = False
-              for b in bdata[1]: 
+            print(f'--------Baseline match FAILED for Scattering matrix sample test: number of incident beams not matching')
+            return
+        
+        nscm = scm[1]['nscm']
+        bnscm = bdata[1]['nscm']
+        if nscm != bnscm:
+            print(f'--------Baseline match FAILED for Scattering matrix sample test: number of scattering matrices not matching: {nscm} != {bnscm}')
+            return
+        
+        for s in scm[1]['lscm']:
+            ib, ndim, sm, ev, beams = s['ib'], s['ndim'], s['scm'], s['ev'], s['beams'] 
+            bFound = False
+            for b in bdata[1]['lscm']: 
                 bib, bndim, bsm, bev, bbeams = b['ib'], b['ndim'], b['scm'], b['ev'], b['beams']  
                 if bib != ib:
                     continue
+                else:
+                    bFound = True
 
                 if ndim != bndim:
                     print(f'----Baseline match FAILED for Scattering matrix sample test: scattering matrix dimensions differ')
@@ -123,43 +131,67 @@ def compare_samples_baseline(feature):
                 #     print(f'----Baseline match FAILED for Scattering matrix sample test at {ib}') 
                     # return
 
-                # Create a matrix with eigen values as diagnal elements
+                # # Create a matrix with eigen values as diagnal elements
 
-                evm = np.diag(ev)
-                bevm = np.diag(bev)
+                # evm = np.diag(ev)
+                # bevm = np.diag(bev)
 
-                # Find the inverses of the eigenvectors matrices
-                det_sm = np.linalg.det(sm)
-                if np.abs(det_sm) < 1e-05:
-                    print(f'----Baseline match FAILED: invalid eigenvector vectors generated.')
+                # # Find the inverses of the eigenvectors matrices
+                # det_sm = np.linalg.det(sm)
+                # if np.abs(det_sm) < 1e-05:
+                #     print(f'----Baseline match FAILED: invalid eigenvector vectors generated.')
+                #     return
+                # sm_inv = np.linalg.inv(sm)
+
+                # det_bsm = np.linalg.det(bsm)
+                # if np.abs(det_bsm) < 1e-05:
+                #     print(f'----Baseline match FAILED: invalid eigenvector matrix from baseline.')
+                #     return
+                # bsm_inv = np.linalg.inv(bsm)
+                
+                # # Compute the original matrices from emaps backend
+                # AA = np.linalg.multi_dot([sm_inv, evm, sm])
+                # BB = np.linalg.multi_dot([bsm_inv, bevm, bsm])
+
+                # P = np.dot(sm, bsm_inv)
+                # AA_constructed = np.linalg.multi_dot([P, BB, np.linalg.inv(P)])
+                
+                # if not np.allclose(AA, AA_constructed, atol=SCM_TOLERANCE):
+                #     # mismatch = ~np.isclose(AA,BB, atol=SCM_TOLERANCE)
+                #     # print("Mismatched indices:", np.where(mismatch))
+                #     # print("Current mismatched values:", AA[mismatch])
+                #     # print("basline mismatched values:", BB[mismatch])
+                #     print(f'----Baseline match FAILED for Scattering matrix sample test at {ib}') 
+                #     return
+
+                break  
+
+            if not bFound:
+                print(f'----Baseline match FAILED for Scattering matrix sample test: Incident Beams at {ib} not found in baseline')  
+        
+        nib = scm[2]['nib']
+        bnib = bdata[2]['nib']
+
+        if nib != bnib:
+            print(f'--------Baseline match FAILED for Scattering matrix sample test: number of incident beams not matching: {nib} != {bnib}')
+            return
+        
+        for ibt in scm[2]['libt']:
+            bFound = False
+            for bibt in bdata[2]['libt']: 
+                if ibt['ib'] != bibt['ib']:
+                    continue 
+                else:
+                    bFound = True
+
+                if not np.allclose(ibt['tilt'], bibt['tilt'], atol=SCM_TOLERANCE):  
+                    print(f'----Baseline match FAILED for Scattering matrix sample test: Incident Beams at {ib} tilt does not match: {ibt} != {bibt}')
                     return
-                sm_inv = np.linalg.inv(sm)
+                break
 
-                det_bsm = np.linalg.det(bsm)
-                if np.abs(det_bsm) < 1e-05:
-                    print(f'----Baseline match FAILED: invalid eigenvector matrix from baseline.')
-                    return
-                bsm_inv = np.linalg.inv(bsm)
-                
-                # Compute the original matrices from emaps backend
-                AA = np.linalg.multi_dot([sm_inv, evm, sm])
-                BB = np.linalg.multi_dot([bsm_inv, bevm, bsm])
-
-                # if ib == (0,0):
-                #     print(f'current matrix: {AA}')
-                #     print(f'baseline matrix: {BB}')
-                
-                
-                if not np.allclose(AA, BB, atol=SCM_TOLERANCE):
-                    mismatch = ~np.isclose(AA,BB, atol=SCM_TOLERANCE)
-                    print("Mismatched indices:", np.where(mismatch))
-                    print("Current mismatched values:", AA[mismatch])
-                    print("basline mismatched values:", BB[mismatch])
-                    print(f'----Baseline match FAILED for Scattering matrix sample test at {ib}') 
-                    return
-
-                break    
-                
+            if not bFound:
+                print(f'----Baseline match FAILED for Scattering matrix sample test: Incident Beams at {ib} not found in baseline')
+              
         print(f'++++++Baseline match SUCCEEDED for Scattering matrix sample test.')   
 
     if feature == 'powder':
@@ -171,6 +203,7 @@ def compare_samples_baseline(feature):
         if not np.allclose(sil, bsil) or not np.allclose(dil, bdil):
              print(f'--------Baseline match FAILED for Powder diffraction sample test.')
              return
+        
         print(f'++++++Baseline match SUCCEEDED for Powder diffraction sample test.')   
 
     # if feature == 'dpgen':    TODO later

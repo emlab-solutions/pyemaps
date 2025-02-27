@@ -81,7 +81,7 @@ def runSCMTests():
             print(si_beams)
 
             print(f'\n----More details associated with scattering matrix calculation') 
-            si.printIBDetails()
+            si.getIBDetails()
             
             # select a random sampling point from s and calculate scattering matrix
             randnum = random.randrange(0, ns-1)
@@ -131,7 +131,8 @@ def runSCMFullTests():
         
         ns, s = si.beginBloch(em_controls = ec, 
                         dbsize = ds)
-
+        nib, isblist = si.getIBDetails(bPrint=False)
+        
     except Exception as e:
         print(f'Failed to generate scattering matrix {e}')
     else:
@@ -149,6 +150,7 @@ def runSCMFullTests():
         ncb, cbs = si.getCalculatedBeams(bPrint=False)
     # cleanup 
     si.endBloch()
-    return (dict(ncb=ncb, cbs=cbs), lscm)
+    return (dict(ncb=ncb, cbs=cbs), dict(nscm=ns, lscm=lscm), dict(nib=nib, libt=isblist))
+
 if __name__ == "__main__":
     runSCMTests() #only sampling and print out two of the results
