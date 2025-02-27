@@ -227,57 +227,64 @@ def gen_samples_baseline(feature):
         sys.exit(1)
 
     dl=[]
-    if feature == "diff":
-        from pyemaps.samples.si_dif import generate_difs, em_keys
-        
-        for k in em_keys:
-            dpl = generate_difs(ckey=k, mode=2)
-            dl.append((k, dpl))
+    try:
+        if feature == "diff":
+            from pyemaps.samples.si_dif import generate_difs, em_keys
             
-    if feature == 'bloch':
-        from pyemaps.samples.si_bloch import generate_bloch_images, em_keys
+            for k in em_keys:
+                dpl = generate_difs(ckey=k, mode=2)
+                dl.append((k, dpl))
+                
+        if feature == 'bloch':
+            from pyemaps.samples.si_bloch import generate_bloch_images, em_keys
+            
+            for k in em_keys:
+                imgs = generate_bloch_images(ckey=k)
+                dl.append((k, imgs))
+
+        if feature == 'lacbed':
+            from pyemaps.samples.si_lacbed import generate_lacbed_images
+            imgs = generate_lacbed_images()
+            dl=imgs
+
+        if feature == 'stereo':
+            from pyemaps.samples.si_stereo import generate_stereo
+            dl = generate_stereo(ckey='tilt')
+
+        if feature == 'csf':
+            from pyemaps.samples.si_csf import runCSFTests
+            dl = runCSFTests(bPrint=False)
+
+        if feature == 'mxtal':
+            from pyemaps.samples.si_constructor import test_mxtal
+            dl = test_mxtal(bPrint=False, bSave=False)
         
-        for k in em_keys:
-            imgs = generate_bloch_images(ckey=k)
-            dl.append((k, imgs))
+        if feature == 'scm':
+            from pyemaps.samples.si_scm import runSCMFullTests
+            dl = runSCMFullTests()
 
-    if feature == 'lacbed':
-        from pyemaps.samples.si_lacbed import generate_lacbed_images
-        imgs = generate_lacbed_images()
-        dl=imgs
+        if feature == 'powder':
+            from pyemaps.samples.powder import runPowderTests
+            dl = runPowderTests(bPrint=False)
 
-    if feature == 'stereo':
-        from pyemaps.samples.si_stereo import generate_stereo
-        dl = generate_stereo(ckey='tilt')
+        # if feature == 'dpgen':  -----TODO, later
+        #     from pyemaps.samples.al_dpgen import al_dpdb
+        #     fn = al_dpdb()
+        #     if fn is None:
+        #         print(f'++++++Failed to generate diffraction database.+++++')
+        #         return
+        #     if fn.lower() != baseline_data_filename.lower():
+        #         import shutil
+        #         shutil.copy(fn, baseline_data_filename)
+        # print(f'baseline data file name: {baseline_data_filename}, {dl}')
+        with open(baseline_data_filename, "wb") as f:
+            pickle.dump(dl, f)
+            
+    except Exception as e:
+        print(f"------Generating baseline results for {feature} FAILED.")
+        return
 
-    if feature == 'csf':
-        from pyemaps.samples.si_csf import runCSFTests
-        dl = runCSFTests(bPrint=False)
-
-    if feature == 'mxtal':
-        from pyemaps.samples.si_constructor import test_mxtal
-        dl = test_mxtal(bPrint=False, bSave=False)
-    
-    if feature == 'scm':
-        from pyemaps.samples.si_scm import runSCMFullTests
-        dl = runSCMFullTests()
-
-    if feature == 'powder':
-        from pyemaps.samples.powder import runPowderTests
-        dl = runPowderTests(bPrint=False)
-
-    # if feature == 'dpgen':  -----TODO, later
-    #     from pyemaps.samples.al_dpgen import al_dpdb
-    #     fn = al_dpdb()
-    #     if fn is None:
-    #         print(f'++++++Failed to generate diffraction database.+++++')
-    #         return
-    #     if fn.lower() != baseline_data_filename.lower():
-    #         import shutil
-    #         shutil.copy(fn, baseline_data_filename)
-    # print(f'baseline data file name: {baseline_data_filename}, {dl}')
-    with open(baseline_data_filename, "wb") as f:
-        pickle.dump(dl, f)
+    print(f"++++++Generating baseline results for {feature} SUCCEEDED.")
 
 def run_sample_gui(feature = "diff"):
     if feature == "diff":
