@@ -74,29 +74,22 @@ def add_mxtal(target):
         The file can be imported into external tool such as Jmole to
         view its content. 
         
+        :param mx: Crystal structure object defined in xtal.py defiend as Xtal. 
+        :type mx: Xtal, required
+
+        :param fn: file name for data to be saved. 
+        :type fn: str, optional
 
         '''
         
         if not isinstance(mx, Xtal): 
             raise MxtalError("The print object is not valid atomic structure object.")
         
-        # slines = []
-        # nxyz = len(xyzlist)
 
         xyzfn = compose_ofn(fn, self.name, ty='mxtal') +'.xyz'
         
         try:
             with open(xyzfn, 'w') as f:
-                # slines.append(str(nxyz))      
-                # c0, c1, c2, c3, c4, c5 = xyzdict['cell']
-                # slines.append(str(f'\t {c0} {c1} {c2} {c3} {c4} {c5}'))
-                # for xyz in xyzlist:
-                #     s, x, y, z = xyz['symb'], xyz['coord'][0], xyz['coord'][1], xyz['coord'][2]
-                #     sx = '{0:<#014.10f}'. format(x)
-                #     sy = '{0:<#014.10f}'. format(y)
-                #     sz = '{0:<#014.10f}'. format(z)
-                    
-                #     slines.append(str(f'{s:<10}\t{sx} {sy} {sz}'))
                 f.writelines(str(mx))
         except (FileNotFoundError, IOError, PermissionError) as e:
             print(f'Error writing xyz data file {fn}')
@@ -197,12 +190,11 @@ def add_mxtal(target):
         for i in range(na):          
             s = bytearray(tsym[i]).decode('utf-8').strip(" \x00")
             
-            # print(f'type of coordinate: {type(txyz[i])}')
             mx.add(s, txyz[i])
 
         nc = 6
         cell, ret = MX.get_cellconst(nc)
-        # print(f'Cell constants: {cell}')
+        
         mx.cell = cell
 
         if ret !=0:
