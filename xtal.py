@@ -97,15 +97,12 @@ class ACoord:
     
     def __str__(self):
         return self.__repr__()
-
-    # def __iter__(self):
-    #     return iter((self._x, self._y))
     
 class Xtal:
 
     '''
-    Crystal structure class. It is cnostructed by the output from
-    generateMxtal method of any crystal object, which consists of a cell
+    Crystal structure class cnostructed by the output from
+    `generateMxtal <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateMxtal>`_ method of any crystal object, which consists of a cell
     constant and a list of atomic coordinates.
 
     '''
@@ -148,15 +145,6 @@ class Xtal:
         '''
         ac = ACoord(symb, c)
         self._acoordList.append(ac)
-
-    # def sort(self):
-
-    #     ''' not so sure we will need this, but maybe for results comparison sakes
-
-    #     Sort the bloch simulation results by controls
-
-    #     '''
-    #     self._acoordList.sort(key=lambda x: (x.symb, x.coord))
                 
     def __getitem__(self, key):
 

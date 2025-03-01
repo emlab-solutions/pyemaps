@@ -132,17 +132,8 @@ def add_mxtal(target):
         :param bound: Location in A Space. 
         :type bound: float, optional
         
-        :return: a python dictionary object of cell constants and 3D coordinates of atoms
-        :rtype: dict
-
-        Example of the .xyz data in python dictionary object:
-        
-        .. code-block::
-
-            {
-                xyz: [(syml1,[x1, y1, z1)]...[(symln, xn, yn, zn)]]
-                cell: [...] #transformed cell constants
-            }
+        :return: a crystal structure object
+        :rtype: :py:mod:`pyemaps.Xtal` class
 
         """
         import numpy as np

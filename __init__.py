@@ -224,8 +224,8 @@ if PKG_TYPE != TYPE_FREE:
         EL_MORE = 2 #STEM4D image loading all stacks at once - designed for processing large amount of images
 
         # -------image handling class for 4dstem or 4DSTEM features ------ 
-        # "stem4d" for programming purposes - so named sue to the fact that 
-        # python not allowing numeric starting letter for variables  
+        # "stem4d" for programming purposes - so named due to the fact that 
+        # python not allowing numeric starting letter for variables such as 4dstem  
         from emaps.stem4d import send, ediom
         try:
             from .stackimg import StackImage
