@@ -7,9 +7,9 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'pyemaps'
-copyright = '2022-2024, EMLab Solutions, Inc.'
+copyright = '2022-2025, EMLab Solutions, Inc.'
 author = 'EMLab Solutions, Inc.'
-release = '1.1.2 Stable'
+release = '1.1.3 Stable'
 
 
 
@@ -32,6 +32,9 @@ autodoc_default_options = {
     'autosummary_generate': True,
     # 'exclude-members': '__weakref__'
 }
+autodoc_mock_imports = ['pyemaps.diffract.emaps', 
+                        'pyemaps.scattering.scattering', 
+                        'pyemaps.spg.spg']
 # Make sure the target is unique
 autosectionlabel_prefix_document = True
 autodoc_preserve_defaults = True

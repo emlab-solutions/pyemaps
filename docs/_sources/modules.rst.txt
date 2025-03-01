@@ -5,8 +5,8 @@ Modules, Classes and Interfaces
 calculation libraries and are designed to make access to the core 
 diffraction simulation libraries easy.
 
-Crystals
---------
+Crystals Classes
+----------------
 
 .. automodule:: pyemaps.crystals
     :imported-members:
@@ -23,8 +23,8 @@ Microscope and Simulation Controls
     :undoc-members:
     :show-inheritance:
 
-Kinematic Diffractions
-----------------------
+Kinematic Diffractions Classes
+------------------------------
 
 .. automodule:: pyemaps.kdiffs
     :imported-members:
@@ -32,8 +32,8 @@ Kinematic Diffractions
     :undoc-members:
     :show-inheritance:
 
-Dynamic Diffraction
--------------------
+Dynamic Diffraction Classes
+---------------------------
 
 .. automodule:: pyemaps.ddiffs
    :imported-members:
@@ -47,6 +47,15 @@ Images Classes
 --------------
 
 .. automodule:: pyemaps.stackimg
+   :imported-members:
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Crystal Structure Classes
+-------------------------
+
+.. automodule:: pyemaps.xtal
    :imported-members:
    :members:
    :undoc-members:

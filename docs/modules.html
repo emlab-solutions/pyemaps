@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Modules, Classes and Interfaces &#8212; pyemaps 1.1.2 Stable documentation</title>
+    <title>Modules, Classes and Interfaces &#8212; pyemaps 1.1.3 Stable documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -34,7 +34,7 @@
         <li class="right" >
           <a href="rn.html" title="Release Notes"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.1.2 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.1.3 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Modules, Classes and Interfaces</a></li> 
       </ul>
     </div>  
@@ -50,7 +50,7 @@
 calculation libraries and are designed to make access to the core
 diffraction simulation libraries easy.</p>
 <section id="module-pyemaps.crystals">
-<span id="crystals"></span><h2>Crystals<a class="headerlink" href="#module-pyemaps.crystals" title="Permalink to this heading">¶</a></h2>
+<span id="crystals-classes"></span><h2>Crystals Classes<a class="headerlink" href="#module-pyemaps.crystals" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyemaps.crystals.Cell">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.crystals.</span></span><span class="sig-name descname"><span class="pre">Cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Cell" title="Permalink to this definition">¶</a></dt>
@@ -551,7 +551,7 @@ Retrieve a scattering matrix at a sampling point</p></li>
 <p>Other information available during the session:</p>
 <ol class="loweralpha simple">
 <li><p>List of sampling points, diffraction beams tilts etc 
-with <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails">printIBDetails</a>;</p></li>
+with <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getIBDetails">getIBDetails</a>;</p></li>
 <li><p>getEigen function is folded into getSCMatrix call starting from Stable verion 1.0.3</p></li>
 <li><p>Diagnization Miller indexes at each sampling point: 
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getBeams">getBeams</a>;</p></li>
@@ -813,19 +813,12 @@ stabel production soon. Its replacement is:
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>a python dictionary object of cell constants and 3D coordinates of atoms</p>
+<dd class="field-even"><p>a crystal structure object</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
+<dd class="field-odd"><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">pyemaps.Xtal</span></code> class</p>
 </dd>
 </dl>
-<p>Example of the .xyz data in python dictionary object:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="n">xyz</span><span class="p">:</span> <span class="p">[(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">z1</span><span class="p">)</span><span class="o">...</span><span class="p">(</span><span class="n">xn</span><span class="p">,</span> <span class="n">yn</span><span class="p">,</span> <span class="n">zn</span><span class="p">)]</span>
-    <span class="n">cell</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="c1">#transformed cell constants</span>
-<span class="p">}</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py method">
@@ -963,11 +956,23 @@ and <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.C
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.crystals.Crystal.getIBDetails">
+<span class="sig-name descname"><span class="pre">getIBDetails</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bPrint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.getIBDetails" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve a dynamic diffraction simulation details during a session
+marked by 
+<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a>. and 
+<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch</a>.</p>
+<p>Information regarding the simulation session include sampling points and their
+associated diffracted beam directions etc.</p>
+<p>The information is available right after beginBloch call.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.crystals.Crystal.getSCMatrix">
 <span class="sig-name descname"><span class="pre">getSCMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ib_coords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_thickness</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_THICKNESS[0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rvec</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.getSCMatrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Obtains scattering matrix at a given sampling point. To get a list of sampling 
 points used in this dynamic simulation session, call 
-<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails">printIBDetails</a>
+<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.getIBDetails">getIBDetails</a>
 after <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a>.
 In addition to the scattering matrix, it also generates associated eigen values
 and diffracted beams.</p>
@@ -1072,26 +1077,14 @@ directly.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.crystals.Crystal.printIBDetails">
-<span class="sig-name descname"><span class="pre">printIBDetails</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.printIBDetails" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prints a dynamic diffraction simulation details during a session
-marked by 
-<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch">beginBloch</a>. and 
-<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch">endBloch</a>.</p>
-<p>Information regarding the simulation session include sampling points and their
-associated diffracted beam directions etc.</p>
-<p>The information is available right after beginBloch call.</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.crystals.Crystal.printXYZ">
-<span class="sig-name descname"><span class="pre">printXYZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyzdict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.printXYZ" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">printXYZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.printXYZ" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print mxtal data in .xyz format in standard output. 
 Refer to <a class="reference external" href="https://wiki.jmol.org/index.php/File_formats/Formats/XYZ">XYZ format</a>
 for its definition and usage.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>xyzdict</strong> (<em>dict</em><em>, </em><em>required</em>) – Crystal structure data.</p>
+<dd class="field-odd"><p><strong>mx</strong> (<a class="reference internal" href="#pyemaps.xtal.Xtal" title="pyemaps.xtal.Xtal"><em>Xtal</em></a><em>, </em><em>required</em>) – Crystal structure object defined in xtal.py defiend as Xtal.</p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -1188,8 +1181,8 @@ rtype: float</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.crystals.Crystal.writeXYZ">
-<span class="sig-name descname"><span class="pre">writeXYZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyzdict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.writeXYZ" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save mxtal data generated by pyemaps to a .xyz file &lt;fn&gt;
+<span class="sig-name descname"><span class="pre">writeXYZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.crystals.Crystal.writeXYZ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save crystal structure object data generated by pyemaps to a .xyz file &lt;fn&gt;
 File path is composed by pyemaps depending on whether 
 PYEMAP_DATA environment variable is set. For details how
 <em>pyemaps</em> compose the file name see 
@@ -1197,6 +1190,14 @@ PYEMAP_DATA environment variable is set. For details how
 for details.</p>
 <p>The file can be imported into external tool such as Jmole to
 view its content.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mx</strong> (<a class="reference internal" href="#pyemaps.xtal.Xtal" title="pyemaps.xtal.Xtal"><em>Xtal</em></a><em>, </em><em>required</em>) – Crystal structure object defined in xtal.py defiend as Xtal.</p></li>
+<li><p><strong>fn</strong> (<em>str</em><em>, </em><em>optional</em>) – file name for data to be saved.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -1770,7 +1771,7 @@ Only plot those parameter that are not defaults</p>
 
 </section>
 <section id="module-pyemaps.kdiffs">
-<span id="kinematic-diffractions"></span><h2>Kinematic Diffractions<a class="headerlink" href="#module-pyemaps.kdiffs" title="Permalink to this heading">¶</a></h2>
+<span id="kinematic-diffractions-classes"></span><h2>Kinematic Diffractions Classes<a class="headerlink" href="#module-pyemaps.kdiffs" title="Permalink to this heading">¶</a></h2>
 <p>Kinematic diffraction module is designed to handle kinematic simulation
 data. It is composed of Point, Line and Disk class objects.</p>
 <blockquote>
@@ -1990,7 +1991,7 @@ kinematic diffraction patterns using this object.</p>
 
 </section>
 <section id="module-pyemaps.ddiffs">
-<span id="dynamic-diffraction"></span><h2>Dynamic Diffraction<a class="headerlink" href="#module-pyemaps.ddiffs" title="Permalink to this heading">¶</a></h2>
+<span id="dynamic-diffraction-classes"></span><h2>Dynamic Diffraction Classes<a class="headerlink" href="#module-pyemaps.ddiffs" title="Permalink to this heading">¶</a></h2>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyemaps.ddiffs.EMC">
 <span class="sig-prename descclassname"><span class="pre">pyemaps.ddiffs.</span></span><span class="sig-name descname"><span class="pre">EMC</span></span><a class="headerlink" href="#pyemaps.ddiffs.EMC" title="Permalink to this definition">¶</a></dt>
@@ -2515,6 +2516,75 @@ the input directory is writable.</p>
 in a folder name <cite>sh_converted</cite> in the dierctory that
 contains the original raw image file.</p>
 </div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pyemaps.xtal">
+<span id="crystal-structure-classes"></span><h2>Crystal Structure Classes<a class="headerlink" href="#module-pyemaps.xtal" title="Permalink to this heading">¶</a></h2>
+<dl class="py exception">
+<dt class="sig sig-object py" id="pyemaps.xtal.MxtalError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.xtal.</span></span><span class="sig-name descname"><span class="pre">MxtalError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.xtal.MxtalError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Crystal construction simulation errors.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.xtal.MxtalError.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.xtal.MxtalError.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyemaps.xtal.ACoord">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.xtal.</span></span><span class="sig-name descname"><span class="pre">ACoord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.xtal.ACoord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Coordinates of an atom with its symbol and 3-d real number coordinates in a crystal structure.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.xtal.ACoord.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coord</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.xtal.ACoord.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.xtal.ACoord.symb">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">symb</span></span><a class="headerlink" href="#pyemaps.xtal.ACoord.symb" title="Permalink to this definition">¶</a></dt>
+<dd><p>atom symbol</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.xtal.ACoord.coord">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coord</span></span><a class="headerlink" href="#pyemaps.xtal.ACoord.coord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Atom coordinate in 3-d floating numbers</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyemaps.xtal.Xtal">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyemaps.xtal.</span></span><span class="sig-name descname"><span class="pre">Xtal</span></span><a class="headerlink" href="#pyemaps.xtal.Xtal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Crystal structure class cnostructed by the output from
+<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateMxtal">generateMxtal</a> method of any crystal object, which consists of a cell
+constant and a list of atomic coordinates.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.xtal.Xtal.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.xtal.Xtal.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.xtal.Xtal.cell">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cell</span></span><a class="headerlink" href="#pyemaps.xtal.Xtal.cell" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.xtal.Xtal.acoordList">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">acoordList</span></span><a class="headerlink" href="#pyemaps.xtal.Xtal.acoordList" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.xtal.Xtal.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.xtal.Xtal.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append an atomc coordinate to existing list</p>
 </dd></dl>
 
 </dd></dl>
@@ -3394,7 +3464,7 @@ Dfffracted beams object creation.</p>
 <li class="toctree-l1"><a class="reference internal" href="license.html">Licences for pyEMAPS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rn.html">Release Notes</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Modules, Classes and Interfaces</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.crystals">Crystals</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.crystals">Crystals Classes</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.crystals.Cell"><code class="docutils literal notranslate"><span class="pre">Cell</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.crystals.Atom"><code class="docutils literal notranslate"><span class="pre">Atom</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.crystals.SPG"><code class="docutils literal notranslate"><span class="pre">SPG</span></code></a></li>
@@ -3411,7 +3481,7 @@ Dfffracted beams object creation.</p>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.emcontrols.EMControl"><code class="docutils literal notranslate"><span class="pre">EMControl</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.kdiffs">Kinematic Diffractions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.kdiffs">Kinematic Diffractions Classes</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.kdiffs.Point"><code class="docutils literal notranslate"><span class="pre">Point</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.kdiffs.Line"><code class="docutils literal notranslate"><span class="pre">Line</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.kdiffs.Index"><code class="docutils literal notranslate"><span class="pre">Index</span></code></a></li>
@@ -3419,7 +3489,7 @@ Dfffracted beams object creation.</p>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.kdiffs.diffPattern"><code class="docutils literal notranslate"><span class="pre">diffPattern</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.ddiffs">Dynamic Diffraction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.ddiffs">Dynamic Diffraction Classes</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.ddiffs.EMC"><code class="docutils literal notranslate"><span class="pre">EMC</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.ddiffs.BlochListError"><code class="docutils literal notranslate"><span class="pre">BlochListError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.ddiffs.BlochImgs"><code class="docutils literal notranslate"><span class="pre">BlochImgs</span></code></a></li>
@@ -3430,6 +3500,12 @@ Dfffracted beams object creation.</p>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.stackimg.normalizeImage"><code class="docutils literal notranslate"><span class="pre">normalizeImage()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.stackimg.displayXImage"><code class="docutils literal notranslate"><span class="pre">displayXImage()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pyemaps.stackimg.StackImage"><code class="docutils literal notranslate"><span class="pre">StackImage</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.xtal">Crystal Structure Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.xtal.MxtalError"><code class="docutils literal notranslate"><span class="pre">MxtalError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.xtal.ACoord"><code class="docutils literal notranslate"><span class="pre">ACoord</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyemaps.xtal.Xtal"><code class="docutils literal notranslate"><span class="pre">Xtal</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-pyemaps.display">Display</a><ul>
@@ -3520,12 +3596,12 @@ Dfffracted beams object creation.</p>
         <li class="right" >
           <a href="rn.html" title="Release Notes"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.1.2 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.1.3 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Modules, Classes and Interfaces</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2022-2024, EMLab Solutions, Inc..
+        &#169; Copyright 2022-2025, EMLab Solutions, Inc..
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>
