@@ -77,8 +77,6 @@ def main():
             print('Module dpgen is build as paid package')
 
     print('\n*****unit test for package types completed*****')
-    
-    sys.exit(pType)
 
 if __name__ == '__main__':
     main()

@@ -93,8 +93,7 @@ def generate_stereo(name = 'Silicon', ckey = 'tilt'):
     slist.sort(key=lambda x: x[0])
 
     return slist
-
-if __name__ == '__main__':
+def main():
     from pyemaps import showStereo
 
     # display in table format
@@ -112,4 +111,6 @@ if __name__ == '__main__':
                name='Silicon',
                iShow=True,
                bClose=True, 
-               zLimit = 1)       
+               zLimit = 1)     
+if __name__ == '__main__':
+      main()

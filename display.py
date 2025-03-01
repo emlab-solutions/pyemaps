@@ -744,9 +744,21 @@ def displayXImage(img,
                     
         plt.show()
 
-def plot2Powder(pw1, pw2):
+def plot2Powder(pw1, pw2, bClose=True):
     """
-    plot multiple powder diffraction in one plt plot
+    plot two powder diffractions in one matplotlib plot using from the
+    powder diffraction data generated from `generatePowder <pyemaps.crystals.html#pyemaps.crystals.Crystal.generatePowder>`_
+
+    :param pw1: powder diffraction data of an array of 2 x 1000
+    :type pw1: numpy array, required
+
+    :param pw1: powder diffraction data of an array of 2 x 1000
+    :type pw1: numpy array, required
+
+    :param bClose: boolean value indicating closure of the diffraction powder plot after about 3 seconds desplay.
+    :type bClose: Boolean, optional
+
+
     """
 
     fig, (ax1, ax2) = plt.subplots(nrows = 2)
@@ -769,4 +781,7 @@ def plot2Powder(pw1, pw2):
     fig.suptitle("Electron Powder Diffraction", fontsize=14, fontweight='bold')
     plt.subplots_adjust(hspace = 0.4)
 
-    plt.show()
+    plt.show(block=False)
+    if bClose:
+       plt.pause(3)
+       plt.close() 

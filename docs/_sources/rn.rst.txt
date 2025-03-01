@@ -1,6 +1,26 @@
 Release Notes
 =============
 
+Version 1.1.3 Stable
+-------------------- 
+
+03-01-2025 
+~~~~~~~~~~
+
+New
+~~~
+
+- Added new crystal structure data module :py:mod:`xtal` with :py:class:`Xtal` class for better handling of crystal structure data. The return from `generateMxtal <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateMxtal>`_ now also return an :py:class:`Xtal` class object. 
+
+Improvements
+~~~~~~~~~~~~
+
+- Bug fixes.
+- Dynamic diffraction image list class :py:class:`BlochImgs` in :py:mod:`ddiffs` now has better data comparison function with overloading == operator.
+- Microscopy and simulation controls module :py:mod:`emcontrols` also has imporoved data comparison functions for all of its classes.
+- Added automated testing for quality control. Before this version, the tests are run by developers' on his/her local systems prior to every release. Now it is done with github's workflow automatically triggered by code changes on release branch. More tests are to be added.
+- Adjusting sample code based on the new feature and improvements in this latest version. 
+
 Version 1.1.2 Stable
 -------------------- 
 

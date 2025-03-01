@@ -1,4 +1,5 @@
 '''
+
 .. This file is part of pyEMAPS
  
 .. ----
@@ -22,10 +23,14 @@
 
 .. Author:     EMLab Solutions, Inc.
 .. Date:       July 17, 2022    
+
 '''
 
 from . import EMC
 from . import BlochListError
+
+BLOCH_TOLERANCE = 1.0e-04
+
 class BlochImgs:
 
     '''
@@ -86,8 +91,57 @@ class BlochImgs:
     def __getitem__(self, key):
 
         '''
-        Array like method for retrieving DP
 
+        Array like method for retrieving DP
+        
         '''
         
         return self._blochList[key]
+    
+    def __contains__(self, emc, b):
+        '''
+
+        Given a dynamic image in 2-d array and corresponding simulation controls,
+        test if the pair is part of dynamic diffraction paterns list. Internal
+        function used for == operator overload.
+
+        '''
+        if not isinstance(emc, EMC) or \
+           not hasattr(b, "__len__") or \
+           b.ndim != 2:
+            raise BlochListError('invalid Bloch image object')
+        
+        import numpy as np
+        
+        shape_given = b.shape
+        
+        for (e,c) in self._blochList:
+            if e != emc or c.shape != shape_given:
+                continue
+            if np.allclose(c, b, atol=BLOCH_TOLERANCE): 
+                return True
+        
+        return False
+    
+    def __eq__(self, other):
+        '''
+        
+        Overloading == operator for the class
+
+        '''
+        if len(self._blochList) != len(other.blochList):
+            print(f'Dimension of bloch image differs')
+            return False
+        
+        if self._name != other._name:
+            print(f'Name of bloch image differs')
+            return False
+        
+        if len(self._blochList) != len(other.blochList):
+            return False
+        
+        for (e,b) in self._blochList:
+            if not other.__contains__(e,b):
+                print(f'Current bloch image differs from baseline')
+                return False
+        return True

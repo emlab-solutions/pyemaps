@@ -114,37 +114,7 @@ def find_pyemaps_datahome(home_type='crystals'):
     4. **stereo**: all .png files saved from stereodiagram plotting methods
 
     '''
-    # pyemaps_datahome = ''
-    # if home_type='crystals' and 'PYEMAPS_CRYSTALS' in os.environ:
-    #     pyemaps_datahome = os.getenv('PYEMAPS_CRYSTALS')
-
-    #
-    # defaults to current working directory
-    # bLegacy = False
-    # if 'PYEMAPS_CRYSTALS' in os.environ:
-    #     bLegacy = True
     
-    # env_name = 'PYEMAPS_CRYSTALS' if bLegacy else 'PYEMAPS_DATA'
-
-    # # defaults to current working directory
-    # pyemaps_datahome = os.getcwd()
-
-    # # but find pyeamsp home if exists
-    # if env_name in os.environ:
-    #     pyemaps_home = os.getenv(env_name)
-        
-    #     if Path(pyemaps_home).exists(): 
-    #         pyemaps_datahome = pyemaps_home
-    #     else:
-    #         try:
-    #             os.mkdir(pyemaps_home)
-
-    #         except OSError:
-    #             # can't create the directory, fall back to current directory
-    #             pass
-    #         else:
-    #             pyemaps_datahome = pyemaps_home
-    # from . import pyemaps_datahome
     global pyemaps_datahome
     if pyemaps_datahome is None:
         pyemaps_datahome = find_datahome()
@@ -222,15 +192,12 @@ crystal_data_basedir = 'cdata'
 negative_infinity = float(-np.inf)
 
 required_keys = ['cell', 'dw', 'atoms', 'spg']
-# CIF_NUM_TOKENS = r"[\(\+]"
 
 NUMERIC_PATTERN = '[-+]? (?: (?: \d* \. \d+ ) | (?: \d+ \.? ) )(?: [Ee] [+-]? \d+ ) ?'
 RX = re.compile(NUMERIC_PATTERN, re.VERBOSE)
 
 HM_CORE_PATTERN = '[A-Za-z0-9 /\-+]+'
 HM_RX = re.compile(HM_CORE_PATTERN, re.VERBOSE)
-
-# HM_PATTERN ='[][ \t_(),.;:"&<>/\{\}\'`~!@#$%?+=*A-Za-z0-9|^-]*' not used 
 
 
 def _float_eq(a,b):
@@ -564,29 +531,6 @@ def loadCrystalCIFData(fn):
 
     atoms = [dict(symb=atlabels[i], x=xx[i], y=yy[i], z=zz[i], occ=occ[i]) for i in range(at_len)]
 
-    # thermal display type, dw = Uiso, Biso, Uani, Uovl?
-    # dw = 'iso'
-    # if '_atom_site_thermal_displace_type' in c_dict or \
-    #     '_atom_site_adp_type' in c_dict:
-    #     dw_cif =''
-    #     if '_atom_site_adp_type' in c_dict:
-    #         dw_cif = c_dict['_atom_site_adp_type'].strip().lower()
-    #     else:
-    #         dw_cif = c_dict['_atom_site_thermal_displace_type'].strip().lower()
-
-    #     if dw_cif == 'biso':
-    #         dw = 'iso'
-    #     elif dw_cif == 'uovl':
-    #         dw = 'iso'
-    #     elif dw_cif == 'uiso':
-    #         dw = 'uij'  
-    #     elif dw_cif == 'uani':
-    #         dw = 'uij'
-    #     elif dw_cif == 'bani':
-    #         dw = 'bij'  
-    #     elif dw_cif == 'umpe':
-    #         dw = ''          
-
     if '_atom_site_aniso_label' in c_dict:
         if '_atom_site_aniso_U_11' not in c_dict and \
             '_atom_site_aniso_U_22' not in c_dict and \
@@ -799,7 +743,7 @@ def loadCrystalCIFData(fn):
         maxMatched = 0
         mIndex = -1
         for i in range(SPG_ENTRY_MAX):
-            emaps_spghm, spgnum, spgsetting = loouphm(i+1)
+            emaps_spghm, spgnum, spgsetting = lookuphm(i+1)
 
             cemaps_spghm = emaps_spghm.decode().strip()
 

@@ -36,30 +36,22 @@ full package and for purchase. Contact:
 for price information.
 
 """
-def al_dpdb(cname='Aluminium'):
-    from pyemaps import Crystal as cr
-    from pyemaps import EMC, SIMC
+def al_dpdb():
     import os
-   
+    from pyemaps import Crystal as crystal
+    from pyemaps import EMC, SIMC  
     
-    cryst = cr.from_builtin(cname)
-
-    #  first generate a DP database file
-    xa0=(2,0,0)   # x-axis, will be folded into EMC object
-    res = 200
-    ret, dbfn = cryst.generateDPDB(emc=EMC(zone=(0,0,1), 
-                                   simc=SIMC(gmax=3.9)), 
-                                   xa = xa0,
-                                   res = res)
-#   DP == Diffraction Pattern
-    if ret != 0:
-        print(f'failed to generate a DP or diffraction pattern databaes')
-        return -1
-
-    if dbfn is None or not os.path.exists(dbfn):
-        print(f'Error finding generated DP or diffraction pattern database file')
-        return -1
-
+    cr = crystal.from_builtin('Aluminium')
+    xa0=(2,0,0)   # x-axis
+    res = 200     # resolution
+    emc=EMC(zone=(0,0,1),simc=SIMC(gmax=3.9))
+    
+    ret, dbfn = cr.generateDPDB(emc=emc,xa = xa0, res = res)
+    
+    if ret != 0 or dbfn is None or not os.path.exists(dbfn):
+        print('Error generating diffraction pattern database')
+        return None
+    return dbfn
 
 if __name__ == '__main__':
     al_dpdb()

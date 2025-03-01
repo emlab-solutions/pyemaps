@@ -153,8 +153,7 @@ jobs:
           conda activate py37_env
           
           echo "Verifying conda environment..."
-          # conda info
-          # conda run -n py37_env pip list
+          
           conda run -n py37_env pip install --upgrade pip
           conda run -n py37_env pip install setuptools wheel requests numpy build
 
@@ -198,7 +197,7 @@ jobs:
       - name: Run batch script tests if there are changes
         run: |
           Write-Host echo "Running sanity tests...."
-          conda run -n py37_env cmd /c .\test\sanity\githut-sanity.bat > .\sanity-nightly\githubsanity_test_results.log 2>&1
+          conda run -n py37_env cmd /c .\test\githut-sanity.bat > .\sanity-nightly\githubsanity_test_results.log 2>&1
       
       # Step 6: Annotate failures
       - name: Annotate test failures

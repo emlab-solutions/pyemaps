@@ -29,6 +29,7 @@ dynamic diffraction patterns.
 from pyemaps import EMC, DEF_CBED_DSIZE
 
 MAX_PROCWORKERS = 4
+em_keys = ['tilt', 'zone']
 
 def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt', sim_rand=False):
     '''
@@ -96,8 +97,7 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
 
 from pyemaps import showBloch
 
-if __name__ == '__main__':
-    
+def main():
     em_keys = ['tilt', 'zone']
     
     for k in em_keys:
@@ -113,4 +113,8 @@ if __name__ == '__main__':
             showBloch(imgs, bClose=True)
         else:
             exit(1)
+
+if __name__ == '__main__':
+    
+    main()
         

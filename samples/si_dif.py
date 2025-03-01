@@ -34,6 +34,7 @@ except ImportError as e:
 from pyemaps import EMC, DPError,EMCError
 
 MAX_PROCWORKERS = 4
+em_keys = ['tilt', 'zone', 'defl', 'vt', 'cl']
 
 def generate_difs(name = 'Silicon', mode = DEF_MODE, ckey = 'tilt', sim_rand=False):
     '''
@@ -110,11 +111,9 @@ def generate_difs(name = 'Silicon', mode = DEF_MODE, ckey = 'tilt', sim_rand=Fal
 
     return difs
 
-if __name__ == '__main__':
+def main():
     
     from pyemaps import showDif
-
-    em_keys = ['tilt', 'zone', 'defl', 'vt', 'cl']
     
     for k in em_keys:
         dpl = generate_difs(ckey=k, mode=2)
@@ -129,3 +128,7 @@ if __name__ == '__main__':
     for k in em_keys:
         dpl = generate_difs(ckey=k, sim_rand=True)
         showDif(dpl, bClose=True)
+
+if __name__ == '__main__':
+    
+   main()

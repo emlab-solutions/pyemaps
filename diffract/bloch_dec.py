@@ -160,7 +160,7 @@ def add_bloch(target):
             Other information available during the session:
             
             a. List of sampling points, diffraction beams tilts etc 
-               with `printIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails>`_;
+               with `getIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.getIBDetails>`_;
             
             b. getEigen function is folded into getSCMatrix call starting from Stable verion 1.0.3
             
@@ -398,9 +398,9 @@ def add_bloch(target):
 
        return bimgs
            
-    def printIBDetails(self):
+    def getIBDetails(self, bPrint=True):
         '''
-        Prints a dynamic diffraction simulation details during a session
+        Retrieve a dynamic diffraction simulation details during a session
         marked by 
         `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_. and 
         `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.   
@@ -426,30 +426,35 @@ def add_bloch(target):
         if ret != 0:
             raise BlochError("failed to retrieve incidental beams info")
         
-        print(f'\n-------Dynamic Diffraction Simulation Session for {self._name}---------\n')
-        print(f'Total Number of sampling points: {nib}\n')
+        if bPrint:
+            print(f'\n-------Dynamic Diffraction Simulation Session for {self._name}---------\n')
+            print(f'Total Number of sampling points: {nib}\n')
 
-        smp = "Sampling"
-        stilt = "Beam Tilts In Reciprical Space"
-        
-        print(f"{smp:^11}{stilt:^48}")
-        print(f"{'Points':^11}\n")
-        
+            smp = "Sampling"
+            stilt = "Beam Tilts In Reciprical Space"
+            
+            print(f"{smp:^11}{stilt:^48}")
+            print(f"{'Points':^11}\n")
+            
         ibnet = np.transpose(net)
         ibtilt = np.transpose(tilt)
         
-
+        # if bPrint:
+        ibs_list =[]
         for i in range(1, nib+1, 1):
             net1, net2 = ibnet[i-1]
             t1,t2,t3 = ibtilt[i-1]
-        
-            sn1 = '{0: < #06d}'. format(int(net1))
-            sn2 = '{0: < #06d}'. format(int(net2))
-            st1 = '{0: < #016.10f}'. format(float(t1))
-            st2 = '{0: < #016.10f}'. format(float(t2))
-            st3 = '{0: < #016.7g}'. format(float(t3))
+            ibs_list.append(dict(ib=(net1, net2), tilt=ibtilt[i-1]))
+            if bPrint:
+                sn1 = '{0: < #06d}'. format(int(net1))
+                sn2 = '{0: < #06d}'. format(int(net2))
+                st1 = '{0: < #016.10f}'. format(float(t1))
+                st2 = '{0: < #016.10f}'. format(float(t2))
+                st3 = '{0: < #016.7g}'. format(float(t3))
 
-            print(f"{sn1}{sn2}{st1}{st2}{st3}")   
+                print(f"{sn1}{sn2}{st1}{st2}{st3}")  
+
+        return nib, ibs_list
 
     def getCalculatedBeams(self, bPrint=False):
         '''
@@ -526,7 +531,7 @@ def add_bloch(target):
 
     #     scmdim = bloch.get_scmdim(ib_coords)
     #     if scmdim <= 0:
-    #         raise BlochError("Error finding corresponding scattering matrix, use printIBDetails to find potential input for ib_coords")
+    #         raise BlochError("Error finding corresponding scattering matrix, use getIBDetails to find potential input for ib_coords")
         
     #     ev = farray(np.zeros(scmdim, dtype=np.complex64))
     #     ev, ret = bloch.geteigenvalues(ib_coords, ev)
@@ -544,7 +549,7 @@ def add_bloch(target):
         
         Obtains scattering matrix at a given sampling point. To get a list of sampling 
         points used in this dynamic simulation session, call 
-        `printIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.printIBDetails>`_
+        `getIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.getIBDetails>`_
         after `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_.
         In addition to the scattering matrix, it also generates associated eigen values
         and diffracted beams.
@@ -607,7 +612,7 @@ def add_bloch(target):
         bms = farray(np.zeros((3, scmdim), dtype=int))
         scm, ev, bms, ret = bloch.getscm(sample_thickness, rvec, scm, ev, bms)
         if ret != 0:
-            raise BlochError('Error retieving scattering matrix, input matrix dimension too small, use printIBDetails to find extact dimentsion')
+            raise BlochError('Error retieving scattering matrix, input matrix dimension too small, use getIBDetails to find extact dimentsion')
 
         return scmdim, scm, ev, np.transpose(bms)
 
@@ -759,7 +764,7 @@ def add_bloch(target):
     target._getBlochFN = _getBlochFN
 
     # ---These calls must be between beginBloch and endBloch calls
-    target.printIBDetails = printIBDetails
+    target.getIBDetails = getIBDetails
     # target.getBeams = getBeams     <-------deprecate
     target.getSCMatrix = getSCMatrix
     target.getBlochImages = getBlochImages

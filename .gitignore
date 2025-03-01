@@ -194,7 +194,7 @@ stem4d/
 emaps/
 extal/
 advisor/
-bloch/
+# bloch/
 dif/
 
 # ignore generated icon file

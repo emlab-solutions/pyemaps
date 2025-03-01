@@ -554,8 +554,10 @@ class Disk:
         if not isinstance(other, Disk):
             raise DiskError('disk object cannot equal to non disk object')
         
-        if not (self._idx == other.idx) or self._r != other.r:
-            
+        if not (self._idx == other.idx):
+            return False
+        
+        if abs(self._r - other.r) > 1.0e-06:
             return False
 
         if not (self._c == other.c):
@@ -922,13 +924,17 @@ class diffPattern:
             len(self._hlines) != len(other.hlines):
             return False
 
-        dk, dh, dd = self.difference(other)
-        if len(dk) != 0 or len(dh) != 0 or len(dd) != 0:
-            return False
-
-        dk, dh, dd = other.difference(self)
-        if len(dk) != 0 or len(dh) != 0 or len(dd) != 0:
-            return False
+        for kl in other.klines:
+            if not kl in self._klines:
+                return False
+        
+        for hl in other.hlines:
+            if not hl in self._hlines:
+                return False
+            
+        for ds in other.disks:
+            if not ds in self._disks:
+                return False
 
         return True
             
