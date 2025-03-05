@@ -14,7 +14,7 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
     simc = SIMC(excitation=(0.3,1.0), bmin=0.1)
 
     try:
-        bimgs = cr.generateBloch(sampling = 40,
+        bimgs = cr.generateBloch(sampling = 10,
                                 em_controls = EMC(zone=(1,1,1),
                                 vt=vt,
                                 cl=1000,
@@ -32,9 +32,11 @@ def main():
      
     from pyemaps import showBloch
 
-    imgs = generate_bloch_images()
+    imgs = generate_bloch_images(name = 'SiAlONa')
     if imgs is not None:
-        showBloch(imgs, cShow=True, layout='table', bSave = True, bClose=True)
+        showBloch(imgs, cShow=True, layout='table', bSave = False, bClose=False)
+    else:
+        print('Invalid image!')
 
 if __name__ == '__main__':
     

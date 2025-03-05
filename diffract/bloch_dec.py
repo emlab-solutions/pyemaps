@@ -276,8 +276,8 @@ def add_bloch(target):
         :param det_size: Detector size or output image size
         :type det_size: int, optional
 
-        :param nType: type of bloch images generated. 0 for normal or 1 for large angle CBED images
-        :type nType: int, optional. defaults to 0
+        :param nType: type of bloch images generated. TY_NORMAL (0) for normal or TY_LACBED (1) for large angle CBED images
+        :type nType: int, optional. defaults to TY_NORMAL
 
         :param bSave: True - save the output to a raw image file with extension of 'im3'
         :type bSave: bool, optional

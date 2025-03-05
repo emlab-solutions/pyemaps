@@ -102,9 +102,15 @@ def compare_feature_baseline(feature=feat_list[0]):
         basline_Compare_failure_cases=[]
         basline_Compare_failure_count = 0
 
-        if len(res) != len(bdata):
-            print(f'Current result does not compare with baseline.')
-            return
+        if t != TY_BUILTIN:
+            if len(res) != len(bdata):
+                print(f'Current result does not compare with baseline in data length.')
+                return
+        else:
+            if len(res) != len(bdata) + 1:
+                print(f'Current result does not compare with baseline in data length.')
+                return
+
 
         for r in res:
             tic = time.perf_counter()

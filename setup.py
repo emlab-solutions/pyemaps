@@ -83,8 +83,7 @@ def get_cdata(sdn = 'cdata'):
     import glob
 
 
-    free_xtl_remove = []
-    free_xtl_remove = ['SiAlONa.xtl']
+    # free_xtl_remove = ['SiAlONa.xtl']
 
     base_dir = os.path.realpath(__file__)
     samples_base_dir = os.path.join(os.path.dirname(base_dir), sdn)
@@ -96,8 +95,8 @@ def get_cdata(sdn = 'cdata'):
     
     for rf in res:
         _, rfn = os.path.split(rf)
-        if rfn not in free_xtl_remove:
-            out.append(rf)
+        # if rfn not in free_xtl_remove:
+        out.append(rf)
         
     return out
 
