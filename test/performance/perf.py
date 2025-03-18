@@ -24,11 +24,12 @@ def get_perf_baseline(ty='dif'):
     import json
     
     perf_bfn = get_baseline_fname(ty=ty)
+    print(f'Baseline file name for {ty}: {perf_bfn}')
     
     with open(perf_bfn) as jf:
         data = json.load(jf)
-    
-    return data
+        
+    return dict(data)
             
 def gen_perf_baseline(ty='dif'):
     import json
@@ -66,6 +67,11 @@ def run_perf(ty = 'dif', bBaseline = False):
     res_dict = {}
 
     for c in cblist:
+        # debug:
+        if 'SiAlONa' in c:
+            continue
+        # debug:
+
         tic = time.perf_counter()
         cc = cr.from_builtin(c)
 
@@ -95,9 +101,9 @@ def run_perf(ty = 'dif', bBaseline = False):
         
         # load the existing baseline reseult:
         jBaseline = get_perf_baseline(ty=ty)
-        # print(f'loaded baseline result: {res_dict}')
         for n, v in res_dict.items():
-            if n in jBaseline:
+            # print(f'loaded baseline result: {jBaseline.keys()}')
+            if n.strip() in jBaseline:
                 base = float(jBaseline[n])
                 vv = float(v)
                 diff = abs(vv-base)

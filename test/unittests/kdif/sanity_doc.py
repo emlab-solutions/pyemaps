@@ -30,20 +30,26 @@ def run_kdiff(name = 'Silicon', bShow=True, bSave=False, bPrint=False):
                       vt=vt,
                       cl=1000,
                       simc=simc)   
-    
     cr = Crystal.from_builtin(name)                     #----loading Silicon crystal from builtin database
-    emc, cr_dp = cr.generateDP(em_controls=em_controls)         #----generate kinematic diffraction pattern
-                                                        #----Output:
-                                                        #----emc: associated microscope and 
-                                                        #            simulation control object
-                                                        #----si_dp: diffraction pattern generated
-    if bPrint: print(cr_dp)                             #----raw representation of kinematic diffraction pattern 
+    if bPrint: print(cr)
 
-    dpl = DPList(name)                                  #----create a diffraction pattern list to hold the results
-    dpl.add(emc, cr_dp) 
+    try:
+        print(f'debug: got')
+        emc, cr_dp = cr.generateDP(em_controls=em_controls) #----generate kinematic diffraction pattern
+                                                            #----Output:
+                                                            #----emc: associated microscope and 
+                                                            #            simulation control object
+                                                            #----si_dp: diffraction pattern generated
+                                                            #----raw representation of kinematic diffraction pattern 
+
+        dpl = DPList(name)                                  #----create a diffraction pattern list to hold the results
+        dpl.add(emc, cr_dp) 
+    except Exception as e:
+        print(f'Failed to simulate kinematical diffractions: {e}')
     if bShow:
         showDif(dpl)
 
 if __name__ == '__main__':
     # run_kdiffraction()
-    run_kdiff(name='SiAlONa')
+    run_kdiff(name='SiAlONa', bPrint=True)
+    # SiAlONa, BiMnO3

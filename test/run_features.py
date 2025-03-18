@@ -58,7 +58,8 @@ def run_feature_list(cnflist, cdata_ty=TY_BUILTIN, feature=feat_list[0], bShow=F
                 if feature == feat_list[0] and res is not None:
                     showDif(res, bSave = False, bClose=True)
                 if feature == feat_list[1] and res is not None:
-                    showBloch(res, bSave = False, bClose=True)
+                    # showBloch(res, bSave = False, bClose=True) debug:
+                    showBloch(res, bSave = False, bClose=False)
                 if feature == feat_list[2] and res is not None:
                     showStereo([(EMC(), res)], name=cf.name, bSave=False, bClose=True)
                     

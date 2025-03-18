@@ -149,6 +149,10 @@ def get_test_cases(cdata_ty=TY_BUILTIN, feature = feat_list[0]):
     
     failed_cif_cases_list = ['1010115.cif', '1010195.cif', '1010197.cif', '1010198.cif']
     for f in os.listdir(data_dir):
+        # debug: temporary. please remove for production
+        # if f != 'Aluminium.xtl':
+        #     continue
+        # debug: temporary. please remove for production
         if f not in failed_cif_cases_list and f.endswith(data_ext):
             if feature == 'bloch' and cdata_ty !=TY_BUILTIN and int(os.path.splitext(f)[0]) < 1010150:
                 continue

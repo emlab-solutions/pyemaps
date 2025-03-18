@@ -6,6 +6,8 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
     
     from pyemaps import Crystal as cryst
     from pyemaps import SIMC
+    import time
+    tic = time.time()
 
     cr = cryst.from_builtin(name)
     
@@ -27,12 +29,17 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
             return None
             
     bimgs.sort()
+    # imgs = generate_bloch_images(name = 'SiAlONa')
+
+    toc = time.time()
+    
+    print(f"Bloch simulation on {cr.name} takes: {toc-tic} seconds")
     return bimgs 
 def main():
      
     from pyemaps import showBloch
-
-    imgs = generate_bloch_images(name = 'SiAlONa')
+    
+    imgs = generate_bloch_images(name = 'BiMnO3')
     if imgs is not None:
         showBloch(imgs, cShow=True, layout='table', bSave = False, bClose=False)
     else:

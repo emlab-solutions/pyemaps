@@ -601,16 +601,16 @@ def add_bloch(target):
         if rvec is None or not all(isinstance(v, (int,float)) for v in rvec) or len(rvec) != 3:
             raise BlochError("Invalid R-vector input, must be tuple of three floats")
 
-        # get the dimension of the scattering matrix
-        scmdim, RET = bloch.compute_scm([ib_coords[0], ib_coords[1]])
+        # get the dimension of the scattering matrix)
+        idx, scmdim, ret = bloch.compute_scm([ib_coords[0], ib_coords[1]])
         
-        if RET != 0 or scmdim <= 0:
+        if ret != 0 or scmdim <= 0:
             raise BlochError("Error finding corresponding scattering matrix")
-
+        
         scm = farray(np.zeros((scmdim, scmdim)), dtype=np.complex64)
         ev = farray(np.zeros(scmdim), dtype=np.complex64)
         bms = farray(np.zeros((3, scmdim), dtype=int))
-        scm, ev, bms, ret = bloch.getscm(sample_thickness, rvec, scm, ev, bms)
+        scm, ev, bms, ret = bloch.getscm(sample_thickness, rvec, idx, scm, ev, bms)
         if ret != 0:
             raise BlochError('Error retieving scattering matrix, input matrix dimension too small, use getIBDetails to find extact dimentsion')
 

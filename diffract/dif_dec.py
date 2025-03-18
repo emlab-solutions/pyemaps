@@ -109,12 +109,9 @@ def add_dif(target):
         :rtype: tuple.
  
         """
-
+        
         if em_controls is None:
             em_controls =EMC()
-
-        # if not sim_controls:
-        #     em_controls =SIMC()
 
         tx0, ty0 = em_controls.tilt
         dx0, dy0 = em_controls.defl
