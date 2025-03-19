@@ -9,7 +9,7 @@
 project = 'pyemaps'
 copyright = '2022-2025, EMLab Solutions, Inc.'
 author = 'EMLab Solutions, Inc.'
-release = '1.1.3 Stable'
+release = '1.1.4 Stable'
 
 
 
