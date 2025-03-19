@@ -42,7 +42,7 @@ os.environ["MSSdk"] = "1"
 from pathlib import Path
 
 install_requires = [
-            'emaps >= 1.0.7',
+            'emaps >= 1.0.8',
             'numpy >= 1.21.2',
             'matplotlib >= 3.2.1'
             ]
