@@ -142,6 +142,7 @@ def get_long_description():
 
 setup(name                              ="pyemaps",
       version                           = get_version('__version__'),
+      description                       ="A Python Package for Transmission Electron Diffraction Simulations and Crystallographic Computing",
       long_description_content_type     ='text/markdown',
       long_description                  = get_long_description(),
       py_modules                        = ['pyemaps.crystals',
