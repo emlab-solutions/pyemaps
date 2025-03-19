@@ -11,7 +11,7 @@ Improvements
 ~~~~~~~~~~~~
 
 - Bug fixes and performance imporvements in dynamic diffraction or Bloch simulations. 
-- Added python package short description. 
+- Added python package short description in python package repository pypi.org. 
 
 
 Version 1.1.3 Stable
