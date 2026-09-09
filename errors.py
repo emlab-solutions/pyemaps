@@ -239,10 +239,20 @@ class StereodiagramError(Exception):
 class MxtalError(Exception):
     '''
     Crystal construction simulation errors.
-    
+
     '''
     def __init__(self, message=''):
         self.message = str(f'Error generating mxtal: {message}')
+        super().__init__(self.message)
+
+
+class CSFError(Exception):
+    '''
+    Crystal structure factor generation and validation errors.
+
+    '''
+    def __init__(self, message=''):
+        self.message = str(f'Error generating structure factors: {message}')
         super().__init__(self.message)
 
 
