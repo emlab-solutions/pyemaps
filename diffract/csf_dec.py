@@ -38,8 +38,20 @@ def add_csf(target):
     try:
         from . import csf
 
-    except ImportError as e:               
+    except ImportError as e:
         print(f"Error: required module pyemaps.csf not found")
+
+    from .. import CSFError
+
+    # backend csf.generate_sf / csf.get_sf return codes
+    _CSF_ERR = {
+        1: 'structure factor generation failed',
+        2: 'invalid structure factor type (sftype must be 1-4)',
+        3: 'too many reflections within smax for the backend beam limit; '
+           'reduce smax and retry',
+        4: 'backend ran out of memory sizing the reflection set; reduce smax',
+        5: 'backend reflection-count estimate was too low (internal error)',
+    }
         
     sf_type_lookup = ['X-ray Structure Factors',
                   'Electron Strcture Factors in kV',
@@ -192,19 +204,19 @@ def add_csf(target):
         self.load()
 
         nb, ret = csf.generate_sf(kv, smax, sftype, aptype)
-        
-        if ret != 0 and nb <= 0:
-            print(f'Error generating structure factor for {self.name}')
+
+        if ret != 0 or nb <= 0:
             self.cleanCSF()
-            return sfs
+            detail = _CSF_ERR.get(ret, f'backend returned code {ret}')
+            raise CSFError(f'{detail} (crystal {self.name})')
 
         for i in range(2, nb+1):
             ret = 0
             ret,h,k,l,s,d,sf1,sf2 = csf.get_sf(i)
-            if ret != 0: 
-                print(f'Error generating sructure factor for {self.name}')
+            if ret != 0:
                 self.cleanCSF()
-                return sfs
+                raise CSFError(f'failed to retrieve reflection {i} of {nb} '
+                               f'(crystal {self.name})')
             
             sf = dict(hkl = (h,k,l),
                        sw = s,
