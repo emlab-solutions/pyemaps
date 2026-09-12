@@ -173,6 +173,10 @@ def add_csf(target):
         :return: a dict object with structure factor data
         :rtype: dict
 
+        :raises CSFError: if the backend fails to generate structure factors,
+         *sftype* is invalid, or the number of reflections within *smax*
+         exceeds the backend beam limit (reduce *smax* and retry).
+
         .. note:: *sftype* has the following value representing:
 
             1. x-ray structure factor (default)

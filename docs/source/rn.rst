@@ -1,6 +1,25 @@
 Release Notes
 =============
 
+Version 1.1.5 Stable
+--------------------
+
+09-12-2026
+~~~~~~~~~~
+
+New
+~~~
+
+- `generateCSF <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateCSF>`_ now raises a catchable `CSFError <pyemaps.errors.html#pyemaps.errors.CSFError>`_ when structure factor generation fails, an invalid *sftype* is given, or the number of reflections within *smax* exceeds the backend beam limit -- instead of silently returning a partial result.
+
+Improvements
+~~~~~~~~~~~~
+
+- Fixed an out-of-bounds memory write in dynamic diffraction (Bloch) image generation that could occasionally cause instability on repeated runs.
+- Significant performance improvement to dynamic diffraction (Bloch) simulations from a corrected OpenMP parallelization fix in the eigensolver -- benchmarks show consistent speedups across all built-in crystals, with the largest gains on bigger structures.
+- Raised the structure factor calculation's reflection limit and improved the reflection-selection algorithm to scale linearly with reflection count, allowing larger *smax* values that previously failed.
+- Packaging fix ensuring the scattering and space-group backend modules link correctly during installation.
+
 Version 1.1.4 Stable
 -------------------- 
 
