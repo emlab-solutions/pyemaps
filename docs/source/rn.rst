@@ -1,6 +1,20 @@
 Release Notes
 =============
 
+Version 1.1.6 Stable
+--------------------
+
+09-18-2026
+~~~~~~~~~~
+
+Improvements
+~~~~~~~~~~~~
+
+- Fixed a bug in dynamic diffraction (Bloch) simulations where, for larger unit cells or zone axes with a large number of beams, an uninitialized internal value could silently corrupt the computed scattering matrix and produce a visibly incorrect image without any error or crash. Simulations in this regime are also noticeably faster now that the underlying computation is correct.
+- Fixed structure factor calculations for atoms specified with an ionic charge or site-index suffix in their element label (e.g. ``K1+``, ``Zr4+``, ``F1-``), which were previously being silently matched to the wrong element's scattering data.
+- Improved the performance of powder diffraction pattern generation for large reflection counts.
+- Requires ``emaps >= 1.1.0``.
+
 Version 1.1.5 Stable
 --------------------
 
