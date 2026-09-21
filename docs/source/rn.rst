@@ -14,7 +14,7 @@ Improvements
 - Regenerated the stored Bloch feature test baselines against emaps 1.1.0.
 - Reduced memory usage when generating large diffraction pattern databases (``dpgen``) by streaming database records to disk as they are computed instead of accumulating them all in memory first.
 - Fixed memory leaks and improved out-of-memory robustness in the peak-search code used by the 4D-STEM (stem4d) feature.
-- Requires ``emaps >= 1.1.0``.
+- Requires ``emaps >= 1.1.1``.
 
 Version 1.1.6 Stable
 --------------------
