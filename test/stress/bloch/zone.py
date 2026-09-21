@@ -52,11 +52,11 @@ def bt_bloch():
     omega = 20
     # sth = (50, 1000, 50)
     # sth = (500, 2000, 250)
-    sth = (200, 200, 250)
+    sth = (200, 250, 500)
 
     simc = SIMC(gmax = gmax, excitation=(sgmin, sgmax))
 
-    emclist = [EMC(cl=200, zone=z, simc=simc) for z in zlist]
+    emclist = [EMC(cl=400, zone=z, simc=simc) for z in zlist]
     
     session_tic = time.perf_counter()
     bstressdir= os.path.join(ef.find_pyemaps_datahome(home_type="bloch"), "stress")
@@ -80,7 +80,7 @@ def bt_bloch():
                             omega = omega, 
                             disk_size = 0.05,
                             sampling = 10, 
-                            bSave=False)
+                            bSave=True)
               
               except (BlochError, EMCError) as e:
                      print(f'   generated an exception: {e.message}') 
@@ -90,7 +90,7 @@ def bt_bloch():
                      return bimg
               else:
                      zone_toc = time.perf_counter()
-                     showBloch(bimg, bClose=True) 
+                     showBloch(bimg, bClose=False) 
               
           bext_output = bcap.getvalue()
           print(f'   Bloch extension message: {bext_output}')
