@@ -1,6 +1,21 @@
 Release Notes
 =============
 
+Version 1.1.7 Stable
+--------------------
+
+09-21-2026
+~~~~~~~~~~
+
+Improvements
+~~~~~~~~~~~~
+
+- Tuned the dynamic diffraction (Bloch) stress test with a wider thickness range and longer camera length, and updated it to save its rendered image and leave the plot window open for visual inspection.
+- Regenerated the stored Bloch feature test baselines against emaps 1.1.0.
+- Reduced memory usage when generating large diffraction pattern databases (``dpgen``) by streaming database records to disk as they are computed instead of accumulating them all in memory first.
+- Fixed memory leaks and improved out-of-memory robustness in the peak-search code used by the 4D-STEM (stem4d) feature.
+- Requires ``emaps >= 1.1.1``.
+
 Version 1.1.6 Stable
 --------------------
 
