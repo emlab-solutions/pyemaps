@@ -65,7 +65,7 @@ def copy_samples():
             shutil.copy(source, destination)
             print(f'Copied sample code: {file_name} in pyemaps package to {destination}')
 
-    print(f'Run sample code by typing: \"python pyemaps_samples\<sample>\"')
+    print(f'Run sample code by typing: \"python pyemaps_samples\\<sample>\"')
 
 def is_alphanumeric_with_dash(s, slen):
     """
