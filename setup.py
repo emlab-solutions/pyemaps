@@ -35,8 +35,10 @@ from setuptools import setup
 try:
     from setuptools.command.install_data import install_data as _install_data
 except ImportError:
-    # Older setuptools has no install_data of its own. Importing setuptools
-    # first makes this distutils import work on Python 3.12+ too.
+    # setuptools has no install_data command of its own (checked up to
+    # 84.2.1), so this branch is the one that normally runs. Python 3.12+
+    # has no stdlib distutils, but importing setuptools first makes
+    # setuptools' bundled copy answer this import.
     from distutils.command.install_data import install_data as _install_data
 
 
