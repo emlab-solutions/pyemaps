@@ -4,7 +4,7 @@ Release Notes
 Version 1.1.8 Stable
 --------------------
 
-MM-DD-2026
+11-09-2026
 ~~~~~~~~~~
 
 Improvements
