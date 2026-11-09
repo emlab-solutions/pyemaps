@@ -106,7 +106,9 @@ class StackImage():
                         MIN_IMAGESIZE,
                         MIN_IMAGESTACK),
                  noffset = 8):
-        
+
+        self._data = None                       # current image data
+        self._npdata = None                     # numpy input image (E_NPY)
         setattr(self, 'nformat', nformat)       # image file type
         setattr(self, 'fname', imgfn)           # image file name
         setattr(self, 'noffset', noffset)       # image header offset to image data
@@ -176,6 +178,10 @@ class StackImage():
         Otherwise, the data will be generated from Stem4d when the input image
         file is loaded.
 
+        With `nformat` set to E_NPY, set this to a 2-D numpy array of any
+        boolean, integer or floating-point type, 100 to 512 pixels per side,
+        before calling `loadImage`. It is converted to float32 when loaded.
+
         """
         return self._data
 
@@ -229,9 +235,12 @@ class StackImage():
 
     @data.setter
     def data(self, idata):
-        if not isinstance(idata, np.ndarray()):
-            raise XDPImageError('Raw image data must be an numpy array')
+        if not isinstance(idata, np.ndarray):
+            raise XDPImageError('Raw image data must be a numpy array')
 
+        # loadImage reads the input from _npdata; _data is replaced by
+        # whichever image is loaded or generated later
+        self._npdata = idata
         self._data = idata
 
     def __del__(self):
@@ -250,7 +259,12 @@ class StackImage():
         ximage = stem4d.cvar.ximg
         ret = -1
         if img_format == E_NPY:
-            ret = ximage.setImage_from_numpy(self.data)
+            if self._npdata is None:
+                raise XDPImageError("No image data: set the data property to a 2-D numpy array before loading")
+            try:
+                ret = ximage.setImage_from_numpy(self._npdata)
+            except (TypeError, ValueError, MemoryError) as e:
+                raise XDPImageError(f"Invalid numpy image: {e}") from e
 
         # load proprietory small header formatted image file
         if img_format == E_SH:
