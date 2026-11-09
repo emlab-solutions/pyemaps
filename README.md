@@ -58,9 +58,8 @@ Requirements and recommendations:
 * __Python__: Version == 3.7
 * __Operating Systems__: Windows
 * __VSCode__: code editing (recommended, for contributors only)
-* __MSVC Community 2019__: with build tools (for contributors only)
 
-Current __pyEMAPS__ only support Windows and python 3.7. We are also looking for contributors to extend it to other platforms and python versions. 
+Building __pyEMAPS__ itself needs no compiler, because it is pure Python. Its compiled backend, __emaps__, currently supports only Windows and Python 3.7, so __pyEMAPS__ does too. We are also looking for contributors to extend it to other platforms and python versions. 
 
 Like many python development, a virtual python environment is recommended to isolate your pyEMAPS development environment from your other python development projects.
 
@@ -95,12 +94,8 @@ Below are steps to establish __pyEMAPS__ build environment with python 3.7.9 as 
   ```
 * Install other python packages required for building pyemaps, using pip:
   ``` 
-  pip install setuptool wheel numpy build
+  pip install setuptools wheel build
   ```
-* Install Microsoft Visual Studio 2019 Community with build tools 
-   https://visualstudio.microsoft.com/vs/older-downloads/
-   by selecting "Desktop development with C++" in the installer.
-   (You may need a microsoft account to be able to download)
 * Build directory structure:
 
 <pre>
@@ -141,7 +136,7 @@ where _docs_ for creation of documents requires Sphinx python package:
 
 * Install the new pyEMAPS package:
   ```
-   pip .\dist\pyemaps-1.0.0-cp37-cp37m-win_amd64.whl
+   pip install .\dist\pyemaps-1.0.0-py3-none-any.whl
   ```
   This will install new pyEMAPS just built in current python virtual environment
   along with all of its dependent packages. 
