@@ -26,6 +26,8 @@ Improvements
 
 - Fixed plot windows on matplotlib 3.6 and newer, which removed the window-title call pyEMAPS used.
 - Simulation results are identical to pyEMAPS 1.1.8 on every supported Python version.
+- Plot windows shown with ``bClose=True`` now stay up 3 seconds after the last image before closing, instead of about 1 second.
+- New 4D-STEM (stem4d) checks in the test suite cover image loading, diffraction pattern database generation and indexing.
 - Requires ``emaps >= 2.0.0``.
 
 Version 1.1.8 Stable
