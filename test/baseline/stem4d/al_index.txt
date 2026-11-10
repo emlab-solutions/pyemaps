@@ -1,0 +1,24 @@
+Number of peaks found: 27
+-----------------Diffraction Pattern(DP) Indexing Results--------------------
+***** DP stack loaded and indexed: 1
+***** Best matching database DP: 1715
+***** DP rotation angle: 284.192 (degrees)
+***** Number of diffraction peaks indexed: 11
+***** Experimental and database DP correlation maximum: 0.988329
+***** Beam direction: 0.0575418 0.0599394 0.232559
+***** Reliability index (> 5.0): 30.5407
+Diffraction Database loaded successfully.
+Dimension of stereo projection map: width =76, height=85
+-----------------Indexed Diffraction Pattern Details------------------
+ DP #   Miller Index     Distance            DP Loc          Intensity
+    1     2    -2     0   18.805359  114.912613  109.021492   14.05505
+    2    -2     2     0   20.888754   81.346603   87.833191  100.00000
+    3     3     1    -1   22.201900   95.978333  120.995316   28.63353
+    4    -1    -3     1   22.830843  117.979164   86.309898    9.12775
+    5    -3    -1     1   23.202806  101.336617   75.915146   17.33628
+    6     1     3    -1   23.803307   78.843224  111.661034   97.01090
+    7     5    -1    -1   36.265705  112.098000  132.817810    2.99402
+    8    -5     1     1   36.616173   85.120682   65.116249    4.92946
+    9    -1     5    -1   36.805595   62.239502  100.821404   33.52511
+   10    -4     4     0   39.269745   66.114388   77.537254   18.77301
+   11     4     4    -2   42.499973   76.063011  134.779083    2.83128

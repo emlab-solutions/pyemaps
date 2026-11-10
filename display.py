@@ -102,6 +102,9 @@ def _isWin():
     import sys
     return (sys.platform == 'win32')
 
+# seconds a window with bClose=True stays up after its last image
+CLOSE_DELAY = 3
+
 class DifPlotter:
     # '''
     # diffraction data plotter that receives data from the pipe and
@@ -125,6 +128,8 @@ class DifPlotter:
    
     def terminate(self):
         if self.bClose:
+            # keep the last image up for CLOSE_DELAY seconds, then close the window
+            plt.pause(CLOSE_DELAY)
             plt.close(self.fig) #just close the current figure
         # Otherwise:
         # users must close this window after done
@@ -487,7 +492,7 @@ def showDif(dpl=None,
     :param bSave: Whether to save the diplay into a .png image file.
     :type bSave: bool    
 
-    :param bClose: Whether to close plotting window when finished. Default: False - users must close it. 
+    :param bClose: Whether to close the plotting window by itself, 3 seconds after the last image. Default: False - users must close it. 
     :type bClose: bool, optional  
     
     """
@@ -537,7 +542,7 @@ def showBloch(bimgs,
     :param bSave: Optional. Whether to save the image into a .im3 image file.
     :type bSave: bool    
 
-    :param bClose: Whether to close plotting window when finished. Default: False - users must close it. 
+    :param bClose: Whether to close the plotting window by itself, 3 seconds after the last image. Default: False - users must close it. 
     :type bClose: bool, optional  
     
     """
@@ -595,7 +600,7 @@ def showStereo(slist, name,
     :param bSave: Whether to save the image into a .png image file.
     :type bSave: bool, optional  
     
-    :param bClose: Whether to close plotting window when finished. Default: False - users must close it. 
+    :param bClose: Whether to close the plotting window by itself, 3 seconds after the last image. Default: False - users must close it. 
     :type bClose: bool, optional  
 
 

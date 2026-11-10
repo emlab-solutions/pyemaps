@@ -50,7 +50,7 @@ def run_si_sample():
     dpl.add(emc, si_dp) 
     
     #plot and show the diffraction pattern using pyemaps built-in plot function
-    showDif(dpl)
+    showDif(dpl, bClose=True)
 
     #hide Kikuchi lines
     showDif(dpl, kShow=False, bClose=True) 

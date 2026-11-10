@@ -73,10 +73,10 @@ def compare_im3(fn, bfn):
               f'total intensity {100.0*(a[k].sum()-b[k].sum())/b[k].sum():+.3g}%')
     return False
 
-def bt_bloch(bBaseline=False):
+def bt_bloch():
     '''
     Runs the stress test and returns the raw bloch image file it saved, or None on failure.
-    bBaseline: True - also save the rendered image as PNG and close the plot (baseline runs)
+    The rendered image is saved as PNG, and its window closes by itself after 3 seconds.
     '''
     from pyemaps import Crystal as cryst
     from pyemaps import showBloch, EMC, SIMC, BlochError, EMCError
@@ -140,10 +140,7 @@ def bt_bloch(bBaseline=False):
                      return None
               else:
                      zone_toc = time.perf_counter()
-                     if bBaseline:
-                            showBloch(bimg, bSave=True, bClose=True)
-                     else:
-                            showBloch(bimg, bClose=False)
+                     showBloch(bimg, bSave=True, bClose=True)
               
           bext_output = bcap.getvalue()
           print(f'   Bloch extension message: {bext_output}')
@@ -174,7 +171,7 @@ if __name__ == "__main__":
         bt_bloch()
         sys.exit(0)
 
-    imgfn = bt_bloch(bBaseline=True)
+    imgfn = bt_bloch()
     if imgfn is None:
         print(f'++++++ Bloch stress test FAILED for {cname}: no image generated +++++++')
         sys.exit(1)
