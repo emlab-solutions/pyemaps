@@ -7,7 +7,9 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'pyemaps'
-copyright = '2022-2026, EMLab Solutions, Inc.'
+# The end year is the year the docs are built.
+import datetime
+copyright = f'2022-{datetime.date.today().year}, EMLab Solutions, Inc.'
 author = 'EMLab Solutions, Inc.'
 release = '2.0.0 Stable'
 
