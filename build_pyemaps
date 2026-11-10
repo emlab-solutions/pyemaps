@@ -430,21 +430,13 @@ def set_benvs():
                             sos)
                             
 def get_wheel(v):
-    # Get the current Python implementation and version
-    # python_tag = sys_tags()[0]
-    # Get the desired Python tag based on your requirements
-    python_tag = "cp37"  # Replace with the Python version you want to target
-
-    # Initialize the python_tag variable to None
-    abi_tag = python_tag + 'm'
-
-    # Iterate through the tags and find the one that matches the desired Python version
-    # for tag in sys_tags():
-    #     if tag.interpreter == desired_python_tag:
-    #         python_tag = tag
-
-    # Specify the platform tag, e.g., for 64-bit Windows
-    platform_tag = "win_amd64" #window only, linux is complicated
+    # pyemaps is pure Python (no extension modules), so setuptools builds a
+    # universal py3-none-any wheel that installs on any Python 3 version and
+    # platform. The Python and platform restrictions come from emaps, the
+    # compiled backend, not from this package.
+    python_tag = "py3"
+    abi_tag = "none"
+    platform_tag = "any"
 
     if python_tag is not None:
         # Construct the wheel file name using the selected Python tag

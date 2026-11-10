@@ -65,7 +65,7 @@ def copy_samples():
             shutil.copy(source, destination)
             print(f'Copied sample code: {file_name} in pyemaps package to {destination}')
 
-    print(f'Run sample code by typing: \"python pyemaps_samples\<sample>\"')
+    print(f'Run sample code by typing: \"python pyemaps_samples\\<sample>\"')
 
 def is_alphanumeric_with_dash(s, slen):
     """
@@ -103,7 +103,14 @@ def main():
         
     import argparse
     import datetime
-    import pkg_resources
+    try:
+        from importlib.metadata import version as dist_version   # Python 3.8+
+    except ImportError:
+        # Python 3.7. Newer Python venvs don't install setuptools, which provides
+        # pkg_resources, so only use it where importlib.metadata is missing.
+        import pkg_resources
+        def dist_version(name):
+            return pkg_resources.get_distribution(name).version
 
     parser = argparse.ArgumentParser(description="pyEMAPS command line tool.",  
                                      formatter_class=argparse.RawTextHelpFormatter)
@@ -155,7 +162,7 @@ The token is obtained from EMLab Solutions, Inc. by writing to support@emlabsoft
         parser.print_help()
         exit(1)
 
-    ver = pkg_resources.require("pyemaps")[0].version + str(f" {rel_stage}").lower()
+    ver = dist_version("pyemaps") + str(f" {rel_stage}").lower()
     
     copyrit = ['PyEMAPS - Transmission Electron Diffraction Simulations In Python']
     copy1 = '© 2021-' + datetime.date.today().strftime('%Y') + ' EMLab Solutions, Inc. All rights reserved.'

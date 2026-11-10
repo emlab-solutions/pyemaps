@@ -193,10 +193,10 @@ negative_infinity = float(-np.inf)
 
 required_keys = ['cell', 'dw', 'atoms', 'spg']
 
-NUMERIC_PATTERN = '[-+]? (?: (?: \d* \. \d+ ) | (?: \d+ \.? ) )(?: [Ee] [+-]? \d+ ) ?'
+NUMERIC_PATTERN = r'[-+]? (?: (?: \d* \. \d+ ) | (?: \d+ \.? ) )(?: [Ee] [+-]? \d+ ) ?'
 RX = re.compile(NUMERIC_PATTERN, re.VERBOSE)
 
-HM_CORE_PATTERN = '[A-Za-z0-9 /\-+]+'
+HM_CORE_PATTERN = r'[A-Za-z0-9 /\-+]+'
 HM_RX = re.compile(HM_CORE_PATTERN, re.VERBOSE)
 
 

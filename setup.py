@@ -23,39 +23,48 @@ Author:             EMLab Solutions, Inc.
 Date Created:       May 07, 2022  
 
 '''
-from ast import keyword
-from ensurepip import version
-from multiprocessing import AuthenticationError
-from nturl2path import url2pathname
-from random import sample
-from ssl import Options
-
-import setuptools
-from numpy.distutils.core import Extension, setup
-
-from numpy.distutils.command.build_ext import build_ext as numpy_build_ext
-
 import os
-
-os.environ["DISTUTILS_USE_SDK"] = "1"
-os.environ["MSSdk"] = "1"
 from pathlib import Path
+
+# pyemaps is pure Python. The bundled PyCifRW's optional C scanner
+# (pyemaps.CifFile.StarScan, sources in CifFile/src/lib) is not built:
+# pyemaps reads CIF files with ReadCif's default pure-Python scanner, and
+# PyCifRW falls back to it when StarScan is absent. That makes the wheel
+# py3-none-any, one wheel for every Python version.
+from setuptools import setup
+try:
+    from setuptools.command.install_data import install_data as _install_data
+except ImportError:
+    # setuptools has no install_data command of its own (checked up to
+    # 84.2.1), so this branch is the one that normally runs. Python 3.12+
+    # has no stdlib distutils, but importing setuptools first makes
+    # setuptools' bundled copy answer this import.
+    from distutils.command.install_data import install_data as _install_data
+
+
+class install_data_in_package(_install_data):
+    '''
+    Install data_files inside the installed package, as numpy.distutils did.
+
+    Plain setuptools installs relative data_files under sys.prefix. The
+    wheel then puts them in its .data/ section, so __main__.py,
+    __version__.py, __config__.py, cdata/ and samples/ would end up outside
+    site-packages/pyemaps. Point install_data at install_lib instead, which
+    keeps the same wheel layout as earlier pyemaps releases.
+    '''
+    def finalize_options(self):
+        self.set_undefined_options('install',
+                                   ('install_lib', 'install_dir'),
+                                   ('root', 'root'),
+                                   ('force', 'force'),
+                                   )
+
 
 install_requires = [
             'emaps >= 1.1.2',
             'numpy >= 1.21.2',
             'matplotlib >= 3.2.1'
             ]
-
-def get_cifreader_source():
-    current_path = Path(os.path.abspath(__file__))
-    pyemaps_parent_path = current_path.parent.absolute()
-    cifreader_path = os.path.join(pyemaps_parent_path, 'CifFile')
-
-    # print(f'-----------CifReader Source path: {cifreader_path}')
-
-    src_files = ["src/lib/lex.yy.c","src/lib/py_star_scan.c"]
-    return [os.path.join(cifreader_path, s) for s in src_files]
 
 def get_samples(sdn = 'samples'):
     '''
@@ -107,20 +116,6 @@ def get_install_requires():
     return install_reqs
 
 
-pyemaps_cifreader = Extension("pyemaps.CifFile.StarScan",
-        sources                = get_cifreader_source(),  # Replace with your source files
-        extra_compile_args=[
-                    "/Wall",                # Enable all warnings
-                    # "/Zi",                  # Generate debug info
-                    "/nologo",              # Suppress the MSVC logo
-                    "/D _CRT_SECURE_NO_WARNINGS",  # Disable CRT warnings (optional)
-                    "/EHsc",                # Enable exception handling (for C++)
-        ],
-        extra_link_args=[
-        # "/DEBUG",               # Generate debug symbols for linking
-        ]   
-)
-
 def get_version(f):
     version = {}
     with open(f + ".py") as fp:
@@ -163,9 +158,7 @@ setup(name                              ="pyemaps",
                                            'pyemaps.CifFile.StarFile',
                                            'pyemaps.CifFile.TypeContentsParser'],
 
-      ext_modules                       = [pyemaps_cifreader,],
-
-      packages                          = ['pyemaps.diffract', 
+      packages                         = ['pyemaps.diffract', 
                                            'pyemaps.scattering', 
                                            'pyemaps.spg',
                                            'pyemaps.CifFile',
@@ -181,7 +174,8 @@ setup(name                              ="pyemaps",
                                             ],
                                             },
       install_requires                  = get_install_requires(),
-      
+      cmdclass                          = {'install_data': install_data_in_package},
+
       data_files                        = [('pyemaps', 
                                             ['__config__.py',
                                             '__main__.py',
