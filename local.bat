@@ -29,38 +29,58 @@
 
 @REM # '''
 @echo off
+setlocal enabledelayedexpansion
 
-set PYPIREPO=%1
+@REM local.bat pypi_repo_type [version]
+@REM   pypi_repo_type: test (test.pypi.org numbering) or prod (pypi.org numbering)
+@REM   version       : optional explicit version, e.g. 2.0.0. Without it, build_pyemaps
+@REM                   takes the newest version on that PyPI and adds one.
 
-if "%PYPIREPO%" == "" (
-    echo Usage: local.bat pypi_repo_type
-    echo        pypi_repo_type: test or prod
-    echo        test: upload package testpypi.org repos
-    echo        prod: upload package pypi.org repos for public download
-    goto:eof
+set "PYPIREPO=%~1"
+set "BUILD_VERSION=%~2"
+
+if "%PYPIREPO%" NEQ "test" if "%PYPIREPO%" NEQ "prod" goto usage
+
+set "BUILD_ARGS="
+if "%PYPIREPO%" == "test" set "BUILD_ARGS=-t"
+if "%BUILD_VERSION%" NEQ "" (
+    echo %BUILD_VERSION%| findstr /r "^[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*$" >nul
+    if errorlevel 1 (
+        echo Error: the version must look like 2.0.0: %BUILD_VERSION%
+        exit /b 1
+    )
+    set "BUILD_ARGS=!BUILD_ARGS! -v %BUILD_VERSION%"
 )
 
 call python -m pip uninstall -y pyemaps
 
-set whl_fname=''
-set batch_dir=%~dp0
-if "%PYPIREPO%" == "test" (
-    
-    for /f "tokens=1,2 delims=:" %%i in ('python "%batch_dir%build_pyemaps" -t') do (
-        if "%%i"=="wheel file name" set whl_fname=%%j
-    )
-) else (
-    
-    for /f "tokens=1,2 delims=:" %%i in ('python "%batch_dir%build_pyemaps"') do (
-        if "%%i"=="wheel file name" set whl_fname=%%j
-    )
+set "whl_fname="
+set "batch_dir=%~dp0"
+for /f "tokens=1,2 delims=:" %%i in ('python "%batch_dir%build_pyemaps" %BUILD_ARGS%') do (
+    if "%%i"=="wheel file name" set "whl_fname=%%j"
+)
+
+if not defined whl_fname (
+    echo Error: build_pyemaps did not report a wheel file name
+    exit /b 1
 )
 
 echo Captured wheel file name from python: "%batch_dir%%whl_fname%"
-call pip install "%batch_dir%%whl_fname%"
+call python -m pip install "%batch_dir%%whl_fname%"
+if errorlevel 1 (
+    echo pyemaps install FAILED
+    exit /b 1
+)
 
+echo ###################################################
+echo %PYPIREPO% repository package build completed: %whl_fname%
+echo ###################################################
+exit /b 0
 
-@REM if "%PYPIREPO%" == "test" (
-echo ###################################################
-echo %PYPIREPO% repository package build completed
-echo ###################################################
+:usage
+echo Usage: local.bat pypi_repo_type [version]
+echo        pypi_repo_type: test or prod
+echo        test: version numbering from test.pypi.org
+echo        prod: version numbering from pypi.org
+echo        version: explicit version, e.g. 2.0.0
+exit /b 1
