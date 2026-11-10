@@ -296,12 +296,22 @@ def run_sample_gui(feature = "diff"):
         bloch.main()
 
     if feature == 'lacbed':
-        import pyemaps.samples.si_lacbed as lacbed
-        lacbed.main()
+        # Like si_lacbed.main(), but also save the images as a PNG. LACBED gives one
+        # image per diffracted beam, and the individual layout saves only the last
+        # one, so use the table layout to save all the beams in one image.
+        from pyemaps.samples.si_lacbed import generate_lacbed_images
+        imgs = generate_lacbed_images(bSave=True)
+        if imgs:
+            showBloch(imgs, layout='table', bSave=True, bClose=True)
 
     if feature == 'stereo':
-        import pyemaps.samples.si_stereo as stereo
-        stereo.main()
+        # Like si_stereo.main(), but also save the stereodiagrams as PNGs.
+        from pyemaps import showStereo
+        from pyemaps.samples.si_stereo import generate_stereo
+        showStereo(generate_stereo(ckey='tilt'), name='Silicon', layout='table',
+                   iShow=True, bSave=True, bClose=True, zLimit=1)
+        showStereo(generate_stereo(ckey='zone'), name='Silicon',
+                   iShow=True, bSave=True, bClose=True, zLimit=1)
 
     if feature == 'csf':
         import pyemaps.samples.si_csf as csf
@@ -316,8 +326,27 @@ def run_sample_gui(feature = "diff"):
         scm.runSCMTests()
 
     if feature == 'powder':
+        # plot2Powder has no save option. It draws in this process, so save the
+        # figure as a PNG just before it's shown. plt.pause calls show again,
+        # so save each figure once.
+        import matplotlib.pyplot as plt
+        from pyemaps.fileutils import compose_ofn
         import pyemaps.samples.powder as powder
-        powder.main()
+        show = plt.show
+        saved = set()
+        def save_then_show(*args, **kwargs):
+            fig = plt.gcf()
+            if fig.number not in saved:
+                saved.add(fig.number)
+                fn = compose_ofn(None, 'Silicon-Diamond', ty='powder') + '.png'
+                fig.savefig(fn)
+                print(f'image saved to: {fn}')
+            return show(*args, **kwargs)
+        plt.show = save_then_show
+        try:
+            powder.main()
+        finally:
+            plt.show = show
 
 if __name__ == '__main__':
     
