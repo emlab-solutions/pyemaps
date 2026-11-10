@@ -413,10 +413,9 @@ class DifPlotter:
         
         self.type = type
         if hasDisplay:
+            # canvas.set_window_title was removed in matplotlib 3.6
             if self.fig.canvas.manager is not None:
                 self.fig.canvas.manager.set_window_title(pyemaps_title)
-            else:
-                self.fig.canvas.set_window_title(pyemaps_title)
 
         self.fig.suptitle(self.name, va='top', fontsize=24)
         
@@ -770,10 +769,9 @@ def plot2Powder(pw1, pw2, bClose=True):
     fig, (ax1, ax2) = plt.subplots(nrows = 2)
     
     title = 'pyEMAPS - Powder Diffraction'
+    # canvas.set_window_title was removed in matplotlib 3.6
     if fig.canvas.manager is not None:
         fig.canvas.manager.set_window_title(title)
-    else:
-        fig.canvas.set_window_title(title)    
     
     ax1.plot(pw1[0], pw1[1], 'r')
     ax1.set_title('Silicon')
