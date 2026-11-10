@@ -18,7 +18,8 @@ What it checks:
 - license: on a full build, importing pyemaps.stem4d succeeds.
 
 Each case runs in its own process, so a crash in the native code fails that case instead
-of the whole run.
+of the whole run. indexImage always shows its plots; the indexing cases draw them off screen,
+so the run needs no windows closed and can run unattended.
 '''
 import os
 import re
@@ -113,9 +114,23 @@ def case_error(name):
     print('RESULT FAIL no error raised')
 
 
+def headless_plots():
+    '''
+    Draw plots off screen. indexImage always shows its plots, and pyemaps' display.py
+    selects TkAgg on Windows when it's imported, so each plot opened a window that had to
+    be closed by hand. Switch to Agg after that import, and make plt.show close the figures.
+    '''
+    import pyemaps.display  # noqa: F401  (selects TkAgg on Windows)
+    import matplotlib.pyplot as plt
+    plt.switch_backend('Agg')
+    plt.show = lambda *args, **kwargs: plt.close('all')
+
+
 def case_index(mode, dbfn, npyfile):
     import numpy as np
     from pyemaps import StackImage, E_NPY
+
+    headless_plots()
 
     if mode == 'file':
         si = StackImage(str(ALIMG))
