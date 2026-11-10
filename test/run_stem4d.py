@@ -10,7 +10,7 @@ says so and exits 0.
 What it checks:
 - image loading: numpy images of every supported dtype, shape and memory layout load
   through StackImage(nformat=E_NPY) and read back from the backend pixel for pixel;
-  invalid images raise XDPImageError (ediom#18, pyemaps#89).
+  invalid images raise XDPImageError (pyemaps#89).
 - dpgen: generating the Aluminium diffraction pattern database succeeds.
 - indexing: al.img indexed from its file and from numpy (float32, float64, Fortran
   order) gives the same result lines, and those match baseline/stem4d/al_index.txt
