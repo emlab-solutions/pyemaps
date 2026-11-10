@@ -191,6 +191,8 @@ fort.7
 
 # stem4d source dir
 stem4d/
+# but keep the stem4d test baseline
+!test/baseline/stem4d/
 emaps/
 extal/
 advisor/

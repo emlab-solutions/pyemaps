@@ -22,6 +22,7 @@ python .\test\run_features.py -gr all
 echo Done with features sanity tests 
 
 python .\test\run_unittests.py -gr all
+python .\test\run_stem4d.py -bc
 echo Done with unit tests 
 
 call python .\test\performance\run_perf_test.py -r all
