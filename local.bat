@@ -61,7 +61,11 @@ for /f "tokens=1,2 delims=:" %%i in ('python "%batch_dir%build_pyemaps" %BUILD_A
 )
 
 if not defined whl_fname (
-    echo Error: build_pyemaps did not report a wheel file name
+    echo Error: pyemaps build FAILED, see the errors above
+    exit /b 1
+)
+if not exist "%batch_dir%%whl_fname%" (
+    echo Error: the wheel "%batch_dir%%whl_fname%" does not exist
     exit /b 1
 )
 

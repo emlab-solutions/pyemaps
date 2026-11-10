@@ -288,49 +288,55 @@ def copy_configuration():
 
     return dst_file
 
-def build_package(repo_test = True):
+def build_package(ver):
     '''
-    Build the package
-    Conponent configuration via PYEMAPS_JSON env variable
+    Build the pyemaps sdist and wheel for version ver into dist/.
+    Exits with status 1 if either build fails or its file is missing.
     '''
-    import os, sys
-    
+    import os, sys, subprocess
+
     build_type = os.getenv('EMAPS_BTYPE')
-    
-    # if build_type != 'free' and build_type != 'full':
-    #     print(f'Unrecognised build type')
-    #     exit(1)
-        
+
     clean()
-    
-    # make_pyf()
 
     print(f"####Begin building pyemaps package for {build_type}...")
 
+    # Remove this version's old outputs first, so a failed build can't
+    # leave a stale file in dist/ that looks like a fresh one.
+    outputs = [os.path.join('dist', f'{pyPackageName}-{ver}.tar.gz'),
+               os.path.join('dist', get_wheel(ver))]
+    for f in outputs:
+        if os.path.exists(f):
+            os.remove(f)
+
     hideEMAPSPYFiles()
     setupf = copy_configuration()
-    #  build the source distribution
-    
-    if sys.platform == 'win32':
-        os.system('python -m build -s -n')
-    else:
-        os.system('python3 -m build -s -n') 
+    error = None
+    try:
+        # sdist first, then the wheel. sys.executable keeps the build on
+        # the Python running this script.
+        for kind, flag in (('sdist', '-s'), ('wheel', '-w')):
+            ret = subprocess.run([sys.executable, '-m', 'build', flag, '-n']).returncode
+            if ret != 0:
+                error = f'the {kind} build exited with status {ret}'
+                break
+    finally:
+        restoreEMAPSPYFiles()
+        if os.path.exists(setupf):
+            os.remove(setupf)
+        else:
+            print("The setup.cfg file does not exist")
+        clean(preBuild=False)
 
-    #  build the wheel distribution (linrary build)
-    
-    if sys.platform == 'win32':
-        os.system('python -m build -w -n')
-    else:
-        os.system('python3 -m build -w -n')
+    if error is None:
+        missing = [f for f in outputs if not os.path.exists(f)]
+        if missing:
+            error = 'the build did not produce ' + ', '.join(missing)
 
-    restoreEMAPSPYFiles()
-    import os
-    if os.path.exists(setupf):
-        os.remove(setupf)
-    else:
-        print("The setup.cfg file does not exist")
-
-    clean(preBuild=False)
+    if error is not None:
+        # stderr, because local.bat captures stdout to find the wheel name
+        print(f'Error: pyemaps build failed: {error}', file=sys.stderr)
+        exit(1)
 
 def upload_package(bRelease = False, ver = None):
     repo_name = 'pypi' if bRelease else 'testpypi'
@@ -474,14 +480,17 @@ if __name__ == "__main__":
         print('Error finding package wheel name')
         exit(1)
         
-    print('wheel file name:' + bwheel)
-    
     # write the version into __version__.py file
     with open('__version__.py', 'w') as vf:
         vf.write('__version__ = \"' + ver + '\"')
 
     if not args.no_build:
-        build_package()
+        build_package(ver)
+
+    # local.bat reads this line to find the wheel. It's printed only after
+    # a successful build (build_package exits on failure), so a failed
+    # build gives local.bat no wheel name.
+    print('wheel file name:' + bwheel)
 
     if args.install_local:
         install_local()
