@@ -1,6 +1,35 @@
 Release Notes
 =============
 
+Version 2.0.0 Stable
+--------------------
+
+11-10-2026
+~~~~~~~~~~
+
+New
+~~~
+
+- pyEMAPS now runs on Python 3.12, 3.13, 3.14 and 3.15 on Windows, with NumPy 2. The emaps backend ships one wheel for each of these Python versions.
+- pyEMAPS is now a pure-Python package: a single wheel installs on every supported Python version, with no compiler needed.
+
+Changes
+~~~~~~~
+
+- Python 3.7 is no longer supported. On Python 3.7, ``pip install pyemaps`` keeps installing pyEMAPS 1.1.x with emaps 1.1.x.
+- Requires ``numpy >= 2.0`` and ``matplotlib >= 3.8.4``.
+- The emaps backend no longer exposes the undocumented ``emaps.diffract.emaps_sims.metric`` attribute (the crystal metric tensors). Nothing in pyEMAPS used it, and simulation results are unchanged.
+- emaps no longer depends on the ``msvc-runtime`` package. The C++ runtime that the 4D-STEM (stem4d) module needs now ships inside emaps.
+
+Improvements
+~~~~~~~~~~~~
+
+- Fixed plot windows on matplotlib 3.6 and newer, which removed the window-title call pyEMAPS used.
+- Simulation results are identical to pyEMAPS 1.1.8 on every supported Python version.
+- Plot windows shown with ``bClose=True`` now stay up 3 seconds after the last image before closing, instead of about 1 second.
+- New 4D-STEM (stem4d) checks in the test suite cover image loading, diffraction pattern database generation and indexing.
+- Requires ``emaps >= 2.0.0``.
+
 Version 1.1.8 Stable
 --------------------
 

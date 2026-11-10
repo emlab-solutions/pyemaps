@@ -81,7 +81,6 @@ def _find_dpi():
         import ctypes
     except ImportError as e:
         print(f'failed to find display resolution') 
-        print(f'supported python version: == 3.7')
         print(f'Use default dpi of 96 for display')
 
         return dpi

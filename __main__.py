@@ -103,14 +103,7 @@ def main():
         
     import argparse
     import datetime
-    try:
-        from importlib.metadata import version as dist_version   # Python 3.8+
-    except ImportError:
-        # Python 3.7. Newer Python venvs don't install setuptools, which provides
-        # pkg_resources, so only use it where importlib.metadata is missing.
-        import pkg_resources
-        def dist_version(name):
-            return pkg_resources.get_distribution(name).version
+    from importlib.metadata import version as dist_version
 
     parser = argparse.ArgumentParser(description="pyEMAPS command line tool.",  
                                      formatter_class=argparse.RawTextHelpFormatter)

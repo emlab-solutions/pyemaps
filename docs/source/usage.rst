@@ -22,7 +22,7 @@ where .venv is the python virtual environment.
 
 .. code-block:: console
 
-   conda create -n <env-name> python=3.7
+   conda create -n <env-name> python=3.12
    conda activate <env-name>
    python -m pip install pyemaps
 
