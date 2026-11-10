@@ -18,7 +18,7 @@ where .venv is the python virtual environment.
    
    To prevent conflicts of pyEMAPS dependencies with your existing python
    libraries, it is recommended that pyEMAPS install in its own python environment
-   such as that with Annaconda or Miniconda.
+   such as that with Anaconda or Miniconda.
 
 .. code-block:: console
 

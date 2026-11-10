@@ -34,7 +34,7 @@ Follow the steps below to install and run pyEMAPS in Anaconda with Jupyter Noteb
     You may need to make a clean install by doing a "Full Uninstall" of existing Anaconda by 
     deleting old environment and packages folders as old packages can cause dependencies issues.
 
-* Create a new environment in Anaconsa called 'pyemaps' in Anaconda command prompt:
+* Create a new environment in Anaconda called 'pyemaps' in Anaconda command prompt:
   
   .. code-block:: console
 

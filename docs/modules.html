@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Modules, Classes and Interfaces &#8212; pyemaps 1.1.8 Stable documentation</title>
+    <title>Modules, Classes and Interfaces &#8212; pyemaps 2.0.0 Stable documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -34,7 +34,7 @@
         <li class="right" >
           <a href="rn.html" title="Release Notes"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.1.8 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 2.0.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Modules, Classes and Interfaces</a></li> 
       </ul>
     </div>  
@@ -58,25 +58,25 @@ diffraction simulation libraries easy.</p>
 <p>Cell constant data class create and validate crystal unit cell 
 lengths (a, b, c) and angles (alpha, beta, gamma).</p>
 <p>To create a Cell object using the following python dict object:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.4307&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;b&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.4307&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;c&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.4307&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;alpha&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;90.0&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;beta&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;90.0&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;gamma&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;90.0&quot;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.4307"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"b"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.4307"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"c"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.4307"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"alpha"</span><span class="p">:</span><span class="w"> </span><span class="s2">"90.0"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"beta"</span><span class="p">:</span><span class="w"> </span><span class="s2">"90.0"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"gamma"</span><span class="p">:</span><span class="w"> </span><span class="s2">"90.0"</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Cell</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cell</span>
 
 <span class="n">si_cell</span> <span class="o">=</span> <span class="n">Cell</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>To create a Cell object using the following python list:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Cell</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cell</span>
 
-<span class="n">data_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;5.4307&quot;</span><span class="p">,</span> <span class="s2">&quot;5.4307&quot;</span><span class="p">,</span> <span class="s2">&quot;5.4307&quot;</span><span class="p">,</span> <span class="s2">&quot;90.0&quot;</span><span class="p">,</span> <span class="s2">&quot;90.0&quot;</span><span class="p">,</span> <span class="s2">&quot;90.0&quot;</span><span class="p">]</span>
+<span class="n">data_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"5.4307"</span><span class="p">,</span> <span class="s2">"5.4307"</span><span class="p">,</span> <span class="s2">"5.4307"</span><span class="p">,</span> <span class="s2">"90.0"</span><span class="p">,</span> <span class="s2">"90.0"</span><span class="p">,</span> <span class="s2">"90.0"</span><span class="p">]</span>
 <span class="c1"># or</span>
 <span class="n">data_list</span> <span class="o">=</span> <span class="p">[</span><span class="mf">5.4307</span><span class="p">,</span> <span class="mf">5.4307</span><span class="p">,</span> <span class="mf">5.4307</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">]</span>
 
@@ -84,7 +84,7 @@ lengths (a, b, c) and angles (alpha, beta, gamma).</p>
 </pre></div>
 </div>
 <p>To create a Cell class object by setting individual attributes:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Cell</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cell</span>
 
 <span class="c1"># create a Cell object with all defaults values (0.0).</span>
 <span class="n">si_cell</span> <span class="o">=</span> <span class="n">Cell</span><span class="p">()</span>
@@ -175,32 +175,32 @@ list object, as well as customization.</p>
 include atom symbol, positional data (x, y, z) and thermal coefficients
 as well as its occupancy.</p>
 <p>To create an isotropic Atom object with a python dict object:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;symb&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Si&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.125&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;y&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.125&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;z&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.125&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;d-w&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.4668&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;occ&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.00&quot;</span><span class="w"> </span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"symb"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Si"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.125"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.125"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"z"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.125"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"d-w"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.4668"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"occ"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.00"</span><span class="w"> </span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Atom</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atom</span>
 
 <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;symb&quot;</span><span class="p">:</span> <span class="s2">&quot;Si&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="s2">&quot;0.125&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="s2">&quot;0.125&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="s2">&quot;0.125&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;d-w&quot;</span><span class="p">:</span> <span class="s2">&quot;0.4668&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;occ&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00&quot;</span> 
+    <span class="s2">"symb"</span><span class="p">:</span> <span class="s2">"Si"</span><span class="p">,</span>
+    <span class="s2">"x"</span><span class="p">:</span> <span class="s2">"0.125"</span><span class="p">,</span>
+    <span class="s2">"y"</span><span class="p">:</span> <span class="s2">"0.125"</span><span class="p">,</span>
+    <span class="s2">"z"</span><span class="p">:</span> <span class="s2">"0.125"</span><span class="p">,</span>
+    <span class="s2">"d-w"</span><span class="p">:</span> <span class="s2">"0.4668"</span><span class="p">,</span>
+    <span class="s2">"occ"</span><span class="p">:</span> <span class="s2">"1.00"</span> 
 <span class="p">}</span>
 <span class="n">si_atom</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>To create an isotropic Atom object with a python list object:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Atom</span>
-<span class="n">data_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;0.125&quot;</span><span class="p">,</span> <span class="s2">&quot;0.125&quot;</span><span class="p">,</span> <span class="s2">&quot;0.125&quot;</span><span class="p">,</span> <span class="s2">&quot;0.4668&quot;</span><span class="p">,</span> <span class="s2">&quot;1.00&quot;</span><span class="p">]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atom</span>
+<span class="n">data_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"0.125"</span><span class="p">,</span> <span class="s2">"0.125"</span><span class="p">,</span> <span class="s2">"0.125"</span><span class="p">,</span> <span class="s2">"0.4668"</span><span class="p">,</span> <span class="s2">"1.00"</span><span class="p">]</span>
 <span class="c1"># or</span>
 <span class="n">data_list</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.125</span><span class="p">,</span> <span class="mf">0.125</span><span class="p">,</span> <span class="mf">0.125</span><span class="p">,</span> <span class="mf">0.4668</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">]</span>
 
@@ -212,8 +212,8 @@ as well as its occupancy.</p>
 <p>When atom positional data is entered as a python list object
 the order of the elements must match their corresponding keys:</p>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="s1">&#39;d-w&#39;</span><span class="p">,</span><span class="s1">&#39;occ&#39;</span><span class="p">]</span>       <span class="c1"># for isotropic atom type</span>
-<span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">,</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="s1">&#39;b11&#39;</span><span class="p">,</span><span class="s1">&#39;b22&#39;</span><span class="p">,</span><span class="s1">&#39;b33&#39;</span><span class="p">,</span><span class="s1">&#39;b12&#39;</span><span class="p">,</span><span class="s1">&#39;b13&#39;</span><span class="p">,</span><span class="s1">&#39;b23&#39;</span><span class="p">,</span><span class="s1">&#39;occ&#39;</span><span class="p">]</span>   <span class="c1">#for anisotropic atome types</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">'x'</span><span class="p">,</span><span class="s1">'y'</span><span class="p">,</span><span class="s1">'z'</span><span class="p">,</span><span class="s1">'d-w'</span><span class="p">,</span><span class="s1">'occ'</span><span class="p">]</span>       <span class="c1"># for isotropic atom type</span>
+<span class="p">[</span><span class="s1">'x'</span><span class="p">,</span><span class="s1">'y'</span><span class="p">,</span><span class="s1">'z'</span><span class="p">,</span><span class="s1">'b11'</span><span class="p">,</span><span class="s1">'b22'</span><span class="p">,</span><span class="s1">'b33'</span><span class="p">,</span><span class="s1">'b12'</span><span class="p">,</span><span class="s1">'b13'</span><span class="p">,</span><span class="s1">'b23'</span><span class="p">,</span><span class="s1">'occ'</span><span class="p">]</span>   <span class="c1">#for anisotropic atome types</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -222,12 +222,12 @@ the order of the elements must match their corresponding keys:</p>
 pyemaps will default its occupancy data to 1.0</p>
 </div>
 <p>To create an Atom class object by setting individual attributes:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Atom</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atom</span>
 <span class="c1"># create an Atom object with all defaults to its data members.</span>
 
 <span class="n">si_at</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">()</span>
 
-<span class="n">si_at</span><span class="o">.</span><span class="n">symb</span> <span class="o">=</span> <span class="s1">&#39;Si&#39;</span>
+<span class="n">si_at</span><span class="o">.</span><span class="n">symb</span> <span class="o">=</span> <span class="s1">'Si'</span>
 <span class="n">si_at</span><span class="o">.</span><span class="n">loc</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.125</span><span class="p">,</span> <span class="mf">0.125</span><span class="p">,</span> <span class="mf">0.125</span><span class="p">,</span> <span class="mf">0.4668</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -291,20 +291,20 @@ pyemaps will default its occupancy data to 1.0</p>
 </ol>
 <p>It is part of Crystal objects.</p>
 <p>To create a space group object with a python dictionary object:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">SPG</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">SPG</span>
 
 <span class="n">spg_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;number&quot;</span><span class="p">:</span> <span class="s2">&quot;227&quot;</span><span class="p">,</span> <span class="c1">#&lt;---Symmetry International Tables Number</span>
-    <span class="s2">&quot;setting&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span>   <span class="c1">#&lt;---Symmetry Space Group Setting  </span>
+    <span class="s2">"number"</span><span class="p">:</span> <span class="s2">"227"</span><span class="p">,</span> <span class="c1">#&lt;---Symmetry International Tables Number</span>
+    <span class="s2">"setting"</span><span class="p">:</span> <span class="s2">"2"</span>   <span class="c1">#&lt;---Symmetry Space Group Setting  </span>
 <span class="p">}</span>
 
 <span class="n">si_spg</span> <span class="o">=</span> <span class="n">SPG</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">spg_dict</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>To create a space group object with a python integer list:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">SPG</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">SPG</span>
 
-<span class="n">spg_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;227&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">]</span> 
+<span class="n">spg_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"227"</span><span class="p">,</span> <span class="s2">"2"</span><span class="p">]</span> 
 <span class="c1"># or</span>
 <span class="n">spg_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">227</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
 
@@ -312,7 +312,7 @@ pyemaps will default its occupancy data to 1.0</p>
 </pre></div>
 </div>
 <p>To create a space group object with custom data:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">SPG</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">SPG</span>
 <span class="n">si_spg</span> <span class="o">=</span> <span class="n">SPG</span><span class="p">()</span>
 <span class="n">si_spg</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="mi">227</span>
 <span class="n">si_spg</span><span class="o">.</span><span class="n">setting</span> <span class="o">=</span> <span class="mi">2</span>
@@ -375,42 +375,42 @@ the following data:</p>
 <li><p>Custom from individual components such as <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Cell">Cell</a>, <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Atom">Atom</a> objects</p></li>
 </ol>
 <p>To create a Crystal object using a python dictionary object:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crystal</span>
 
-<span class="n">c_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;cell&#39;</span><span class="p">:</span>                                           <span class="c1">#Cell constants</span>
+<span class="n">c_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'cell'</span><span class="p">:</span>                                           <span class="c1">#Cell constants</span>
                 <span class="p">{</span>
-                    <span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="s1">&#39;5.4307&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="s1">&#39;5.4307&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="s1">&#39;5.4307&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="s1">&#39;90.0&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="s1">&#39;90.0&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="s1">&#39;90.0&#39;</span>
+                    <span class="s1">'a'</span><span class="p">:</span> <span class="s1">'5.4307'</span><span class="p">,</span>
+                    <span class="s1">'b'</span><span class="p">:</span> <span class="s1">'5.4307'</span><span class="p">,</span>
+                    <span class="s1">'c'</span><span class="p">:</span> <span class="s1">'5.4307'</span><span class="p">,</span>
+                    <span class="s1">'alpha'</span><span class="p">:</span> <span class="s1">'90.0'</span><span class="p">,</span>
+                    <span class="s1">'beta'</span><span class="p">:</span> <span class="s1">'90.0'</span><span class="p">,</span>
+                    <span class="s1">'gamma'</span><span class="p">:</span> <span class="s1">'90.0'</span>
                 <span class="p">},</span>
-            <span class="s1">&#39;atoms&#39;</span><span class="p">:</span>                                        <span class="c1">#atomic info.</span>
+            <span class="s1">'atoms'</span><span class="p">:</span>                                        <span class="c1">#atomic info.</span>
                 <span class="p">[</span>
-                    <span class="p">{</span><span class="s1">&#39;symb&#39;</span><span class="p">:</span> <span class="s1">&#39;si&#39;</span><span class="p">,</span>                          <span class="c1">#atom symbol</span>
-                    <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="s1">&#39;0.125&#39;</span><span class="p">,</span>                           <span class="c1">#atom coordinates</span>
-                    <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="s1">&#39;0.125&#39;</span><span class="p">,</span>  
-                    <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="s1">&#39;0.125&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;d-w&#39;</span><span class="p">:</span> <span class="s1">&#39;0.4668&#39;</span><span class="p">,</span>                        <span class="c1">#Debye-waller factor</span>
-                    <span class="s1">&#39;occ&#39;</span><span class="p">:</span> <span class="mf">1.00</span><span class="p">},</span>                           <span class="c1">#occupancy</span>
+                    <span class="p">{</span><span class="s1">'symb'</span><span class="p">:</span> <span class="s1">'si'</span><span class="p">,</span>                          <span class="c1">#atom symbol</span>
+                    <span class="s1">'x'</span><span class="p">:</span> <span class="s1">'0.125'</span><span class="p">,</span>                           <span class="c1">#atom coordinates</span>
+                    <span class="s1">'y'</span><span class="p">:</span> <span class="s1">'0.125'</span><span class="p">,</span>  
+                    <span class="s1">'z'</span><span class="p">:</span> <span class="s1">'0.125'</span><span class="p">,</span>
+                    <span class="s1">'d-w'</span><span class="p">:</span> <span class="s1">'0.4668'</span><span class="p">,</span>                        <span class="c1">#Debye-waller factor</span>
+                    <span class="s1">'occ'</span><span class="p">:</span> <span class="mf">1.00</span><span class="p">},</span>                           <span class="c1">#occupancy</span>
                 <span class="p">],</span>
-            <span class="s1">&#39;spg&#39;</span><span class="p">:</span>                                          <span class="c1">#space group info</span>
-                <span class="p">{</span><span class="s1">&#39;number&#39;</span><span class="p">:</span> <span class="s1">&#39;227&#39;</span>                            <span class="c1">#symmetry international table(IT) number</span>
-                <span class="s1">&#39;setting&#39;</span><span class="p">:</span> <span class="s1">&#39;2&#39;</span>                              <span class="c1">#symmetry space group setting</span>
+            <span class="s1">'spg'</span><span class="p">:</span>                                          <span class="c1">#space group info</span>
+                <span class="p">{</span><span class="s1">'number'</span><span class="p">:</span> <span class="s1">'227'</span>                            <span class="c1">#symmetry international table(IT) number</span>
+                <span class="s1">'setting'</span><span class="p">:</span> <span class="s1">'2'</span>                              <span class="c1">#symmetry space group setting</span>
                 <span class="p">},</span>
-            <span class="s1">&#39;dw&#39;</span><span class="p">:</span> 
-                <span class="s1">&#39;iso&#39;</span>                                       <span class="c1">#Debye-waller factor</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">,</span> 
-                <span class="s1">&#39;Silicon&#39;</span>                                   <span class="c1">#crystal name</span>
+            <span class="s1">'dw'</span><span class="p">:</span> 
+                <span class="s1">'iso'</span>                                       <span class="c1">#Debye-waller factor</span>
+            <span class="s1">'name'</span><span class="p">,</span> 
+                <span class="s1">'Silicon'</span>                                   <span class="c1">#crystal name</span>
         <span class="p">}</span>
 
-<span class="n">si</span> <span class="o">=</span> <span class="n">Crystal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Silicon&#39;</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">c_dict</span><span class="p">)</span>
+<span class="n">si</span> <span class="o">=</span> <span class="n">Crystal</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'Silicon'</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">c_dict</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>To create a Crystal object using pyemaps builtin crystal database:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span>
-<span class="n">si</span> <span class="o">=</span> <span class="n">Crystal</span><span class="o">.</span><span class="n">from</span><span class="p">(</span><span class="s1">&#39;Silicon&#39;</span><span class="p">)</span> 
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crystal</span>
+<span class="n">si</span> <span class="o">=</span> <span class="n">Crystal</span><span class="o">.</span><span class="n">from</span><span class="p">(</span><span class="s1">'Silicon'</span><span class="p">)</span> 
 </pre></div>
 </div>
 <div class="admonition note">
@@ -421,7 +421,7 @@ the following data:</p>
 </div>
 </div>
 <p>To create a Crystal object with custom Cell, SPG and Atom objects:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Cell</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">SPG</span><span class="p">,</span> <span class="n">Crystal</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cell</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">SPG</span><span class="p">,</span> <span class="n">Crystal</span>
 <span class="n">cell</span> <span class="o">=</span> <span class="n">Cell</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">5.4307</span><span class="p">,</span> <span class="mf">5.4307</span><span class="p">,</span> <span class="mf">5.4307</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">])</span>
 <span class="n">atom</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.125</span><span class="p">,</span> <span class="mf">0.125</span><span class="p">,</span> <span class="mf">0.125</span><span class="p">,</span> <span class="mf">0.4668</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">])</span>
 <span class="n">spg</span> <span class="o">=</span> <span class="n">SPG</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">227</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
@@ -431,7 +431,7 @@ the following data:</p>
 <span class="n">si</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">atom</span><span class="p">,]</span>
 <span class="n">si</span><span class="o">.</span><span class="n">spg</span> <span class="o">=</span> <span class="n">spg</span>
 <span class="n">si</span><span class="o">.</span><span class="n">dw</span> <span class="o">=</span> <span class="n">iso</span><span class="o">.</span><span class="n">value</span>
-<span class="n">si</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Silicon&#39;</span> 
+<span class="n">si</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'Silicon'</span> 
 </pre></div>
 </div>
 <div class="admonition note">
@@ -454,27 +454,27 @@ the following data:</p>
 </dd>
 </dl>
 <p>The dictionary object example for Silicon:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;cell&#39;</span><span class="p">:</span>                                       
-    <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="s1">&#39;5.4307&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="s1">&#39;5.4307&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="s1">&#39;5.4307&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;alpha&#39;</span><span class="p">:</span> <span class="s1">&#39;90.0&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="s1">&#39;90.0&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="s1">&#39;90.0&#39;</span><span class="p">},</span>
-<span class="s1">&#39;atoms&#39;</span><span class="p">:</span>                                        
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">'cell'</span><span class="p">:</span>                                       
+    <span class="p">{</span><span class="s1">'a'</span><span class="p">:</span> <span class="s1">'5.4307'</span><span class="p">,</span>
+    <span class="s1">'b'</span><span class="p">:</span> <span class="s1">'5.4307'</span><span class="p">,</span>
+    <span class="s1">'c'</span><span class="p">:</span> <span class="s1">'5.4307'</span><span class="p">,</span>
+    <span class="s1">'alpha'</span><span class="p">:</span> <span class="s1">'90.0'</span><span class="p">,</span>
+    <span class="s1">'beta'</span><span class="p">:</span> <span class="s1">'90.0'</span><span class="p">,</span>
+    <span class="s1">'gamma'</span><span class="p">:</span> <span class="s1">'90.0'</span><span class="p">},</span>
+<span class="s1">'atoms'</span><span class="p">:</span>                                        
     <span class="p">[</span>
-        <span class="p">{</span><span class="s1">&#39;symb&#39;</span><span class="p">:</span> <span class="s1">&#39;si&#39;</span><span class="p">,</span>                          
-        <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="s1">&#39;0.125&#39;</span><span class="p">,</span>                           
-        <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="s1">&#39;0.125&#39;</span><span class="p">,</span>  
-        <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="s1">&#39;0.125&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;d-w&#39;</span><span class="p">:</span> <span class="s1">&#39;0.4668&#39;</span><span class="p">,</span>                        
-        <span class="s1">&#39;occ&#39;</span><span class="p">:</span> <span class="mf">1.00</span><span class="p">},</span>                           
+        <span class="p">{</span><span class="s1">'symb'</span><span class="p">:</span> <span class="s1">'si'</span><span class="p">,</span>                          
+        <span class="s1">'x'</span><span class="p">:</span> <span class="s1">'0.125'</span><span class="p">,</span>                           
+        <span class="s1">'y'</span><span class="p">:</span> <span class="s1">'0.125'</span><span class="p">,</span>  
+        <span class="s1">'z'</span><span class="p">:</span> <span class="s1">'0.125'</span><span class="p">,</span>
+        <span class="s1">'d-w'</span><span class="p">:</span> <span class="s1">'0.4668'</span><span class="p">,</span>                        
+        <span class="s1">'occ'</span><span class="p">:</span> <span class="mf">1.00</span><span class="p">},</span>                           
     <span class="p">],</span>
-<span class="s1">&#39;spg&#39;</span><span class="p">:</span>                                          
-    <span class="p">{</span><span class="s1">&#39;number&#39;</span><span class="p">:</span> <span class="s1">&#39;227&#39;</span>                            
-    <span class="s1">&#39;setting&#39;</span><span class="p">:</span> <span class="s1">&#39;2&#39;</span>                              
+<span class="s1">'spg'</span><span class="p">:</span>                                          
+    <span class="p">{</span><span class="s1">'number'</span><span class="p">:</span> <span class="s1">'227'</span>                            
+    <span class="s1">'setting'</span><span class="p">:</span> <span class="s1">'2'</span>                              
     <span class="p">},</span>
-<span class="s1">&#39;dw&#39;</span><span class="p">:</span> <span class="s1">&#39;iso&#39;</span>                                     
+<span class="s1">'dw'</span><span class="p">:</span> <span class="s1">'iso'</span>                                     
 
 <span class="p">}</span>
 </pre></div>
@@ -708,11 +708,11 @@ exceeds the backend beam limit (reduce <em>smax</em> and retry).</p>
 <p>The return of an array of structure factors in the following 
 python dictionary format:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s1">&#39;hkl&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">l</span><span class="p">),</span>         <span class="c1"># Miller Indices </span>
-    <span class="s1">&#39;sw&#39;</span><span class="p">:</span> <span class="n">s</span><span class="p">,</span>                <span class="c1"># Sin(theta)/Wave length</span>
-    <span class="s1">&#39;ds&#39;</span><span class="p">:</span> <span class="n">d</span><span class="p">,</span>                <span class="c1"># d-spacing value</span>
-    <span class="s1">&#39;amp_re&#39;</span><span class="p">:</span> <span class="n">ar</span>            <span class="c1"># amplitude or real part </span>
-    <span class="s1">&#39;phase_im&#39;</span><span class="p">:</span> <span class="n">ph</span>          <span class="c1"># phase or imaginary part</span>
+    <span class="s1">'hkl'</span><span class="p">:</span> <span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">l</span><span class="p">),</span>         <span class="c1"># Miller Indices </span>
+    <span class="s1">'sw'</span><span class="p">:</span> <span class="n">s</span><span class="p">,</span>                <span class="c1"># Sin(theta)/Wave length</span>
+    <span class="s1">'ds'</span><span class="p">:</span> <span class="n">d</span><span class="p">,</span>                <span class="c1"># d-spacing value</span>
+    <span class="s1">'amp_re'</span><span class="p">:</span> <span class="n">ar</span>            <span class="c1"># amplitude or real part </span>
+    <span class="s1">'phase_im'</span><span class="p">:</span> <span class="n">ph</span>          <span class="c1"># phase or imaginary part</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -877,9 +877,9 @@ stabel production soon. Its replacement is:
 <p>Example of the stereodiagram output:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
     <span class="p">{</span>
-        <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">),</span>              <span class="c1"># center</span>
-        <span class="s2">&quot;r&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>                <span class="c1"># radius</span>
-        <span class="s2">&quot;idx&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">l</span><span class="p">),</span>        <span class="c1"># Miller Index</span>
+        <span class="s2">"c"</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">),</span>              <span class="c1"># center</span>
+        <span class="s2">"r"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>                <span class="c1"># radius</span>
+        <span class="s2">"idx"</span><span class="p">:</span> <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">l</span><span class="p">),</span>        <span class="c1"># Miller Index</span>
     <span class="p">}</span>
 <span class="p">]</span>    
 </pre></div>
@@ -1349,32 +1349,32 @@ of (x,y,x,d-w,occ) where occ defaults to 1.00 if not provided.</p></li>
 </dd>
 </dl>
 <p>An example of a json file content:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;cell&quot;</span><span class="p">:</span><span class="w"> </span>
-<span class="w">        </span><span class="p">{</span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.4307&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;b&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.4307&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;c&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5.4307&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;alpha&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;90.0&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;beta&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;90.0&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;gamma&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;90.0&quot;</span><span class="w"></span>
-<span class="w">        </span><span class="p">},</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;atoms&quot;</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="p">[</span><span class="w"></span>
-<span class="w">            </span><span class="p">{</span><span class="nt">&quot;symb&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;si&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.125&quot;</span><span class="p">,</span><span class="w">  </span>
-<span class="w">            </span><span class="nt">&quot;y&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.125&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">            </span><span class="nt">&quot;z&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.125&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="nt">&quot;d-w&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.4668&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">            </span><span class="nt">&quot;occ&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1.00&quot;</span><span class="w"></span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"cell"</span><span class="p">:</span><span class="w"> </span>
+<span class="w">        </span><span class="p">{</span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.4307"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"b"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.4307"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"c"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.4307"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"alpha"</span><span class="p">:</span><span class="w"> </span><span class="s2">"90.0"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"beta"</span><span class="p">:</span><span class="w"> </span><span class="s2">"90.0"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"gamma"</span><span class="p">:</span><span class="w"> </span><span class="s2">"90.0"</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">"atoms"</span><span class="p">:</span>
+<span class="w">        </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span><span class="nt">"symb"</span><span class="p">:</span><span class="w"> </span><span class="s2">"si"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.125"</span><span class="p">,</span><span class="w">  </span>
+<span class="w">            </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.125"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">            </span><span class="nt">"z"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.125"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"d-w"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.4668"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">            </span><span class="nt">"occ"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.00"</span>
 <span class="w">            </span><span class="p">}</span><span class="w"> </span>
-<span class="w">        </span><span class="p">],</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;spg&quot;</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="p">{</span><span class="nt">&quot;number&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;227&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="nt">&quot;setting&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2&quot;</span><span class="w"> </span>
-<span class="w">        </span><span class="p">},</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;dw&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;iso&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Silicon&quot;</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">"spg"</span><span class="p">:</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">"number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"227"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"setting"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="w"> </span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">"dw"</span><span class="p">:</span><span class="w"> </span><span class="s2">"iso"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Silicon"</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1393,30 +1393,30 @@ of (x,y,x,d-w,occ) where occ defaults to 1.00 if not provided.</p></li>
 </dl>
 <p>An example of a json file content:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;cell&quot;</span><span class="p">:</span> 
-        <span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="s2">&quot;5.4307&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="s2">&quot;5.4307&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="s2">&quot;5.4307&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="s2">&quot;90.0&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;beta&quot;</span><span class="p">:</span> <span class="s2">&quot;90.0&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="s2">&quot;90.0&quot;</span>
+    <span class="s2">"cell"</span><span class="p">:</span> 
+        <span class="p">{</span><span class="s2">"a"</span><span class="p">:</span> <span class="s2">"5.4307"</span><span class="p">,</span>
+        <span class="s2">"b"</span><span class="p">:</span> <span class="s2">"5.4307"</span><span class="p">,</span>
+        <span class="s2">"c"</span><span class="p">:</span> <span class="s2">"5.4307"</span><span class="p">,</span>
+        <span class="s2">"alpha"</span><span class="p">:</span> <span class="s2">"90.0"</span><span class="p">,</span>
+        <span class="s2">"beta"</span><span class="p">:</span> <span class="s2">"90.0"</span><span class="p">,</span>
+        <span class="s2">"gamma"</span><span class="p">:</span> <span class="s2">"90.0"</span>
         <span class="p">},</span>
-    <span class="s2">&quot;atoms&quot;</span><span class="p">:</span>
+    <span class="s2">"atoms"</span><span class="p">:</span>
         <span class="p">[</span>
-            <span class="p">{</span><span class="s2">&quot;symb&quot;</span><span class="p">:</span> <span class="s2">&quot;si&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="s2">&quot;0.125&quot;</span><span class="p">,</span>  
-            <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="s2">&quot;0.125&quot;</span><span class="p">,</span> 
-            <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="s2">&quot;0.125&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;d-w&quot;</span><span class="p">:</span> <span class="s2">&quot;0.4668&quot;</span><span class="p">,</span> 
-            <span class="s2">&quot;occ&quot;</span><span class="p">:</span> <span class="s2">&quot;1.00&quot;</span>
+            <span class="p">{</span><span class="s2">"symb"</span><span class="p">:</span> <span class="s2">"si"</span><span class="p">,</span>
+            <span class="s2">"x"</span><span class="p">:</span> <span class="s2">"0.125"</span><span class="p">,</span>  
+            <span class="s2">"y"</span><span class="p">:</span> <span class="s2">"0.125"</span><span class="p">,</span> 
+            <span class="s2">"z"</span><span class="p">:</span> <span class="s2">"0.125"</span><span class="p">,</span>
+            <span class="s2">"d-w"</span><span class="p">:</span> <span class="s2">"0.4668"</span><span class="p">,</span> 
+            <span class="s2">"occ"</span><span class="p">:</span> <span class="s2">"1.00"</span>
             <span class="p">}</span> 
         <span class="p">],</span>
-    <span class="s2">&quot;spg&quot;</span><span class="p">:</span>
-        <span class="p">{</span><span class="s2">&quot;number&quot;</span><span class="p">:</span> <span class="s2">&quot;227&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;setting&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span> 
+    <span class="s2">"spg"</span><span class="p">:</span>
+        <span class="p">{</span><span class="s2">"number"</span><span class="p">:</span> <span class="s2">"227"</span><span class="p">,</span>
+        <span class="s2">"setting"</span><span class="p">:</span> <span class="s2">"2"</span> 
         <span class="p">},</span>
-    <span class="s2">&quot;dw&quot;</span><span class="p">:</span> <span class="s2">&quot;iso&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Silicon&quot;</span>
+    <span class="s2">"dw"</span><span class="p">:</span> <span class="s2">"iso"</span><span class="p">,</span>
+    <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"Silicon"</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -2613,7 +2613,7 @@ constant and a list of atomic coordinates.</p>
 <li><p><strong>iShow</strong> (<em>bool</em>) – Whether to display Miller indexes.</p></li>
 <li><p><strong>layout</strong> (<em>str</em><em>, </em><em>optional</em>) – layout format. individual (default): plotting one by one, table: plotting in a table of 3 columns</p></li>
 <li><p><strong>bSave</strong> (<em>bool</em>) – Whether to save the diplay into a .png image file.</p></li>
-<li><p><strong>bClose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to close plotting window when finished. Default: False - users must close it.</p></li>
+<li><p><strong>bClose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to close the plotting window by itself, 3 seconds after the last image. Default: False - users must close it.</p></li>
 </ul>
 </dd>
 </dl>
@@ -2632,7 +2632,7 @@ constant and a list of atomic coordinates.</p>
 <li><p><strong>bColor</strong> (<em>bool</em>) – Optional. Whether to display the image in predefined color map.</p></li>
 <li><p><strong>layout</strong> (<em>str</em><em>, </em><em>optional</em>) – layout format. individual (default): plotting one by one, table: plotting in a table of 3 columns</p></li>
 <li><p><strong>bSave</strong> (<em>bool</em>) – Optional. Whether to save the image into a .im3 image file.</p></li>
-<li><p><strong>bClose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to close plotting window when finished. Default: False - users must close it.</p></li>
+<li><p><strong>bClose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to close the plotting window by itself, 3 seconds after the last image. Default: False - users must close it.</p></li>
 </ul>
 </dd>
 </dl>
@@ -2651,7 +2651,7 @@ constant and a list of atomic coordinates.</p>
 <li><p><strong>zLimit</strong> (<em>int</em><em>, </em><em>optional</em>) – Miller indexes cutoff number.</p></li>
 <li><p><strong>layout</strong> (<em>str</em><em>, </em><em>optional</em>) – layout format. individual (default): plotting one by one in sequence, table: plotting in a table of 3 columns</p></li>
 <li><p><strong>bSave</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to save the image into a .png image file.</p></li>
-<li><p><strong>bClose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to close plotting window when finished. Default: False - users must close it.</p></li>
+<li><p><strong>bClose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to close the plotting window by itself, 3 seconds after the last image. Default: False - users must close it.</p></li>
 </ul>
 </dd>
 </dl>
@@ -2681,151 +2681,10 @@ instantiating a Path will return either a PosixPath or a WindowsPath
 object. You can also instantiate a PosixPath or WindowsPath directly,
 but cannot instantiate a WindowsPath on a POSIX system or vice versa.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.cwd">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cwd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.cwd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a new path pointing to the current working directory
-(as returned by os.getcwd()).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.home">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">home</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.home" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a new path pointing to the user’s home directory (as
-returned by os.path.expanduser(‘~’)).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.samefile">
-<span class="sig-name descname"><span class="pre">samefile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.samefile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return whether other_path is the same or not as this file
-(as returned by os.path.samefile()).</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.iterdir">
-<span class="sig-name descname"><span class="pre">iterdir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.iterdir" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iterate over the files in this directory.  Does not yield any
-result for the special paths ‘.’ and ‘..’.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.glob">
-<span class="sig-name descname"><span class="pre">glob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.glob" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iterate over this subtree and yield all existing files (of any
-kind, including directories) matching the given relative pattern.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.rglob">
-<span class="sig-name descname"><span class="pre">rglob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.rglob" title="Permalink to this definition">¶</a></dt>
-<dd><p>Recursively yield all existing files (of any kind, including
-directories) matching the given relative pattern, anywhere in
-this subtree.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.absolute">
-<span class="sig-name descname"><span class="pre">absolute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.absolute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return an absolute version of this path.  This function works
-even if the path doesn’t point to anything.</p>
-<p>No normalization is done, i.e. all ‘.’ and ‘..’ will be kept along.
-Use resolve() to get the canonical path to a file.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.resolve">
-<span class="sig-name descname"><span class="pre">resolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.resolve" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make the path absolute, resolving all symlinks on the way and also
-normalizing it (for example turning slashes into backslashes under
-Windows).</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.fileutils.Path.stat">
-<span class="sig-name descname"><span class="pre">stat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.stat" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">stat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">follow_symlinks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.stat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the result of the stat() system call on this path, like
 os.stat() does.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.owner">
-<span class="sig-name descname"><span class="pre">owner</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.owner" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the login name of the file owner.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.group">
-<span class="sig-name descname"><span class="pre">group</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the group name of the file gid.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.open">
-<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.open" title="Permalink to this definition">¶</a></dt>
-<dd><p>Open the file pointed by this path and return a file object, as
-the built-in open() function does.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.read_bytes">
-<span class="sig-name descname"><span class="pre">read_bytes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.read_bytes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Open the file in bytes mode, read it, and close the file.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.read_text">
-<span class="sig-name descname"><span class="pre">read_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.read_text" title="Permalink to this definition">¶</a></dt>
-<dd><p>Open the file in text mode, read it, and close the file.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.write_bytes">
-<span class="sig-name descname"><span class="pre">write_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.write_bytes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Open the file in bytes mode, write to it, and close the file.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.write_text">
-<span class="sig-name descname"><span class="pre">write_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.write_text" title="Permalink to this definition">¶</a></dt>
-<dd><p>Open the file in text mode, write to it, and close the file.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.touch">
-<span class="sig-name descname"><span class="pre">touch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">438</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_ok</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.touch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create this file with the given access mode, if it doesn’t exist.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.mkdir">
-<span class="sig-name descname"><span class="pre">mkdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">511</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_ok</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.mkdir" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a new directory at this given path.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.chmod">
-<span class="sig-name descname"><span class="pre">chmod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.chmod" title="Permalink to this definition">¶</a></dt>
-<dd><p>Change the permissions of the path, like os.chmod().</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.lchmod">
-<span class="sig-name descname"><span class="pre">lchmod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.lchmod" title="Permalink to this definition">¶</a></dt>
-<dd><p>Like chmod(), except if the path points to a symlink, the symlink’s
-permissions are changed, rather than its target’s.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.unlink">
-<span class="sig-name descname"><span class="pre">unlink</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.unlink" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove this file or link.
-If the path is a directory, use rmdir() instead.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.rmdir">
-<span class="sig-name descname"><span class="pre">rmdir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.rmdir" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove this directory.  The directory must be empty.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2836,29 +2695,11 @@ status information is returned, rather than its target’s.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.rename">
-<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.rename" title="Permalink to this definition">¶</a></dt>
-<dd><p>Rename this path to the given path.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.replace">
-<span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.replace" title="Permalink to this definition">¶</a></dt>
-<dd><p>Rename this path to the given path, clobbering the existing
-destination if it exists.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyemaps.fileutils.Path.symlink_to">
-<span class="sig-name descname"><span class="pre">symlink_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_is_directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.symlink_to" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make this path a symlink pointing to the given path.
-Note the order of arguments (self, target) is the reverse of os.symlink’s.</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.fileutils.Path.exists">
-<span class="sig-name descname"><span class="pre">exists</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.exists" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">follow_symlinks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether this path exists.</p>
+<p>This method normally follows symlinks; to check whether a symlink exists,
+add the argument follow_symlinks=False.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2877,13 +2718,19 @@ to regular files).</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.fileutils.Path.is_mount">
 <span class="sig-name descname"><span class="pre">is_mount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.is_mount" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if this path is a POSIX mount point</p>
+<dd><p>Check if this path is a mount point</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyemaps.fileutils.Path.is_symlink">
 <span class="sig-name descname"><span class="pre">is_symlink</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.is_symlink" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether this path is a symbolic link.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.is_junction">
+<span class="sig-name descname"><span class="pre">is_junction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.is_junction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether this path is a junction.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2908,6 +2755,196 @@ to regular files).</p>
 <dt class="sig sig-object py" id="pyemaps.fileutils.Path.is_socket">
 <span class="sig-name descname"><span class="pre">is_socket</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.is_socket" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether this path is a socket.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.samefile">
+<span class="sig-name descname"><span class="pre">samefile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other_path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.samefile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether other_path is the same or not as this file
+(as returned by os.path.samefile()).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.open">
+<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open the file pointed to by this path and return a file object, as
+the built-in open() function does.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.read_bytes">
+<span class="sig-name descname"><span class="pre">read_bytes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.read_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open the file in bytes mode, read it, and close the file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.read_text">
+<span class="sig-name descname"><span class="pre">read_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.read_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open the file in text mode, read it, and close the file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.write_bytes">
+<span class="sig-name descname"><span class="pre">write_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.write_bytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open the file in bytes mode, write to it, and close the file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.write_text">
+<span class="sig-name descname"><span class="pre">write_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.write_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open the file in text mode, write to it, and close the file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.iterdir">
+<span class="sig-name descname"><span class="pre">iterdir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.iterdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yield path objects of the directory contents.</p>
+<p>The children are yielded in arbitrary order, and the
+special entries ‘.’ and ‘..’ are not included.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.glob">
+<span class="sig-name descname"><span class="pre">glob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case_sensitive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.glob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over this subtree and yield all existing files (of any
+kind, including directories) matching the given relative pattern.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.rglob">
+<span class="sig-name descname"><span class="pre">rglob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case_sensitive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.rglob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursively yield all existing files (of any kind, including
+directories) matching the given relative pattern, anywhere in
+this subtree.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.walk">
+<span class="sig-name descname"><span class="pre">walk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_down</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">follow_symlinks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.walk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Walk the directory tree from this directory, similar to os.walk().</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.cwd">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cwd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.cwd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new path pointing to the current working directory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.home">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">home</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.home" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new path pointing to the user’s home directory (as
+returned by os.path.expanduser(‘~’)).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.absolute">
+<span class="sig-name descname"><span class="pre">absolute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.absolute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an absolute version of this path by prepending the current
+working directory. No normalization or symlink resolution is performed.</p>
+<p>Use resolve() to get the canonical path to a file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.resolve">
+<span class="sig-name descname"><span class="pre">resolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.resolve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make the path absolute, resolving all symlinks on the way and also
+normalizing it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.owner">
+<span class="sig-name descname"><span class="pre">owner</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.owner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the login name of the file owner.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.group">
+<span class="sig-name descname"><span class="pre">group</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the group name of the file gid.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.readlink">
+<span class="sig-name descname"><span class="pre">readlink</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.readlink" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the path to which the symbolic link points.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.touch">
+<span class="sig-name descname"><span class="pre">touch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0o666</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_ok</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.touch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create this file with the given access mode, if it doesn’t exist.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.mkdir">
+<span class="sig-name descname"><span class="pre">mkdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0o777</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exist_ok</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.mkdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new directory at this given path.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.chmod">
+<span class="sig-name descname"><span class="pre">chmod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">follow_symlinks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.chmod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the permissions of the path, like os.chmod().</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.lchmod">
+<span class="sig-name descname"><span class="pre">lchmod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.lchmod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like chmod(), except if the path points to a symlink, the symlink’s
+permissions are changed, rather than its target’s.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.unlink">
+<span class="sig-name descname"><span class="pre">unlink</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">missing_ok</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.unlink" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove this file or link.
+If the path is a directory, use rmdir() instead.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.rmdir">
+<span class="sig-name descname"><span class="pre">rmdir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.rmdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove this directory.  The directory must be empty.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.rename">
+<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.rename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rename this path to the target path.</p>
+<p>The target path may be absolute or relative. Relative paths are
+interpreted relative to the current working directory, <em>not</em> the
+directory of the Path object.</p>
+<p>Returns the new Path instance pointing to the target path.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.replace">
+<span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rename this path to the target path, overwriting if that path exists.</p>
+<p>The target path may be absolute or relative. Relative paths are
+interpreted relative to the current working directory, <em>not</em> the
+directory of the Path object.</p>
+<p>Returns the new Path instance pointing to the target path.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.symlink_to">
+<span class="sig-name descname"><span class="pre">symlink_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_is_directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.symlink_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make this path a symlink pointing to the target path.
+Note the order of arguments (link, target) is the reverse of os.symlink.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.fileutils.Path.hardlink_to">
+<span class="sig-name descname"><span class="pre">hardlink_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.Path.hardlink_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make this path a hard link pointing to the same file as <em>target</em>.</p>
+<p>Note the order of arguments (self, target) is the reverse of os.link’s.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2974,7 +3011,7 @@ diretcory set by the variable or return current working directory.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pyemaps.fileutils.farray">
-<span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">farray</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.farray" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pyemaps.fileutils.</span></span><span class="sig-name descname"><span class="pre">farray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">like</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.fileutils.farray" title="Permalink to this definition">¶</a></dt>
 <dd><p>asfortranarray(a, dtype=None, <a href="#id30"><span class="problematic" id="id31">*</span></a>, like=None)</p>
 <p>Return an array (ndim &gt;= 1) laid out in Fortran order in memory.</p>
 <section id="parameters">
@@ -2984,7 +3021,7 @@ diretcory set by the variable or return current working directory.</p>
 </dd>
 <dt>dtype<span class="classifier">str or dtype object, optional</span></dt><dd><p>By default, the data-type is inferred from the input data.</p>
 </dd>
-<dt>like<span class="classifier">array_like</span></dt><dd><p>Reference object to allow the creation of arrays which are not
+<dt>like<span class="classifier">array_like, optional</span></dt><dd><p>Reference object to allow the creation of arrays which are not
 NumPy arrays. If an array-like passed in as <code class="docutils literal notranslate"><span class="pre">like</span></code> supports
 the <code class="docutils literal notranslate"><span class="pre">__array_function__</span></code> protocol, the result will be defined
 by it. In this case, it ensures the creation of an array object
@@ -3014,11 +3051,30 @@ ndarray.flags : Information about the memory layout of the array.</p>
 </section>
 <section id="examples">
 <h3>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h3>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asfortranarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;F_CONTIGUOUS&#39;</span><span class="p">]</span>
+<p>Starting with a C-contiguous array:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s1">'C'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s1">'C_CONTIGUOUS'</span><span class="p">]</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Calling <code class="docutils literal notranslate"><span class="pre">asfortranarray</span></code> makes a Fortran-contiguous copy:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asfortranarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s1">'F_CONTIGUOUS'</span><span class="p">]</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">may_share_memory</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 <span class="go">False</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;F_CONTIGUOUS&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Now, starting with a Fortran-contiguous array:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s1">'F'</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s1">'F_CONTIGUOUS'</span><span class="p">]</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Then, calling <code class="docutils literal notranslate"><span class="pre">asfortranarray</span></code> returns the same object:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asfortranarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="ow">is</span> <span class="n">y</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -3617,12 +3673,12 @@ Dfffracted beams object creation.</p>
         <li class="right" >
           <a href="rn.html" title="Release Notes"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.1.8 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 2.0.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Modules, Classes and Interfaces</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2022-2025, EMLab Solutions, Inc..
+        &#169; Copyright 2022-2026, EMLab Solutions, Inc..
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Getting Started &#8212; pyemaps 1.1.8 Stable documentation</title>
+    <title>Getting Started &#8212; pyemaps 2.0.0 Stable documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="requirements.html" title="Requirements"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.1.8 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 2.0.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Getting Started</a></li> 
       </ul>
     </div>  
@@ -53,7 +53,7 @@
 <section id="installation">
 <span id="id1"></span><h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h2>
 <p>To use pyEMAPS, first install it using pip:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>pip install pyemaps
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(.venv)</span> <span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>pyemaps
 </pre></div>
 </div>
 <p>where .venv is the python virtual environment.</p>
@@ -61,9 +61,9 @@
 <p class="admonition-title">Note</p>
 <p>To prevent conflicts of pyEMAPS dependencies with your existing python
 libraries, it is recommended that pyEMAPS install in its own python environment
-such as that with Annaconda or Miniconda.</p>
+such as that with Anaconda or Miniconda.</p>
 </div>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda create -n &lt;env-name&gt; python=3.7</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda create -n &lt;env-name&gt; python=3.12</span>
 <span class="go">conda activate &lt;env-name&gt;</span>
 <span class="go">python -m pip install pyemaps</span>
 </pre></div>
@@ -86,12 +86,12 @@ for storing your simulation and calculation results.</p>
 <li><p>Current working directory.</p></li>
 </ol>
 <p>The layout of the pyEMAPS data home directory is as follows:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)=</span>&lt;<span class="nb">local</span> directory&gt;  <span class="c1"># pyemaps data home, must have read and write permisions</span>
-<span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/crystals           <span class="c1"># hosts all custom crystal data files (.xtl, .cif)</span>
-<span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/dif                <span class="c1"># location for all kinematic diffraction simulation output</span>
-<span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/bloch              <span class="c1"># location for all Bloch dynamic simulations images output files</span>
-<span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/stereo             <span class="c1"># location for all stereodiagram output files</span>
-<span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/mxtal              <span class="c1"># place for all crystal constructor output files such as *.xyz</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)=</span>&lt;<span class="nb">local</span><span class="w"> </span>directory&gt;<span class="w">  </span><span class="c1"># pyemaps data home, must have read and write permisions</span>
+<span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/crystals<span class="w">           </span><span class="c1"># hosts all custom crystal data files (.xtl, .cif)</span>
+<span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/dif<span class="w">                </span><span class="c1"># location for all kinematic diffraction simulation output</span>
+<span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/bloch<span class="w">              </span><span class="c1"># location for all Bloch dynamic simulations images output files</span>
+<span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/stereo<span class="w">             </span><span class="c1"># location for all stereodiagram output files</span>
+<span class="gp">$</span><span class="o">(</span>PYEMAPS_DATA<span class="o">)</span>/mxtal<span class="w">              </span><span class="c1"># place for all crystal constructor output files such as *.xyz</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -148,7 +148,7 @@ the package:</p>
 <p>All pyEMAPS simulations and calculations start from its
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal">Crystal class</a>.
 To import the class:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crystal</span>
 </pre></div>
 </div>
 <p>Before starting pyEMAPS diffraction simulation, the crystal
@@ -156,9 +156,9 @@ object must be created and data loaded. The following example
 creates a <em>si</em> crystal object by loading it from pyEMAPS
 built-in database for Silicon crystal using
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.from_builtin">from_builtin</a></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>
 
-<span class="n">si</span> <span class="o">=</span> <span class="n">cr</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="s1">&#39;Silicon&#39;</span><span class="p">)</span>
+<span class="n">si</span> <span class="o">=</span> <span class="n">cr</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="s1">'Silicon'</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -172,10 +172,10 @@ for more details.</p>
 and calculations.</p>
 <section id="kinematic-diffraction-simulation">
 <h3>Kinematic Diffraction Simulation<a class="headerlink" href="#kinematic-diffraction-simulation" title="Permalink to this heading">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span>            <span class="c1">#----pyemaps crystal module</span>
-<span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">DPList</span><span class="p">,</span> <span class="n">showDif</span>    <span class="c1">#----Helper modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crystal</span>            <span class="c1">#----pyemaps crystal module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">DPList</span><span class="p">,</span> <span class="n">showDif</span>    <span class="c1">#----Helper modules</span>
 
-<span class="n">si</span> <span class="o">=</span> <span class="n">Crystal</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="s1">&#39;Silicon&#39;</span><span class="p">)</span>   <span class="c1">#----loading Silicon crystal from builtin database</span>
+<span class="n">si</span> <span class="o">=</span> <span class="n">Crystal</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="s1">'Silicon'</span><span class="p">)</span>   <span class="c1">#----loading Silicon crystal from builtin database</span>
 <span class="n">emc</span><span class="p">,</span> <span class="n">si_dp</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">generateDP</span><span class="p">()</span>           <span class="c1">#----generate kinematic diffraction pattern</span>
                                        <span class="c1">#----Output:</span>
                                        <span class="c1">#----emc: associated microscope and</span>
@@ -183,7 +183,7 @@ and calculations.</p>
                                        <span class="c1">#----si_dp: diffraction pattern generated</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">si_dp</span><span class="p">)</span>                           <span class="c1">#----raw representation of kinematic diffraction pattern</span>
 
-<span class="n">dpl</span> <span class="o">=</span> <span class="n">DPList</span><span class="p">(</span><span class="s1">&#39;Silicon&#39;</span><span class="p">)</span>                <span class="c1">#----create a diffraction pattern list to hold the results</span>
+<span class="n">dpl</span> <span class="o">=</span> <span class="n">DPList</span><span class="p">(</span><span class="s1">'Silicon'</span><span class="p">)</span>                <span class="c1">#----create a diffraction pattern list to hold the results</span>
 <span class="n">dpl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">emc</span><span class="p">,</span> <span class="n">si_dp</span><span class="p">)</span>                    <span class="c1">#----can add more if desired</span>
 
 <span class="n">showDif</span><span class="p">(</span><span class="n">dpl</span><span class="p">,</span> <span class="n">bClose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>             <span class="c1">#----visual representation of diffraction pattern</span>
@@ -202,22 +202,22 @@ Miller Indexes.</p>
 <h3>Bloch Wave Dynamic Diffraction Simulation<a class="headerlink" href="#bloch-wave-dynamic-diffraction-simulation" title="Permalink to this heading">¶</a></h3>
 <p>To simplify, we will call this simulation as Bloch or Bloch simulation throughout this help
 document.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>        <span class="c1"># Crystal class</span>
-<span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">BImgList</span>             <span class="c1"># Dynamic diffraction image list class</span>
-<span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">showBloch</span>            <span class="c1"># Builtin visualization helper function</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>        <span class="c1"># Crystal class</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">BImgList</span>             <span class="c1"># Dynamic diffraction image list class</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">showBloch</span>            <span class="c1"># Builtin visualization helper function</span>
 
 <span class="c1"># create a crystal class object and load it with builtin silicon data</span>
-<span class="n">c_name</span> <span class="o">=</span> <span class="s1">&#39;Silicon&#39;</span>
+<span class="n">c_name</span> <span class="o">=</span> <span class="s1">'Silicon'</span>
 <span class="n">si</span> <span class="o">=</span> <span class="n">cr</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="n">c_name</span><span class="p">)</span>
 
-<span class="c1"># Generate dynamic diffraction patterns using pyEMAPS&#39; bloch module</span>
+<span class="c1"># Generate dynamic diffraction patterns using pyEMAPS' bloch module</span>
 <span class="c1"># with all other default parameters except sampling</span>
 
 <span class="k">try</span><span class="p">:</span>
   <span class="n">bloch_imgs_list</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">generateBloch</span><span class="p">(</span><span class="n">sampling</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
 
 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-  <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 
 <span class="k">else</span><span class="p">:</span>
   <span class="n">showBloch</span><span class="p">(</span><span class="n">bloch_imgs_list</span><span class="p">)</span> <span class="c1">#grey color map</span>
@@ -248,19 +248,19 @@ between <a class="reference external" href="pyemaps.crystals.html#pyemaps.crysta
 </div>
 <p>To see all crystal names in the <em>pyEMAPS</em> built-in database, call
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.list_all_builtin_crystals">list_all_builtin_crystals</a>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>
 <span class="n">cr</span><span class="o">.</span><span class="n">list_all_builtin_crystals</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Current list of built-in crystals in <em>pyEMAPS</em>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;Aluminium&#39;</span><span class="p">,</span> <span class="s1">&#39;AluminiumOxide&#39;</span><span class="p">,</span> <span class="s1">&#39;Aluminium_FCC&#39;</span><span class="p">,</span> <span class="s1">&#39;BariumTitanate_180k&#39;</span><span class="p">,</span> <span class="s1">&#39;BariumTitanate_270k&#39;</span><span class="p">,</span>
-<span class="s1">&#39;BariumTitanate_Tetra&#39;</span><span class="p">,</span> <span class="s1">&#39;Boron_Tetra&#39;</span><span class="p">,</span> <span class="s1">&#39;CadmiumSelenide_Hex&#39;</span><span class="p">,</span> <span class="s1">&#39;CadmiumSulfide_Cubic&#39;</span><span class="p">,</span>
-<span class="s1">&#39;CadmiumSulfide_Hex&#39;</span><span class="p">,</span> <span class="s1">&#39;Chromium_BCC&#39;</span><span class="p">,</span> <span class="s1">&#39;CopperOxide&#39;</span><span class="p">,</span> <span class="s1">&#39;Copper_FCC&#39;</span><span class="p">,</span> <span class="s1">&#39;Cu2O_Cuprite&#39;</span><span class="p">,</span> <span class="s1">&#39;Diamond&#39;</span><span class="p">,</span>
-<span class="s1">&#39;ErbiumPyrogermanate&#39;</span><span class="p">,</span> <span class="s1">&#39;FePd_Tetra&#39;</span><span class="p">,</span> <span class="s1">&#39;FeS2_Pyrite&#39;</span><span class="p">,</span> <span class="s1">&#39;GalliumAntimonide&#39;</span><span class="p">,</span> <span class="s1">&#39;GalliumArsenide&#39;</span><span class="p">,</span>
-<span class="s1">&#39;GalliumNitride&#39;</span><span class="p">,</span> <span class="s1">&#39;Germanium&#39;</span><span class="p">,</span> <span class="s1">&#39;Gold_FCC&#39;</span><span class="p">,</span> <span class="s1">&#39;IndiumArsenide&#39;</span><span class="p">,</span> <span class="s1">&#39;LaMnO3&#39;</span><span class="p">,</span> <span class="s1">&#39;LeadZirconateTitanate&#39;</span><span class="p">,</span>
-<span class="s1">&#39;Li2MnO3&#39;</span><span class="p">,</span> <span class="s1">&#39;limno2&#39;</span><span class="p">,</span> <span class="s1">&#39;NaFeO2&#39;</span><span class="p">,</span> <span class="s1">&#39;Nb3Sn&#39;</span><span class="p">,</span> <span class="s1">&#39;Silicon&#39;</span><span class="p">,</span> <span class="s1">&#39;StrontiumTitanate&#39;</span><span class="p">,</span> <span class="s1">&#39;TelluriumDioxide&#39;</span><span class="p">,</span>
-<span class="s1">&#39;TinDioxide_RT&#39;</span><span class="p">,</span> <span class="s1">&#39;TitaniumDioxide_Anatase&#39;</span><span class="p">,</span> <span class="s1">&#39;TitaniumDioxide_Rutile&#39;</span><span class="p">,</span> <span class="s1">&#39;TungstenDiselenide&#39;</span><span class="p">,</span>
-<span class="s1">&#39;VanadiumDioxide_RT&#39;</span><span class="p">,</span> <span class="s1">&#39;ZincOxide&#39;</span><span class="p">,</span> <span class="s1">&#39;Zinc_HCP&#39;</span><span class="p">,</span> <span class="s1">&#39;ZirconiumNitride&#39;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">'Aluminium'</span><span class="p">,</span> <span class="s1">'AluminiumOxide'</span><span class="p">,</span> <span class="s1">'Aluminium_FCC'</span><span class="p">,</span> <span class="s1">'BariumTitanate_180k'</span><span class="p">,</span> <span class="s1">'BariumTitanate_270k'</span><span class="p">,</span>
+<span class="s1">'BariumTitanate_Tetra'</span><span class="p">,</span> <span class="s1">'Boron_Tetra'</span><span class="p">,</span> <span class="s1">'CadmiumSelenide_Hex'</span><span class="p">,</span> <span class="s1">'CadmiumSulfide_Cubic'</span><span class="p">,</span>
+<span class="s1">'CadmiumSulfide_Hex'</span><span class="p">,</span> <span class="s1">'Chromium_BCC'</span><span class="p">,</span> <span class="s1">'CopperOxide'</span><span class="p">,</span> <span class="s1">'Copper_FCC'</span><span class="p">,</span> <span class="s1">'Cu2O_Cuprite'</span><span class="p">,</span> <span class="s1">'Diamond'</span><span class="p">,</span>
+<span class="s1">'ErbiumPyrogermanate'</span><span class="p">,</span> <span class="s1">'FePd_Tetra'</span><span class="p">,</span> <span class="s1">'FeS2_Pyrite'</span><span class="p">,</span> <span class="s1">'GalliumAntimonide'</span><span class="p">,</span> <span class="s1">'GalliumArsenide'</span><span class="p">,</span>
+<span class="s1">'GalliumNitride'</span><span class="p">,</span> <span class="s1">'Germanium'</span><span class="p">,</span> <span class="s1">'Gold_FCC'</span><span class="p">,</span> <span class="s1">'IndiumArsenide'</span><span class="p">,</span> <span class="s1">'LaMnO3'</span><span class="p">,</span> <span class="s1">'LeadZirconateTitanate'</span><span class="p">,</span>
+<span class="s1">'Li2MnO3'</span><span class="p">,</span> <span class="s1">'limno2'</span><span class="p">,</span> <span class="s1">'NaFeO2'</span><span class="p">,</span> <span class="s1">'Nb3Sn'</span><span class="p">,</span> <span class="s1">'Silicon'</span><span class="p">,</span> <span class="s1">'StrontiumTitanate'</span><span class="p">,</span> <span class="s1">'TelluriumDioxide'</span><span class="p">,</span>
+<span class="s1">'TinDioxide_RT'</span><span class="p">,</span> <span class="s1">'TitaniumDioxide_Anatase'</span><span class="p">,</span> <span class="s1">'TitaniumDioxide_Rutile'</span><span class="p">,</span> <span class="s1">'TungstenDiselenide'</span><span class="p">,</span>
+<span class="s1">'VanadiumDioxide_RT'</span><span class="p">,</span> <span class="s1">'ZincOxide'</span><span class="p">,</span> <span class="s1">'Zinc_HCP'</span><span class="p">,</span> <span class="s1">'ZirconiumNitride'</span>
 </pre></div>
 </div>
 </section>
@@ -270,8 +270,8 @@ between <a class="reference external" href="pyemaps.crystals.html#pyemaps.crysta
 compare the acquired DPs to pre-built ones - A DP database generated by pyEMAPS DPGEN module.</p>
 <p>In this feature, the crystal orietations and phases are determined from the best match or fit
 to one of the DP in the pre-generated DP database:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>
-<span class="n">al</span> <span class="o">=</span> <span class="n">cr</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="s1">&#39;Aluminium&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>
+<span class="n">al</span> <span class="o">=</span> <span class="n">cr</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="s1">'Aluminium'</span><span class="p">)</span>
 <span class="n">ret</span><span class="p">,</span> <span class="n">dbfn</span> <span class="o">=</span> <span class="n">al</span><span class="o">.</span><span class="n">generateDPDB</span><span class="p">(</span><span class="n">emc</span><span class="o">=</span><span class="n">EMC</span><span class="p">(),</span> <span class="n">res</span><span class="p">,</span> <span class="n">xa</span><span class="p">,</span> <span class="n">vertices</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -454,12 +454,12 @@ small header formatted image. See <em>convert_image.py</em> sample code on how t
         <li class="right" >
           <a href="requirements.html" title="Requirements"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.1.8 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 2.0.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Getting Started</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2022-2025, EMLab Solutions, Inc..
+        &#169; Copyright 2022-2026, EMLab Solutions, Inc..
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>

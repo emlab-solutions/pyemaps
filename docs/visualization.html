@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Visualisation &#8212; pyemaps 1.1.8 Stable documentation</title>
+    <title>Visualisation &#8212; pyemaps 2.0.0 Stable documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="usage.html" title="Getting Started"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.1.8 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 2.0.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Visualisation</a></li> 
       </ul>
     </div>  
@@ -69,16 +69,16 @@ kinematic diffraction simulations for <em>silicon</em> crystal with starting zon
 changing and camera length set at 2500:</p>
 <a class="reference external image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png" src="https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png" /></a>
 <p>with the following sample code:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">DEF_CBED_DSIZE</span><span class="p">,</span> <span class="n">DEF_MODE</span>
-<span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">EMC</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEF_CBED_DSIZE</span><span class="p">,</span> <span class="n">DEF_MODE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">EMC</span>
 
 <span class="n">MAX_PROCWORKERS</span> <span class="o">=</span> <span class="mi">4</span>
 
-<span class="k">def</span> <span class="nf">generate_difs</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Silicon&#39;</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="n">DEF_MODE</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_difs</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'Silicon'</span><span class="p">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="n">DEF_MODE</span><span class="p">):</span>
 
-    <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">DPList</span>
-    <span class="kn">import</span> <span class="nn">concurrent.futures</span>
-    <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cryst</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">DPList</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">concurrent.futures</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cryst</span>
 
     <span class="n">cr</span> <span class="o">=</span> <span class="n">cryst</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
@@ -105,17 +105,17 @@ changing and camera length set at 2500:</p>
                 <span class="n">difs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">emc</span><span class="p">,</span> <span class="n">diffP</span><span class="p">)</span>
 
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s1"> generated an exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s1"> generated an exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
                 <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">difs</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">difs</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
 
-    <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">showDif</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">showDif</span>
 
     <span class="n">dpl</span> <span class="o">=</span> <span class="n">generate_difs</span><span class="p">(</span><span class="n">mode</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">showDif</span><span class="p">(</span><span class="n">dpl</span><span class="p">,</span> <span class="n">cShow</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">iShow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s1">&#39;table&#39;</span><span class="p">,</span> <span class="n">bSave</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">showDif</span><span class="p">(</span><span class="n">dpl</span><span class="p">,</span> <span class="n">cShow</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">iShow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s1">'table'</span><span class="p">,</span> <span class="n">bSave</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -131,14 +131,14 @@ to render Bloch simulation images for <em>silicon</em> with:</p>
 </pre></div>
 </div>
 <a class="reference external image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/bloch_table.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/bloch_table.png" src="https://github.com/emlab-solutions/imagepypy/raw/main/bloch_table.png" /></a>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">EMC</span><span class="p">,</span> <span class="n">DEF_CBED_DSIZE</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">EMC</span><span class="p">,</span> <span class="n">DEF_CBED_DSIZE</span>
 
 <span class="n">MAX_PROCWORKERS</span> <span class="o">=</span> <span class="mi">4</span>
 
-<span class="k">def</span> <span class="nf">generate_bloch_images</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Silicon&#39;</span><span class="p">,</span> <span class="n">dsize</span> <span class="o">=</span> <span class="n">DEF_CBED_DSIZE</span><span class="p">,</span> <span class="n">ckey</span> <span class="o">=</span> <span class="s1">&#39;tilt&#39;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_bloch_images</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'Silicon'</span><span class="p">,</span> <span class="n">dsize</span> <span class="o">=</span> <span class="n">DEF_CBED_DSIZE</span><span class="p">,</span> <span class="n">ckey</span> <span class="o">=</span> <span class="s1">'tilt'</span><span class="p">):</span>
 
-    <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cryst</span>
-    <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">SIMC</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cryst</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIMC</span>
 
     <span class="n">cr</span> <span class="o">=</span> <span class="n">cryst</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
@@ -155,19 +155,19 @@ to render Bloch simulation images for <em>silicon</em> with:</p>
                                 <span class="n">sample_thickness</span> <span class="o">=</span> <span class="n">sth</span>
                                 <span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Generated an exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Generated an exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
 
     <span class="n">bimgs</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">bimgs</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
 
-    <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">showBloch</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">showBloch</span>
 
     <span class="n">imgs</span> <span class="o">=</span> <span class="n">generate_bloch_images</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">imgs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">showBloch</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="n">cShow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s1">&#39;table&#39;</span><span class="p">,</span> <span class="n">bSave</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">showBloch</span><span class="p">(</span><span class="n">imgs</span><span class="p">,</span> <span class="n">cShow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="s1">'table'</span><span class="p">,</span> <span class="n">bSave</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -179,17 +179,17 @@ stereodiagram dictionary objects generated from <em>pyEMAPS</em>’
 <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateStereo">generateStereo</a>
 and renders each element by accessing the dictionary objects directly
 as demonstrated below:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">concurrent.futures</span>
-<span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">EMC</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">concurrent.futures</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">EMC</span>
 <span class="n">MAX_PROCWORKERS</span> <span class="o">=</span> <span class="mi">4</span>
 
-<span class="k">def</span> <span class="nf">getStereo</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">emc</span> <span class="o">=</span> <span class="n">EMC</span><span class="p">()):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">getStereo</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">emc</span> <span class="o">=</span> <span class="n">EMC</span><span class="p">()):</span>
 
     <span class="n">stereo</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">generateStereo</span><span class="p">(</span><span class="n">zone</span> <span class="o">=</span> <span class="n">emc</span><span class="o">.</span><span class="n">zone</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">emc</span><span class="p">,</span> <span class="n">stereo</span>
 
-<span class="k">def</span> <span class="nf">generate_stereo_list</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Silicon&#39;</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_stereo_list</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'Silicon'</span><span class="p">):</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>
 
     <span class="n">si</span> <span class="o">=</span> <span class="n">cr</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
     <span class="n">emclist</span> <span class="o">=</span> <span class="p">[]</span>
@@ -208,7 +208,7 @@ as demonstrated below:</p>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">emc</span><span class="p">,</span> <span class="n">stereo</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;failed to generate stereodiagram with &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">'failed to generate stereodiagram with '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
                 <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">slist</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">emc</span><span class="p">,</span> <span class="n">stereo</span><span class="p">))</span>
@@ -216,17 +216,17 @@ as demonstrated below:</p>
     <span class="n">slist</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">slist</span>
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
 
-    <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">showStereo</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">showStereo</span>
 
     <span class="n">stereoList</span> <span class="o">=</span> <span class="n">generate_stereo_list</span><span class="p">()</span>
     <span class="n">showStereo</span><span class="p">(</span><span class="n">stereoList</span><span class="p">,</span>
-            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Silicon&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">'Silicon'</span><span class="p">,</span>
             <span class="n">cShow</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
             <span class="n">iShow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">zLimit</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="n">layout</span><span class="o">=</span><span class="s1">&#39;table&#39;</span><span class="p">)</span>
+            <span class="n">layout</span><span class="o">=</span><span class="s1">'table'</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference external image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/stereo_table.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/stereo_table.png" src="https://github.com/emlab-solutions/imagepypy/raw/main/stereo_table.png" /></a>
@@ -246,9 +246,9 @@ based on pyEMAPS crystal structure calculations:</p>
 <span id="thirdparty"></span><h2>Rendering by Third Party Tools<a class="headerlink" href="#rendering-by-third-party-tools" title="Permalink to this heading">¶</a></h2>
 <p>pyEMAPS kinematic diffraction simulation results are captured by
 <a class="reference external" href="pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern">DP or diffPattern</a> class:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crystal</span> <span class="k">as</span> <span class="n">cr</span>
 
-<span class="n">si</span> <span class="o">=</span> <span class="n">cr</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="s1">&#39;Silicon&#39;</span><span class="p">)</span>
+<span class="n">si</span> <span class="o">=</span> <span class="n">cr</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="s1">'Silicon'</span><span class="p">)</span>
 
 <span class="n">_</span><span class="p">,</span> <span class="n">dp</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">generateDP</span><span class="p">()</span>
 
@@ -269,9 +269,9 @@ in DigitalMicrograph:</p>
 <p class="admonition-title">Note</p>
 <p>For complete python script integrating pyEMAPS into DM, see <em>si_stereo.py</em> in samples directory.</p>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">show_diffract</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">md</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Diamond&#39;</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">pyemaps</span> <span class="kn">import</span> <span class="n">XMAX</span><span class="p">,</span> <span class="n">YMAX</span>
-    <span class="kn">import</span> <span class="nn">DigitalMicrograph</span> <span class="k">as</span> <span class="nn">DM</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">show_diffract</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">md</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">'Diamond'</span><span class="p">):</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">XMAX</span><span class="p">,</span> <span class="n">YMAX</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">DigitalMicrograph</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">DM</span>
 
     <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">XMAX</span><span class="o">*</span><span class="n">mult</span><span class="p">,</span><span class="mi">2</span><span class="o">*</span><span class="n">YMAX</span><span class="o">*</span><span class="n">mult</span><span class="p">)</span>
 
@@ -286,11 +286,11 @@ in DigitalMicrograph:</p>
 
     <span class="c1">#validate diffraction mode</span>
     <span class="k">if</span> <span class="n">md</span> <span class="o">&lt;</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">md</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;diffraction mode provided </span><span class="si">{</span><span class="n">md</span><span class="si">}</span><span class="s1"> not supported&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'diffraction mode provided </span><span class="si">{</span><span class="n">md</span><span class="si">}</span><span class="s1"> not supported'</span><span class="p">)</span>
         <span class="k">return</span> <span class="mi">1</span>
 
     <span class="c1">#set image title</span>
-    <span class="n">img_title</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Kinematic Diffraction Simulation:  </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> in </span><span class="si">{</span><span class="n">DIFF_MODE</span><span class="p">[</span><span class="n">md</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1"> Mode&#39;</span><span class="p">)</span>
+    <span class="n">img_title</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Kinematic Diffraction Simulation:  </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> in </span><span class="si">{</span><span class="n">DIFF_MODE</span><span class="p">[</span><span class="n">md</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1"> Mode'</span><span class="p">)</span>
     <span class="n">dm_dif_img</span><span class="o">.</span><span class="n">SetName</span><span class="p">(</span><span class="n">img_title</span><span class="p">)</span>
 
     <span class="c1">#plotting Kikuchi and HOLZ lines and spots as DM components</span>
@@ -326,7 +326,7 @@ in DigitalMicrograph:</p>
             <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">i1</span><span class="p">,</span> <span class="n">i2</span><span class="p">,</span> <span class="n">i3</span> <span class="o">=</span> <span class="n">d</span>
             <span class="n">xx</span><span class="p">,</span> <span class="n">yy</span><span class="p">,</span> <span class="n">rr</span> <span class="o">=</span> <span class="p">(</span><span class="n">x1</span> <span class="o">+</span> <span class="n">XMAX</span><span class="p">)</span><span class="o">*</span><span class="n">mult</span><span class="p">,</span> <span class="p">(</span><span class="n">y1</span> <span class="o">+</span> <span class="n">YMAX</span><span class="p">)</span><span class="o">*</span><span class="n">mult</span><span class="p">,</span> <span class="n">r</span><span class="o">*</span><span class="n">mult</span>
 
-            <span class="n">idx</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:d}</span><span class="s1"> </span><span class="si">{:d}</span><span class="s1"> </span><span class="si">{:d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i1</span><span class="p">,</span><span class="n">i2</span><span class="p">,</span><span class="n">i3</span><span class="p">)</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="s1">'</span><span class="si">{:d}</span><span class="s1"> </span><span class="si">{:d}</span><span class="s1"> </span><span class="si">{:d}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i1</span><span class="p">,</span><span class="n">i2</span><span class="p">,</span><span class="n">i3</span><span class="p">)</span>
 
             <span class="n">disk</span> <span class="o">=</span> <span class="n">dif_img_disp</span><span class="o">.</span><span class="n">AddNewComponent</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">xx</span><span class="o">-</span><span class="n">rr</span><span class="p">,</span> <span class="n">yy</span><span class="o">-</span><span class="n">rr</span><span class="p">,</span> <span class="n">xx</span><span class="o">+</span><span class="n">rr</span><span class="p">,</span> <span class="n">yy</span><span class="o">+</span><span class="n">rr</span><span class="p">)</span>
 
@@ -490,12 +490,12 @@ crystal in 3D atomic structure. The following is an example of such rendering:</
         <li class="right" >
           <a href="usage.html" title="Getting Started"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 1.1.8 Stable documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pyemaps 2.0.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Visualisation</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2022-2025, EMLab Solutions, Inc..
+        &#169; Copyright 2022-2026, EMLab Solutions, Inc..
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>
