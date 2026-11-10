@@ -50,7 +50,9 @@ def add_powder(target):
             raise ValueError("Failed to plot: data error")
         
         fig, ax = plt.subplots()
-        fig.canvas.set_window_title('PYEMAPS')    
+        # canvas.set_window_title was removed in matplotlib 3.6
+        if fig.canvas.manager is not None:
+            fig.canvas.manager.set_window_title('PYEMAPS')
         fig.suptitle("Electron Powder Diffraction", fontsize=14, fontweight='bold')
 
         ax.set_title(self.name)

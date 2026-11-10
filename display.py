@@ -705,8 +705,10 @@ def displayXImage(img,
             bsize = (1.0, 1.0*int(nr/nc))
 
         fig, ax = plt.subplots(figsize=bsize, dpi=qedDPI)
-        
-        fig.canvas.set_window_title(STEM4D_TITLE)
+
+        # canvas.set_window_title was removed in matplotlib 3.6
+        if fig.canvas.manager is not None:
+            fig.canvas.manager.set_window_title(STEM4D_TITLE)
         # ax.set_xlabel(suptitle, fontsize=1.5)
         fig.suptitle(suptitle, va='top', fontsize=1.5)
         
