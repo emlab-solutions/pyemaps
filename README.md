@@ -55,21 +55,18 @@ See instructions below for contributor:
 ## Build pyEMAPS [`↩`](#content) <a id="build"></a>
 
 Requirements and recommendations:
-* __Python__: Version == 3.7
+* __Python__: Version 3.12, 3.13, 3.14 or 3.15
 * __Operating Systems__: Windows
 * __VSCode__: code editing (recommended, for contributors only)
 
-Building __pyEMAPS__ itself needs no compiler, because it is pure Python. Its compiled backend, __emaps__, currently supports only Windows and Python 3.7, so __pyEMAPS__ does too. We are also looking for contributors to extend it to other platforms and python versions. 
+Building __pyEMAPS__ itself needs no compiler, because it is pure Python. Its compiled backend, __emaps__, supports Windows with Python 3.12 to 3.15, so __pyEMAPS__ does too. pyEMAPS 1.1.x remains available for Python 3.7. We are also looking for contributors to extend it to other platforms. 
 
 Like many python development, a virtual python environment is recommended to isolate your pyEMAPS development environment from your other python development projects.
 
-Below are steps to establish __pyEMAPS__ build environment with python 3.7.9 as an example:
+Below are steps to establish __pyEMAPS__ build environment with python 3.12 as an example:
 
-* Install python 3.7.9 with Windows PowerShell command line in Administrator mode in c:\python37 directory:
-```   
-   Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe" -OutFile "python-3.7.9-amd64.exe"
-```
-* Run the "python-3.7.9-amd64.exe", choose the following in installer GUI:
+* Download the Python 3.12 Windows installer (64-bit) from [python.org](https://www.python.org/downloads/windows/).
+* Run the installer, choose the following in installer GUI:
   
      * Select Customize Installation
      * Check and select pip
@@ -82,7 +79,7 @@ Below are steps to establish __pyEMAPS__ build environment with python 3.7.9 as 
        (or choose your own directory name)
      * Create pyemaps_build virtual environemnt:
        ```
-       c:\python37\python.exe -m venv pyemaps_build
+       py -3.12 -m venv pyemaps_build
        ```
 * Activate pyemaps_build vitual environment:
      ```
@@ -90,7 +87,7 @@ Below are steps to establish __pyEMAPS__ build environment with python 3.7.9 as 
      ```
 * Update pip:
   ```
-   C:\Python37\python.exe -m pip install pip --upgrade
+   python -m pip install pip --upgrade
   ```
 * Install other python packages required for building pyemaps, using pip:
   ``` 

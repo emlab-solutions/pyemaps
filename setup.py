@@ -61,9 +61,9 @@ class install_data_in_package(_install_data):
 
 
 install_requires = [
-            'emaps >= 1.1.2',
-            'numpy >= 1.21.2',
-            'matplotlib >= 3.2.1'
+            'emaps >= 2.0.0',
+            'numpy >= 2.0',
+            'matplotlib >= 3.8.4'
             ]
 
 def get_samples(sdn = 'samples'):
