@@ -65,3 +65,18 @@ html_theme_options = {
 html_sidebars = {
    '**': ['globaltoc.html', 'relations.html', 'searchbox.html'],
 }
+
+# Python 3.12+ gives Enum classes a long constructor signature, e.g.
+# DW(value, names=_not_given, *values, module=None, ...). Show them as
+# DW(value), as the docs built on Python 3.7 did.
+import enum
+
+
+def _enum_signature(app, what, name, obj, options, signature, return_annotation):
+    if what == 'class' and isinstance(obj, type) and issubclass(obj, enum.Enum):
+        return '(value)', return_annotation
+    return signature, return_annotation
+
+
+def setup(app):
+    app.connect('autodoc-process-signature', _enum_signature)
