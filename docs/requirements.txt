@@ -1,0 +1,8 @@
+# Docs build. Install with pyemaps itself (the version being documented), then:
+#   cd docs && sphinx-build -E -b html source .
+sphinx==9.1.1
+docutils==0.22.4
+pydata-sphinx-theme==0.24.0
+sphinx-design==0.8.0
+sphinx-copybutton==0.5.2
+sphinx-reredirects==1.1.0
