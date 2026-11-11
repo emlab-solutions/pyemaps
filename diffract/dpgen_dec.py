@@ -47,13 +47,10 @@ def add_dpgen(target):
     DEF_VERTMAT = [[0,0,1],[1,1,1],[0,1,1]]
 
     def _getDPDBFN(self):
-        '''
-        Constructs a bloch image output file name.
-        
-        Refer to :ref:`Environment Variables <Environment Variables>` 
-        for how this file name is constructed.
-
-        '''
+        """
+        Compose the output file name for a diffraction pattern database, without the ``.bin``
+        extension. See :ref:`Environment Variables <Environment Variables>`.
+        """
         
         from ..fileutils import compose_ofn
 
@@ -72,47 +69,34 @@ def add_dpgen(target):
                     ):
         
         """
-        Generate a list diffraction patterns and save them in proprietory
-        binary formatted database file with extension .bin.
+        Generate a database of kinematic diffraction patterns for this crystal, over a range of
+        orientations, and save it to a ``.bin`` file. 4D-STEM pattern indexing
+        (:py:meth:`~pyemaps.stackimg.StackImage.indexImage`) uses it. This is a licensed feature.
 
-        The database created will be used for diffraction pattern indexing
-        and matchig functions in pyemaps STEM4D module.
-        
-        The generated database file is saved to directory pointed by environment variable
-        *PYEMAPS_DATA* or in current working directory if *PYEMAPS_DATA* is not set.
+        The file is saved in the ``dpdb`` folder of the pyEMAPS data folder; see
+        :ref:`Environment Variables <Environment Variables>`.
 
-        :param emc: Control parameters
-        :type emc: EMControls, optional
-
-        :param xa: x-axis, optional
-        :type xa: three integer tuple.
-
-        :param res: resolution of stereo projection map, ranging from 100 (*LOW_RES*) to 500 (*HIGH_RES*), that is
-                    the number of sampling points along the radius. The higher the resolution, the more 
-                    diffraction patterns are generated in the database file.
-
-        :type res: integer, defaults to 100, optional.
-
-        :param vertices: an array of 3 or 4 zone axis indexes that form an enclosed orientation 
-                    surface area within which the diffraction patterns are generated. See the following
-                    graphic illustration of the vertices input.
-
-        :type vertices: three integer tuple, optional
-        
-        :return: a tuple of a status code and database file name
-        :rtype: tuple of an integer and a string
-        
-
-        Input zone axis indexes define the vertices of the stereo projection map. The default
-        for a cubic crystal is *DEF_VERTMAT* = [[0,0,1],[1,1,1],[0,1,1]].
+        :param emc: microscope and simulation controls. Its accelerating voltage, zone axis and
+            simulation controls are used.
+        :type emc: :py:class:`~pyemaps.emcontrols.EMControl`, optional
+        :param xa: the crystal's horizontal axis, as three integers. Defaults to ``(0, 0, 0)``,
+            which lets the backend choose it.
+        :type xa: tuple of int, optional
+        :param res: resolution of the stereographic projection map: the number of sampling points
+            along its radius, from 100 to 500. Higher resolutions put more patterns in the database.
+            Defaults to 100.
+        :type res: int, optional
+        :param vertices: three or four zone axes, each ``[h, k, l]``, that enclose the orientation
+            range to cover (see the figure below). Defaults to ``[[0,0,1], [1,1,1], [0,1,1]]``, the
+            standard triangle for a cubic crystal.
+        :type vertices: list of list of int, optional
+        :return: ``(status, file_name)``: 0 and the database file's path on success, or -1 and
+            ``None`` (or the intended path) on failure. A message is printed either way.
+        :rtype: tuple
 
         .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png
            :width: 75%
            :align: center
-
-        The diffraction patterns database file produced will be consumed by pyemaps stem4d module
-        for experimental diffraction pattern serach and indexing.
-
         """
         import os
         

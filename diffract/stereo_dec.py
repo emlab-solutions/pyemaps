@@ -29,35 +29,28 @@ def add_stereo(target):
                             tilt=(0.0,0.0),
                             zone = (0, 0, 1)):
         """
-        Generate stereodiagram.
+        Calculate the crystal's stereographic projection (stereodiagram).
 
-        :param xa: Crystal horizontal axis in reciprical space
-        :type xa: tuple of 3 integers, optional
+        :param xa: the crystal's horizontal axis in reciprocal space, as three integers.
+        :type xa: tuple of int, optional
+        :param tilt: sample tilt ``(x, y)``.
+        :type tilt: tuple of float, optional
+        :param zone: zone axis, as three integers.
+        :type zone: tuple of int, optional
+        :return: the projected poles, one dictionary each:
 
-        :param tilt: Sample tilts in (x,y)
-        :type tilt: tuple, optional
+            .. code-block:: python
 
-        :param zone: Zone axis
-        :type zone: tuple, optional
-
-        :return: A list of stereodiagram elements represented by dict object
-        :rtype: list of dict object
-
-        Example of the stereodiagram output:
-
-        .. code-block:: python
-
-            [
                 {
-                    "c": (x,y),              # center
-                    "r": 1.0,                # radius
-                    "idx": (h, k, l),        # Miller Index
+                    'c': (x, y),          # center
+                    'r': r,               # radius
+                    'idx': (h, k, l)      # Miller indices
                 }
-            ]    
 
-        To display the resulting stereodiagram, use 
-        `showStereo <pyemaps.display.html#pyemaps.display.showStereo>`_.
-        
+        :rtype: list of dict
+        :raise ~pyemaps.errors.StereodiagramError: if the calculation fails.
+
+        To display the result, use :py:func:`~pyemaps.display.showStereo`.
         """
         from . import dif, stereo
         

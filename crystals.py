@@ -37,14 +37,13 @@ from .errors import *
 from .fileutils import *
 
 class DW(Enum):
-    '''
-    Enumerated thermal property of crystal supported by **pyemaps**
+    """
+    Debye-Waller (thermal) factor types that pyEMAPS supports.
 
-    * **iso**: Isotropic Debye-Waller Factor B (short for Isotropic)
-    * **bij**: Anisotropic Temperature Factor
-    * **uij**: Anisotropic Displacement Factor
-
-    '''
+    * **iso**: isotropic Debye-Waller factor *B*
+    * **bij**: anisotropic temperature factors
+    * **uij**: anisotropic displacement factors
+    """
     iso = 1
     bij = 2
     uij = 3
@@ -55,15 +54,16 @@ uij = DW.uij
 
 class Cell:
     """
+    Unit cell constants: the lengths *a*, *b* and *c* (Å) and the angles *alpha*, *beta* and
+    *gamma* (degrees). Each value must be a number or a string that converts to one.
 
-    Cell constant data class create and validate crystal unit cell 
-    lengths (a, b, c) and angles (alpha, beta, gamma).
-    
-    To create a Cell object using the following python dict object:
+    From a dictionary:
 
-    .. code-block:: json
+    .. code-block:: python
 
-        {
+        from pyemaps import Cell
+
+        data_dict = {
             "a": "5.4307",
             "b": "5.4307",
             "c": "5.4307",
@@ -71,58 +71,40 @@ class Cell:
             "beta": "90.0",
             "gamma": "90.0"
         }
-    
-    .. code-block:: python
+        si_cell = Cell(data=data_dict)
 
-        from pyemaps import Cell
-
-        si_cell = Cell(data = data_dict)
-
-    To create a Cell object using the following python list:
+    From a list, in the order a, b, c, alpha, beta, gamma:
 
     .. code-block:: python
 
         from pyemaps import Cell
 
-        data_list = ["5.4307", "5.4307", "5.4307", "90.0", "90.0", "90.0"]
-        # or
-        data_list = [5.4307, 5.4307, 5.4307, 90.0, 90.0, 90.0]
+        si_cell = Cell(data=[5.4307, 5.4307, 5.4307, 90.0, 90.0, 90.0])
+        # strings work too: ["5.4307", "5.4307", "5.4307", "90.0", "90.0", "90.0"]
 
-        si_cell = Cell(data = data_list)
-
-    To create a Cell class object by setting individual attributes:
+    Or by setting the attributes one at a time:
 
     .. code-block:: python
-        :emphasize-lines: 5,6-7
 
         from pyemaps import Cell
-        
-        # create a Cell object with all defaults values (0.0).
-        si_cell = Cell()
 
+        si_cell = Cell()        # every value starts at 0.0
         si_cell.a = 5.4307
         si_cell.b = 5.4307
         si_cell.c = 5.4307
         si_cell.alpha = 90.0
         si_cell.beta = 90.0
         si_cell.gamma = 90.0
-
-    Validation of a Cell object data fails if input value for each arribute
-    is:
-    
-    1. not numberal or numberal string.
-    2. length of input data is less than 6.
-
     """
     def __init__(self, data=None):
         """
-        This Cell constructor allows Cell construction with python dict and
-        list object, as well as customization. 
-
-        :param data: Cell constant python dictionary or list
+        :param data: the six cell constants, either as a dictionary with the keys ``a``, ``b``,
+            ``c``, ``alpha``, ``beta`` and ``gamma``, or as a list in that order. If omitted, all six
+            values are 0.0.
         :type data: dict or list, optional
-        :raise CellValueError: if cell data validations fail.
-
+        :raise ~pyemaps.errors.CellDataError: if *data* doesn't have exactly six values, has an unknown key, or is
+            neither a dictionary nor a list.
+        :raise ~pyemaps.errors.CellValueError: if a value isn't a number or a numeric string.
         """
         if data is None:
             setattr(self, 'a', 0.0)
@@ -158,42 +140,58 @@ class Cell:
 
     @property
     def session_controls(self):
+        """
+        Microscope controls attached to the cell, an :py:class:`~pyemaps.emcontrols.EMControl`.
+        Set it by calling the cell with the controls: ``cell(emc)``. pyEMAPS doesn't use it, and
+        it can't be read until it's set.
+        """
         return self._session_controls
 
     @property
     def a(self):
-        ''' a cell length '''
+        """
+        Cell length *a*, in Å.
+        """
         return self._a
     @property
     def b(self):
-        ''' b cell length '''
+        """
+        Cell length *b*, in Å.
+        """
         return self._b
     @property
     def c(self):
-        ''' c cell length '''
+        """
+        Cell length *c*, in Å.
+        """
         return self._c
     @property
     def alpha(self):
-        ''' alpha cell angle '''
+        """
+        Cell angle *alpha*, in degrees.
+        """
         return self._alpha
     @property
     def beta(self):
-        ''' beta cell angle '''
+        """
+        Cell angle *beta*, in degrees.
+        """
         return self._beta
     @property
     def gamma(self):
-        ''' gamma cell angle '''
+        """
+        Cell angle *gamma*, in degrees.
+        """
         return self._gamma
 
     @a.setter
     def a(self, v=None): 
-        '''
-        Sets b cell length.
+        """
+        Set cell length *a*.
 
-        :param v: must be a numeral or numberal string
-        :type v: number or string, required
-        
-        ''' 
+        :param v: a number or a numeric string; ``None`` sets 0.0.
+        :raise ~pyemaps.errors.CellValueError: if *v* isn't numeric.
+        """
         av = 0.0 if v is None else v
 
         try:
@@ -204,13 +202,12 @@ class Cell:
 
     @b.setter
     def b(self, v=None):
-        '''
-        Sets b cell length.
+        """
+        Set cell length *b*.
 
-        :param v: must be a numeral or numberal string
-        :type v: number or string, required
-        
-        ''' 
+        :param v: a number or a numeric string; ``None`` sets 0.0.
+        :raise ~pyemaps.errors.CellValueError: if *v* isn't numeric.
+        """
         bv = 0.0 if v is None else v
 
         try:
@@ -221,13 +218,12 @@ class Cell:
 
     @c.setter
     def c(self, v=None):
-        '''
-        Sets c cell length.
+        """
+        Set cell length *c*.
 
-        :param v: must be a numeral or numberal string
-        :type v: number or string, required
-        
-        ''' 
+        :param v: a number or a numeric string; ``None`` sets 0.0.
+        :raise ~pyemaps.errors.CellValueError: if *v* isn't numeric.
+        """
         cv = 0.0 if v is None else v
         try:
             self._c = float(cv)
@@ -238,13 +234,12 @@ class Cell:
 
     @alpha.setter
     def alpha(self, v=None):
-        '''
-        Sets cell alpha angle.
+        """
+        Set cell angle *alpha*.
 
-        :param v: must be a numeral or numberal string
-        :type v: number or string, required
-        
-        ''' 
+        :param v: a number or a numeric string; ``None`` sets 0.0.
+        :raise ~pyemaps.errors.CellValueError: if *v* isn't numeric.
+        """
         av = 0.0 if v is None else v
         try:
             self._alpha = float(av)
@@ -254,13 +249,12 @@ class Cell:
 
     @beta.setter
     def beta(self, v=0.0):
-        '''
-        Sets cell beta angle.
+        """
+        Set cell angle *beta*.
 
-        :param v: must be a numeral or numberal string
-        :type v: number or string, required
-        
-        ''' 
+        :param v: a number or a numeric string; ``None`` sets 0.0.
+        :raise ~pyemaps.errors.CellValueError: if *v* isn't numeric.
+        """
         bv = 0.0 if v is None else v
         try:
             self._beta = float(bv)
@@ -270,13 +264,12 @@ class Cell:
 
     @gamma.setter
     def gamma(self, v=0.0):
-        '''
-        Sets cell gamma angle.
+        """
+        Set cell angle *gamma*.
 
-        :param v: must be a numeral or numberal string
-        :type v: number or string, required
-        
-        ''' 
+        :param v: a number or a numeric string; ``None`` sets 0.0.
+        :raise ~pyemaps.errors.CellValueError: if *v* isn't numeric.
+        """
         gv = 0.0 if v is None else v
         try:
             self._gamma = float(gv)
@@ -312,8 +305,10 @@ class Cell:
 
     def prepare(self):
         """
-        Prepare cell constant data for loading into backend simulation modules
-        
+        Return the cell constants as a Fortran-ordered array of six floats, in the order a, b, c,
+        alpha, beta, gamma, for the simulation backend. Used internally.
+
+        :raise ~pyemaps.errors.CellDataError: if a cell constant is missing.
         """
         cell0 = self.__dict__
         celarr = np.zeros((6,))
@@ -332,87 +327,68 @@ class Cell:
 
 class Atom:
     """
-    Crystal atom descriptor class. Depending on the thermal types, its data
-    include atom symbol, positional data (x, y, z) and thermal coefficients
-    as well as its occupancy.
+    One atom in a crystal: its element symbol, fractional position (*x*, *y*, *z*), thermal
+    factor(s) and occupancy.
 
-    To create an isotropic Atom object with a python dict object:
-
-    .. code-block:: json 
-        
-        {
-            "symb": "Si",
-            "x": "0.125",
-            "y": "0.125",
-            "z": "0.125",
-            "d-w": "0.4668",
-            "occ": "1.00" 
-        }
+    From a dictionary, for an isotropic atom:
 
     .. code-block:: python
 
         from pyemaps import Atom
 
         data_dict = {
-            "symb": "Si",
             "x": "0.125",
             "y": "0.125",
             "z": "0.125",
             "d-w": "0.4668",
-            "occ": "1.00" 
+            "occ": "1.00"
         }
-        si_atom = Atom(data = data_dict)
+        si_atom = Atom(sym='Si', data=data_dict)
 
-    To create an isotropic Atom object with a python list object:
-
-    .. code-block:: python 
-        
-        from pyemaps import Atom
-        data_list = ["0.125", "0.125", "0.125", "0.4668", "1.00"]
-        # or
-        data_list = [0.125, 0.125, 0.125, 0.4668, 1.00]
-
-        si_atom = Atom(data = data_list)
-
-    .. warning:: 
-
-        When atom positional data is entered as a python list object
-        the order of the elements must match their corresponding keys:
-
-    .. code-block:: python 
-
-        ['x','y','z','d-w','occ']       # for isotropic atom type
-        ['x','y','z','b11','b22','b33','b12','b13','b23','occ']   #for anisotropic atome types
-
-    .. note:: 
-    
-        The list input for atom positional data can have 'occ' data missing. In which case
-        pyemaps will default its occupancy data to 1.0
-
-    To create an Atom class object by setting individual attributes:
+    From a list:
 
     .. code-block:: python
 
         from pyemaps import Atom
-        # create an Atom object with all defaults to its data members.
 
-        si_at = Atom()
+        si_atom = Atom(sym='Si', data=[0.125, 0.125, 0.125, 0.4668, 1.00])
 
-        si_at.symb = 'Si'
-        si_at.loc = [0.125, 0.125, 0.125, 0.4668, 1.00]
+    .. warning::
 
+        A list must give the values in this order:
+
+        .. code-block:: python
+
+            ['x', 'y', 'z', 'd-w', 'occ']                                    # isotropic (iso)
+            ['x', 'y', 'z', 'b11', 'b22', 'b33', 'b12', 'b13', 'b23', 'occ']  # anisotropic (bij, uij)
+
+    .. note::
+
+        The occupancy ``occ`` can be left out of a list or dictionary; it then defaults to 1.0.
+
+    Or by setting the attributes one at a time:
+
+    .. code-block:: python
+
+        from pyemaps import Atom
+
+        si_atom = Atom()
+        si_atom.symb = 'Si'
+        si_atom.loc = [0.125, 0.125, 0.125, 0.4668, 1.00]
     """
     def __init__(self, a_type=iso.value, sym = '', data=None):
         """
-        Internal representation of single atom in a crystal object.
-
-        :param a_type: Atom thermal factor type.
+        :param a_type: thermal factor type: 1 (``iso``), 2 (``bij``) or 3 (``uij``).
         :type a_type: int, optional
-
-        :param data: Atoms positional and other data input. 
+        :param sym: element symbol, up to 10 characters.
+        :type sym: str, optional
+        :param data: position, thermal factor(s) and optional occupancy. A dictionary needs the keys
+            ``x``, ``y``, ``z`` and ``d-w`` for an isotropic atom, or ``x``, ``y``, ``z``, ``b11``,
+            ``b22``, ``b33``, ``b12``, ``b13`` and ``b23`` for an anisotropic one, plus an optional
+            ``occ``. A list gives the same values in that order.
         :type data: dict or list, optional
-        :raise UCError: if data validation fails.
-
+        :raise ~pyemaps.errors.UCError: if *data* isn't a dictionary or list, has the wrong number of values or is
+            missing a key, or if *a_type* or *sym* is invalid.
         """
         setattr(self, 'atype', a_type)
         setattr(self, 'symb', sym)
@@ -448,35 +424,34 @@ class Atom:
     @property
     def symb(self):
         """
-        Atom symbol
-
+        Element symbol.
         """
         return self._symb
 
     @property
     def atype(self):
         """
-        Atom thermal type - [iso, bij, uij]
-
+        Thermal factor type: 1 (``iso``), 2 (``bij``) or 3 (``uij``).
         """
         return self._atype
 
     @property
     def loc(self):
         """
-        atomic position, thermal factor or coefficients, occupacy information
-
+        Position, thermal factor(s) and occupancy, as a list:
+        ``[x, y, z, d-w, occ]`` for an isotropic atom, or
+        ``[x, y, z, b11, b22, b33, b12, b13, b23, occ]`` for an anisotropic one.
         """
         return self._loc
 
     @symb.setter
     def atype(self, a_type=iso.value):
-        '''
-        setting atomic thermal property
-        1 - isotropic
-        >1 - all other types (corresponding to anisotropic types, uij, bij)
+        """
+        Set the thermal factor type.
 
-        '''
+        :param a_type: 1 (``iso``), 2 (``bij``) or 3 (``uij``).
+        :raise ~pyemaps.errors.UCError: if *a_type* isn't 1, 2 or 3.
+        """
         
         if type(a_type) is not int or a_type < iso.value or a_type > uij.value:
             raise UCError("Atom thermal property type must be greater or equial to 1")
@@ -485,6 +460,12 @@ class Atom:
 
     @symb.setter
     def symb(self, sb=''):
+        """
+        Set the element symbol.
+
+        :param sb: up to 10 characters; an empty string is stored as blanks.
+        :raise ~pyemaps.errors.UCError: if *sb* is longer than 10 characters.
+        """
         MAX_ATOM_SYMBOL_LEN = 10
         if len(sb) == 0:
             sb='          '
@@ -496,13 +477,13 @@ class Atom:
     
     @loc.setter
     def loc(self, locdata=None):
-        '''
-        Atom position and other attributes.
-        
-        Must be a list of floats or None. In later case, this attribute
-        will default to all 0.0.
+        """
+        Set the position, thermal factor(s) and occupancy.
 
-        '''
+        :param locdata: a list in the order given in :py:attr:`~pyemaps.crystals.Atom.loc`; the occupancy can be left out
+            and defaults to 1.0. ``None`` or an empty list sets every value to 0.0, with occupancy 1.0.
+        :raise ~pyemaps.errors.UCError: if *locdata* isn't a list or has the wrong number of values.
+        """
         akeys = at_iso_keys if self.isISO() else at_noniso_keys
         keylen = len(akeys)
 
@@ -563,17 +544,16 @@ class Atom:
                     yield key, self._data[key]
 
     def isISO(self):
-        '''
-        Check to see if this Atom thermal type is isotropic
-
-        '''
+        """
+        Return ``True`` if the atom has an isotropic thermal factor.
+        """
         return self._atype == iso.value
 
     def prepare(self):
-       '''
-       Format Atom data and prepare it for loading into backend simulation module.
-
-       '''
+       """
+       Return the position, thermal factor(s) and occupancy as a list of floats, for the simulation
+       backend. Used internally.
+       """
        tloc=[float(l) for l in self._loc]
             
        return tloc   
@@ -581,56 +561,45 @@ class Atom:
 
 class SPG:
     """
-    Space Group class. This class includes: 
-    
-    1. Symmetry International Tables Number, and
-    2. Symmetry Space Group Setting
+    Space group: its number in the International Tables for Crystallography and its setting.
 
-    It is part of Crystal objects.
+    From a dictionary:
 
-    To create a space group object with a python dictionary object:
-    
     .. code-block:: python
 
         from pyemaps import SPG
 
         spg_dict = {
-            "number": "227", #<---Symmetry International Tables Number
-            "setting": "2"   #<---Symmetry Space Group Setting  
+            "number": "227",    # International Tables number
+            "setting": "2"      # space group setting
         }
+        si_spg = SPG(data=spg_dict)
 
-        si_spg = SPG(data = spg_dict)
+    From a list ``[number, setting]``:
 
-    To create a space group object with a python integer list:
+    .. code-block:: python
+
+        from pyemaps import SPG
+
+        si_spg = SPG(data=[227, 2])     # or ["227", "2"]
+
+    Or by setting the attributes:
 
     .. code-block:: python
 
         from pyemaps import SPG
 
-        spg_list = ["227", "2"] 
-        # or
-        spg_list = [227, 2]
-
-        si_spg = SPG(data = spg_list)
-
-    To create a space group object with custom data:
-
-    .. code-block:: python
-
-        from pyemaps import SPG
         si_spg = SPG()
         si_spg.number = 227
         si_spg.setting = 2
-
     """
     def __init__(self, data=None):
         """
-        SPG object constructor.
-
-        :param data: Space group data input.
+        :param data: the space group number and setting, as a dictionary with the keys ``number``
+            and ``setting``, or as a list ``[number, setting]``. If omitted, both are 0.
         :type data: dict or list, optional
-        :raise SPGInvalidDataInputError: if cell data validations fail.
-
+        :raise ~pyemaps.errors.SPGInvalidDataInputError: if *data* isn't a two-item list or a dictionary with exactly
+            those two keys, or if a value isn't an integer.
         """
         if data is None:
             setattr(self, 'number', 0)
@@ -659,23 +628,25 @@ class SPG:
             
     @property
     def number(self):
-        ''' Symmetry International Tables Number'''
+        """
+        International Tables number of the space group.
+        """
         return self._number
 
     @property
     def setting(self):
-        ''' Symmetry Space Group Setting'''
+        """
+        Space group setting.
+        """
         return self._setting
 
     @number.setter
     def number(self, n = None):
         """
-        Setting Symmetry Space Group Setting Number
-        
-        :param n: International Tables Number
-        :type n: int, optional
-        :raise SPGInvalidDataInputError: if n is not an integer or integer string
+        Set the International Tables number.
 
+        :param n: an integer or an integer string; ``None`` sets 0.
+        :raise ~pyemaps.errors.SPGInvalidDataInputError: if *n* isn't an integer or an integer string.
         """
         num = 0 if n is None else n
 
@@ -687,12 +658,10 @@ class SPG:
     @setting.setter
     def setting(self, s=None):
         """
-        Symmetry setting data.
+        Set the space group setting.
 
-        :param s: Symmetry setting number
-        :type s: int or string, optional
-        :raise SPGInvalidDataInputError: if s is not an integer or integer string
-
+        :param s: an integer or an integer string; ``None`` sets 0.
+        :raise ~pyemaps.errors.SPGInvalidDataInputError: if *s* isn't an integer or an integer string.
         """
         if s is None:
             sn = 0
@@ -718,6 +687,12 @@ class SPG:
         return str(f"spg: number: {self._number} setting: {self._setting}")
 
     def prepare(self):
+        """
+        Check that the number and setting form a valid space group, and return them as a
+        Fortran-ordered integer array for the simulation backend. Used internally.
+
+        :raise ~pyemaps.errors.SPGInvalidDataInputError: if the space group number and setting aren't valid.
+        """
         from .spg.spg_dec import validateSPG
         
         if not validateSPG(self._number, self._setting):
@@ -780,139 +755,107 @@ from .diffract.bloch_dec import add_bloch
 @add_dif   
 class Crystal:
     """
-    This class is defined to capture and to validate crystal data. It is composed of
-    the following data:
-    
-    * **cell**: Cell object
-    * **atoms**: list of Atom objects
-    * **spg**: Space Group SPG object
-    * **dw**: Debye-waller factor type  
-    * **name**: Crystal name
+    A crystal: its name, unit cell, atoms, space group and thermal factor type. All pyEMAPS
+    simulations and calculations are methods of this class.
 
-    Crystal class constructors include:
+    * **name**: crystal name
+    * **cell**: unit cell constants, a :py:class:`~pyemaps.crystals.Cell`
+    * **atoms**: the atoms, a list of :py:class:`~pyemaps.crystals.Atom`
+    * **spg**: space group, an :py:class:`~pyemaps.crystals.SPG`
+    * **dw**: Debye-Waller (thermal) factor type, see :py:class:`~pyemaps.crystals.DW`
 
-    1. Crystal(name, data): python dictionary object (default)
-    2. From pyemaps built-in crystal database: `from_builtin <pyemaps.crystals.html#pyemaps.crystals.Crystal.from_builtin>`_;
-    3. From a pyemaps proprietory crystal data file: `from_xtl <pyemaps.crystals.html#pyemaps.crystals.Crystal.from_xtl>`_;
-    4. From Crystallographic Information File (CIF): `from_cif <pyemaps.crystals.html#pyemaps.crystals.Crystal.from_cif>`_; 
-    5. From .JSON File: `from_json <pyemaps.crystals.html#pyemaps.crystals.Crystal.from_json>`_;
-    6. From a python dict object: `from_dict <pyemaps.crystals.html#pyemaps.crystals.Crystal.from_dict>`_;
-    7. Custom from individual components such as `Cell <pyemaps.crystals.html#pyemaps.crystals.Cell>`_, `Atom <pyemaps.crystals.html#pyemaps.crystals.Atom>`_ objects
+    Ways to create a crystal:
 
+    1. ``Crystal(name, data)``, from a dictionary.
+    2. :py:meth:`~pyemaps.crystals.Crystal.from_builtin`, from the pyEMAPS built-in crystal database.
+    3. :py:meth:`~pyemaps.crystals.Crystal.from_xtl`, from a pyEMAPS XTL crystal file.
+    4. :py:meth:`~pyemaps.crystals.Crystal.from_cif`, from a Crystallographic Information File (CIF).
+    5. :py:meth:`~pyemaps.crystals.Crystal.from_json`, from a JSON file.
+    6. :py:meth:`~pyemaps.crystals.Crystal.from_dict`, from a dictionary that includes the name.
+    7. From its parts: :py:class:`~pyemaps.crystals.Cell`, :py:class:`~pyemaps.crystals.Atom` and :py:class:`~pyemaps.crystals.SPG` objects.
 
-    To create a Crystal object using a python dictionary object:
+    From a dictionary:
+
+    .. code-block:: python
+
+        from pyemaps import Crystal
+
+        c_dict = {
+            'cell': {                       # cell constants
+                'a': '5.4307', 'b': '5.4307', 'c': '5.4307',
+                'alpha': '90.0', 'beta': '90.0', 'gamma': '90.0'
+            },
+            'atoms': [                      # one dictionary per atom
+                {'symb': 'si',              # element symbol
+                 'x': '0.125',              # fractional coordinates
+                 'y': '0.125',
+                 'z': '0.125',
+                 'd-w': '0.4668',           # Debye-Waller factor
+                 'occ': 1.00}               # occupancy
+            ],
+            'spg': {                        # space group
+                'number': '227',            # International Tables number
+                'setting': '2'              # setting
+            },
+            'dw': 'iso'                     # Debye-Waller factor type
+        }
+
+        si = Crystal(name='Silicon', data=c_dict)
+
+    From the built-in crystal database:
 
     .. code-block:: python
 
         from pyemaps import Crystal
 
-        c_dict = {'cell':                                           #Cell constants
-                        {
-                            'a': '5.4307',
-                            'b': '5.4307',
-                            'c': '5.4307',
-                            'alpha': '90.0',
-                            'beta': '90.0',
-                            'gamma': '90.0'
-                        },
-                    'atoms':                                        #atomic info.
-                        [
-                            {'symb': 'si',                          #atom symbol
-                            'x': '0.125',                           #atom coordinates
-                            'y': '0.125',  
-                            'z': '0.125',
-                            'd-w': '0.4668',                        #Debye-waller factor
-                            'occ': 1.00},                           #occupancy
-                        ],
-                    'spg':                                          #space group info
-                        {'number': '227'                            #symmetry international table(IT) number
-                        'setting': '2'                              #symmetry space group setting
-                        },
-                    'dw': 
-                        'iso'                                       #Debye-waller factor
-                    'name', 
-                        'Silicon'                                   #crystal name
-                }
+        si = Crystal.from_builtin('Silicon')
 
-        si = Crystal(name='Silicon', data = c_dict)
-
-    To create a Crystal object using pyemaps builtin crystal database:
-
-    .. code-block:: python
-
-        from pyemaps import Crystal
-        si = Crystal.from('Silicon') 
-    
     .. note::
 
-        For a list of builtin crystal names, call:
-        
-        .. code-block:: python
-        
-            Crystal.list_all_builtin_crystals()
+        For the names of all built-in crystals, call :py:meth:`~pyemaps.crystals.Crystal.list_all_builtin_crystals`.
 
-    To create a Crystal object with custom Cell, SPG and Atom objects:
+    From its parts:
 
     .. code-block:: python
 
         from pyemaps import Cell, Atom, SPG, Crystal
-        cell = Cell(data = [5.4307, 5.4307, 5.4307, 90.0, 90.0, 90.0])
-        atom = Atom(data = [0.125, 0.125, 0.125, 0.4668, 1.00])
-        spg = SPG(data = [227, 2])
-        si = Crystal()
 
-        si.cell = cell
-        si.atoms = [atom,]
-        si.spg = spg
-        si.dw = iso.value
-        si.name = 'Silicon' 
-        
+        si = Crystal(name='Silicon')
+        si.cell = Cell(data=[5.4307, 5.4307, 5.4307, 90.0, 90.0, 90.0])
+        si.atoms = [Atom(sym='Si', data=[0.125, 0.125, 0.125, 0.4668, 1.00])]
+        si.spg = SPG(data=[227, 2])
+        si.dw = 'iso'
+
     .. note::
 
-        All atoms in a crystal must have the same thermal type.
-
+        All atoms in a crystal must have the same thermal factor type as the crystal.
     """
     
     def __init__(self, name="Diamond", data=None):
         """
-        Default constructor for crystal object    
-        
-        :param name: Name of the crystal or default to 'Diamond'
-        :type name: string, optional
-
-        :param data: Other data of the crystal. 
+        :param name: crystal name.
+        :type name: str, optional
+        :param data: the crystal data, as a dictionary with the keys ``cell``, ``atoms``, ``spg``
+            and ``dw`` (see the example below). If omitted, the crystal starts empty: a zero cell, no
+            atoms, space group 0 and isotropic thermal factors.
         :type data: dict, optional
-        :raise CrystalClassError: If data validations fail.
+        :raise ~pyemaps.errors.CrystalClassError: if *data* isn't a dictionary, a required key is missing, or an
+            atom has no ``symb``. Validation errors from the cell, atoms and space group, such as
+            :py:class:`~pyemaps.errors.CellDataError` and :py:class:`~pyemaps.errors.UCError`, are
+            raised as they are.
 
-        
-        The dictionary object example for Silicon:
+        The dictionary for Silicon:
 
         .. code-block:: python
 
-            {'cell':                                       
-                {'a': '5.4307',
-                'b': '5.4307',
-                'c': '5.4307',
-                'alpha': '90.0',
-                'beta': '90.0',
-                'gamma': '90.0'},
-            'atoms':                                        
-                [
-                    {'symb': 'si',                          
-                    'x': '0.125',                           
-                    'y': '0.125',  
-                    'z': '0.125',
-                    'd-w': '0.4668',                        
-                    'occ': 1.00},                           
-                ],
-            'spg':                                          
-                {'number': '227'                            
-                'setting': '2'                              
-                },
-            'dw': 'iso'                                     
-
+            {
+                'cell': {'a': '5.4307', 'b': '5.4307', 'c': '5.4307',
+                         'alpha': '90.0', 'beta': '90.0', 'gamma': '90.0'},
+                'atoms': [{'symb': 'si', 'x': '0.125', 'y': '0.125', 'z': '0.125',
+                           'd-w': '0.4668', 'occ': 1.00}],
+                'spg': {'number': '227', 'setting': '2'},
+                'dw': 'iso'
             }
-
         """
          
         setattr(self, 'name', name)
@@ -959,47 +902,38 @@ class Crystal:
 
     @property
     def cell(self):
-        ''' 
-        
-        Cell constants 
-        
-        '''
+        """
+        Unit cell constants, a :py:class:`~pyemaps.crystals.Cell`.
+        """
         return self._cell
 
     @property
     def dw(self):
-        ''' 
-        
-        Debye-Waller factor or thermal factor
-        
-        '''
+        """
+        Debye-Waller (thermal) factor type: 1 (``iso``), 2 (``bij``) or 3 (``uij``). It can be set
+        with the number or the name; ``'par'`` is accepted for ``iso``.
+        """
         return self._dw
 
     @property
     def spg(self):
-        ''' 
-        
-        Space group 
-        
-        '''
+        """
+        Space group, an :py:class:`~pyemaps.crystals.SPG`.
+        """
         return self._spg
 
     @property
     def atoms(self):
-        ''' 
-        
-        atom list 
-        
-        '''
+        """
+        The atoms, a list of :py:class:`~pyemaps.crystals.Atom`.
+        """
         return self._atoms
 
     @property
     def name(self):
-        ''' 
-        
-        crystal name 
-        
-        '''
+        """
+        Crystal name.
+        """
         return self._name
 
     @cell.setter
@@ -1065,11 +999,9 @@ class Crystal:
         self._spg = vspg
 
     def isISO(self):
-        '''
-        
-        Check if crystal thermal type is Isotropic or not 
-
-        '''
+        """
+        Return ``True`` if the crystal has isotropic thermal factors.
+        """
         return self._dw == iso.value
 
     def __del__(self):
@@ -1138,35 +1070,30 @@ class Crystal:
 
     def loaded(self):
         
-        '''
-        
-        Check to see if crystal data is loaded into simulation module
-        or not.
-        
-        :return: `True` - loaded; otherwise `False`
-        :rtype: bool
+        """
+        Return whether the crystal's data is loaded into the simulation backend.
 
-        '''
+        :return: ``True`` if loaded, otherwise ``False``.
+        :rtype: bool
+        """
         return self._loaded
 
     @classmethod
     def from_builtin(cls, cn='Diamond'):
         
-        """        
-        
-        Create a crystal by importing data from pyemaps build-in 
-        crystal database
-        
-        :param cn: Name of the crystal in pyemaps's builtin database.
-        :type cn: string, optional
-        :raise CrystalClassError: If reading database fails or any of its components 
-                                  fail to validate.
+        """
+        Create a crystal from the pyEMAPS built-in crystal database.
+
+        :param cn: name of a built-in crystal, such as ``'Silicon'``.
+        :type cn: str, optional
+        :return: the crystal.
+        :rtype: Crystal
+        :raise ~pyemaps.errors.CrystalClassError: if there's no built-in crystal with that name, or its data
+            doesn't validate.
 
         .. note::
-        
-            For a list of pyemaps builtin crystal names, call:
-            Crystal.list_all_builtin_crystals() method
-        
+
+            For the names of all built-in crystals, call :py:meth:`~pyemaps.crystals.Crystal.list_all_builtin_crystals`.
         """
 
         base_dir = os.path.realpath(__file__)
@@ -1189,46 +1116,43 @@ class Crystal:
     def from_xtl(cls, fn):
         
         """
-        To create a crystal object by importing data from xtl formtted file.
+        Create a crystal from a pyEMAPS XTL crystal file.
 
-        :param fn: Crystal data file name in pyemaps propietory format.
-        :type fn: string, required
-        :raise CrystalClassError: file reading fails or any of its components fail to validate.
+        :param fn: XTL file name.
+        :type fn: str, required
+        :return: the crystal.
+        :rtype: Crystal
+        :raise ~pyemaps.errors.CrystalClassError: if the file isn't found, or its data doesn't validate.
 
-        **XTL Format Example:**
+        **XTL format example:**
 
-        :: 
+        ::
 
             crystal Aluminium: dw = iso
             cell 4.0493 4.0493 4.0493 90.0000 90.0000 90.0000
             atom al 0.000000 0.000000 0.000000 0.7806 1.000000
             spg 225 1
 
-        **Required Fields:**
+        **Fields:**
 
-        1. dw = iso by default, other values: uij, bij
-        2. name: crystal name.
-        3. cell constants: six floating point values defining crystal cell.
-        4. atoms: one or two lines of atoms positions along with element symbol
-        5. spg: space group data. Two positive digits: [number, setting]
-            
-        **Validation**:
+        1. ``crystal``: the crystal name, then the Debye-Waller factor type after ``dw =``:
+           ``iso`` (the default), ``bij`` or ``uij``.
+        2. ``cell``: the six cell constants a, b, c (Å) and alpha, beta, gamma (degrees).
+        3. ``atom``: one line per atom: the element symbol, then its values.
+        4. ``spg``: the space group number and setting.
 
-        - if dw == iso, atoms line must have at least 4 floating numbers in 
-          of (x,y,x,d-w,occ) where occ defaults to 1.00 if not provided.
+        **Atom values:**
 
-        - if dw == uij,bij, each atom data must have at least 9 floating points like 
-          (x,y,z,b11,b22,b33,b12,b13,b23,occ)
-        
-        **Input File Name Search**:
+        - ``iso``: at least 4 numbers, x, y, z and d-w, then optionally occ (default 1.0).
+        - ``bij`` or ``uij``: at least 9 numbers, x, y, z, b11, b22, b33, b12, b13 and b23, then
+          optionally occ.
 
-        - Full path and exists.
-        - Current working directory.
-        - *PYEMAPSHOME*/crystals directory, where
-          *PYEMAPSHOME* is an environment variable pointing to pyemaps data home directory.
+        **Where the file is looked for:**
 
-        For detals how pyemaps look for crystal files, See :ref:`Environment Variables <Environment Variables>`.
+        1. *fn* as given: a full path, or a path relative to the current directory.
+        2. The ``crystals`` folder in the pyEMAPS data folder.
 
+        See :ref:`Environment Variables <Environment Variables>` for how the data folder is set.
         """
 
         cfn = fn
@@ -1256,12 +1180,15 @@ class Crystal:
     def from_cif(cls, fn):
         
         """
-        import crystal data from a cif (Crystallographic Information File).
+        Create a crystal from a Crystallographic Information File (CIF).
 
-        :param fn: Crystal data file name in JSON format.
-        :type fn: string, required
-        :raise CrystalClassError: If file reading fails or any of its components 
-                                  (cell, atoms, spg) fail to validate.
+        :param fn: CIF file name. It's looked for as given (a full path or a path relative to the
+            current directory), then in the ``crystals`` folder of the pyEMAPS data folder.
+        :type fn: str, required
+        :return: the crystal.
+        :rtype: Crystal
+        :raise ~pyemaps.errors.CrystalClassError: if the file isn't found, or its cell, atoms or space group don't
+            validate.
         """
 
         cfn = fn
@@ -1288,43 +1215,33 @@ class Crystal:
     def from_json(cls, jfn):
         
         """
-        Import crystal data from a .json file.
+        Create a crystal from a JSON file.
 
-        :param jfn: Crystal data file name in JSON format.
-        :type jfn: string, required
-        :raise CrystalClassError: If file reading fails or any of its components fail to validate.
+        :param jfn: JSON file name. It's looked for as given (a full path or a path relative to the
+            current directory), then in the ``crystals`` folder of the pyEMAPS data folder.
+        :type jfn: str, required
+        :return: the crystal.
+        :rtype: Crystal
+        :raise ~pyemaps.errors.CrystalClassError: if the file isn't found or can't be read, has no ``name``, or its
+            data doesn't validate.
 
-        An example of a json file content:
+        Example file:
 
         .. code-block:: json
 
             {
-                "cell": 
-                    {"a": "5.4307",
-                    "b": "5.4307",
-                    "c": "5.4307",
-                    "alpha": "90.0",
-                    "beta": "90.0",
-                    "gamma": "90.0"
-                    },
-                "atoms":
-                    [
-                        {"symb": "si",
-                        "x": "0.125",  
-                        "y": "0.125", 
-                        "z": "0.125",
-                        "d-w": "0.4668", 
-                        "occ": "1.00"
-                        } 
-                    ],
-                "spg":
-                    {"number": "227",
-                    "setting": "2" 
-                    },
+                "cell": {
+                    "a": "5.4307", "b": "5.4307", "c": "5.4307",
+                    "alpha": "90.0", "beta": "90.0", "gamma": "90.0"
+                },
+                "atoms": [
+                    {"symb": "si", "x": "0.125", "y": "0.125", "z": "0.125",
+                     "d-w": "0.4668", "occ": "1.00"}
+                ],
+                "spg": {"number": "227", "setting": "2"},
                 "dw": "iso",
                 "name": "Silicon"
             }
-        
         """
         cfn = jfn
         if not os.path.exists(cfn):
@@ -1351,43 +1268,27 @@ class Crystal:
     def from_dict(cls, cdict):
         
         """
-        Import crystal data from a python dictionary object.
-        
-        :param cdict: Crystal data file name in as a python dictionary object.
-        :type cdict: dict, required
-        :raise CrystalClassError: If any of its components import fails.
+        Create a crystal from a dictionary that includes its name.
 
-        An example of a json file content:
+        :param cdict: the crystal data: the keys ``name``, ``cell``, ``atoms``, ``spg`` and ``dw``.
+        :type cdict: dict, required
+        :return: the crystal.
+        :rtype: Crystal
+        :raise ~pyemaps.errors.CrystalClassError: if *cdict* has no ``name``, or its data doesn't validate.
+
+        Example:
 
         .. code-block:: python
 
             {
-                "cell": 
-                    {"a": "5.4307",
-                    "b": "5.4307",
-                    "c": "5.4307",
-                    "alpha": "90.0",
-                    "beta": "90.0",
-                    "gamma": "90.0"
-                    },
-                "atoms":
-                    [
-                        {"symb": "si",
-                        "x": "0.125",  
-                        "y": "0.125", 
-                        "z": "0.125",
-                        "d-w": "0.4668", 
-                        "occ": "1.00"
-                        } 
-                    ],
-                "spg":
-                    {"number": "227",
-                    "setting": "2" 
-                    },
+                "cell": {"a": "5.4307", "b": "5.4307", "c": "5.4307",
+                         "alpha": "90.0", "beta": "90.0", "gamma": "90.0"},
+                "atoms": [{"symb": "si", "x": "0.125", "y": "0.125", "z": "0.125",
+                           "d-w": "0.4668", "occ": "1.00"}],
+                "spg": {"number": "227", "setting": "2"},
                 "dw": "iso",
                 "name": "Silicon"
             }
-
         """
 
         if 'name' not in cdict:
@@ -1400,11 +1301,11 @@ class Crystal:
     def list_all_builtin_crystals():
         
         """
+        List the names of all crystals in the pyEMAPS built-in crystal database, for use with
+        :py:meth:`~pyemaps.crystals.Crystal.from_builtin`.
 
-        To list all builtin crystals available in pyemaps built-in crystal database,
-        use this routine to determine the name of the crystal to load using 
-        `from_builtin <pyemaps.crystals.html#pyemaps.crystals.Crystal.from_builtin>`_.
-
+        :return: crystal names, such as ``'Silicon'``.
+        :rtype: list of str
         """
         import glob
         base_dir = os.path.realpath(__file__)

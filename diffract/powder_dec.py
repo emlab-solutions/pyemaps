@@ -35,12 +35,11 @@ def add_powder(target):
     def plotPowder(self, pw):
 
         """
-        Show powder diffraction created from 
-        `generatePowder <pyemaps.crystals.html#pyemaps.crystals.Crystal.generatePowder>`_.
+        Plot a powder diffraction profile from :py:meth:`~pyemaps.crystals.Crystal.generatePowder`.
 
-        :param pw: Powder diffraction data
-        :type pw: array, required
-
+        :param pw: the profile: a 2 × N array of scattering angles and intensities.
+        :type pw: numpy.ndarray, required
+        :raise ValueError: if *pw* doesn't have two rows.
         """
         import numpy as np
         import matplotlib.pyplot as plt
@@ -74,46 +73,37 @@ def add_powder(target):
             bamp = 0.35, 
             bgamma = 0.001, 
             bmfact = 0.02):
-        '''
-        Generates powder diffraction.
+        """
+        Calculate the crystal's electron powder diffraction profile.
 
-        :param kv: Accelaration voltage in kilo-volts.
+        :param kv: accelerating voltage, in kV.
         :type kv: int or float, optional
-
-        :param t2max: Maximum scattering angle.
+        :param t2max: largest scattering angle 2θ, in radians.
         :type t2max: float, optional
-
-        :param smax: Maximum Sin(theta)/Wavelength.
+        :param smax: largest sin(θ)/λ, in 1/Å.
         :type smax: float, optional
-
-        :param smax: Maximum Sin(theta)/Wavelength.
-        :type smax: float, optional
-
-        :param eta: the mixing coefficient between gaussian and lorentzian in a pseudo-Voight peak function.
+        :param eta: mixing coefficient between the Gaussian and Lorentzian parts of the pseudo-Voigt
+            peak shape.
         :type eta: float, optional
-
-        :param gamma: Diffraction peaks half maximum half width.
+        :param gamma: peak half width at half maximum.
         :type gamma: float, optional
-
-        :param absp: With Absoption structure factor (1 -default) or not (0).
+        :param absp: 1 to include absorption structure factors, 0 (the default) not to.
         :type absp: int, optional
-
-        :param isbgdon: Background on or not (default no background).
-        :type isbgdon: int, optional
-
-        :param bamp: Background amplitude.
+        :param bg: add a background.
+        :type bg: bool, optional
+        :param bamp: background amplitude.
         :type bamp: float, optional
-
-        :param bgamma: Background width.
+        :param bgamma: background width.
         :type bgamma: float, optional
-
-        :param bmfact: Background exponential damping factor.
+        :param bmfact: background exponential damping factor.
         :type bmfact: float, optional
+        :return: a 2 × 1000 array: the first row holds the scattering angles 2θ (radians), the
+            second the intensities. If the calculation fails, a message is printed and the array
+            is all zeros.
+        :rtype: numpy.ndarray
 
-        :return: an array of 2 x 1000 with the first row representing the scattering angle 2theta and the second the intensity
-        :rtype: array
-
-        '''     
+        To plot the result, pass it to :py:meth:`~pyemaps.crystals.Crystal.plotPowder`.
+        """
         import numpy as np
         from numpy import asfortranarray as farray
         
