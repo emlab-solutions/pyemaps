@@ -1,17 +1,17 @@
 name: Docs
 
-# Builds the documentation site from docs/source and, on main, deploys it to GitHub Pages
-# (https://emlab-solutions.github.io/pyemaps/). On a pull request the built site is
-# uploaded as the "docs-site" artifact for review instead.
+# Builds the documentation site from docs/source.
+# - Pull request: builds it and uploads it as the "docs-site" artifact for review.
+# - pyemaps release published (the vX.Y.Z GitHub Release): builds it from the release's
+#   commit and deploys it to GitHub Pages (https://emlab-solutions.github.io/pyemaps/),
+#   so the site matches what users can install.
+# - Run by hand from main (Actions tab, "Run workflow"): builds and deploys main, for docs
+#   fixes between releases.
+# Merges to main don't deploy.
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'docs/**'
-      - '*.py'
-      - 'diffract/**'
-      - '.github/workflows/docs.yml'
+  release:
+    types: [published]
   pull_request:
     branches: [main]
     paths:
@@ -70,7 +70,7 @@ jobs:
           path: docs/_build/html
 
       - name: Upload the site for Pages
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
         uses: actions/upload-pages-artifact@v5
         with:
           path: docs/_build/html
@@ -78,7 +78,7 @@ jobs:
   deploy:
     name: Deploy to GitHub Pages
     needs: build
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     permissions:
       pages: write
