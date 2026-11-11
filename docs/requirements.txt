@@ -1,5 +1,6 @@
-# Docs build. Install with pyemaps itself (the version being documented), then:
-#   cd docs && sphinx-build -E -b html source .
+# Docs build, pinned. GitHub Actions (.github/workflows/docs.yml) builds and deploys the
+# site; to build it locally, install these and pyemaps, then from the pyemaps folder:
+#   sphinx-build -E -b html docs/source docs/_build/html
 sphinx==9.1.1
 docutils==0.22.4
 pydata-sphinx-theme==0.24.0

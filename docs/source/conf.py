@@ -44,7 +44,6 @@ autodoc_mock_imports = ['pyemaps.diffract.emaps',
 autosectionlabel_prefix_document = True
 autodoc_preserve_defaults = True
 
-templates_path = ['_templates']
 exclude_patterns = ['_build', '**.ipynb_checkpoints']
 
 
@@ -56,9 +55,10 @@ exclude_patterns = ['_build', '**.ipynb_checkpoints']
 # html_theme = 'agogo'
 html_theme = 'pydata_sphinx_theme'
 html_title = 'pyEMAPS'
-# No html_static_path: Sphinx won't copy it from inside the output folder (docs/). Our CSS
-# is inlined by _templates/layout.html from _templates/pyemaps.css.
-html_static_path = []
+# _static/custom.css: brand colours and landing layout. _static/fonts: the self-hosted
+# Source fonts (OFL), whose @font-face rules are in fonts/fonts.css.
+html_static_path = ['_static']
+html_css_files = ['fonts/fonts.css', 'custom.css']
 html_theme_options = {
     'logo': {'text': 'pyEMAPS'},
     'navbar_align': 'left',
@@ -98,23 +98,8 @@ def _enum_signature(app, what, name, obj, options, signature, return_annotation)
     return signature, return_annotation
 
 
-def _copy_fonts(app, exception):
-    '''Copy the self-hosted fonts in _fonts/ to _static/fonts/ in the output.
-
-    html_static_path can't do it: Sphinx won't copy a static folder that's inside
-    the output folder, and these docs build source/ into its parent docs/.
-    '''
-    import os
-    import shutil
-    if exception is None and app.builder.format == 'html':
-        src = os.path.join(app.srcdir, '_fonts')
-        dst = os.path.join(app.outdir, '_static', 'fonts')
-        shutil.copytree(src, dst, dirs_exist_ok=True)
-
-
 def setup(app):
     app.connect('autodoc-process-signature', _enum_signature)
-    app.connect('build-finished', _copy_fonts)
 
 
 # Pages from the old one-page-per-topic layout (pyemaps 2.0.0 and earlier) redirect to
