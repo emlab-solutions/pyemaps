@@ -1,6 +1,63 @@
 Release Notes
 =============
 
+Unreleased
+----------
+
+Changes
+~~~~~~~
+
+- :py:meth:`~pyemaps.crystals.Crystal.generateBloch` and :py:meth:`~pyemaps.crystals.Crystal.beginBloch` called without *em_controls* now start from the default controls every time. Before, every such call shared one controls object, so the crystal x-axis chosen for the first call was reused for every later call in the session, for any crystal. Results for those later calls change: each crystal now gets the x-axis chosen for it. :py:meth:`~pyemaps.crystals.Crystal.generateDPDB` called without *emc* is fixed the same way.
+- Non-default ``gctl`` and ``zctl`` simulation controls now reach the simulation. Before, they were silently ignored. A value too small for the pattern, such as ``gctl=1``, now makes :py:meth:`~pyemaps.crystals.Crystal.generateDP` fail.
+- :py:meth:`~pyemaps.stackimg.StackImage.convertImage` now converts numpy images: pass the 2-D array as *imgfn* with ``nformat=E_NPY``. It returns the converted file's path, and raises :py:class:`~pyemaps.errors.XDPImageError` when the conversion fails instead of only printing a message.
+- :py:func:`~pyemaps.display.plot2Powder` has new *titles* and *ylabels* parameters. By default the plots have no titles; before, they were always titled "Silicon" and "Diamond".
+- :py:func:`~pyemaps.display.showDif` raises :py:class:`~pyemaps.errors.DPListError` when it isn't given a :py:class:`DPList <pyemaps.kdiffs.Diffraction>`, and plots nothing for an empty one.
+- Comparing a pyEMAPS point, index, disk, diffraction pattern or controls object with ``==`` to an object of another type returns ``False`` instead of raising an error.
+- An invalid camera length in :py:class:`~pyemaps.emcontrols.EMControl` raises :py:class:`~pyemaps.errors.EMCError`, like the other controls, instead of ``ValueError``.
+
+Improvements
+~~~~~~~~~~~~
+
+- Fixed :py:class:`~pyemaps.crystals.Crystal`, :py:class:`~pyemaps.crystals.Atom` and :py:class:`~pyemaps.crystals.Cell`:
+
+  - A crystal created without data can be checked with :py:meth:`~pyemaps.crystals.Crystal.loaded`, and no longer prints an error when it's freed.
+  - :py:attr:`Atom.atype <pyemaps.crystals.Atom.atype>` returns the thermal factor type instead of the element symbol, so identical atoms and crystals now compare equal.
+  - An atom created without a position has 5 values (10 for anisotropic atoms), not 6.
+  - Creating a crystal from a dictionary no longer deletes ``symb`` from the dictionary's atoms, so the same data can be used again.
+  - Cell errors name the right cell constant.
+  - :py:attr:`Cell.session_controls <pyemaps.crystals.Cell.session_controls>` is ``None`` until set, instead of raising an error.
+  - :py:meth:`~pyemaps.crystals.Crystal.from_xtl` and :py:meth:`~pyemaps.crystals.Crystal.from_cif` report a file that can't be read as :py:class:`~pyemaps.errors.CrystalClassError`.
+
+- Fixed the microscope and simulation controls:
+
+  - Each :py:class:`~pyemaps.emcontrols.EMControl` created without simulation controls gets its own :py:class:`~pyemaps.emcontrols.SIMControl`. Before, they all shared one, so changing one changed them all.
+  - :py:meth:`EMControl.from_dict <pyemaps.emcontrols.EMControl.from_dict>` uses the defaults for missing keys, and the simulation controls given in the dictionary.
+  - Plot captions show a non-default diffracted beam size and ``bmin``.
+  - Unknown keys passed to a :py:class:`~pyemaps.emcontrols.SIMControl` are ignored, as its message says.
+  - Error messages name the right control.
+
+- Fixed kinematic and dynamic diffraction results:
+
+  - Printing a diffraction pattern shows the number of diffracted beams, not the number of Kikuchi lines.
+  - Kikuchi and HOLZ lines sort by their end points and intensity.
+  - Points, lines and disks that compare equal also hash equally, so sets and dictionaries treat them as the same.
+  - ``(emc, image) in bloch_images`` works on :py:class:`BImgList <pyemaps.ddiffs.BlochImgs>`.
+
+- Fixed 4D-STEM (stem4d) images:
+
+  - :py:meth:`~pyemaps.stackimg.StackImage.viewExpImage` displays images that aren't square correctly, and its stack check no longer accepts one stack past the last.
+  - :py:meth:`~pyemaps.stackimg.StackImage.generateMaskedImage` rejects a missing or blank mask file name, and prints the error when the image can't be loaded.
+  - :py:meth:`~pyemaps.stackimg.StackImage.showMatchedDBDP` returns -1 on failure instead of ending the Python session.
+  - Invalid image dimensions report the valid ranges.
+  - The database pattern shown by :py:meth:`~pyemaps.stackimg.StackImage.showMatchedDBDP` is now normalized as intended.
+  - A script no longer prints an ``Exception ignored in: StackImage.__del__`` error when it ends while a :py:class:`~pyemaps.stackimg.StackImage` is still alive.
+
+- Fixed file and structure utilities:
+
+  - :py:func:`~pyemaps.fileutils.compose_ofn` accepts an empty file name.
+  - :py:meth:`~pyemaps.crystals.Crystal.from_cif` reports a missing CIF file, and a space group setting or number out of range, with the right error.
+  - Each :py:class:`~pyemaps.xtal.ACoord` created without coordinates gets its own coordinate list.
+
 Version 2.0.0 Stable
 --------------------
 
@@ -83,7 +140,7 @@ Version 1.1.5 Stable
 New
 ~~~
 
-- `generateCSF <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateCSF>`_ now raises a catchable `CSFError <pyemaps.errors.html#pyemaps.errors.CSFError>`_ when structure factor generation fails, an invalid *sftype* is given, or the number of reflections within *smax* exceeds the backend beam limit -- instead of silently returning a partial result.
+- :py:meth:`~pyemaps.crystals.Crystal.generateCSF` now raises a catchable :py:class:`~pyemaps.errors.CSFError` when structure factor generation fails, an invalid *sftype* is given, or the number of reflections within *smax* exceeds the backend beam limit -- instead of silently returning a partial result.
 
 Improvements
 ~~~~~~~~~~~~
@@ -115,14 +172,14 @@ Version 1.1.3 Stable
 New
 ~~~
 
-- Added new crystal structure data module :py:mod:`xtal` with :py:class:`Xtal` class for better handling of crystal structure data. The return from `generateMxtal <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateMxtal>`_ now also return an :py:class:`Xtal` class object. 
+- Added new crystal structure data module :py:mod:`~pyemaps.xtal` with :py:class:`~pyemaps.xtal.Xtal` class for better handling of crystal structure data. The return from :py:meth:`~pyemaps.crystals.Crystal.generateMxtal` now also return an :py:class:`~pyemaps.xtal.Xtal` class object. 
 
 Improvements
 ~~~~~~~~~~~~
 
 - Bug fixes.
-- Dynamic diffraction image list class :py:class:`BlochImgs` in :py:mod:`ddiffs` now has better data comparison function with overloading == operator.
-- Microscopy and simulation controls module :py:mod:`emcontrols` also has imporoved data comparison functions for all of its classes.
+- Dynamic diffraction image list class :py:class:`~pyemaps.ddiffs.BlochImgs` in :py:mod:`~pyemaps.ddiffs` now has better data comparison function with overloading == operator.
+- Microscopy and simulation controls module :py:mod:`~pyemaps.emcontrols` also has improved data comparison functions for all of its classes.
 - Added automated testing for quality control. Before this version, the tests are run by developers' on his/her local systems prior to every release. Now it is done with github's workflow automatically triggered by code changes on release branch. More tests are to be added.
 - Adjusting sample code based on the new feature and improvements in this latest version. 
 
@@ -162,14 +219,14 @@ where stem4d functions are organized into two submodules called *ediom* and *sen
 * *ediom*: electron diffraction indexing and oriention mapping. currently,
   this module contains the diffraction indexing. 
   
-  * `Experimental diffraction pattern indexing <modules.html#pyemaps.stackimg.StackImage.indexImage>`_
+  * :py:meth:`Experimental diffraction pattern indexing <pyemaps.stackimg.StackImage.indexImage>`
 
   Orientan mapping will be added to ediom later.
   
 * *send*: scanning electronic nano-diffraction. This module now has the following functions:
 
-  * `Annular bright or darkfield <modules.html#pyemaps.stackimg.StackImage.generateBDF>`_.
-  * `Masked images <modules.html#pyemaps.stackimg.StackImage.generateMaskedImage>`_.
+  * :py:meth:`Annular bright or darkfield <pyemaps.stackimg.StackImage.generateBDF>`.
+  * :py:meth:`Masked images <pyemaps.stackimg.StackImage.generateMaskedImage>`.
 
 To import these two modules, use the follwoing code:
 
