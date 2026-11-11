@@ -975,6 +975,12 @@ class diffPattern:
         return (kdiff, hdiff, ddiff)
 
     def to_dict(self):
+        """
+        Return the pattern as a dictionary of lists:
+        ``{'klines': [...], 'hlines': [...], 'disks': [...]}``. Each Kikuchi or HOLZ line is a
+        dictionary from :py:meth:`Line.to_dict() <pyemaps.kdiffs.Line.to_dict>`, and each disk one
+        from :py:meth:`Disk.to_dict() <pyemaps.kdiffs.Disk.to_dict>`.
+        """
         retdict = {}
         
         retdict['klines'] = [kl.to_dict() for kl in self._klines]
