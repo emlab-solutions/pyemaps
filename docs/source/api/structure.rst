@@ -2,7 +2,6 @@ Crystal structures
 ==================
 
 .. automodule:: pyemaps.xtal
-   :imported-members:
-   :members:
+   :members: Xtal, ACoord
    :undoc-members:
    :show-inheritance:

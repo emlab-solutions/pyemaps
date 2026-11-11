@@ -73,30 +73,30 @@ def _getDateTimeString():
 
 class StackImage():
     """
+    An experimental diffraction image, or a stack of them, for 4D-STEM analysis with the
+    licensed stem4d module:
 
-    Simple wrapper class for experimental images used in pyemaps 
-    Stem4d analysis:
-    
-    - Diffraction pattern indexing
-    - Annular Drak Field image generation
-    - Masked images
+    - indexing a diffraction pattern against a database
+      (:py:meth:`~pyemaps.stackimg.StackImage.indexImage`);
+    - bright field, dark field and annular images
+      (:py:meth:`~pyemaps.stackimg.StackImage.generateBDF`);
+    - images from a detector mask
+      (:py:meth:`~pyemaps.stackimg.StackImage.generateMaskedImage`).
 
-    All image files must be of raw bitmap format, or known as headered raw format:
+    An image is read from a file or taken from a numpy array, depending on *nformat*:
 
-    - **Header**: stores metadata about the image, often including three numbers 
-        for dimensions (e.g. width, height, and number of bit depth, or stacks).
+    - ``E_SH``: pyEMAPS' own small-header format (``.im3``). The 8-byte header holds four
+      short integers: the width, the height, the number of stacks and the data type.
+    - ``E_RAW``: a headered raw file. The pixel data starts *noffset* bytes into the file,
+      stored row by row, and you give the data type and dimensions yourself.
+    - ``E_NPY``: a 2-D numpy array, set through the
+      :py:attr:`~pyemaps.stackimg.StackImage.data` property. The file name is ignored.
 
-    - **Data Offset**: After the header, the actual image or pixel data starts.
+    The image is read into the backend by :py:meth:`~pyemaps.stackimg.StackImage.loadImage`,
+    or by the analysis methods, which load it themselves.
 
-    - **Pixel Data**: Stored in a row-major order, meaning pixels are arranged 
-        row-byrow across columns.
-    
-    
-    The image can also be represented by a numpy array directly. In this case,
-    the StackImage object created will ignore its file name member.
-
-    and more to come.
-
+    Images are 100 to 512 pixels per side (``MIN_IMAGESIZE``, ``MAX_IMAGESIZE``), with 1 to
+    5000 stacks (``MIN_IMAGESTACK``, ``MAX_IMAGESTACK``).
     """
     def __init__(self, 
                  imgfn, 
@@ -107,6 +107,21 @@ class StackImage():
                         MIN_IMAGESTACK),
                  noffset = 8):
 
+        """
+        :param imgfn: path of the image file. Ignored for ``E_NPY``.
+        :type imgfn: str
+        :param nformat: the image format: ``E_SH`` (the default), ``E_RAW`` or ``E_NPY``.
+        :type nformat: int, optional
+        :param ndtype: the pixel data type, used for ``E_RAW`` files. Defaults to ``E_FLOAT``.
+            See :py:attr:`~pyemaps.stackimg.StackImage.ndtype`.
+        :type ndtype: int, optional
+        :param dim: the image dimensions ``(width, height, stacks)``, used for ``E_RAW`` files.
+            Defaults to ``(100, 100, 1)``.
+        :type dim: tuple of int, optional
+        :param noffset: where the pixel data starts in an ``E_RAW`` file, in bytes. Defaults to 8.
+        :type noffset: int, optional
+        :raise ~pyemaps.errors.XDPImageError: if a parameter is invalid.
+        """
         self._data = None                       # current image data
         self._npdata = None                     # numpy input image (E_NPY)
         setattr(self, 'nformat', nformat)       # image file type
@@ -118,70 +133,63 @@ class StackImage():
     @property
     def fname(self):
         """
-        Experimental diffraction pattern image input file full path.
-        In case of numpy array, this field is ignored.
+        Path of the image file. Ignored when the format is ``E_NPY``.
         """
         return self._fname
 
     @property
     def nformat(self):
         """
-        The type of the image file 
+        The image format:
 
-        - E_RAW: raw image files with image data at an `noffset` from the beginning of the file. 
-        - E_SH: small header (pyEMAPS propietory). Header is a tuple of three short integers 
-          and data type represented also by a short integer. Total bytes of the header or the offset
-          is 8)
-        - E_NPY: numpy array.
-
+        - ``E_SH``: pyEMAPS' small-header format. The header is 8 bytes: the width, the height,
+          the number of stacks and the data type, each a short integer.
+        - ``E_RAW``: a raw file whose pixel data starts
+          :py:attr:`~pyemaps.stackimg.StackImage.noffset` bytes into the file.
+        - ``E_NPY``: a numpy array, set through :py:attr:`~pyemaps.stackimg.StackImage.data`.
         """
         return self._nformat
 
     @property
     def ndtype(self):
         """
-        The type of the image data - int, float, double are supported.
-        The constants to used to represent the types are:
+        The pixel data type of a raw image:
 
-        - E_INT and EM_INT: single and multiple stack integral image data type.
-        - E_FLOAT and EM_FLOAT: single and multiple stack real image data type.  
-        - E_DOUBLE and EM_DOUBLE: single and multiple stack 8-byte real image data type. 
-         
+        - ``E_INT`` (single image) or ``EM_INT`` (stack): 2-byte integers.
+        - ``E_FLOAT`` or ``EM_FLOAT``: 4-byte floating-point numbers.
+        - ``E_DOUBLE`` or ``EM_DOUBLE``: 8-byte floating-point numbers.
         """
         return self._ndtype
 
     @property
     def noffset(self):
         """
-        
-        image data offset from start of the file. Normally, it is the size of the 
-        header in bytes.
-
+        Where the pixel data starts in a raw file, in bytes: usually the size of the file's
+        header.
         """
         return self._noffset
 
     @property
     def dim(self):
         """
-
-        image dimension, support 3 dimensional images with input of 
-        3 integer tuple of integers (width, height, stack).
-
+        The image dimensions ``(width, height, stacks)``. Width and height are 100 to 512 pixels,
+        and there can be 1 to 5000 stacks. Loading an image replaces them with the loaded image's
+        dimensions.
         """
         return self._dim
 
     @property
     def data(self):
         """
+        The image data, as a numpy array.
 
-        Raw image data in numpy ndarray when it is read from a numpy array
-        Otherwise, the data will be generated from Stem4d when the input image
-        file is loaded.
+        After :py:meth:`~pyemaps.stackimg.StackImage.loadImage`, it holds the loaded image; after
+        :py:meth:`~pyemaps.stackimg.StackImage.generateBDF` or
+        :py:meth:`~pyemaps.stackimg.StackImage.generateMaskedImage`, the generated image.
 
-        With `nformat` set to E_NPY, set this to a 2-D numpy array of any
-        boolean, integer or floating-point type, 100 to 512 pixels per side,
-        before calling `loadImage`. It is converted to float32 when loaded.
-
+        With the format set to ``E_NPY``, set it to a 2-D numpy array of any boolean, integer or
+        floating-point type, 100 to 512 pixels per side, before calling
+        :py:meth:`~pyemaps.stackimg.StackImage.loadImage`. It's converted to float32 when loaded.
         """
         return self._data
 
@@ -253,8 +261,17 @@ class StackImage():
 
     def loadImage(self, rmode= EL_ONE, stack = 1):
         """
-        Loads image into stem4d module for analysis.
+        Read the image into the stem4d backend for analysis. The image's
+        :py:attr:`~pyemaps.stackimg.StackImage.dim` and
+        :py:attr:`~pyemaps.stackimg.StackImage.data` are then updated from the loaded image.
 
+        :param rmode: ``EL_ONE`` (the default) to read one stack, or ``EL_MORE`` to read them all.
+        :type rmode: int, optional
+        :param stack: which stack to read with ``EL_ONE``, counting from 1.
+        :type stack: int, optional
+        :raise ~pyemaps.errors.XDPImageError: if the image can't be loaded, for example because the
+            file is missing or invalid, a numpy image is missing or invalid, or no valid license is
+            found. A license problem is also explained in a printed message.
         """
         img_format = self.nformat
         if img_format != E_NPY and img_format != E_SH and img_format != E_RAW:
@@ -303,30 +320,22 @@ class StackImage():
 
     def viewExpImage(self, peakDP = False, iStack=1, title = "", iShow = False):      
         """
-        Helper function in stem4d module to display experimental diffraction database 
-        diffraction pattern currently loaded.
+        Display the loaded image. After indexing, it can also draw the indexed diffraction
+        peaks on top of it.
 
-        :param peakDP: kinematic diffraction with miller index. This parameter is only valid for EDIOM operations
-        :type peakDP: Boolean, optional
+        :param peakDP: draw the diffraction peaks found by the last peak search or indexing.
+        :type peakDP: bool, optional
+        :param iStack: the stack number. It's only checked against the number of stacks: the image
+            shown is the one in :py:attr:`~pyemaps.stackimg.StackImage.data`.
+        :type iStack: int, optional
+        :param title: the figure title.
+        :type title: str, optional
+        :param iShow: label the peaks with their Miller indices.
+        :type iShow: bool, optional
+        :raise ~pyemaps.errors.XDPImageError: if the image data can't be converted for display.
 
-        :param Indexed: show the kinematic patterns after indexing is completed.
-        :type Indexed: boolean, optional, default to `False`
-
-        :param iStack: Image stack number to show. For single stack image, this parameter takes default value of 1
-        :type iStack: integer, optional, default to 1
-
-        :param iShow: whether to show miller indexes
-        :type iShow: boolean, optional, default to `False`
-        
-        :return:  
-        :rtype: None
-        
-        This function is typically used to display experimental image after diffraction 
-        patterns matched and indexed. It can also be used to display intermediate
-        search results after peaks are found but before indexes are matched. The latter
-        display is turned on only by *bDebug* flag in 
-        `loadDPDB <pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB>`_ call.
-
+        If no image is loaded, or there are no peaks to draw, it prints a message and shows
+        nothing.
         """
         
         xnc, xnr, nl = self._dim[0], self._dim[1], self._dim[2]
@@ -368,12 +377,11 @@ class StackImage():
     @staticmethod
     def showMatchedDBDP():        
         """
-        Helper function in stem4d module to display diffraction database diffraction pattern 
-        that best matches that of the experimental diffraction image pattern.
+        Display the database diffraction pattern that best matches the experimental pattern in
+        the last :py:meth:`~pyemaps.stackimg.StackImage.indexImage` call, with its diffraction
+        peaks marked. Use it to check the match. See the sample ``al_ediom.py``.
 
-        This function is typically used to confirm its match with experimental diffraction 
-        pattern. See sample code *al_ediom.py* for usage of this function.
-
+        :return: -1 if the pattern can't be retrieved or displayed.
         """
         nr, nc = MAX_IMAGESIZE, MAX_IMAGESIZE
         
@@ -403,7 +411,14 @@ class StackImage():
     staticmethod
     def displayFitImage(nr, nc):
         """
-        Internal intermediate helper function for display fit images.
+        Display the fit image from peak search. Used internally for debugging.
+
+        :param nr: number of rows in the image.
+        :type nr: int
+        :param nc: number of columns in the image.
+        :type nc: int
+        :return: 0 on success, otherwise the error code.
+        :rtype: int
         """
        
         filen = nr*nc
@@ -418,12 +433,15 @@ class StackImage():
     @staticmethod
     def displaySearchMask(nr, nc):    
         """
-        Internal stem4d helper function displaying image mask image 
-        generated in peak search.
+        Display the mask used in the peak search. Shown by
+        :py:meth:`~pyemaps.stackimg.StackImage.indexImage` when *bDebug* is set.
 
-        :return:  
-        :rtype: None
-        
+        :param nr: number of rows in the mask.
+        :type nr: int
+        :param nc: number of columns in the mask.
+        :type nc: int
+        :return: 0.
+        :rtype: int
         """
         len = nr*nc
         ret = 1
@@ -440,12 +458,15 @@ class StackImage():
     @staticmethod
     def displaySearchKernel(nr, nc):     
         """
-        Internal stem4d helper function displaying image kernel image 
-        generated in peak search.
+        Display the kernel used in the peak search. Shown by
+        :py:meth:`~pyemaps.stackimg.StackImage.indexImage` when *bDebug* is set.
 
-        :return:  
-        :rtype: None
-        
+        :param nr: number of rows in the kernel.
+        :type nr: int
+        :param nc: number of columns in the kernel.
+        :type nc: int
+        :return: 0 on success, -1 if the kernel can't be retrieved.
+        :rtype: int
         """
         len = nr*nc
         ret = -1
@@ -467,13 +488,18 @@ class StackImage():
     def showDPDBMMask(mr, mc):
 
         """
-        Internal function to display loaded DP database stereo projection map
-        as explained in the following
-        
+        Display the stereographic projection map of the loaded diffraction pattern database.
+        Each point on the map is an orientation with a pattern in the database:
+
         .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png
             :width: 75%
             :align: center
 
+        :param mr: the map's height, from :py:meth:`~pyemaps.stackimg.StackImage.loadDPDB`.
+        :type mr: int
+        :param mc: the map's width, from :py:meth:`~pyemaps.stackimg.StackImage.loadDPDB`.
+        :type mc: int
+        :return: -1 if the map can't be retrieved.
         """
         len = mr*mc
         
@@ -493,30 +519,25 @@ class StackImage():
     @staticmethod    
     def loadDPDB(dbfn, bShowDBMap=False):
         """
-        Loads the diffraction database file *dbfn* into stem4d for diffraction peak searching and indexing.
+        Load a diffraction pattern database file into stem4d, for peak search and indexing.
 
-        See sample code *si_dpgen.py* for how to generate a diffraction pattern database with
-        pyemaps `generateDPDB <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateDPDB>`_.
+        Create the database with :py:meth:`~pyemaps.crystals.Crystal.generateDPDB`; see the sample
+        ``al_dpgen.py``. A database file can be kept and reused.
 
-        The database file can also be saved and reused.
-
-        :param dbfn: DP database file name.
-        :type dbfn: string, required
-        
-        :param bShowDBMap: weather to display the stereodigram project map after successful 
-                           loading of the database file
-
-        :type bShowDBMap: boolean, optional, default to `False`
-
-        :return: status code, stereo projection map dimension - two integers tuple 
+        :param dbfn: path of the database file.
+        :type dbfn: str
+        :param bShowDBMap: display the database's stereographic projection map after loading it.
+        :type bShowDBMap: bool, optional
+        :return: ``(code, height, width)``: 0 on success, and the height and width of the
+            stereographic projection map. On failure, the code isn't 0 and both sizes are 0.
         :rtype: tuple
 
-        See the following for stereo projection map representing the DP database:
-        
+        The stereographic projection map represents the database: each point is an orientation
+        with a pattern in it.
+
         .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png
            :width: 75%
            :align: center
-
         """
         # load DP database into stem4d and return database fitmap dimensions
         ret, mrow, mcol = ediom.readDPDB(dbfn)
@@ -536,21 +557,16 @@ class StackImage():
     def showMatchingIndexMap(fr, fc):
             
         """
-        Helper function in stem4d module to display matching indexes map. The colored
-        heat map with the peak indicates the orientation in which experimental and 
-        database diffraction patterns best match.
+        Display the matching index map from the last
+        :py:meth:`~pyemaps.stackimg.StackImage.indexImage` call: a heat map over the database's
+        stereographic projection map. Its peak marks the orientation where the experimental and
+        database patterns match best.
 
-        :param fr: stereo projection map height. This number is obtained from 
-                   `loadDPDB <pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB>`_ call. 
-        :type fr: int, required
-
-        :param fc: stereo projection map width. This number is obtained from 
-                   `loadDPDB <pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB>`_ call.
-        :type: int, required
-
-        :return: status code 
-        :rtype: int
-        
+        :param fr: the map's height, from :py:meth:`~pyemaps.stackimg.StackImage.loadDPDB`.
+        :type fr: int
+        :param fc: the map's width, from :py:meth:`~pyemaps.stackimg.StackImage.loadDPDB`.
+        :type fc: int
+        :return: the error code if the map can't be retrieved, otherwise ``None``.
         """
         
         flen = fc*fr
@@ -580,137 +596,118 @@ class StackImage():
                    bDebug                  = False
               ):
         """
-        Searches and indexes an experimental diffraction image. The experimental diffraction image will be loaded
-        with StackImage class constructor and its `loadImage <pyemaps.stackimg.html#pyemaps.stackimg.StackImage.loadImage>`_
-        method before the search and indexes are performed.
+        Find the diffraction peaks in the experimental image and index them against a diffraction
+        pattern database. This is a licensed feature.
 
-        In addition, a diffraction database also needs to be loaded preceeding this call with
-        `loadDPDB <pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB>`_ 
+        The method loads the database and the image itself, one stack at a time. The database is
+        made by :py:meth:`~pyemaps.crystals.Crystal.generateDPDB`; see the samples ``al_dpgen.py``
+        and ``al_ediom.py``.
 
-        :param dpdbfn: diffraction pattern database file name. The file is generated by pyemaps dp_gen module 
-        or database file name saved from previous runs.
-        :type dpdbfn: string, required
-        
-        :param cc: Camera constant in 1/Angstrom/pixel.
+        :param dpdbfn: path of the diffraction pattern database file.
+        :type dpdbfn: str
+        :param cc: camera constant, in pixels per 1/Å.
         :type cc: float, optional
-
-        :param sigma: Diffraction peak width - estimated image peak width.
-        :type sigma: float, optional.
-
-        :param img_center: diffraction pattern center in (col, row) coordinate.
-        :type img_center: float tuple, optional
-
-        :param rmin: low cutoff radius for excluding center beam and diffuse intensities.
+        :param sigma: estimated width of the diffraction peaks, in pixels.
+        :type sigma: float, optional
+        :param img_center: center of the diffraction pattern ``(column, row)``, in pixels.
+        :type img_center: tuple of float, optional
+        :param rmin: radius around the center, in pixels, excluded from the search. It removes the
+            central beam and the diffuse intensity around it.
         :type rmin: float, optional
-
-        :param search_box: Parameter in pixels used to define peak search. Recommended value 
-                           of 3 to 4 times of sigma value for selected area diffraction.
+        :param search_box: size of the peak search box, in pixels. For selected area diffraction,
+            3 to 4 times *sigma* is recommended.
         :type search_box: float, optional
-
-        :param filter_threshold: Diffraction pattern screening threshold. Between 0.0 and 1.0 
-                                 use 0 to include all database patterns for search.
+        :param scaling_option: how the experimental and the database pattern intensities are scaled
+            for matching: two integers, each 0 to 5, not both 0.
+        :type scaling_option: tuple of int, optional
+        :param filter_threshold: screening threshold for the database patterns, from 0.0 to 1.0. Use
+            0 to search all of them.
         :type filter_threshold: float, optional
-
-        :param peak_threshold: Peak threshold. value between 0.0 and 1.0. used to remove noisy peaks.
+        :param peak_threshold: peak threshold, from 0.0 to 1.0, used to drop noisy peaks.
         :type peak_threshold: float, optional
+        :param ssel: the stack to index, counting from 1.
+        :type ssel: int, optional
+        :param bDebug: also display the intermediate images: the search mask and kernel, and the
+            peaks found before indexing.
+        :type bDebug: bool, optional
+        :return: 0 on success. -1, or the backend's error code, if the peak search or the indexing
+            fails; fewer than four peaks found counts as a failure.
+        :rtype: int
+        :raise ~pyemaps.errors.XDPImageError: if *scaling_option* is out of range, or the database or
+            the image can't be loaded.
+        :raise ValueError: if *img_center* is outside the image.
 
-        :param ssel: image stack selection. The value must be in range of the input image layers.
-        :type ssel: integer, optional. Default value to 1, the first image layer in the input image stack.
+        The image measurements, *cc* to *rmin*, need to be accurate: errors in them can spoil the
+        peak search and the indexing. The remaining parameters tune the search and the indexing.
 
-        :param bDebug: debug option. This is for displaying intermediate searching and masking images used. 
-        :type bDebug: Boolean, optional. Default value to `False`.
+        A typical run displays:
 
-        :return: status code, 0 for successful run
-        :rtype: integer
+        1. The stereographic projection map of the database, once it's loaded:
 
-        
-        The image control parameters cc - rmin above are image meaurements controls. The accuraccies
-        of these measurements can greatly affect the peak search and eventually indexing results.
+           .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojmap.png
+               :width: 75%
+               :align: center
 
-        The remaining input parameters directly control the search and indexing functions and its results.
-        Use these parameters to tune your results.
+        2. The experimental image, once it's loaded, so you can check it:
 
-        The following is a typical sequence of displays during the execution:
+           .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/expimagoriginal.png
+               :width: 75%
+               :align: center
 
-        1. Once the DP database is loaded successfully, the steoreo projection map associated
-        with the DP database will be shown.
-        
-        .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojmap.png
-            :width: 75%
-            :align: center
+        3. The indexing result, drawn on the experimental image:
 
-        2. Successful experimental DP image importing will also show the image. This gives users
-        the opportunity to verify the image:
+           .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/expimgindexed.png
+               :width: 75%
+               :align: center
 
-        .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/expimagoriginal.png
-            :width: 75%
-            :align: center
+        4. The matching index map
+           (:py:meth:`~pyemaps.stackimg.StackImage.showMatchingIndexMap`). The best match between
+           the database patterns and the experimental pattern is in red:
 
-        3. Following the display of the experimental DP image and if *bDebug* is not set (by default), 
-        the indexing result will be displayed on top of the experimental image:
+           .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/matchingindexmap.png
+               :width: 75%
+               :align: center
 
-        .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/expimgindexed.png
-            :width: 75%
-            :align: center
+           Afterwards, :py:meth:`~pyemaps.stackimg.StackImage.showMatchedDBDP` displays the best
+           matching database pattern:
 
-        4. Once the indexing results are generated, users have the option to call more display
-        *STEM4D* functions to show other results generated by this call. For examples, 
-        the matching database DP image and DP database matching index map as shown below:
+           .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/matchingDPDB.png
+               :width: 75%
+               :align: center
 
-        .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/matchingDPDB.png
-            :width: 75%
-            :align: center
+        5. The results, printed to standard output:
 
-        .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/matchingindexmap.png
-            :width: 75%
-            :align: center
+           .. code-block:: console
 
-        The latter map presents the likely matching location  (in red) between the DP in database, 
-        also considered the theoretical diffraction patterns, and the experimental DP image. 
+               Number of peaks found: 45
 
-        5. Finally, in addition to the above visual representation of the run and results, 
-        more verbose results are also shown in standard output:
-
-        .. code-block:: console
-
-            Number of peaks found: 45
-
-            -----------------Diffraction Pattern(DP) Indexing Results--------------------
-            ***** DP stack loaded and indexed: 1
-            ***** Best matching database DP: 1715
-            ***** DP rotation angle: 284.191 (degrees)
-            ***** Number of diffraction peaks indexed: 11
-            ***** Experimental and database DP correlation maximum: 0.988308
-            ***** Beam direction: 0.0575418 0.0599394 0.232559
-            ***** Reliability index (> 5.0): 30.5407
+               -----------------Diffraction Pattern(DP) Indexing Results--------------------
+               ***** DP stack loaded and indexed: 1
+               ***** Best matching database DP: 1715
+               ***** DP rotation angle: 284.191 (degrees)
+               ***** Number of diffraction peaks indexed: 11
+               ***** Experimental and database DP correlation maximum: 0.988308
+               ***** Beam direction: 0.0575418 0.0599394 0.232559
+               ***** Reliability index (> 5.0): 30.5407
 
 
-            -----------------Indexed Diffraction Pattern Details------------------
-            DP #   Miller Index     Distance            DP Loc          Intensity
-                1     2    -2     0   18.805359  114.912613  109.021492   14.05505
-                2    -2     2     0   20.888754   81.346603   87.833191  100.00000
-                3     3     1    -1   22.201900   95.978333  120.995316   28.63353
-                4    -1    -3     1   22.830843  117.979164   86.309898    9.12775
-                5    -3    -1     1   23.202806  101.336617   75.915146   17.33628
-                6     1     3    -1   23.803307   78.843224  111.661034   97.01090
-                7     5    -1    -1   36.265705  112.098000  132.817802    2.99402
-                8    -5     1     1   36.616173   85.120682   65.116249    4.92946
-                9    -1     5    -1   36.805595   62.239502  100.821404   33.52511
-                10   -4     4     0   39.269745   66.114388   77.537254   18.77301
-                11    4     4    -2   42.499973   76.063011  134.779076    2.83128
+               -----------------Indexed Diffraction Pattern Details------------------
+               DP #   Miller Index     Distance            DP Loc          Intensity
+                   1     2    -2     0   18.805359  114.912613  109.021492   14.05505
+                   2    -2     2     0   20.888754   81.346603   87.833191  100.00000
+                   3     3     1    -1   22.201900   95.978333  120.995316   28.63353
+                   4    -1    -3     1   22.830843  117.979164   86.309898    9.12775
+                   5    -3    -1     1   23.202806  101.336617   75.915146   17.33628
+                   6     1     3    -1   23.803307   78.843224  111.661034   97.01090
+                   7     5    -1    -1   36.265705  112.098000  132.817802    2.99402
+                   8    -5     1     1   36.616173   85.120682   65.116249    4.92946
+                   9    -1     5    -1   36.805595   62.239502  100.821404   33.52511
+                   10   -4     4     0   39.269745   66.114388   77.537254   18.77301
+                   11    4     4    -2   42.499973   76.063011  134.779076    2.83128
 
-        where Reliability index greater than 5.0 is considered successful run. DP stands for
-        diffraction pattern. If your results do not fit in a run, adjusting search and indexing paramemers
-        such as filter_threshold and peak threshold can also help stem4d module to search and match peaks.
-
-        .. note::
-
-            When *bDebug* flag is set (to 'True'), users are offered to chance to display more information of 
-            stem4d's intermediate execution steps. For example, peak discovery step will show results
-            of all found peaks by image peak matching algorithms before indexing is done. 
-            These intermediate images are mainly for debugging purposes.
-
-        """ 
+        A reliability index above 5.0 means the indexing succeeded. If it doesn't, try adjusting
+        *filter_threshold* and *peak_threshold*.
+        """
         
         if scaling_option[0] < 0 or scaling_option[0] > 5:
             raise XDPImageError('Experimental scaling factor out of range')
@@ -798,32 +795,32 @@ class StackImage():
                     scol = 0.0,
                     bShow=False):
         """
-        This method generates an (Annular) Bright/Dark Field image from an experimental stack image.
-        It is a wrapper for the function `getBDF`function in the new SEND module.
+        Generate a bright field (BF), dark field (DF), annular bright field (ABF) or annular
+        dark field (ADF) image from a 4D-STEM image stack, with a virtual detector. Each stack is
+        the diffraction pattern at one scan position. This is a licensed feature; see the sample
+        ``adf.py``.
 
-        :param center: The center of detector.
-        :type center: tuple of floating point numbers
+        :param center: center of the detector ``(column, row)``, in pixels of the diffraction
+            patterns.
+        :type center: tuple of float, optional
+        :param rads: inner and outer radius of the detector, in pixels; they must differ. An inner
+            radius of 0 gives a bright field image if the detector covers the central beam, or a
+            dark field image if it doesn't. A positive inner radius gives an annular bright or dark
+            field image.
+        :type rads: tuple of float, optional
+        :param scol: number of scan positions per row: the width of the output image. The number of
+            stacks must be a multiple of it.
+        :type scol: int or float
+        :param bShow: display the image.
+        :type bShow: bool, optional
+        :return: ``(code, data)``. The code is 0 on success, and *data* is the image as a numpy
+            array, also stored in :py:attr:`~pyemaps.stackimg.StackImage.data`. On failure, the code
+            is negative, *data* is ``None`` and a message is printed.
+        :rtype: tuple
 
-        :param rads: a pair of radius for inner and outer field detectors. 
-         When the inner radius is set to zero, the resulting image will be either 
-         Bright Field(BF) or Dark Field(DF) depending on if the center is on 
-         the bright spot of the image or not. Otherwise, a positive inner radius
-         will result in Annular Bright Field (ABF) or Annular Dark Field (ADF).
-        :type rads: tuple, optional.
+        .. note::
 
-        :param scol: The size of the output image along column direction.
-        :type scol: floating point numbers, optional
-
-        :param bShow: whether to display the resulting image.
-        :type bShow: boolean, optional, default `False`
-
-        :return: (status code, image data), status code of 0 successful, otherwise failed
-        :rtype: tuple of a short integer and image data array.
-
-.. note::
-
-        The experimental image loaded must have more than one stack.
-        
+            The image must have more than one stack. All stacks are loaded.
         """
         if not isinstance(scol, (int, float)) or scol <= 0:
             print(f'The size of the output image along column direction must be numeral and positive')
@@ -868,22 +865,24 @@ class StackImage():
                    scancol = 0.0,
                    bShow=False):
         """
-        generates an Bright Field(ADF) image from an experimental stack image input.
-        and a mask image.
+        Generate an image from a 4D-STEM image stack with a detector mask: each pixel of the
+        output is the sum of the masked pixels in one stack. This is a licensed feature; see the
+        sample ``adf.py``.
 
-        :param maskfn: mask image file name. 
-        :type maskfn: string, required
-        
-        :param scancol: The center of ADF detector. default value 0.0
-        :type scancol: float
-
-        :param bShow: whether to display the resulting ADF image.
-        :type bShow: boolean, optional, default `False`
-
-        :return: status code, 0 successful, otherwise failed
-        :rtype: integer
-
-        .. note::
+        :param maskfn: path of the mask, an image file in pyEMAPS' small-header format, with the
+            same width and height as the stacks, and integer or float data. Pixels above 0.5 are
+            included. To convert a raw mask file, use
+            :py:meth:`~pyemaps.stackimg.StackImage.convertImage`.
+        :type maskfn: str
+        :param scancol: number of scan positions per row: the width of the output image. The number
+            of stacks must be a multiple of it.
+        :type scancol: int or float
+        :param bShow: display the image.
+        :type bShow: bool, optional
+        :return: ``(code, data)``. The code is 0 on success, and *data* is the image as a numpy
+            array, also stored in :py:attr:`~pyemaps.stackimg.StackImage.data`. On failure, the code
+            is negative and *data* is ``None``.
+        :rtype: tuple
         """
         if not isinstance(scancol, (int, float)) or scancol <= 0:
             print(f'The scancol input must be numeral and positive')
@@ -923,50 +922,34 @@ class StackImage():
                         MIN_IMAGESIZE,
                         MIN_IMAGESTACK),
                 noffset = 8):
-        '''
+        """
+        Convert a raw image file to pyEMAPS' small-header format (``.im3``).
 
-        converts any other suported image formats into pyEMAPS' proprietory small 
-        header format.
+        The stem4d module needs auxiliary images, such as the masks for
+        :py:meth:`~pyemaps.stackimg.StackImage.generateMaskedImage`, in this format. See the sample
+        ``convert_image.py``.
 
-        This static method is very useful for all auxillary images to be used with 
-        stem4d module and are required to have the proprietory image format by the
-        pyEMAPS simulation backend.
+        :param imgfn: path of the raw image file.
+        :type imgfn: str
+        :param nformat: the input format. Only ``E_RAW`` (the default) works.
+        :type nformat: int, optional
+        :param ndtype: the pixel data type. Defaults to ``E_FLOAT``. See
+            :py:attr:`~pyemaps.stackimg.StackImage.ndtype`.
+        :type ndtype: int, optional
+        :param dim: the image dimensions ``(width, height, stacks)``. Defaults to ``(100, 100, 1)``.
+        :type dim: tuple of int, optional
+        :param noffset: where the pixel data starts in the file, in bytes. Defaults to 8.
+        :type noffset: int, optional
+        :raise ValueError: if *nformat* isn't ``E_RAW``, or the file name is invalid.
+        :raise FileNotFoundError: if the file isn't found.
 
-        :param imgfn: input image file path
-        :type imgfn: string, required. Ignored when nformat is E_NPY
+        A file name without a folder is looked for in the folder set by the ``PYEMAPS_DATA``
+        environment variable, or else in the current working directory.
 
-        :param nformat: format of the image file. Support all bitmap formatted image format
-        :type nformat: integer, optional, default to `E_RAW`
-
-        :param ndtype: image date types. It can be integer, float or double
-        :type ndtype: integer, optional, default to E_INT
-
-        :param dim: three integer tuple for the dimension of the image data (width, height, stack/depth)
-        :type dim: integer tuple, optional, default to (MIN_IMAGESIZE, MIN_IMAGESIZE, MIN_IMAGESTACK)
-
-        :param noffset: header offset or starting byte of the image data.
-        :type noffset: integer, optional, default to 8.
-
-        :return:  
-        :rtype: None
-        
-        .. note::
-
-            If the input raw image file name does not contain directory,
-            this method will search the file in pyEMAPS data diretcory
-            set by environment variable PYEMAPS_DATA or current working
-            directory in that order.
-
-            If the input file contains the fully qualified file path, 
-            pyEMAPS will be using the folder that contains the file
-            to place the output image file. So, please make sure that
-            the input directory is writable.
-
-            The result pyEMAPS image file with small header will be saved 
-            in a folder name `sh_converted` in the dierctory that
-            contains the original raw image file.
-
-        '''
+        The output is saved in a ``sh_converted`` folder next to the input file, with the same name
+        and the extension ``.im3``, so that folder must be writable. If the conversion fails, a
+        message is printed and nothing is raised.
+        """
 
         if nformat==E_SH or (nformat != E_RAW and nformat !=E_NPY):
             raise ValueError('pyEmaps only converts raw and numpy images to its proprietory format.')

@@ -2,7 +2,4 @@ File utilities
 ==============
 
 .. automodule:: pyemaps.fileutils
-   :members:
-   :imported-members:
-   :undoc-members:
-   :show-inheritance:
+   :members: find_datahome, find_pyemaps_datahome, auto_fn, compose_ofn, loadCrystalData, loadCrystalCIFData

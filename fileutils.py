@@ -47,6 +47,17 @@ import re
 pyemaps_datahome = None
 
 def find_datahome():
+    """
+    Return the pyEMAPS data folder.
+
+    That's the folder named by the ``PYEMAPS_DATA`` environment variable, or by the older
+    ``PYEMAPS_CRYSTALS`` if it's set. The folder is created if it doesn't exist. If neither
+    variable is set, or the folder can't be created, the current working directory is used.
+    See :ref:`Environment Variables <Environment Variables>`.
+
+    :return: the folder's path.
+    :rtype: str
+    """
     bLegacy = False
     if 'PYEMAPS_CRYSTALS' in os.environ:
         bLegacy = True
@@ -76,19 +87,14 @@ def find_datahome():
 
 
 def auto_fn(cn):
-    '''
-    Auto-generate file name based on crystal name and time stamp
-    when file is generated from pyemaps simulations.
+    """
+    Make a file name for simulation output from a crystal name and the current time.
 
-    This can be modified to tune the output to any other specific needs.
-
-    :param cn: A crystal name.
-    :type cn: string, required
-
-    :return: file name composed of crytsal name and time stamp in yyyymmddmmss format
-    rtype: string
-
-    '''
+    :param cn: the crystal name.
+    :type cn: str
+    :return: the name, ``<cn>-<yyyymmddHHMMSS>``, without an extension.
+    :rtype: str
+    """
     import datetime
 
     curr_time  = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
@@ -96,24 +102,22 @@ def auto_fn(cn):
     return cn + '-' + curr_time
 
 def find_pyemaps_datahome(home_type='crystals'):
-    '''
-    Detects enviroment variable set by PYEMAPS_DATA and return the
-    diretcory set by the variable or return current working directory.
-    
-    :param home_type: Type of home directory
-    :type home_type: string, optional
-    
-    :return: data home path.
-    :rtype: string
+    """
+    Return the folder for one kind of pyEMAPS data: a subfolder of the pyEMAPS data folder
+    (:py:func:`~pyemaps.fileutils.find_datahome`), created if needed.
 
-    Folder names depending by *home_type* input:
+    :param home_type: the subfolder name, for example:
 
-    1. **crystals**: all crystal data files.
-    2. **bloch**: all dynamic simulation output files.
-    3. **mxtal**: all .xyz files saved from crystal constructor.
-    4. **stereo**: all .png files saved from stereodiagram plotting methods
+        - ``crystals``: crystal data files.
+        - ``bloch``: dynamic diffraction output.
+        - ``mxtal``: ``.xyz`` files from :py:meth:`~pyemaps.crystals.Crystal.writeXYZ`.
+        - ``stereo``: stereodiagram plots.
 
-    '''
+    :type home_type: str, optional
+    :return: the folder's path. If the legacy ``PYEMAPS_CRYSTALS`` variable is set, or the
+        subfolder can't be created, the data folder itself.
+    :rtype: str
+    """
     
     global pyemaps_datahome
     if pyemaps_datahome is None:
@@ -139,10 +143,22 @@ def find_pyemaps_datahome(home_type='crystals'):
         return pyemaps_home
 
 def compose_ofn(fn, name, ty='diffraction'):
-    '''
-    Compose output file name based file name and file type.
+    """
+    Return the path of an output file.
 
-    '''
+    :param fn: the file name. A name without a folder is put in the *ty* folder of the pyEMAPS
+        data folder (:py:func:`~pyemaps.fileutils.find_pyemaps_datahome`); a path is used as
+        it is.
+    :type fn: str or None
+    :param name: the crystal name, used to make a file name
+        (:py:func:`~pyemaps.fileutils.auto_fn`) if *fn* is ``None``.
+    :type name: str
+    :param ty: the kind of output, which names its folder.
+    :type ty: str, optional
+    :return: the file's path.
+    :rtype: str
+    :raise FileNotFoundError: if *fn* includes a folder that doesn't exist.
+    """
     pyemaps_datahome=find_pyemaps_datahome(home_type=ty)
 
     if fn is None:
@@ -391,18 +407,23 @@ def _validAtomSiteLabel(l):
     
 def loadCrystalCIFData(fn):
     """
-    Reads a .cif file for crystal data.
+    Read crystal data from a CIF file.
 
-    :param fn: cif file name
-    :type: string, required
+    Used by :py:meth:`~pyemaps.crystals.Crystal.from_cif`, which most code should call instead.
 
-    :return: tuple of crystal name and crystal data as dict object
-    :rtype: dict
+    :param fn: the file's path. If it isn't found, it's looked for in the ``crystals`` folder
+        of the pyEMAPS data folder.
+    :type fn: str
+    :return: ``(name, data)``: the crystal name, and its data as a dictionary with the keys
+        ``cell``, ``atoms``, ``spg`` and ``dw``, as taken by
+        :py:meth:`~pyemaps.crystals.Crystal.from_dict`.
+    :rtype: tuple
+    :raise ~pyemaps.errors.CIFError: if the file can't be found or read, or the data is missing
+        or invalid.
+    :raise ~pyemaps.errors.SPGError: if the space group can't be identified uniquely.
 
-    .. note:: 
-
-        This method is still in active development. 
-    
+    The space group is matched against pyEMAPS' space group database, from the symmetry
+    operators, the Hermann-Mauguin symbol or the space group number in the file.
     """
     from .CifFile import ReadCif
 
@@ -857,17 +878,22 @@ def _get_atom_len(dw):
 
 def loadCrystalData(fn, cn=None):
     """
-    Reading built-in datbase or a .xtl file for crystal data.
+    Read crystal data from a pyEMAPS crystal data (``.xtl``) file.
 
-    :param fn: XTL formatted Crystal file name
-    :type: string, required
+    Used by :py:meth:`~pyemaps.crystals.Crystal.from_xtl` and
+    :py:meth:`~pyemaps.crystals.Crystal.from_builtin`, which most code should call instead.
 
-    :param cn: Crystal name
-    :type: string, optional
-
-    :return: tuple of crystal name and crystal data as dict object
-    :rtype: dict
-
+    :param fn: the file's path.
+    :type fn: str
+    :param cn: the expected crystal name. If given, the name in the file must match it, ignoring
+        case.
+    :type cn: str, optional
+    :return: ``(name, data)``: the crystal name, and its data as a dictionary with the keys
+        ``cell``, ``atoms``, ``spg`` and ``dw``, as taken by
+        :py:meth:`~pyemaps.crystals.Crystal.from_dict`.
+    :rtype: tuple
+    :raise ~pyemaps.errors.XTLError: if the file can't be read, or its data is missing or
+        invalid.
     """
 
     data = {}
