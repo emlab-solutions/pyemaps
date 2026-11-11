@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Page moved</title>
+<link rel="canonical" href="${to_uri}">
+<noscript><meta http-equiv="refresh" content="0; url=${to_uri}"></noscript>
+<script>
+  // Old single-page URLs: send each #anchor to the page that now holds it.
+  var target = "${to_uri}", hash = window.location.hash;
+  var api = {"pyemaps.crystals": "crystals", "pyemaps.emcontrols": "controls",
+             "pyemaps.kdiffs": "kinematic", "pyemaps.ddiffs": "dynamic",
+             "pyemaps.stackimg": "images", "pyemaps.xtal": "structure",
+             "pyemaps.display": "display", "pyemaps.fileutils": "fileutils",
+             "pyemaps.errors": "errors"};
+  var guide = {"#environment-variables": "user_guide/configuration.html",
+               "#license-activation": "user_guide/configuration.html",
+               "#kinematic-diffraction-simulation": "user_guide/kinematic.html",
+               "#bloch-wave-dynamic-diffraction-simulation": "user_guide/dynamic.html",
+               "#experimental-diffraction-pattern-indexing": "user_guide/indexing.html",
+               "#samples-code": "examples.html"};
+  if (hash && /api\/index\.html$$/.test(target)) {
+    var mod = hash.slice(1).split(".").slice(0, 2).join(".");
+    if (api[mod]) target = target.replace(/index\.html$$/, api[mod] + ".html");
+  }
+  if (hash && /getting_started\.html$$/.test(target) && guide[hash]) {
+    target = target.replace(/getting_started\.html$$/, guide[hash]);
+    hash = "";
+  }
+  window.location.replace(target.indexOf("#") < 0 ? target + hash : target);
+</script>
+</head><body><p>This page has moved to <a href="${to_uri}">${to_uri}</a>.</p></body></html>

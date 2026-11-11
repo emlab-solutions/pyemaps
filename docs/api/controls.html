@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Microscope and simulation controls &#8212; pyEMAPS</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=6a604523" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
+
+    <script src="../_static/documentation_options.js?v=9b9985f3"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=3cd7d658"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../_static/design-tabs.js?v=fcb327ea"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/controls';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../_static/pyemaps.ico"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Kinematic diffraction" href="kinematic.html" />
+    <link rel="prev" title="Crystals" href="crystals.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">pyEMAPS</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../help.html">
+    Help
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/emlab-solutions/pyemaps" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/pyemaps/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page" aria-expanded="false" aria-controls="pst-secondary-sidebar-modal">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../help.html">
+    Help
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/emlab-solutions/pyemaps" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/pyemaps/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="crystals.html">Crystals</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Microscope and simulation controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kinematic.html">Kinematic diffraction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dynamic.html">Dynamic diffraction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="images.html">Images (4D-STEM)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structure.html">Crystal structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="display.html">Display</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fileutils.html">File utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="errors.html">Errors</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-house"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">API Reference</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Microscope and simulation controls</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-pyemaps.emcontrols">
+<span id="microscope-and-simulation-controls"></span><h1>Microscope and simulation controls<a class="headerlink" href="#module-pyemaps.emcontrols" title="Link to this heading">#</a></h1>
+<p>This class is a helper for handling pyEMAPS microscope controls.</p>
+<p>There are two controls classes this module defines: <a class="reference external" href="modules.html#pyemaps.emcontrols.EMControl">microscope controls</a>
+and <a class="reference external" href="modules.html#pyemaps.emcontrols.SIMControl">simulations controls</a>.</p>
+<p>Since the latter changes much less frequently than the former, 
+simulation control is embedded as a member of a microscope controls class.</p>
+<section id="simulation-control-constants-and-default-values">
+<h2>Simulation control constants and default values<a class="headerlink" href="#simulation-control-constants-and-default-values" title="Link to this heading">#</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_EXCITATION">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_EXCITATION</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.3,</span> <span class="pre">2.0)</span></span><a class="headerlink" href="#pyemaps.emcontrols.DEF_EXCITATION" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_GMAX">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_GMAX</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3.5</span></span><a class="headerlink" href="#pyemaps.emcontrols.DEF_GMAX" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_BMIN">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_BMIN</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.1</span></span><a class="headerlink" href="#pyemaps.emcontrols.DEF_BMIN" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_INTENSITY">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_INTENSITY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.0,</span> <span class="pre">5)</span></span><a class="headerlink" href="#pyemaps.emcontrols.DEF_INTENSITY" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_GCTL">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_GCTL</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6.0</span></span><a class="headerlink" href="#pyemaps.emcontrols.DEF_GCTL" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_ZCTL">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_ZCTL</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5.0</span></span><a class="headerlink" href="#pyemaps.emcontrols.DEF_ZCTL" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_OMEGA">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_OMEGA</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></span><a class="headerlink" href="#pyemaps.emcontrols.DEF_OMEGA" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_SAMPLING">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_SAMPLING</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></span><a class="headerlink" href="#pyemaps.emcontrols.DEF_SAMPLING" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.SAMPLE_THICKNESS">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">SAMPLE_THICKNESS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(200,</span> <span class="pre">200,</span> <span class="pre">100)</span></span><a class="headerlink" href="#pyemaps.emcontrols.SAMPLE_THICKNESS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="microscope-control-constants-and-default-values">
+<h2>Microscope control constants and default values<a class="headerlink" href="#microscope-control-constants-and-default-values" title="Link to this heading">#</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_TILT">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_TILT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.0,</span> <span class="pre">0.0)</span></span><a class="headerlink" href="#pyemaps.emcontrols.DEF_TILT" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_ZONE">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_ZONE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">1)</span></span><a class="headerlink" href="#pyemaps.emcontrols.DEF_ZONE" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_DEFL">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_DEFL</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.0,</span> <span class="pre">0.0)</span></span><a class="headerlink" href="#pyemaps.emcontrols.DEF_DEFL" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_KV">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_KV</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">200.0</span></span><a class="headerlink" href="#pyemaps.emcontrols.DEF_KV" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_CL">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_CL</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1000.0</span></span><a class="headerlink" href="#pyemaps.emcontrols.DEF_CL" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_APERTURE">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_APERTURE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.0</span></span><a class="headerlink" href="#pyemaps.emcontrols.DEF_APERTURE" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_XAXIS">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_XAXIS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span><a class="headerlink" href="#pyemaps.emcontrols.DEF_XAXIS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_PIXSIZE">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_PIXSIZE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">25</span></span><a class="headerlink" href="#pyemaps.emcontrols.DEF_PIXSIZE" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_DETSIZE">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_DETSIZE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">512</span></span><a class="headerlink" href="#pyemaps.emcontrols.DEF_DETSIZE" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_MODE">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_MODE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></span><a class="headerlink" href="#pyemaps.emcontrols.DEF_MODE" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.DEF_CBED_DSIZE">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">DEF_CBED_DSIZE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.16</span> </span><a class="headerlink" href="#pyemaps.emcontrols.DEF_CBED_DSIZE" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+<dl class="py exception">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMCError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">EMCError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.EMCError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Microscope controls objects creation and validation errors.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMCError.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.EMCError.__init__" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.doc_dec_simc">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">doc_dec_simc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.doc_dec_simc" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">SIMControl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">excitation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['excitation']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['gmax']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['bmin']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intensity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['intensity']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gctl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['gctl']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zctl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['zctl']</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Simulation controls, to be embedded in EMControl</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">excitation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['excitation']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['gmax']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['bmin']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intensity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['intensity']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gctl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['gctl']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zctl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIMC['zctl']</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.__init__" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.excitation">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">excitation</span></span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.excitation" title="Link to this definition">#</a></dt>
+<dd><p>Excitation error range in (min, max)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.gmax">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">gmax</span></span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.gmax" title="Link to this definition">#</a></dt>
+<dd><p>Maximum recipricol vector length</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.bmin">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">bmin</span></span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.bmin" title="Link to this definition">#</a></dt>
+<dd><p>Beta perturbation cutoff</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.intensity">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">intensity</span></span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.intensity" title="Link to this definition">#</a></dt>
+<dd><p>Kinematic diffraction intensity cutoff level and scale in (level, scale)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.gctl">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">gctl</span></span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.gctl" title="Link to this definition">#</a></dt>
+<dd><p>Maximum index number for g-list</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.zctl">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">zctl</span></span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.zctl" title="Link to this definition">#</a></dt>
+<dd><p>Maximum zone or Miller index number</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.omega">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">omega</span></span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.omega" title="Link to this definition">#</a></dt>
+<dd><p>Diagnization cutoff value</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.sampling">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">sampling</span></span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.sampling" title="Link to this definition">#</a></dt>
+<dd><p>Number of sampling points</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.sth">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">sth</span></span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.sth" title="Link to this definition">#</a></dt>
+<dd><p>Samples thickness</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.plot_format">
+<span class="sig-name descname"><span class="pre">plot_format</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.plot_format" title="Link to this definition">#</a></dt>
+<dd><p>Format simulation controls in builtin display functions
+Only plot those parameter that are not defaults</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.SIMControl.from_random">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_random</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.SIMControl.from_random" title="Link to this definition">#</a></dt>
+<dd><p>For backward compatibility only</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.doc_dec">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">doc_dec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.doc_dec" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyemaps.emcontrols.</span></span><span class="sig-name descname"><span class="pre">EMControl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tilt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_TILT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_ZONE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_DEFL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_KV</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_CL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">SIMControl()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.EMControl" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Microscope and sample property controls class. Its attributes include:</p>
+<ul class="simple">
+<li><p><strong>tilt</strong>: sample tilt in x and y directory (x,y)</p></li>
+<li><p><strong>zone</strong>: starting zone axis</p></li>
+<li><p><strong>defl</strong>: shifts in x and y direction (x, y)</p></li>
+<li><p><strong>cl</strong>: cameral length</p></li>
+<li><p><strong>vt</strong>: hight voltage in kilo-volts</p></li>
+<li><p><a href="#id1"><span class="problematic" id="id2">**</span></a>simc*: <a class="reference external" href="pyemaps.emcontrols.html#pyemaps.emcontrols.SIMControl">SIMControl</a> object</p></li>
+</ul>
+<p>Other optional emcontrol parameters:</p>
+<ul class="simple">
+<li><p><strong>aperture</strong>: Objective len aperture</p></li>
+<li><p><strong>pix_size</strong>: detector pixel size</p></li>
+<li><p><strong>det_size</strong>: detector size</p></li>
+<li><p><strong>xaxis</strong>: crystal horizontal axis in reciprical space</p></li>
+<li><p><strong>mode</strong>: simulation mode: 1- normal, 2-CBED</p></li>
+<li><p><strong>dsize</strong>: diffracted beam size</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tilt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_TILT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zone</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_ZONE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_DEFL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_KV</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_CL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">SIMControl()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.__init__" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.from_dict">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emc_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.from_dict" title="Link to this definition">#</a></dt>
+<dd><p>Create an EMControl object from a python dict object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>emc_dict</strong> (<em>dict</em><em>, </em><em>required</em>) – Microscope control dict object</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p>EMCError, if validation fails</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.zone">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">zone</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.zone" title="Link to this definition">#</a></dt>
+<dd><p>Starting zone axis</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.tilt">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">tilt</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.tilt" title="Link to this definition">#</a></dt>
+<dd><p>Tilt in x and y directions (x,y)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.defl">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">defl</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.defl" title="Link to this definition">#</a></dt>
+<dd><p>Shifts in x and y directions (x, y)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.cl">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">cl</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.cl" title="Link to this definition">#</a></dt>
+<dd><p>Camera length</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.vt">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">vt</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.vt" title="Link to this definition">#</a></dt>
+<dd><p>High voltage</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.xaxis">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">xaxis</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.xaxis" title="Link to this definition">#</a></dt>
+<dd><p>Crystal horizontal axis in reciprical space</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.simc">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">simc</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.simc" title="Link to this definition">#</a></dt>
+<dd><p>Simulation Controls</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.aperture">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">aperture</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.aperture" title="Link to this definition">#</a></dt>
+<dd><p>Objective lense aperture</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.pix_size">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">pix_size</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.pix_size" title="Link to this definition">#</a></dt>
+<dd><p>Detector pixel size in microns</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.det_size">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">det_size</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.det_size" title="Link to this definition">#</a></dt>
+<dd><p>Detector size in microns</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.mode">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">mode</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.mode" title="Link to this definition">#</a></dt>
+<dd><p>Simulation mode</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.dsize">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">dsize</span></span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.dsize" title="Link to this definition">#</a></dt>
+<dd><p>Diffracted beam size</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.plot_format">
+<span class="sig-name descname"><span class="pre">plot_format</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.plot_format" title="Link to this definition">#</a></dt>
+<dd><p>Format simulation controls in builtin display functions
+Only plot those parameter that are not defaults</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.emcontrols.EMControl.def_dict">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">def_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.emcontrols.EMControl.def_dict" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="crystals.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Crystals</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="kinematic.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Kinematic diffraction</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal" tabindex="-1"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulation-control-constants-and-default-values">Simulation control constants and default values</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.DEF_EXCITATION"><code class="docutils literal notranslate"><span class="pre">DEF_EXCITATION</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.DEF_GMAX"><code class="docutils literal notranslate"><span class="pre">DEF_GMAX</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.DEF_BMIN"><code class="docutils literal notranslate"><span class="pre">DEF_BMIN</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.DEF_INTENSITY"><code class="docutils literal notranslate"><span class="pre">DEF_INTENSITY</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.DEF_GCTL"><code class="docutils literal notranslate"><span class="pre">DEF_GCTL</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.DEF_ZCTL"><code class="docutils literal notranslate"><span class="pre">DEF_ZCTL</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.DEF_OMEGA"><code class="docutils literal notranslate"><span class="pre">DEF_OMEGA</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.DEF_SAMPLING"><code class="docutils literal notranslate"><span class="pre">DEF_SAMPLING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.SAMPLE_THICKNESS"><code class="docutils literal notranslate"><span class="pre">SAMPLE_THICKNESS</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#microscope-control-constants-and-default-values">Microscope control constants and default values</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.DEF_TILT"><code class="docutils literal notranslate"><span class="pre">DEF_TILT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.DEF_ZONE"><code class="docutils literal notranslate"><span class="pre">DEF_ZONE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.DEF_DEFL"><code class="docutils literal notranslate"><span class="pre">DEF_DEFL</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.DEF_KV"><code class="docutils literal notranslate"><span class="pre">DEF_KV</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.DEF_CL"><code class="docutils literal notranslate"><span class="pre">DEF_CL</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.DEF_APERTURE"><code class="docutils literal notranslate"><span class="pre">DEF_APERTURE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.DEF_XAXIS"><code class="docutils literal notranslate"><span class="pre">DEF_XAXIS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.DEF_PIXSIZE"><code class="docutils literal notranslate"><span class="pre">DEF_PIXSIZE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.DEF_DETSIZE"><code class="docutils literal notranslate"><span class="pre">DEF_DETSIZE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.DEF_MODE"><code class="docutils literal notranslate"><span class="pre">DEF_MODE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.DEF_CBED_DSIZE"><code class="docutils literal notranslate"><span class="pre">DEF_CBED_DSIZE</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.EMCError"><code class="docutils literal notranslate"><span class="pre">EMCError</span></code></a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.EMCError.__init__"><code class="docutils literal notranslate"><span class="pre">EMCError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.doc_dec_simc"><code class="docutils literal notranslate"><span class="pre">doc_dec_simc()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.SIMControl"><code class="docutils literal notranslate"><span class="pre">SIMControl</span></code></a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.SIMControl.__init__"><code class="docutils literal notranslate"><span class="pre">SIMControl.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.SIMControl.excitation"><code class="docutils literal notranslate"><span class="pre">SIMControl.excitation</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.SIMControl.gmax"><code class="docutils literal notranslate"><span class="pre">SIMControl.gmax</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.SIMControl.bmin"><code class="docutils literal notranslate"><span class="pre">SIMControl.bmin</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.SIMControl.intensity"><code class="docutils literal notranslate"><span class="pre">SIMControl.intensity</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.SIMControl.gctl"><code class="docutils literal notranslate"><span class="pre">SIMControl.gctl</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.SIMControl.zctl"><code class="docutils literal notranslate"><span class="pre">SIMControl.zctl</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.SIMControl.omega"><code class="docutils literal notranslate"><span class="pre">SIMControl.omega</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.SIMControl.sampling"><code class="docutils literal notranslate"><span class="pre">SIMControl.sampling</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.SIMControl.sth"><code class="docutils literal notranslate"><span class="pre">SIMControl.sth</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.SIMControl.plot_format"><code class="docutils literal notranslate"><span class="pre">SIMControl.plot_format()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.SIMControl.from_random"><code class="docutils literal notranslate"><span class="pre">SIMControl.from_random()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.doc_dec"><code class="docutils literal notranslate"><span class="pre">doc_dec()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.EMControl"><code class="docutils literal notranslate"><span class="pre">EMControl</span></code></a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.EMControl.__init__"><code class="docutils literal notranslate"><span class="pre">EMControl.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.EMControl.from_dict"><code class="docutils literal notranslate"><span class="pre">EMControl.from_dict()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.EMControl.zone"><code class="docutils literal notranslate"><span class="pre">EMControl.zone</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.EMControl.tilt"><code class="docutils literal notranslate"><span class="pre">EMControl.tilt</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.EMControl.defl"><code class="docutils literal notranslate"><span class="pre">EMControl.defl</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.EMControl.cl"><code class="docutils literal notranslate"><span class="pre">EMControl.cl</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.EMControl.vt"><code class="docutils literal notranslate"><span class="pre">EMControl.vt</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.EMControl.xaxis"><code class="docutils literal notranslate"><span class="pre">EMControl.xaxis</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.EMControl.simc"><code class="docutils literal notranslate"><span class="pre">EMControl.simc</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.EMControl.aperture"><code class="docutils literal notranslate"><span class="pre">EMControl.aperture</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.EMControl.pix_size"><code class="docutils literal notranslate"><span class="pre">EMControl.pix_size</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.EMControl.det_size"><code class="docutils literal notranslate"><span class="pre">EMControl.det_size</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.EMControl.mode"><code class="docutils literal notranslate"><span class="pre">EMControl.mode</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.EMControl.dsize"><code class="docutils literal notranslate"><span class="pre">EMControl.dsize</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.EMControl.plot_format"><code class="docutils literal notranslate"><span class="pre">EMControl.plot_format()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.emcontrols.EMControl.def_dict"><code class="docutils literal notranslate"><span class="pre">EMControl.def_dict()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2022-2026, EMLab Solutions, Inc..
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

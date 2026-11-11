@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Images (4D-STEM) &#8212; pyEMAPS</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=6a604523" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
+
+    <script src="../_static/documentation_options.js?v=9b9985f3"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=3cd7d658"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../_static/design-tabs.js?v=fcb327ea"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/images';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../_static/pyemaps.ico"/>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Crystal structures" href="structure.html" />
+    <link rel="prev" title="Dynamic diffraction" href="dynamic.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">pyEMAPS</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../help.html">
+    Help
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/emlab-solutions/pyemaps" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/pyemaps/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page" aria-expanded="false" aria-controls="pst-secondary-sidebar-modal">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started.html">
+    Get Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../examples.html">
+    Examples
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../help.html">
+    Help
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/emlab-solutions/pyemaps" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/pyemaps/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="crystals.html">Crystals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="controls.html">Microscope and simulation controls</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kinematic.html">Kinematic diffraction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dynamic.html">Dynamic diffraction</a></li>
+<li class="toctree-l1 current active"><a aria-current="page" class="current reference internal" href="#">Images (4D-STEM)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structure.html">Crystal structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="display.html">Display</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fileutils.html">File utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="errors.html">Errors</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-house"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">API Reference</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Images (4D-STEM)</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-pyemaps.stackimg">
+<span id="images-4d-stem"></span><h1>Images (4D-STEM)<a class="headerlink" href="#module-pyemaps.stackimg" title="Link to this heading">#</a></h1>
+<dl class="py exception">
+<dt class="sig sig-object py" id="pyemaps.stackimg.XDPImageError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyemaps.stackimg.</span></span><span class="sig-name descname"><span class="pre">XDPImageError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.XDPImageError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Experimental diffraction pattern image object errors.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.stackimg.XDPImageError.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.XDPImageError.__init__" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.stackimg.normalizeImage">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.stackimg.</span></span><span class="sig-name descname"><span class="pre">normalizeImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.normalizeImage" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyemaps.stackimg.displayXImage">
+<span class="sig-prename descclassname"><span class="pre">pyemaps.stackimg.</span></span><span class="sig-name descname"><span class="pre">displayXImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">img</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bColor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isMask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bIndexed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suptitle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.displayXImage" title="Link to this definition">#</a></dt>
+<dd><p>Internal stem4d helper function displaying image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyemaps.stackimg.</span></span><span class="sig-name descname"><span class="pre">StackImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imgfn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nformat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">E_SH</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">E_FLOAT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(MIN_IMAGESIZE,</span> <span class="pre">MIN_IMAGESIZE,</span> <span class="pre">MIN_IMAGESTACK)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noffset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Simple wrapper class for experimental images used in pyemaps 
+Stem4d analysis:</p>
+<ul class="simple">
+<li><p>Diffraction pattern indexing</p></li>
+<li><p>Annular Drak Field image generation</p></li>
+<li><p>Masked images</p></li>
+</ul>
+<p>All image files must be of raw bitmap format, or known as headered raw format:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><strong>Header</strong>: stores metadata about the image, often including three numbers </dt><dd><p>for dimensions (e.g. width, height, and number of bit depth, or stacks).</p>
+</dd>
+</dl>
+</li>
+<li><p><strong>Data Offset</strong>: After the header, the actual image or pixel data starts.</p></li>
+<li><dl class="simple">
+<dt><strong>Pixel Data</strong>: Stored in a row-major order, meaning pixels are arranged </dt><dd><p>row-byrow across columns.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>The image can also be represented by a numpy array directly. In this case,
+the StackImage object created will ignore its file name member.</p>
+<p>and more to come.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imgfn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nformat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">E_SH</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">E_FLOAT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(MIN_IMAGESIZE,</span> <span class="pre">MIN_IMAGESIZE,</span> <span class="pre">MIN_IMAGESTACK)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noffset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.__init__" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.fname">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">fname</span></span><a class="headerlink" href="#pyemaps.stackimg.StackImage.fname" title="Link to this definition">#</a></dt>
+<dd><p>Experimental diffraction pattern image input file full path.
+In case of numpy array, this field is ignored.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.nformat">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">nformat</span></span><a class="headerlink" href="#pyemaps.stackimg.StackImage.nformat" title="Link to this definition">#</a></dt>
+<dd><p>The type of the image file</p>
+<ul class="simple">
+<li><p>E_RAW: raw image files with image data at an <cite>noffset</cite> from the beginning of the file.</p></li>
+<li><p>E_SH: small header (pyEMAPS propietory). Header is a tuple of three short integers 
+and data type represented also by a short integer. Total bytes of the header or the offset
+is 8)</p></li>
+<li><p>E_NPY: numpy array.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.ndtype">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ndtype</span></span><a class="headerlink" href="#pyemaps.stackimg.StackImage.ndtype" title="Link to this definition">#</a></dt>
+<dd><p>The type of the image data - int, float, double are supported.
+The constants to used to represent the types are:</p>
+<ul class="simple">
+<li><p>E_INT and EM_INT: single and multiple stack integral image data type.</p></li>
+<li><p>E_FLOAT and EM_FLOAT: single and multiple stack real image data type.</p></li>
+<li><p>E_DOUBLE and EM_DOUBLE: single and multiple stack 8-byte real image data type.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.noffset">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">noffset</span></span><a class="headerlink" href="#pyemaps.stackimg.StackImage.noffset" title="Link to this definition">#</a></dt>
+<dd><p>image data offset from start of the file. Normally, it is the size of the 
+header in bytes.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.dim">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">dim</span></span><a class="headerlink" href="#pyemaps.stackimg.StackImage.dim" title="Link to this definition">#</a></dt>
+<dd><p>image dimension, support 3 dimensional images with input of 
+3 integer tuple of integers (width, height, stack).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.data">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#pyemaps.stackimg.StackImage.data" title="Link to this definition">#</a></dt>
+<dd><p>Raw image data in numpy ndarray when it is read from a numpy array
+Otherwise, the data will be generated from Stem4d when the input image
+file is loaded.</p>
+<p>With <cite>nformat</cite> set to E_NPY, set this to a 2-D numpy array of any
+boolean, integer or floating-point type, 100 to 512 pixels per side,
+before calling <cite>loadImage</cite>. It is converted to float32 when loaded.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.loadImage">
+<span class="sig-name descname"><span class="pre">loadImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">EL_ONE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stack</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.loadImage" title="Link to this definition">#</a></dt>
+<dd><p>Loads image into stem4d module for analysis.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.viewExpImage">
+<span class="sig-name descname"><span class="pre">viewExpImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">peakDP</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iStack</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.viewExpImage" title="Link to this definition">#</a></dt>
+<dd><p>Helper function in stem4d module to display experimental diffraction database 
+diffraction pattern currently loaded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>peakDP</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – kinematic diffraction with miller index. This parameter is only valid for EDIOM operations</p></li>
+<li><p><strong>Indexed</strong> (boolean, optional, default to <cite>False</cite>) – show the kinematic patterns after indexing is completed.</p></li>
+<li><p><strong>iStack</strong> (<em>integer</em><em>, </em><em>optional</em><em>, </em><em>default to 1</em>) – Image stack number to show. For single stack image, this parameter takes default value of 1</p></li>
+<li><p><strong>iShow</strong> (boolean, optional, default to <cite>False</cite>) – whether to show miller indexes</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p>This function is typically used to display experimental image after diffraction 
+patterns matched and indexed. It can also be used to display intermediate
+search results after peaks are found but before indexes are matched. The latter
+display is turned on only by <em>bDebug</em> flag in 
+<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB">loadDPDB</a> call.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.showMatchedDBDP">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">showMatchedDBDP</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.showMatchedDBDP" title="Link to this definition">#</a></dt>
+<dd><p>Helper function in stem4d module to display diffraction database diffraction pattern 
+that best matches that of the experimental diffraction image pattern.</p>
+<p>This function is typically used to confirm its match with experimental diffraction 
+pattern. See sample code <em>al_ediom.py</em> for usage of this function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.displayFitImage">
+<span class="sig-name descname"><span class="pre">displayFitImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.displayFitImage" title="Link to this definition">#</a></dt>
+<dd><p>Internal intermediate helper function for display fit images.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.displaySearchMask">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">displaySearchMask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.displaySearchMask" title="Link to this definition">#</a></dt>
+<dd><p>Internal stem4d helper function displaying image mask image 
+generated in peak search.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.displaySearchKernel">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">displaySearchKernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.displaySearchKernel" title="Link to this definition">#</a></dt>
+<dd><p>Internal stem4d helper function displaying image kernel image 
+generated in peak search.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.showDPDBMMask">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">showDPDBMMask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.showDPDBMMask" title="Link to this definition">#</a></dt>
+<dd><p>Internal function to display loaded DP database stereo projection map
+as explained in the following</p>
+<a class="reference internal image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png" class="align-center" src="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png" style="width: 75%;" />
+</a>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.loadDPDB">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">loadDPDB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dbfn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bShowDBMap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.loadDPDB" title="Link to this definition">#</a></dt>
+<dd><p>Loads the diffraction database file <em>dbfn</em> into stem4d for diffraction peak searching and indexing.</p>
+<p>See sample code <em>si_dpgen.py</em> for how to generate a diffraction pattern database with
+pyemaps <a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.generateDPDB">generateDPDB</a>.</p>
+<p>The database file can also be saved and reused.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dbfn</strong> (<em>string</em><em>, </em><em>required</em>) – DP database file name.</p></li>
+<li><p><strong>bShowDBMap</strong> (boolean, optional, default to <cite>False</cite>) – weather to display the stereodigram project map after successful 
+loading of the database file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>status code, stereo projection map dimension - two integers tuple</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<p>See the following for stereo projection map representing the DP database:</p>
+<a class="reference internal image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png" class="align-center" src="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png" style="width: 75%;" />
+</a>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.showMatchingIndexMap">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">showMatchingIndexMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.showMatchingIndexMap" title="Link to this definition">#</a></dt>
+<dd><p>Helper function in stem4d module to display matching indexes map. The colored
+heat map with the peak indicates the orientation in which experimental and 
+database diffraction patterns best match.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fr</strong> (<em>int</em><em>, </em><em>required</em>) – <p>stereo projection map height. This number is obtained from 
+<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB">loadDPDB</a> call.</p>
+</p></li>
+<li><p><strong>fc</strong> – <p>stereo projection map width. This number is obtained from 
+<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB">loadDPDB</a> call.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int, required</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>status code</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.indexImage">
+<span class="sig-name descname"><span class="pre">indexImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dpdbfn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_CC</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SIGMA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_ICENTER</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_RMIN</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_BOXSIZE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling_option</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(DEF_XSCALE,</span> <span class="pre">DEF_TSCALE)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_FILTER_THRESHOLD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">peak_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEF_SEARCH_THRESHOLD</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bDebug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.indexImage" title="Link to this definition">#</a></dt>
+<dd><p>Searches and indexes an experimental diffraction image. The experimental diffraction image will be loaded
+with StackImage class constructor and its <a class="reference external" href="pyemaps.stackimg.html#pyemaps.stackimg.StackImage.loadImage">loadImage</a>
+method before the search and indexes are performed.</p>
+<p>In addition, a diffraction database also needs to be loaded preceeding this call with
+<a class="reference external" href="pyemaps.crystals.html#pyemaps.crystals.Crystal.loadDPDB">loadDPDB</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dpdbfn</strong> – diffraction pattern database file name. The file is generated by pyemaps dp_gen module</p>
+</dd>
+</dl>
+<p>or database file name saved from previous runs.
+:type dpdbfn: string, required</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cc</strong> (<em>float</em><em>, </em><em>optional</em>) – Camera constant in 1/Angstrom/pixel.</p></li>
+<li><p><strong>sigma</strong> (<em>float</em><em>, </em><em>optional.</em>) – Diffraction peak width - estimated image peak width.</p></li>
+<li><p><strong>img_center</strong> (<em>float tuple</em><em>, </em><em>optional</em>) – diffraction pattern center in (col, row) coordinate.</p></li>
+<li><p><strong>rmin</strong> (<em>float</em><em>, </em><em>optional</em>) – low cutoff radius for excluding center beam and diffuse intensities.</p></li>
+<li><p><strong>search_box</strong> (<em>float</em><em>, </em><em>optional</em>) – Parameter in pixels used to define peak search. Recommended value 
+of 3 to 4 times of sigma value for selected area diffraction.</p></li>
+<li><p><strong>filter_threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Diffraction pattern screening threshold. Between 0.0 and 1.0 
+use 0 to include all database patterns for search.</p></li>
+<li><p><strong>peak_threshold</strong> (<em>float</em><em>, </em><em>optional</em>) – Peak threshold. value between 0.0 and 1.0. used to remove noisy peaks.</p></li>
+<li><p><strong>ssel</strong> (<em>integer</em><em>, </em><em>optional. Default value to 1</em><em>, </em><em>the first image layer in the input image stack.</em>) – image stack selection. The value must be in range of the input image layers.</p></li>
+<li><p><strong>bDebug</strong> (Boolean, optional. Default value to <cite>False</cite>.) – debug option. This is for displaying intermediate searching and masking images used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>status code, 0 for successful run</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>integer</p>
+</dd>
+</dl>
+<p>The image control parameters cc - rmin above are image meaurements controls. The accuraccies
+of these measurements can greatly affect the peak search and eventually indexing results.</p>
+<p>The remaining input parameters directly control the search and indexing functions and its results.
+Use these parameters to tune your results.</p>
+<p>The following is a typical sequence of displays during the execution:</p>
+<p>1. Once the DP database is loaded successfully, the steoreo projection map associated
+with the DP database will be shown.</p>
+<a class="reference internal image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojmap.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojmap.png" class="align-center" src="https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojmap.png" style="width: 75%;" />
+</a>
+<p>2. Successful experimental DP image importing will also show the image. This gives users
+the opportunity to verify the image:</p>
+<a class="reference internal image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/expimagoriginal.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/expimagoriginal.png" class="align-center" src="https://github.com/emlab-solutions/imagepypy/raw/main/expimagoriginal.png" style="width: 75%;" />
+</a>
+<p>3. Following the display of the experimental DP image and if <em>bDebug</em> is not set (by default), 
+the indexing result will be displayed on top of the experimental image:</p>
+<a class="reference internal image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/expimgindexed.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/expimgindexed.png" class="align-center" src="https://github.com/emlab-solutions/imagepypy/raw/main/expimgindexed.png" style="width: 75%;" />
+</a>
+<p>4. Once the indexing results are generated, users have the option to call more display
+<em>STEM4D</em> functions to show other results generated by this call. For examples, 
+the matching database DP image and DP database matching index map as shown below:</p>
+<a class="reference internal image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/matchingDPDB.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/matchingDPDB.png" class="align-center" src="https://github.com/emlab-solutions/imagepypy/raw/main/matchingDPDB.png" style="width: 75%;" />
+</a>
+<a class="reference internal image-reference" href="https://github.com/emlab-solutions/imagepypy/raw/main/matchingindexmap.png"><img alt="https://github.com/emlab-solutions/imagepypy/raw/main/matchingindexmap.png" class="align-center" src="https://github.com/emlab-solutions/imagepypy/raw/main/matchingindexmap.png" style="width: 75%;" />
+</a>
+<p>The latter map presents the likely matching location  (in red) between the DP in database, 
+also considered the theoretical diffraction patterns, and the experimental DP image.</p>
+<p>5. Finally, in addition to the above visual representation of the run and results, 
+more verbose results are also shown in standard output:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Number of peaks found: 45</span>
+
+<span class="go">-----------------Diffraction Pattern(DP) Indexing Results--------------------</span>
+<span class="go">***** DP stack loaded and indexed: 1</span>
+<span class="go">***** Best matching database DP: 1715</span>
+<span class="go">***** DP rotation angle: 284.191 (degrees)</span>
+<span class="go">***** Number of diffraction peaks indexed: 11</span>
+<span class="go">***** Experimental and database DP correlation maximum: 0.988308</span>
+<span class="go">***** Beam direction: 0.0575418 0.0599394 0.232559</span>
+<span class="go">***** Reliability index (&gt; 5.0): 30.5407</span>
+
+
+<span class="go">-----------------Indexed Diffraction Pattern Details------------------</span>
+<span class="go">DP #   Miller Index     Distance            DP Loc          Intensity</span>
+<span class="go">    1     2    -2     0   18.805359  114.912613  109.021492   14.05505</span>
+<span class="go">    2    -2     2     0   20.888754   81.346603   87.833191  100.00000</span>
+<span class="go">    3     3     1    -1   22.201900   95.978333  120.995316   28.63353</span>
+<span class="go">    4    -1    -3     1   22.830843  117.979164   86.309898    9.12775</span>
+<span class="go">    5    -3    -1     1   23.202806  101.336617   75.915146   17.33628</span>
+<span class="go">    6     1     3    -1   23.803307   78.843224  111.661034   97.01090</span>
+<span class="go">    7     5    -1    -1   36.265705  112.098000  132.817802    2.99402</span>
+<span class="go">    8    -5     1     1   36.616173   85.120682   65.116249    4.92946</span>
+<span class="go">    9    -1     5    -1   36.805595   62.239502  100.821404   33.52511</span>
+<span class="go">    10   -4     4     0   39.269745   66.114388   77.537254   18.77301</span>
+<span class="go">    11    4     4    -2   42.499973   76.063011  134.779076    2.83128</span>
+</pre></div>
+</div>
+<p>where Reliability index greater than 5.0 is considered successful run. DP stands for
+diffraction pattern. If your results do not fit in a run, adjusting search and indexing paramemers
+such as filter_threshold and peak threshold can also help stem4d module to search and match peaks.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When <em>bDebug</em> flag is set (to ‘True’), users are offered to chance to display more information of 
+stem4d’s intermediate execution steps. For example, peak discovery step will show results
+of all found peaks by image peak matching algorithms before indexing is done. 
+These intermediate images are mainly for debugging purposes.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.generateBDF">
+<span class="sig-name descname"><span class="pre">generateBDF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.generateBDF" title="Link to this definition">#</a></dt>
+<dd><blockquote>
+<div><p>This method generates an (Annular) Bright/Dark Field image from an experimental stack image.
+It is a wrapper for the function <a href="#id4"><span class="problematic" id="id5">`</span></a>getBDF`function in the new SEND module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">param center<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The center of detector.</p>
+</dd>
+<dt class="field-even">type center<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple of floating point numbers</p>
+</dd>
+<dt class="field-odd">param rads<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a pair of radius for inner and outer field detectors. 
+When the inner radius is set to zero, the resulting image will be either 
+Bright Field(BF) or Dark Field(DF) depending on if the center is on 
+the bright spot of the image or not. Otherwise, a positive inner radius
+will result in Annular Bright Field (ABF) or Annular Dark Field (ADF).</p>
+</dd>
+<dt class="field-even">type rads<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple, optional.</p>
+</dd>
+<dt class="field-odd">param scol<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The size of the output image along column direction.</p>
+</dd>
+<dt class="field-even">type scol<span class="colon">:</span></dt>
+<dd class="field-even"><p>floating point numbers, optional</p>
+</dd>
+<dt class="field-odd">param bShow<span class="colon">:</span></dt>
+<dd class="field-odd"><p>whether to display the resulting image.</p>
+</dd>
+<dt class="field-even">type bShow<span class="colon">:</span></dt>
+<dd class="field-even"><p>boolean, optional, default <cite>False</cite></p>
+</dd>
+<dt class="field-odd">return<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(status code, image data), status code of 0 successful, otherwise failed</p>
+</dd>
+<dt class="field-even">rtype<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple of a short integer and image data array.</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The experimental image loaded must have more than one stack.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.generateMaskedImage">
+<span class="sig-name descname"><span class="pre">generateMaskedImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maskfn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scancol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bShow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.generateMaskedImage" title="Link to this definition">#</a></dt>
+<dd><p>generates an Bright Field(ADF) image from an experimental stack image input.
+and a mask image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>maskfn</strong> (<em>string</em><em>, </em><em>required</em>) – mask image file name.</p></li>
+<li><p><strong>scancol</strong> (<em>float</em>) – The center of ADF detector. default value 0.0</p></li>
+<li><p><strong>bShow</strong> (boolean, optional, default <cite>False</cite>) – whether to display the resulting ADF image.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>status code, 0 successful, otherwise failed</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>integer</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyemaps.stackimg.StackImage.convertImage">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">convertImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imgfn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nformat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">E_RAW</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">E_FLOAT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(MIN_IMAGESIZE,</span> <span class="pre">MIN_IMAGESIZE,</span> <span class="pre">MIN_IMAGESTACK)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noffset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyemaps.stackimg.StackImage.convertImage" title="Link to this definition">#</a></dt>
+<dd><p>converts any other suported image formats into pyEMAPS’ proprietory small 
+header format.</p>
+<p>This static method is very useful for all auxillary images to be used with 
+stem4d module and are required to have the proprietory image format by the
+pyEMAPS simulation backend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>imgfn</strong> (<em>string</em><em>, </em><em>required. Ignored when nformat is E_NPY</em>) – input image file path</p></li>
+<li><p><strong>nformat</strong> (integer, optional, default to <cite>E_RAW</cite>) – format of the image file. Support all bitmap formatted image format</p></li>
+<li><p><strong>ndtype</strong> (<em>integer</em><em>, </em><em>optional</em><em>, </em><em>default to E_INT</em>) – image date types. It can be integer, float or double</p></li>
+<li><p><strong>dim</strong> (<em>integer tuple</em><em>, </em><em>optional</em><em>, </em><em>default to</em><em> (</em><em>MIN_IMAGESIZE</em><em>, </em><em>MIN_IMAGESIZE</em><em>, </em><em>MIN_IMAGESTACK</em><em>)</em>) – three integer tuple for the dimension of the image data (width, height, stack/depth)</p></li>
+<li><p><strong>noffset</strong> (<em>integer</em><em>, </em><em>optional</em><em>, </em><em>default to 8.</em>) – header offset or starting byte of the image data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the input raw image file name does not contain directory,
+this method will search the file in pyEMAPS data diretcory
+set by environment variable PYEMAPS_DATA or current working
+directory in that order.</p>
+<p>If the input file contains the fully qualified file path, 
+pyEMAPS will be using the folder that contains the file
+to place the output image file. So, please make sure that
+the input directory is writable.</p>
+<p>The result pyEMAPS image file with small header will be saved 
+in a folder name <cite>sh_converted</cite> in the dierctory that
+contains the original raw image file.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="dynamic.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Dynamic diffraction</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="structure.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Crystal structures</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal" tabindex="-1"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.XDPImageError"><code class="docutils literal notranslate"><span class="pre">XDPImageError</span></code></a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.XDPImageError.__init__"><code class="docutils literal notranslate"><span class="pre">XDPImageError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.normalizeImage"><code class="docutils literal notranslate"><span class="pre">normalizeImage()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.displayXImage"><code class="docutils literal notranslate"><span class="pre">displayXImage()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage"><code class="docutils literal notranslate"><span class="pre">StackImage</span></code></a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage.__init__"><code class="docutils literal notranslate"><span class="pre">StackImage.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage.fname"><code class="docutils literal notranslate"><span class="pre">StackImage.fname</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage.nformat"><code class="docutils literal notranslate"><span class="pre">StackImage.nformat</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage.ndtype"><code class="docutils literal notranslate"><span class="pre">StackImage.ndtype</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage.noffset"><code class="docutils literal notranslate"><span class="pre">StackImage.noffset</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage.dim"><code class="docutils literal notranslate"><span class="pre">StackImage.dim</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage.data"><code class="docutils literal notranslate"><span class="pre">StackImage.data</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage.loadImage"><code class="docutils literal notranslate"><span class="pre">StackImage.loadImage()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage.viewExpImage"><code class="docutils literal notranslate"><span class="pre">StackImage.viewExpImage()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage.showMatchedDBDP"><code class="docutils literal notranslate"><span class="pre">StackImage.showMatchedDBDP()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage.displayFitImage"><code class="docutils literal notranslate"><span class="pre">StackImage.displayFitImage()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage.displaySearchMask"><code class="docutils literal notranslate"><span class="pre">StackImage.displaySearchMask()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage.displaySearchKernel"><code class="docutils literal notranslate"><span class="pre">StackImage.displaySearchKernel()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage.showDPDBMMask"><code class="docutils literal notranslate"><span class="pre">StackImage.showDPDBMMask()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage.loadDPDB"><code class="docutils literal notranslate"><span class="pre">StackImage.loadDPDB()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage.showMatchingIndexMap"><code class="docutils literal notranslate"><span class="pre">StackImage.showMatchingIndexMap()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage.indexImage"><code class="docutils literal notranslate"><span class="pre">StackImage.indexImage()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage.generateBDF"><code class="docutils literal notranslate"><span class="pre">StackImage.generateBDF()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage.generateMaskedImage"><code class="docutils literal notranslate"><span class="pre">StackImage.generateMaskedImage()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pyemaps.stackimg.StackImage.convertImage"><code class="docutils literal notranslate"><span class="pre">StackImage.convertImage()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2022-2026, EMLab Solutions, Inc..
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+  </body>
+</html>

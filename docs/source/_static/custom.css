@@ -1,0 +1,34 @@
+/* pyEMAPS docs: brand colour and landing-page layout */
+html[data-theme="light"] {
+  --pst-color-primary: #1d5fa6;
+  --pst-color-secondary: #0f8a8a;
+  --pst-color-link: #1d5fa6;
+}
+html[data-theme="dark"] {
+  --pst-color-primary: #6eb2f5;
+  --pst-color-secondary: #45c4c4;
+  --pst-color-link: #6eb2f5;
+}
+
+/* Landing hero */
+.pe-hero { padding: 1.5rem 0 1rem; }
+.pe-hero h1 { font-size: 3rem; font-weight: 700; margin-bottom: .25rem; }
+.pe-lead { font-size: 1.25rem; line-height: 1.55; max-width: 46rem; color: var(--pst-color-text-muted); }
+.pe-meta { font-size: .95rem; color: var(--pst-color-text-muted); margin-top: .25rem; }
+.pe-install { max-width: 26rem; }
+.pe-buttons { display: flex; flex-wrap: wrap; gap: .75rem; margin: 1.25rem 0 .5rem; }
+.pe-buttons p { margin: 0; }
+
+/* Feature cards: same-height images, contained, on a neutral backdrop */
+.pe-features .sd-card-img-top {
+  height: 170px; object-fit: contain; padding: .75rem;
+  background: var(--pst-color-surface);
+}
+.pe-features .sd-card { transition: transform .12s ease, box-shadow .12s ease; }
+.pe-features .sd-card:hover { transform: translateY(-2px); }
+.pe-badge { font-size: .75rem; font-weight: 600; padding: .1rem .45rem; border-radius: .6rem;
+            background: var(--pst-color-secondary); color: #fff; margin-left: .35rem; vertical-align: middle; }
+
+/* Example gallery thumbnails */
+.pe-gallery .sd-card-img-top { height: 200px; object-fit: contain; padding: .5rem;
+                               background: var(--pst-color-surface); }
