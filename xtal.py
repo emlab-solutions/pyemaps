@@ -31,34 +31,35 @@ import numpy as np
 
 class ACoord:
 
-    '''
-
-    Coordinates of an atom with its symbol and 3-d real number coordinates in a crystal structure.
-    
-    '''
+    """
+    An atom in a crystal structure: its element symbol and position.
+    """
     def __init__(self, symb = "", coord=[0.0, 0.0, 0.0]):
 
+        """
+        :param symb: the element symbol.
+        :type symb: str, optional
+        :param coord: the position ``[x, y, z]``, in Å.
+        :type coord: list or numpy.ndarray of three numbers, optional
+        :raise ~pyemaps.errors.MxtalError: if *symb* isn't a string, or *coord* isn't three numbers.
+        """
         setattr(self, 'symb', symb)
         setattr(self, 'coord', coord)
 
     @property
     def symb(self):
 
-        '''
-
-        atom symbol
-
-        '''
+        """
+        The element symbol.
+        """
         return self._symb
     
     @property
     def coord(self):
 
-        '''
-
-        Atom coordinate in 3-d floating numbers
-
-        '''
+        """
+        The position ``[x, y, z]``, in Å.
+        """
         return self._coord
 
     @symb.setter
@@ -75,6 +76,10 @@ class ACoord:
         self._coord=v
     
     def __eq__(self, other):
+        r"""
+        Two atoms are equal if they have the same symbol and their positions agree within
+        10\ :sup:`-6`.
+        """
         import numpy as np
         if not isinstance(other, ACoord):
             print(f'Comparing object must of type ACoord')
@@ -100,23 +105,33 @@ class ACoord:
     
 class Xtal:
 
-    '''
-    Crystal structure class cnostructed by the output from
-    `generateMxtal <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateMxtal>`_ method of any crystal object, which consists of a cell
-    constant and a list of atomic coordinates.
+    """
+    A crystal structure, as built by :py:meth:`~pyemaps.crystals.Crystal.generateMxtal`: the
+    cell constants of the block and a list of atoms.
 
-    '''
+    Index it like a list to get an atom, an :py:class:`~pyemaps.xtal.ACoord`. Printing it gives
+    the structure in `XYZ format <https://wiki.jmol.org/index.php/File_formats/Formats/XYZ>`_.
+    """
     def __init__(self):
         
+        """
+        Create an empty structure, with cell constants ``[0, 0, 0, 90, 90, 90]`` and no atoms.
+        """
         setattr(self, 'cell', [0.0,0.0,0.0,90.0,90.0,90.0])
         setattr(self, 'acoordList', [])
 
     @property
     def cell(self):
+        """
+        The cell constants ``[a, b, c, alpha, beta, gamma]``: lengths in Å, angles in degrees.
+        """
         return self._cell
 
     @property
     def acoordList(self):
+        """
+        The atoms, a list of :py:class:`~pyemaps.xtal.ACoord`.
+        """
         return self._acoordList
 
     @cell.setter
@@ -138,30 +153,31 @@ class Xtal:
         self._acoordList = al
 
     def add(self, symb, c):
-        '''
-        
-        Append an atomc coordinate to existing list
+        """
+        Add an atom to the structure.
 
-        '''
+        :param symb: the element symbol.
+        :type symb: str
+        :param c: the position ``[x, y, z]``, in Å.
+        :type c: list or numpy.ndarray of three numbers
+        :raise ~pyemaps.errors.MxtalError: if *symb* or *c* is invalid.
+        """
         ac = ACoord(symb, c)
         self._acoordList.append(ac)
                 
     def __getitem__(self, key):
 
-        '''
-        
-        Array like method for retrieving atomic coordinates
-        
-        '''
+        """
+        Return the atom, or list of atoms, at *key*.
+        """
         
         return self._acoordList[key]
     
     def __eq__(self, other):
-        '''
-        
-        Overloading == operator for the atomic coordinates class
-
-        '''
+        r"""
+        Two structures are equal if their cell constants agree within 10\ :sup:`-6` and they have
+        the same atoms, in any order.
+        """
         import copy
         if not isinstance(other, Xtal):
             print("Comparing object of of invalid type")
@@ -185,25 +201,22 @@ class Xtal:
         return True
 
     def __repr__(self):
-        '''
-        Present atomic stucture data in .xyz format in standard output. 
-        Refer to `XYZ format <https://wiki.jmol.org/index.php/File_formats/Formats/XYZ>`_
-        for its definition and usage.
-        
-        .. note:: An example of Silicon atomic structure by pyemaps:
-            
+        """
+        Return the structure in `XYZ format <https://wiki.jmol.org/index.php/File_formats/Formats/XYZ>`_:
+        the number of atoms, the cell constants, then one line per atom with its symbol and
+        position. For example, for silicon:
+
         .. code-block:: console
 
             216
                 50.0 50.0 50.0 90.0 90.0 90.0
-            SI        	 0.6788375000   0.6788375000   0.6788375000 
-            SI        	 3.3941875000   3.3941875000   0.6788375000 
-            SI        	 4.7518625000   2.0365125000   2.0365125000 
-            SI        	 2.0365125000   4.7518625000   2.0365125000 
-            SI        	 3.3941875000   0.6788375000   3.3941875000 
+            SI        	 0.6788375000   0.6788375000   0.6788375000
+            SI        	 3.3941875000   3.3941875000   0.6788375000
+            SI        	 4.7518625000   2.0365125000   2.0365125000
+            SI        	 2.0365125000   4.7518625000   2.0365125000
+            SI        	 3.3941875000   0.6788375000   3.3941875000
             ...
-
-        '''
+        """
         
         slines = []
         nxyz = len(self._acoordList)
