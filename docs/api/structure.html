@@ -32,7 +32,6 @@
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=6a604523" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
   
   <!-- So that users can add custom icons -->
   <script defer src="../_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
@@ -54,6 +53,7 @@
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Display" href="display.html" />
     <link rel="prev" title="Images (4D-STEM)" href="images.html" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
@@ -64,6 +64,42 @@
     <script src="../_static/language_data.js"></script>
     <script src="../searchindex.js"></script>
   
+  <style>
+/* pyEMAPS docs: brand colour and landing-page layout */
+html[data-theme="light"] {
+  --pst-color-primary: #1d5fa6;
+  --pst-color-secondary: #0f8a8a;
+  --pst-color-link: #1d5fa6;
+}
+html[data-theme="dark"] {
+  --pst-color-primary: #6eb2f5;
+  --pst-color-secondary: #45c4c4;
+  --pst-color-link: #6eb2f5;
+}
+
+/* Landing hero */
+.pe-hero { padding: 1.5rem 0 1rem; }
+.pe-hero h1 { font-size: 3rem; font-weight: 700; margin-bottom: .25rem; }
+.pe-lead { font-size: 1.25rem; line-height: 1.55; max-width: 46rem; color: var(--pst-color-text-muted); }
+.pe-meta { font-size: .95rem; color: var(--pst-color-text-muted); margin-top: .25rem; }
+.pe-install { max-width: 26rem; }
+.pe-buttons { display: flex; flex-wrap: wrap; gap: .75rem; margin: 1.25rem 0 .5rem; }
+.pe-buttons p { margin: 0; }
+
+/* Feature cards: same-height images, contained, on a neutral backdrop */
+.pe-features .sd-card-img-top {
+  height: 170px; object-fit: contain; padding: .75rem;
+  background: var(--pst-color-surface);
+}
+.pe-features .sd-card { transition: transform .12s ease, box-shadow .12s ease; }
+.pe-features .sd-card:hover { transform: translateY(-2px); }
+.pe-badge { font-size: .75rem; font-weight: 600; padding: .1rem .45rem; border-radius: .6rem;
+            background: var(--pst-color-secondary); color: #fff; margin-left: .35rem; vertical-align: middle; }
+
+/* Example gallery thumbnails */
+.pe-gallery .sd-card-img-top { height: 200px; object-fit: contain; padding: .5rem;
+                               background: var(--pst-color-surface); }
+  </style>
   </head>
   <body data-default-mode="">
   
