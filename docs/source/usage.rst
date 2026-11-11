@@ -30,8 +30,8 @@ where <env-name> is the name of the new conda environment.
 
 .. _Environment Variables:
 
-Enviroment Variables
---------------------
+Environment Variables
+---------------------
 
 *PYEMAPS_DATA* environment variable is set to represent pyEMAPS' data home directory.
 It provides a central location for organizing your own crystal data, and it is also used 
@@ -51,7 +51,7 @@ The layout of the pyEMAPS data home directory is as follows:
 
 .. code-block:: console
 
-    $(PYEMAPS_DATA)=<local directory>  # pyemaps data home, must have read and write permisions
+    $(PYEMAPS_DATA)=<local directory>  # pyemaps data home, must have read and write permissions
     $(PYEMAPS_DATA)/crystals           # hosts all custom crystal data files (.xtl, .cif)
     $(PYEMAPS_DATA)/dif                # location for all kinematic diffraction simulation output
     $(PYEMAPS_DATA)/bloch              # location for all Bloch dynamic simulations images output files
@@ -67,7 +67,7 @@ The layout of the pyEMAPS data home directory is as follows:
 License Activation
 ------------------
 
-There is no license requirement for many pf **pyEMAPS** base features. However, to access 
+There is no license requirement for many of **pyEMAPS**' base features. However, to access 
 its extended features like 4DSTEM, a license activation is required. The activations in pyEMAPS can 
 also be done without internet connection if isolation is desired. Finally, once license is activated,
 all license checks are offline without requirement for internet connections. 
@@ -75,7 +75,7 @@ all license checks are offline without requirement for internet connections.
 To obtain a **pyEMAPS** license:
 
 * **Trial license**: **pyEMAPS** has a 7-days trial license that allows users to check out 
-  the features without commiting to a pruchase. This license can also be converted or upgraded 
+  the features without committing to a purchase. This license can also be converted or upgraded 
   to production license.
 
   Use the following command to get the trial license when internet connection is available:
@@ -92,12 +92,12 @@ To obtain a **pyEMAPS** license:
 
    pyemaps --license <license token> (-l)
 
-  where <license token> is of format: XXXX-XXXX-XXXX-XXXX here X is an alpha numberic character.
+  where <license token> is of format: XXXX-XXXX-XXXX-XXXX here X is an alphanumeric character.
 
   Contact support@emlabsoftware.com for obtaining a license activation token.
 
 * **License information**: use the following command to find out if a license exists and valid.
-  If so, the license infomation is displayed.
+  If so, the license information is displayed.
 
   .. code-block:: console
 
@@ -157,24 +157,30 @@ Kinematic Diffraction Simulation
 
 .. code-block:: python
 
-   from pyemaps import Crystal            #----pyemaps crystal module
-   from pyemaps import DPList, showDif    #----Helper modules
-   
-   si = Crystal.from_builtin('Silicon')   #----loading Silicon crystal from builtin database
-   emc, si_dp = si.generateDP()           #----generate kinematic diffraction pattern
-                                          #----Output:
-                                          #----emc: associated microscope and 
-                                          #         simulation control object
-                                          #----si_dp: diffraction pattern generated
-   print(si_dp)                           #----raw representation of kinematic diffraction pattern 
+   from pyemaps import Crystal             # pyemaps crystal module
+   from pyemaps import DPList, showDif     # helper modules
 
-   dpl = DPList('Silicon')                #----create a diffraction pattern list to hold the results
-   dpl.add(emc, si_dp)                    #----can add more if desired
+   if __name__ == '__main__':              # needed in scripts, see the note below
+       si = Crystal.from_builtin('Silicon')    # load Silicon from the built-in database
+       emc, si_dp = si.generateDP()            # generate a kinematic diffraction pattern
+                                               # emc: the microscope and simulation controls used
+                                               # si_dp: the diffraction pattern
+       print(si_dp)                            # raw representation of the pattern
 
-   showDif(dpl, bClose=False)             #----visual representation of diffraction pattern
+       dpl = DPList('Silicon')                 # a list to hold the results
+       dpl.add(emc, si_dp)                     # add more if desired
+
+       showDif(dpl, bClose=False)              # show the diffraction pattern
+
+.. note::
+
+   Keep the ``if __name__ == '__main__':`` line in scripts. *showDif*, *showBloch* and
+   *showStereo* draw in a separate process, and on Windows that process re-runs your script.
+   Without the line, Python stops with a ``RuntimeError`` about the bootstrapping phase.
+   Jupyter notebooks don't need it.
 
 
-Here crystal class method *generateDP* produces a kinmatic diffraction pattern or
+Here crystal class method *generateDP* produces a kinematic diffraction pattern or
 `DPList <pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern>`_ (si_dp) 
 using all default control parameters . 
 
@@ -182,7 +188,7 @@ Go to `generateDP <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateDP>`_ 
 list of control parameters. 
 
 *showDif*, a method in the pyEMAPS `display module <pyemaps.display.html#module-pyemaps.display>`_  
-visualizes the *si_dp* diffraction pattern with options controling whether to show Kikuchi lines or
+visualizes the *si_dp* diffraction pattern with options controlling whether to show Kikuchi lines or
 Miller Indexes.
 
 Bloch Wave Dynamic Diffraction Simulation
@@ -196,22 +202,22 @@ document.
     from pyemaps import BImgList             # Dynamic diffraction image list class
     from pyemaps import showBloch            # Builtin visualization helper function
 
-    # create a crystal class object and load it with builtin silicon data
-    c_name = 'Silicon'
-    si = cr.from_builtin(c_name)
+    if __name__ == '__main__':
+        # create a crystal class object and load it with builtin silicon data
+        c_name = 'Silicon'
+        si = cr.from_builtin(c_name)
 
-    # Generate dynamic diffraction patterns using pyEMAPS' bloch module
-    # with all other default parameters except sampling
+        # Generate dynamic diffraction patterns using pyEMAPS' bloch module
+        # with all other default parameters except sampling
+        try:
+            bloch_imgs_list = si.generateBloch(sampling = 20)
 
-    try:
-      bloch_imgs_list = si.generateBloch(sampling = 20) 
-      
-    except Exception as e:
-      print(f'Error: {e}')
+        except Exception as e:
+            print(f'Error: {e}')
 
-    else:        
-      showBloch(bloch_imgs_list) #grey color map
-      showBloch(bloch_imgs_list, bColor=True) #with predefined color map
+        else:
+            showBloch(bloch_imgs_list)               # grey color map
+            showBloch(bloch_imgs_list, bColor=True)  # with predefined color map
    
 The crystal method *generateBloch* starts a Bloch wave dynamic diffraction simulation with 
 the sampling resolution of 20 pixels along the disk radius. 
@@ -229,13 +235,13 @@ visualizing the Bloch simulation results.
    and save them in raw image data file. See the description of `generateBloch method 
    <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateBloch>`_. 
    
-   The raw image data file can be imprted into third party visualization tools
+   The raw image data file can be imported into third party visualization tools
    such as `ImageJ <https://imagej.nih.gov/ij/>`_ and 
    `DigitalMicrograph <https://www.gatan.com/products/tem-analysis/gatan-microscopy-suite-software>`_. 
 
 .. note::
 
-   To start a Bloch simultion session and retrieve the scattering matrix 
+   To start a Bloch simulation session and retrieve the scattering matrix 
    and other dynamic diffraction session information, see `getSCMatrix method 
    <pyemaps.crystals.html#pyemaps.crystals.Crystal.getSCMatrix>`_  
    between `beginBloch
@@ -267,54 +273,53 @@ Current list of built-in crystals in *pyEMAPS*:
 
 Experimental Diffraction Pattern Indexing 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Electron diffraction patterns (DP) indexing is based on the template matching algorithm to 
-compare the acquired DPs to pre-built ones - A DP database generated by pyEMAPS DPGEN module.
+Electron diffraction pattern (DP) indexing uses template matching: it compares an acquired DP
+with the patterns in a database that pyEMAPS' DPGEN module generates. The crystal orientation
+and phase come from the database pattern that fits best. This feature requires
+:ref:`License Activation`.
 
-In this feature, the crystal orietations and phases are determined from the best match or fit
-to one of the DP in the pre-generated DP database:
-
-.. code-block:: python
-
-      from pyemaps import Crystal as cr
-      al = cr.from_builtin('Aluminium')
-      ret, dbfn = al.generateDPDB(emc=EMC(), res, xa, vertices)
-
-will generate a DP datbase for Aluminium crystal. Here *vertices* is an array of 3 or 4 zone axis 
-indexes that form an enclosed orientation surface area within which the diffraction patterns are generated. 
-The database will be saved in *dbfn*. 
-
-For details of this function go to:
-`generateDPDB <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateDPDB>`_
+First, generate a DP database for the crystal, here Aluminium:
 
 .. code-block:: python
 
-   ret, mr, mc =al.loadDPDB(dbfn = dbfn, bShowDBMap=True)
-    
-will be loading the database into pyEMAPS' EDIOM module and ready for DP indexing.
+   from pyemaps import Crystal, EMC, StackImage
+
+   al = Crystal.from_builtin('Aluminium')
+   ret, dbfn = al.generateDPDB(emc=EMC(zone=(0, 0, 1)), res=200, xa=(2, 0, 0))
+
+*ret* is 0 on success, and *dbfn* is the database file name. An optional *vertices* argument,
+an array of 3 or 4 zone axis indexes, encloses the orientation area within which the
+diffraction patterns are generated. For details, see
+`generateDPDB <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateDPDB>`_.
+
+Then load the experimental image and index it against the database. *indexImage* loads the
+database itself. *al.img* is a sample experimental image that ships with pyEMAPS:
+``pyemaps -cp`` copies it, with the sample scripts, into a *pyemaps_samples* folder in the
+current directory (see `Samples code`_). Run the example from that folder.
 
 .. code-block:: python
 
-  al.importSHExpImage(xifn, bShow=True)
+   img = StackImage('al.img')
+   img.indexImage(dbfn,
+                  cc               = 29.0,
+                  sigma            = 3.0,
+                  img_center       = (99.923, 99.919),
+                  rmin             = 10,
+                  search_box       = 10.0,
+                  scaling_option   = (1, 2),
+                  filter_threshold = 0.0,
+                  peak_threshold   = 0.8)
 
-loads the experimental DP file for indexing.
+   StackImage.showMatchedDBDP()
 
-.. code-block:: python
-
-   al.indexExpDP(cc                 = 29.0,                  
-                 sigma              = 3.0,
-                 img_center         = (99.923, 99.919),
-                 rmin               = 10,
-                 search_box         = 10.0,
-                 scaling_option     = (1,2),
-                 filter_threshold   = 0.0,
-                 peak_threshold     = 0.8)
-
-indexes the loaded DP image file above. See more details of the usage in 
-`indexExpDP <pyemaps.crystals.html#pyemaps.crystals.Crystal.indexExpDP>`_
+*indexImage* prints the indexed diffraction beams, and *showMatchedDBDP* shows the database
+pattern that best matches the image. For all the parameters, see
+`StackImage.indexImage <modules.html#pyemaps.stackimg.StackImage.indexImage>`_. The *al_ediom.py*
+sample runs this whole example.
 
 .. note:: 
 
-   Diffraction pattern indexing feature is now in preview. Current limitaion of the preview
+   Diffraction pattern indexing feature is now in preview. Current limitations of the preview
    feature in this free package:
 
    1. Crystals that are in cubic space group with space numbers of 225.
@@ -359,21 +364,21 @@ Below is a partial list of sample code:
    plots stereodiagram using *Stereo* *pyemaps* module. 
 
 * *al_dpgen.py*: 
-   generates a proprietory diffraction database file for aluminium crystal. The
+   generates a proprietary diffraction database file for aluminium crystal. The
    database file is to be used with 4DSTEM's *ediom* module functions.  
 
 * *al_ediom.py* (license activated features only): 
    indexes an experimental diffraction image for aluminium crystal. 
 
 * *convert_image.py* (license activated features only): 
-   converts any raw image into pyEMAPS proprietory small header formatted image . 
+   converts any raw image into pyEMAPS proprietary small header formatted image . 
 
 * *adf.py* (license activated features only):
    generates annular bright and dark fields, as well as a masked image from an experimental image.
    You must have the example experimental diffraction image named *adftest900.im3* in the same directory.
    The experimental diffraction image can be downloaded from `the official Zenodo site <https://zenodo.org/records/14028793/files/adftest900.im3?download=1>`_.
 
-   Also, the mask image function requires the input mask image file to be pyEMAPS proprietory
+   Also, the mask image function requires the input mask image file to be pyEMAPS proprietary
    small header formatted image. See *convert_image.py* sample code on how to convert your raw mask image input file before using it. 
    
 More samples code will be added as more features and releases are available. 

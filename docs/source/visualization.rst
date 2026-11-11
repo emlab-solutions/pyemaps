@@ -1,5 +1,5 @@
 
-Visualisation
+Visualization
 =============
 
 *pyEMAPS* provides a set of helper functions to show diffraction patterns.
@@ -7,7 +7,7 @@ These function are implemented with python's *matplotlib*.
 
 *si_dif.py* and *si_bloch.py* sample code demonstrate the rendering of 
 diffraction patterns generated for *silicon* crystal by plotting
-its kikuchi lines, diffracted beams and HOLZ lines for kinematic 
+its Kikuchi lines, diffracted beams and HOLZ lines for kinematic 
 simulation and showing the raw image in the case of Bloch simulation.
 
 Users can also access diffraction patterns data directly and visualize
@@ -212,7 +212,7 @@ in better visualization of pyEMAPS simulations and calculations. This service
 is for a nominal subscription fees. Go to https://emaps.emlabsolutions.com
 to sign up.
 
-Below is an example of the ineractive 3-d display of atomic structure through Jmole
+Below is an example of the interactive 3D display of atomic structure through Jmol
 based on pyEMAPS crystal structure calculations:
 
 .. image:: https://github.com/emlab-solutions/imagepypy/raw/main//pyemaps_web_server.png
@@ -245,7 +245,7 @@ where dp.klines is a python list of `Line class <pyemaps.kdiffs.html#pyemaps.kdi
 objects and dp.disks of `Disk class <pyemaps.kdiffs.html#pyemaps.kdiffs.Disk>`_ objects 
 and so on. Each of the objects is accessible for its own data such as points when plotting.
 
-Below is an exmaple of rendering a diffraction pattern generated for *Diamond* builtin crystal
+Below is an example of rendering a diffraction pattern generated for *Diamond* builtin crystal
 in DigitalMicrograph:
 
 .. note::
@@ -401,7 +401,7 @@ Constructing Crystal
 
 *pyEMAPS*' `generateMxtal <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateMxtal>`_
 function produces .XYZ file that can be improted into 
-`Jmole <http://www.jmol.org/>`_ and visualize the 
+`Jmol <http://www.jmol.org/>`_ and visualize the 
 crystal in 3D atomic structure. The following is an example of such rendering:
 
 
