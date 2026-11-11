@@ -174,7 +174,7 @@ def compose_ofn(fn, name, ty='diffraction'):
 
     if not fpath: # if no path compose fn 
         if not fname:
-            fn = auto_fn(name, ty=ty)
+            fn = auto_fn(name)
         else:
             fn = fname
         return os.path.join(pyemaps_datahome, fn)
@@ -440,13 +440,13 @@ def loadCrystalCIFData(fn):
         cfn = os.path.join(datahome, fn)
         
         if not os.path.exists(cfn):
-            raise CIFError('Failed to find the crystal data file', cfn)
+            raise CIFError(cfn, 'file not found')
     
     cf = None
     try:
         cf =  ReadCif(cfn)
     except IOError as e:
-        raise CIFError(cfn, e.message)
+        raise CIFError(cfn, str(e)) from e
 
     if len(cf.keys()) == 0:
         raise CIFError(cfn, 'missing required data keys')
@@ -789,7 +789,7 @@ def loadCrystalCIFData(fn):
         spg_setting = _getCIFInt(c_dict['_symmetry_space_group_setting'])
 
         if spg_setting < 1 or spg_setting > SPG_SETTING_MAX:
-            raise SPGSettingNotInRangeError()
+            raise SPGSettingNotInRangeError(SPG_SETTING_MAX)
 
         spg_num = 0
         spg_tmppairs = []
@@ -851,10 +851,10 @@ def loadCrystalCIFData(fn):
     spg_setting = spg_pairs[0][1]                           
                     
     if spg_setting <= 0 or spg_setting > SPG_SETTING_MAX:
-        raise SPGSettingNotInRangeError()
+        raise SPGSettingNotInRangeError(SPG_SETTING_MAX)
 
     if  spg_num <= 0 or spg_num > SPG_ITNUM_MAX:            
-        raise SPGITMumberNotInRangeError()
+        raise SPGITMumberNotInRangeError(SPG_ITNUM_MAX)
         
     spg['number'] = spg_num
     spg['setting'] = spg_setting

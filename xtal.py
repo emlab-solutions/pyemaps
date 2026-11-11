@@ -34,7 +34,7 @@ class ACoord:
     """
     An atom in a crystal structure: its element symbol and position.
     """
-    def __init__(self, symb = "", coord=[0.0, 0.0, 0.0]):
+    def __init__(self, symb = "", coord=None):
 
         """
         :param symb: the element symbol.
@@ -44,7 +44,7 @@ class ACoord:
         :raise ~pyemaps.errors.MxtalError: if *symb* isn't a string, or *coord* isn't three numbers.
         """
         setattr(self, 'symb', symb)
-        setattr(self, 'coord', coord)
+        setattr(self, 'coord', [0.0, 0.0, 0.0] if coord is None else coord)
 
     @property
     def symb(self):

@@ -489,12 +489,19 @@ def showDif(dpl=None,
     :param bClose: close the plot window 3 seconds after the last plot. By default, you close it
         yourself.
     :type bClose: bool, optional
-    """
-    from pyemaps import DPList
+    :raise ~pyemaps.errors.DPListError: if *dpl* isn't a :py:class:`DPList <pyemaps.kdiffs.Diffraction>`.
 
-    if not dpl or not isinstance(dpl, DPList):
-        print('Nothing to plot: must pass a valid Diffraction object')
-    
+    If *dpl* has no patterns, it prints a message and plots nothing.
+    """
+    from pyemaps import DPList, DPListError
+
+    if not isinstance(dpl, DPList):
+        raise DPListError('Nothing to plot: must pass a valid Diffraction object')
+
+    if len(dpl.diffList) == 0:
+        print('Nothing to plot: the Diffraction object has no patterns')
+        return
+        
     mode = dpl.mode
     name = dpl.name
     if _isLinux() and not hasDisplay: bSave = True 
@@ -659,9 +666,14 @@ def normalizeImage(img):
         return False
     ran = Ymax-Ymin
 
+    if not np.issubdtype(img.dtype, np.floating):
+        print("Image must be a floating-point array to normalize")
+        return False
+
     img[img < Ymin] = Ymin
     img[img > Ymax] = Ymax
-    img = (img - Ymin)/ran
+    img -= Ymin
+    img /= ran
     return True
 
 def displayXImage(img, 
@@ -697,9 +709,9 @@ def displayXImage(img,
         nr,nc = fsize
 
         if isMask:
-            bsize = (0.5, 0.5*int(nr/nc))
+            bsize = (0.5, 0.5*nr/nc)
         else:
-            bsize = (1.0, 1.0*int(nr/nc))
+            bsize = (1.0, 1.0*nr/nc)
 
         fig, ax = plt.subplots(figsize=bsize, dpi=qedDPI)
 
@@ -743,7 +755,7 @@ def displayXImage(img,
                     
         plt.show()
 
-def plot2Powder(pw1, pw2, bClose=True):
+def plot2Powder(pw1, pw2, bClose=True, titles=('', ''), ylabels=('Intensity', 'Intensity')):
     """
     Plot two powder diffraction profiles from
     :py:meth:`~pyemaps.crystals.Crystal.generatePowder`, one above the other.
@@ -755,11 +767,18 @@ def plot2Powder(pw1, pw2, bClose=True):
     :param bClose: close the plot after about 3 seconds. Otherwise the plot doesn't block, and
         stays open until the program ends.
     :type bClose: bool, optional
+    :param titles: the titles of the upper and lower plots. Defaults to no titles.
+    :type titles: tuple of str, optional
+    :param ylabels: the y-axis labels of the upper and lower plots. Defaults to "Intensity" for
+        both.
+    :type ylabels: tuple of str, optional
 
-    .. note::
+    The powder sample, for example, compares Silicon with Diamond calculated with absorption:
 
-        The plot titles are fixed: the upper profile is titled "Silicon" and the lower one
-        "Diamond", with the y-axis label "Intensity /w Absorption".
+    .. code-block:: python
+
+        plot2Powder(psi, pdi, titles=('Silicon', 'Diamond'),
+                    ylabels=('Intensity', 'Intensity /w Absorption'))
     """
 
     fig, (ax1, ax2) = plt.subplots(nrows = 2)
@@ -770,12 +789,12 @@ def plot2Powder(pw1, pw2, bClose=True):
         fig.canvas.manager.set_window_title(title)
     
     ax1.plot(pw1[0], pw1[1], 'r')
-    ax1.set_title('Silicon')
+    ax1.set_title(titles[0])
     ax2.plot(pw2[0], pw2[1], 'b')
-    ax2.set_title('Diamond')
-    
-    ax1.set_ylabel('Intensity')
-    ax2.set_ylabel('Intensity /w Absorption')
+    ax2.set_title(titles[1])
+
+    ax1.set_ylabel(ylabels[0])
+    ax2.set_ylabel(ylabels[1])
     ax2.set_xlabel('Scattering Angle 2\u03F4 (Rad)')
 
     fig.suptitle("Electron Powder Diffraction", fontsize=14, fontweight='bold')
