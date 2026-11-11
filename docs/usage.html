@@ -172,22 +172,28 @@ for more details.</p>
 and calculations.</p>
 <section id="kinematic-diffraction-simulation">
 <h3>Kinematic Diffraction Simulation<a class="headerlink" href="#kinematic-diffraction-simulation" title="Permalink to this heading">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crystal</span>            <span class="c1">#----pyemaps crystal module</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">DPList</span><span class="p">,</span> <span class="n">showDif</span>    <span class="c1">#----Helper modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crystal</span>             <span class="c1"># pyemaps crystal module</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">DPList</span><span class="p">,</span> <span class="n">showDif</span>     <span class="c1"># helper modules</span>
 
-<span class="n">si</span> <span class="o">=</span> <span class="n">Crystal</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="s1">'Silicon'</span><span class="p">)</span>   <span class="c1">#----loading Silicon crystal from builtin database</span>
-<span class="n">emc</span><span class="p">,</span> <span class="n">si_dp</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">generateDP</span><span class="p">()</span>           <span class="c1">#----generate kinematic diffraction pattern</span>
-                                       <span class="c1">#----Output:</span>
-                                       <span class="c1">#----emc: associated microscope and</span>
-                                       <span class="c1">#         simulation control object</span>
-                                       <span class="c1">#----si_dp: diffraction pattern generated</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">si_dp</span><span class="p">)</span>                           <span class="c1">#----raw representation of kinematic diffraction pattern</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>              <span class="c1"># needed in scripts, see the note below</span>
+    <span class="n">si</span> <span class="o">=</span> <span class="n">Crystal</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="s1">'Silicon'</span><span class="p">)</span>    <span class="c1"># load Silicon from the built-in database</span>
+    <span class="n">emc</span><span class="p">,</span> <span class="n">si_dp</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">generateDP</span><span class="p">()</span>            <span class="c1"># generate a kinematic diffraction pattern</span>
+                                            <span class="c1"># emc: the microscope and simulation controls used</span>
+                                            <span class="c1"># si_dp: the diffraction pattern</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">si_dp</span><span class="p">)</span>                            <span class="c1"># raw representation of the pattern</span>
 
-<span class="n">dpl</span> <span class="o">=</span> <span class="n">DPList</span><span class="p">(</span><span class="s1">'Silicon'</span><span class="p">)</span>                <span class="c1">#----create a diffraction pattern list to hold the results</span>
-<span class="n">dpl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">emc</span><span class="p">,</span> <span class="n">si_dp</span><span class="p">)</span>                    <span class="c1">#----can add more if desired</span>
+    <span class="n">dpl</span> <span class="o">=</span> <span class="n">DPList</span><span class="p">(</span><span class="s1">'Silicon'</span><span class="p">)</span>                 <span class="c1"># a list to hold the results</span>
+    <span class="n">dpl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">emc</span><span class="p">,</span> <span class="n">si_dp</span><span class="p">)</span>                     <span class="c1"># add more if desired</span>
 
-<span class="n">showDif</span><span class="p">(</span><span class="n">dpl</span><span class="p">,</span> <span class="n">bClose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>             <span class="c1">#----visual representation of diffraction pattern</span>
+    <span class="n">showDif</span><span class="p">(</span><span class="n">dpl</span><span class="p">,</span> <span class="n">bClose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>              <span class="c1"># show the diffraction pattern</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Keep the <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">__name__</span> <span class="pre">==</span> <span class="pre">'__main__':</span></code> line in scripts. <em>showDif</em>, <em>showBloch</em> and
+<em>showStereo</em> draw in a separate process, and on Windows that process re-runs your script.
+Without the line, Python stops with a <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> about the bootstrapping phase.
+Jupyter notebooks don’t need it.</p>
 </div>
 <p>Here crystal class method <em>generateDP</em> produces a kinematic diffraction pattern or
 <a class="reference external" href="pyemaps.kdiffs.html#pyemaps.kdiffs.diffPattern">DPList</a> (si_dp)
@@ -206,22 +212,22 @@ document.</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">BImgList</span>             <span class="c1"># Dynamic diffraction image list class</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pyemaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">showBloch</span>            <span class="c1"># Builtin visualization helper function</span>
 
-<span class="c1"># create a crystal class object and load it with builtin silicon data</span>
-<span class="n">c_name</span> <span class="o">=</span> <span class="s1">'Silicon'</span>
-<span class="n">si</span> <span class="o">=</span> <span class="n">cr</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="n">c_name</span><span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="c1"># create a crystal class object and load it with builtin silicon data</span>
+    <span class="n">c_name</span> <span class="o">=</span> <span class="s1">'Silicon'</span>
+    <span class="n">si</span> <span class="o">=</span> <span class="n">cr</span><span class="o">.</span><span class="n">from_builtin</span><span class="p">(</span><span class="n">c_name</span><span class="p">)</span>
 
-<span class="c1"># Generate dynamic diffraction patterns using pyEMAPS' bloch module</span>
-<span class="c1"># with all other default parameters except sampling</span>
+    <span class="c1"># Generate dynamic diffraction patterns using pyEMAPS' bloch module</span>
+    <span class="c1"># with all other default parameters except sampling</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">bloch_imgs_list</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">generateBloch</span><span class="p">(</span><span class="n">sampling</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
 
-<span class="k">try</span><span class="p">:</span>
-  <span class="n">bloch_imgs_list</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">generateBloch</span><span class="p">(</span><span class="n">sampling</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 
-<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-  <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
-
-<span class="k">else</span><span class="p">:</span>
-  <span class="n">showBloch</span><span class="p">(</span><span class="n">bloch_imgs_list</span><span class="p">)</span> <span class="c1">#grey color map</span>
-  <span class="n">showBloch</span><span class="p">(</span><span class="n">bloch_imgs_list</span><span class="p">,</span> <span class="n">bColor</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1">#with predefined color map</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">showBloch</span><span class="p">(</span><span class="n">bloch_imgs_list</span><span class="p">)</span>               <span class="c1"># grey color map</span>
+        <span class="n">showBloch</span><span class="p">(</span><span class="n">bloch_imgs_list</span><span class="p">,</span> <span class="n">bColor</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># with predefined color map</span>
 </pre></div>
 </div>
 <p>The crystal method <em>generateBloch</em> starts a Bloch wave dynamic diffraction simulation with

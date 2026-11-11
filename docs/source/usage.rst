@@ -157,21 +157,27 @@ Kinematic Diffraction Simulation
 
 .. code-block:: python
 
-   from pyemaps import Crystal            #----pyemaps crystal module
-   from pyemaps import DPList, showDif    #----Helper modules
-   
-   si = Crystal.from_builtin('Silicon')   #----loading Silicon crystal from builtin database
-   emc, si_dp = si.generateDP()           #----generate kinematic diffraction pattern
-                                          #----Output:
-                                          #----emc: associated microscope and 
-                                          #         simulation control object
-                                          #----si_dp: diffraction pattern generated
-   print(si_dp)                           #----raw representation of kinematic diffraction pattern 
+   from pyemaps import Crystal             # pyemaps crystal module
+   from pyemaps import DPList, showDif     # helper modules
 
-   dpl = DPList('Silicon')                #----create a diffraction pattern list to hold the results
-   dpl.add(emc, si_dp)                    #----can add more if desired
+   if __name__ == '__main__':              # needed in scripts, see the note below
+       si = Crystal.from_builtin('Silicon')    # load Silicon from the built-in database
+       emc, si_dp = si.generateDP()            # generate a kinematic diffraction pattern
+                                               # emc: the microscope and simulation controls used
+                                               # si_dp: the diffraction pattern
+       print(si_dp)                            # raw representation of the pattern
 
-   showDif(dpl, bClose=False)             #----visual representation of diffraction pattern
+       dpl = DPList('Silicon')                 # a list to hold the results
+       dpl.add(emc, si_dp)                     # add more if desired
+
+       showDif(dpl, bClose=False)              # show the diffraction pattern
+
+.. note::
+
+   Keep the ``if __name__ == '__main__':`` line in scripts. *showDif*, *showBloch* and
+   *showStereo* draw in a separate process, and on Windows that process re-runs your script.
+   Without the line, Python stops with a ``RuntimeError`` about the bootstrapping phase.
+   Jupyter notebooks don't need it.
 
 
 Here crystal class method *generateDP* produces a kinematic diffraction pattern or
@@ -196,22 +202,22 @@ document.
     from pyemaps import BImgList             # Dynamic diffraction image list class
     from pyemaps import showBloch            # Builtin visualization helper function
 
-    # create a crystal class object and load it with builtin silicon data
-    c_name = 'Silicon'
-    si = cr.from_builtin(c_name)
+    if __name__ == '__main__':
+        # create a crystal class object and load it with builtin silicon data
+        c_name = 'Silicon'
+        si = cr.from_builtin(c_name)
 
-    # Generate dynamic diffraction patterns using pyEMAPS' bloch module
-    # with all other default parameters except sampling
+        # Generate dynamic diffraction patterns using pyEMAPS' bloch module
+        # with all other default parameters except sampling
+        try:
+            bloch_imgs_list = si.generateBloch(sampling = 20)
 
-    try:
-      bloch_imgs_list = si.generateBloch(sampling = 20) 
-      
-    except Exception as e:
-      print(f'Error: {e}')
+        except Exception as e:
+            print(f'Error: {e}')
 
-    else:        
-      showBloch(bloch_imgs_list) #grey color map
-      showBloch(bloch_imgs_list, bColor=True) #with predefined color map
+        else:
+            showBloch(bloch_imgs_list)               # grey color map
+            showBloch(bloch_imgs_list, bColor=True)  # with predefined color map
    
 The crystal method *generateBloch* starts a Bloch wave dynamic diffraction simulation with 
 the sampling resolution of 20 pixels along the disk radius. 
