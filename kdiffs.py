@@ -148,14 +148,16 @@ class Point:
         return (self._x, self._y)
     
     def __hash__(self):
-        return hash(self.__key__())
-    
+        # Points within DIFF_PRECISION of each other are equal, so the hash
+        # can't depend on the coordinates: equal objects must hash equally.
+        return hash(Point)
+
     def __eq__(self, other):
         if isinstance(other, Point):
             return _double_eq(self._x, other.x) and \
                    _double_eq(self._y, other.y)
 
-        raise PointError("comparison must be of Point objects")
+        return NotImplemented
 
     def __repr__(self):
         return str("({}, {})".format(self._x, self._y))
@@ -168,7 +170,7 @@ class Line:
     """
     A line in a kinematic diffraction pattern: a Kikuchi line or a HOLZ line.
     """
-    def __init__(self, pt1 = Point(), pt2=Point(), intensity=0, type=1):
+    def __init__(self, pt1 = None, pt2 = None, intensity=0, type=1):
         
         """
         :param pt1: one end point.
@@ -182,8 +184,8 @@ class Line:
         :raise ~pyemaps.errors.LineError: if an end point isn't a Point, or *intensity* or *type*
             is invalid.
         """
-        setattr(self, 'pt1', pt1)  
-        setattr(self, 'pt2', pt2)    
+        setattr(self, 'pt1', Point() if pt1 is None else pt1)
+        setattr(self, 'pt2', Point() if pt2 is None else pt2)    
         setattr(self, 'intensity', intensity)    
         setattr(self, 'type', type)
 
@@ -252,8 +254,8 @@ class Line:
     def __lt__(self, other):
 
         if isinstance(other, Line):
-            if self._type == other.type:
-                return False
+            if self._type != other.type:
+                return self._type < other.type
 
             pt1 = self._pt1
             pt2 = other.pt1
@@ -475,7 +477,7 @@ class Index:
         if isinstance(other, Index):
             return self.__key__() == other.__key__()
 
-        raise PIndexError('cannot compare with non-Index type')
+        return NotImplemented
     
     def __iter__(self):
         return iter((self._I1, self._I2, self._I3))
@@ -486,7 +488,7 @@ class Disk:
     A diffracted beam in a kinematic diffraction pattern: its center, radius and Miller
     indices.
     """
-    def __init__(self, c=Point(), r=0.0, i=Index()):
+    def __init__(self, c=None, r=0.0, i=None):
 
         """
         :param c: the center.
@@ -497,9 +499,9 @@ class Disk:
         :type i: :py:class:`~pyemaps.kdiffs.Index`, optional
         :raise ~pyemaps.errors.DiskError: if *c*, *r* or *i* is invalid.
         """
-        setattr(self, 'c', c)
+        setattr(self, 'c', Point() if c is None else c)
         setattr(self, 'r', r)
-        setattr(self, 'idx', i)
+        setattr(self, 'idx', Index() if i is None else i)
 
     @property 
     def c(self):
@@ -551,7 +553,7 @@ class Disk:
         
     def __eq__(self, other):
         if not isinstance(other, Disk):
-            raise DiskError('disk object cannot equal to non disk object')
+            return NotImplemented
         
         if not (self._idx == other.idx):
             return False
@@ -602,10 +604,12 @@ class Disk:
         return (indx.I1, indx.I2, indx.I3, center.x, center.y, r)
 
     def __hash__(self):
-        return hash(self.__key__())
+        # the center is compared with a tolerance (see Point), so only the
+        # index goes into the hash
+        return hash(self._idx)
 
     def __repr__(self):
-          
+
         return "index: " + repr(self._idx) + " " + \
                "center: " + repr(self._c) + " " + \
                str("radius: {}".format(self._r))
@@ -882,7 +886,7 @@ class diffPattern:
     def __eq__(self, other):
 
         if not isinstance(other, diffPattern):
-            raise DPError("DP object does not compare with objects of rother types")
+            return NotImplemented
         
         if self._name != other.name:
             return False
@@ -938,7 +942,7 @@ class diffPattern:
         for i, k in enumerate(self._klines):
             sDiff.append(str("kline# {}:".format(i+1)).ljust(10) + repr(k))
 
-        sDiff.append(str(f'\n# of diffracted beams (disk, index = Miller Index): {self._nklines}'))
+        sDiff.append(str(f'\n# of diffracted beams (disk, index = Miller Index): {self._ndisks}'))
         for i, d in enumerate(self._disks):
             sDiff.append(str("disk# {}:".format(i+1)).ljust(10) + repr(d))
         
@@ -1153,61 +1157,32 @@ class Diffraction:
             return rep
 
 
+        def _list(label, items):
+            if items:
+                rep.append(label.format(len(items)))
+                rep.extend("   " + str(x) for x in items)
+
         for c, d in self:
-            cl = list(c.values())
-            for oc, od in other:
-                ocl = list(oc.values())
-                
-                if cl == ocl:
-                    if not (d == od):
-                        dk,dh,dd = d.difference(od)
-                        dk2,dh2,dd2 = od.difference(d)
+            od = next((od for oc, od in other if oc == c), None)
+            if od is None:
+                rep.append(str(f"Control parameters: {c}"))
+                rep.append("   no pattern with these controls in the baseline")
+                continue
 
-                        details =[]
-                        details.append(str(f"Control parameters: {c}"))
-                        klen, hlen, dlen = len(dk), len(dh), len(dd)
-                        klen2, hlen2, dlen2 = len(dk2), len(dh2), len(dd2)
+            if d == od:
+                continue
 
-                        if klen > 0:
-                            details.append(str(f"{klen} klines in the new run, not in the baseline:"))
-                            # save.writelines(str(f"{klen} klines in the new run, not in the baseline:"))
-                            for k in dk:
-                                details.append("   " + str(k))
-                        if klen2 > 0:
-                            details.append(str(f"{klen2} klines in the baseline, not in the new run:"))
-                            # save.writelines(str(f"{klen} klines in the new run, not in the baseline:"))
-                            for k in dk2:
-                                details.append("   " + str(k))
-                                
-                        if dlen > 0:
-                            details.append(str(f"{dlen} disks in the new run, not in the baseline:"))
-                            # save.writelines(str(f"{klen} klines in the new run, not in the baseline:"))
-                            for d in dd:
-                                details.append("   " + str(d))
-                        if dlen2 > 0:
-                            details.append(str(f"{dlen2} disks in the baseline, not in the new run:"))
-                            # save.writelines(str(f"{klen} klines in the new run, not in the baseline:"))
-                            for d in dd2:
-                                details.append("   " + str(d))
-                        
-                        if hlen > 0:
-                            details.append(str(f"{hlen} hlines in the new run, not in the baseline:"))
-                            # save.writelines(str(f"{klen} klines in the new run, not in the baseline:"))
-                            for h in dh:
-                                details.append("   " + str(h))
-                        if hlen2 > 0:
-                            details.append(str(f"{hlen2} hlines in the baseline, not in the new run:"))
-                            # save.writelines(str(f"{klen} klines in the new run, not in the baseline:"))
-                            for h in dh2:
-                                details.append("   " + str(h))
+            dk, dh, dd = d._difference(od)
+            dk2, dh2, dd2 = od._difference(d)
 
-                        #  for debugging - dont delete!!!!
-                        # details.append(str(f"entire new DP:"))
-                        # details.append("   " + str(d))
-                        
-                        # details.append(str(f"entire baseline DP:"))
-                        # details.append("   " + str(od))
-        rep.extend(details)
+            rep.append(str(f"Control parameters: {c}"))
+            _list("{} klines in the new run, not in the baseline:", dk)
+            _list("{} klines in the baseline, not in the new run:", dk2)
+            _list("{} disks in the new run, not in the baseline:", dd)
+            _list("{} disks in the baseline, not in the new run:", dd2)
+            _list("{} hlines in the new run, not in the baseline:", dh)
+            _list("{} hlines in the baseline, not in the new run:", dh2)
+
         return rep
                 
     def __str__(self):

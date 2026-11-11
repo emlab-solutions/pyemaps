@@ -122,11 +122,15 @@ class BlochImgs:
         
         return self._blochList[key]
     
-    def __contains__(self, emc, b):
+    def __contains__(self, item):
         """
-        Return ``True`` if the list has an image with controls equal to *emc* and pixels within
-        1e-4 of *b*. Used by ``==``.
+        ``(emc, b) in bimgs``: return ``True`` if the list has an image with controls equal to
+        *emc* and pixels within 1e-4 of *b*. Used by ``==``.
         """
+        if not isinstance(item, tuple) or len(item) != 2:
+            raise BlochListError('invalid Bloch image object: expected an (emc, image) tuple')
+
+        emc, b = item
         if not isinstance(emc, EMC) or \
            not hasattr(b, "__len__") or \
            b.ndim != 2:
@@ -148,6 +152,9 @@ class BlochImgs:
         """
         Return ``True`` if both lists have the same name and matching images.
         """
+        if not isinstance(other, BlochImgs):
+            return NotImplemented
+
         if len(self._blochList) != len(other.blochList):
             print(f'Dimension of bloch image differs')
             return False
@@ -160,7 +167,7 @@ class BlochImgs:
             return False
         
         for (e,b) in self._blochList:
-            if not other.__contains__(e,b):
+            if (e, b) not in other:
                 print(f'Current bloch image differs from baseline')
                 return False
         return True

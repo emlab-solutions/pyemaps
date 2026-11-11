@@ -214,7 +214,8 @@ class SIMControl:
         """
         for k, v in kwargs.items():
             if k not in DEF_SIMC:
-                print(f'Key {k} does not belong to supported pyemaps simulation controls, ingored')
+                print(f'Key {k} does not belong to supported pyemaps simulation controls, ignored')
+                continue
 
             setattr(self, k, v)
         
@@ -294,7 +295,7 @@ class SIMControl:
     def gmax(self, gm):
 
        if not isinstance(gm, (int, float)):
-            raise EMCError('gmax values must be a tuple of two numbers')
+            raise EMCError('gmax must be a number')
        
        self._gmax = gm
 
@@ -302,7 +303,7 @@ class SIMControl:
     def bmin(self, bm):
 
        if not isinstance(bm, (int, float)):
-            raise EMCError('bmin values must be a tuple of two numbers')
+            raise EMCError('bmin must be a number')
        
        self._bmin = bm
 
@@ -315,7 +316,7 @@ class SIMControl:
           not isinstance(intv[0], (int, float)) or \
           not isinstance(intv[1], (int, float)) or \
           intv[0] > intv[1]:
-            raise EMCError('kinematic intensity values must be ordered numberals')
+            raise EMCError('Kinematic intensity must be a tuple of two numbers in ascending order')
        
        self._intensity = intv
 
@@ -337,7 +338,7 @@ class SIMControl:
     @omega.setter
     def omega(self, ov):
         if ov is None or not isinstance(ov, (int,float)):
-            raise EMCError("omega must be a numberal")
+            raise EMCError("omega must be a number")
             
         self._omega = ov
     
@@ -353,7 +354,7 @@ class SIMControl:
     @sth.setter
     def sth(self, sv):
         if sv is None or not isinstance(sv, (int, float)):
-                raise EMCError("Sample thickness must be a numberal")
+                raise EMCError("Sample thickness must be a number")
             
         self._sth = sv
 
@@ -367,8 +368,7 @@ class SIMControl:
     def __eq__(self, other):
 
         if not isinstance(other, SIMControl):
-            print('Comparing object does not match')
-            return False
+            return NotImplemented
 
         if self._intensity != other.intensity or \
             self._zctl != other.zctl or \
@@ -449,7 +449,7 @@ class SIMControl:
                 format_str += '({:.2f},{:.2f})'.format(v[0], v[1])
             elif k == 'gmax':
                 format_str += '{:.2f}'.format(v)
-            elif k == 'bim':
+            elif k == 'bmin':
                 format_str += '{:.2f}'.format(v)
             elif k == 'intensity':
                 format_str += '({:.2f},{:.2f})'.format(self._intensity[0], self._intensity[1])
@@ -569,7 +569,7 @@ class EMControl:
                        defl = DEF_DEFL, 
                        vt = DEF_KV, 
                        cl = DEF_CL,
-                       simc = SIMControl()):
+                       simc = None):
         
         """
         :param tilt: sample tilt ``(x, y)``. Defaults to (0.0, 0.0).
@@ -594,7 +594,7 @@ class EMControl:
         for k, v in emc_dict.items():
             setattr(self, k, v)
         
-        setattr(self, 'simc', simc)
+        setattr(self, 'simc', SIMControl() if simc is None else simc)
 
         setattr(self, 'mode', DEF_MODE)
         setattr(self, 'aperture', DEF_APERTURE)
@@ -633,25 +633,27 @@ class EMControl:
         if not isinstance(emc_dict, dict):
             raise EMCError('invalid data input in constructing EMC from a dictionary')
 
-        t = z = d = vt = c = None 
+        ctor_keys = ('tilt', 'zone', 'defl', 'vt', 'cl')
+        kwargs = {}
+        sc = None
         for k, v in emc_dict.items():
             if k not in DEF_EMC:
-                print(f'Invilid key {k} found in the input, ignored')
+                print(f'Invalid key {k} found in the input, ignored')
                 continue
-            
-            if k == 'tilt':
-                t = v
-            if k == 'zone':
-                z = v
-            if k == 'defl':
-                d = v
-            if k == 'vt':
-                vt = v
-            if k == 'cl':
-                c = v
-            sc = SIMControl()
 
-        return cls(tilt = t, zone = z, defl = d, vt = vt, cl = c, simc = sc)
+            if k in ctor_keys:
+                kwargs[k] = v
+
+            if k == 'simc':
+                if isinstance(v, SIMControl):
+                    sc = v
+                elif isinstance(v, dict):
+                    sc = SIMControl()
+                    sc(**v)
+                elif v is not None:
+                    raise EMCError('simc must be a SIMControl object or a dictionary')
+
+        return cls(simc = sc, **kwargs)
   
     @property
     @doc_dec('zone')  
@@ -730,7 +732,7 @@ class EMControl:
     def zone(self, zv):
         if not isinstance(zv, tuple) or len(zv) != 3 or \
            list(map(type, zv)) != [int, int, int]:
-           raise EMCError("Zone axis must be tuple of three intergers")
+           raise EMCError("Zone axis must be a tuple of three integers")
         
         if zv == (0,0,0):
            raise EMCError("Zone axis must not be (0,0,0)")
@@ -740,40 +742,40 @@ class EMControl:
     @tilt.setter
     def tilt(self, tl):
         if not isinstance(tl, tuple) or len(tl) != 2:
-           raise EMCError("Tilt must be tuple of two numbers")
+           raise EMCError("Tilt must be a tuple of two numbers")
 
         typelist = list(map(type, tl))
         
         for vt in typelist:
             if vt != float and vt != int:
-                raise EMCError('Input values for tilt must be nmeric')
+                raise EMCError('Tilt values must be numbers')
 
         self._tilt = tl
 
     @defl.setter
     def defl(self, df):
         if not isinstance(df, tuple) or len(df) != 2:
-           raise EMCError("deflection must be tuple of two numbers")
+           raise EMCError("Deflection must be a tuple of two numbers")
         
         typelist = list(map(type, df))
 
         for vt in typelist:
             if vt != float and vt != int:
-                raise EMCError('Input values for deflection must be nmeric')
+                raise EMCError('Deflection values must be numbers')
 
         self._defl = df
 
     @cl.setter
     def cl(self, clen):
         if not isinstance(clen, (int, float)):
-           raise ValueError("Camera length must be of number")
+           raise EMCError("Camera length must be a number")
         
         self._cl = clen
     
     @vt.setter
     def vt(self, kv):
         if not isinstance(kv, (int,float)):
-           raise EMCError("Voltage must be of integer")
+           raise EMCError("Voltage must be a number")
         
         self._vt = kv
 
@@ -795,7 +797,7 @@ class EMControl:
     @simc.setter
     def simc(self, sc):
         if not isinstance(sc, SIMControl):
-           raise EMCError("Simulation control invlid")
+           raise EMCError("Simulation controls must be a SIMControl object")
         
         self._simc = sc
     
@@ -805,7 +807,7 @@ class EMControl:
             self._aperture = DEF_APERTURE
         else:
             if not isinstance(av, (int,float)):
-                raise EMCError("Voltage must be a numberal")
+                raise EMCError("Aperture must be a number")
             
             self._aperture = av
 
@@ -854,8 +856,8 @@ class EMControl:
             self._dsize = DEF_CBED_DSIZE
        else:     
             if not isinstance(dv, (int,float)):
-                    raise EMCError('Detector size must be integer')
-            
+                    raise EMCError('Diffracted beam size must be a number')
+
             # in case of CBED mode, the disk size must be in DEF_DSIZE_LIMITS range
             if self._mode == 2:
                 ds_min, ds_max = DEF_DSIZE_LIMITS
@@ -883,7 +885,7 @@ class EMControl:
 
     def __eq__(self, other):
         if not isinstance(other, EMControl):
-           raise EMCError("Comparison must be done with another EMControl object")
+           return NotImplemented
            
         if self.mode != other.mode or \
            self._pix_size != other.pix_size or \
@@ -1020,7 +1022,7 @@ class EMControl:
 
             if k == 'mode':
                 format_str += 'CBED'
-            elif k == 'dszie':
+            elif k == 'dsize':
                 format_str += '{:.2f}'.format(v)
             elif k == 'zone' or k == 'xaxis':
                 format_str += '({:d},{:d},{:d})'.format(v[0],v[1],v[2])
