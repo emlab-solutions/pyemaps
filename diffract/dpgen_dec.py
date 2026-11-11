@@ -62,7 +62,7 @@ def add_dpgen(target):
 
         return cfn
 
-    def generateDPDB(self, emc = EMC(),
+    def generateDPDB(self, emc = None,
                            xa = DEF_XAXIS,
                            res = LOW_RES,
                            vertices = DEF_VERTMAT
@@ -104,9 +104,12 @@ def add_dpgen(target):
             print(f'Resolution input {res} is out of range: ({LOW_RES}, {HIGH_RES})')
             return -1, None
 
+        if emc is None:
+            emc = EMC()
+
         self.load()
         dif.initcontrols()
-        
+
         vt = emc.vt
         zone = emc.zone
         emc(xaxis=xa)

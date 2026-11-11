@@ -69,6 +69,11 @@ def add_bloch(target):
                    DEF_XAXIS
     from .. import BImgList, EMC, SIMC
 
+    def _default_bloch_controls():
+        # a new object for each call: beginBloch updates the controls it's given
+        return EMC(cl=200, # set smaller that 1000 default value
+                   simc = SIMC(gmax=1.0, excitation=(0.3,1.0)))
+
     from ..fileutils import compose_ofn
     from .. import BlochError,BlochListError
     import numpy as np
@@ -103,11 +108,7 @@ def add_bloch(target):
                          omega = DEF_OMEGA,
                          sampling = DEF_SAMPLING,
                          dbsize = DEF_CBED_DSIZE,
-                         em_controls = EMC(cl=200, # set smaller that 1000 default value
-                                           simc = SIMC(gmax=1.0, 
-                                                       excitation=(0.3,1.0)
-                                                       )
-                                            )
+                         em_controls = None
                     ):
         """
         Start a dynamic diffraction (Bloch wave) simulation session.
@@ -153,7 +154,10 @@ def add_bloch(target):
             dbsize < DEF_DSIZE_LIMITS[0] or dbsize > DEF_DSIZE_LIMITS[1]:
             raise BlochError(f'Diffracted beam size must be in range {DEF_DSIZE_LIMITS}')
 
-        if em_controls is None or not isinstance(em_controls, EMC): 
+        if em_controls is None:
+            em_controls = _default_bloch_controls()
+
+        if not isinstance(em_controls, EMC):
             raise BlochError('Control object must be of EMControl type')
 
 
@@ -563,8 +567,7 @@ def add_bloch(target):
                             det_size = DEF_DETSIZE,                     
                             disk_size = DEF_CBED_DSIZE,                 
                             sample_thickness = DEF_THICKNESS,           
-                            em_controls = EMC(cl=200, # set smaller that 1000 default value
-                                              simc = SIMC(gmax=1.0, excitation=(0.3,1.0))),
+                            em_controls = None,
                             nType = TY_NORMAL,
                             bSave = False):
         """
