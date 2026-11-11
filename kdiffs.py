@@ -55,34 +55,33 @@ def _double_eq(a,b):
 
 class Point:
 
-    '''
-
-    Coordinates of kinematic diffraction pattern object.
-    
-    '''
+    """
+    A 2-D point ``(x, y)`` in a kinematic diffraction pattern.
+    """
     def __init__(self, p=(0.0, 0.0)):
 
+        """
+        :param p: the coordinates ``(x, y)``.
+        :type p: tuple of float, optional
+        :raise ~pyemaps.errors.PointError: if a coordinate isn't numeric.
+        """
         setattr(self, 'x', p[0])
         setattr(self, 'y', p[1])
 
     @property
     def x(self):
 
-        '''
-
-        X coordinate
-
-        '''
+        """
+        The x coordinate.
+        """
         return self._x
     
     @property
     def y(self):
 
-        '''
-
-        Y coordinate
-
-        '''
+        """
+        The y coordinate.
+        """
         return self._y
 
     @x.setter
@@ -166,13 +165,23 @@ class Point:
 
 class Line:
 
-    '''
-
-    Kikuchi line representation in kinematic diffraction patterns.
-    
-    '''
+    """
+    A line in a kinematic diffraction pattern: a Kikuchi line or a HOLZ line.
+    """
     def __init__(self, pt1 = Point(), pt2=Point(), intensity=0, type=1):
         
+        """
+        :param pt1: one end point.
+        :type pt1: :py:class:`~pyemaps.kdiffs.Point`, optional
+        :param pt2: the other end point.
+        :type pt2: :py:class:`~pyemaps.kdiffs.Point`, optional
+        :param intensity: the line's intensity, stored as an integer.
+        :type intensity: int or float, optional
+        :param type: 1 for a Kikuchi line, 2 for a HOLZ line.
+        :type type: int, optional
+        :raise ~pyemaps.errors.LineError: if an end point isn't a Point, or *intensity* or *type*
+            is invalid.
+        """
         setattr(self, 'pt1', pt1)  
         setattr(self, 'pt2', pt2)    
         setattr(self, 'intensity', intensity)    
@@ -181,40 +190,33 @@ class Line:
     @property
     def pt1(self):
 
-        '''
-
-        The first end point of a Line
-
-        '''
+        """
+        One end point, a :py:class:`~pyemaps.kdiffs.Point`.
+        """
         return self._pt1
 
     @property
     def pt2(self):
 
-        '''
-
-        The second end point of a Line
-
-        '''
+        """
+        The other end point, a :py:class:`~pyemaps.kdiffs.Point`.
+        """
         return self._pt2
     
     @property
     def type(self):
 
-        '''
-
-        The type of a Line: Kikuchi line or HOLZ line
-
-        '''
+        """
+        The line type: 1 for a Kikuchi line, 2 for a HOLZ line.
+        """
         return self._type
     
     @property
     def intensity(self):
 
-        '''
-        Line intensity
-
-        '''
+        """
+        The line's intensity, as an integer.
+        """
         return self._intensity
 
     @pt1.setter
@@ -278,12 +280,9 @@ class Line:
     
     def __isub__(self, other):
 
-        '''
-
-        This operator override is for shifting the line by fixed amount 
-        by 2D vector
-
-        '''
+        """
+        Shift the line by subtracting a :py:class:`~pyemaps.kdiffs.Point` from both end points.
+        """
         if isinstance(other, Point):
             self._pt1 -= other
             self._pt2 -= other
@@ -293,12 +292,9 @@ class Line:
     
     def __iadd__(self, other):
 
-        '''
-
-        This operator override is for shifting the line by fixed amount when
-        other line object has the same pt1 and ot2
-
-        '''
+        """
+        Shift the line by adding a :py:class:`~pyemaps.kdiffs.Point` to both end points.
+        """
         if isinstance(other, Point):
             self._pt1 += other
             self._pt2 += other
@@ -344,12 +340,13 @@ class Line:
     def calOpacity(self, l, h):
 
         """
-    
-        Calculate the line opacity based on its intensity value
+        Calculate the opacity to draw the line with, scaled linearly by its intensity: 0.2 at the
+        lowest intensity *l* and 0.35 at the highest *h*.
 
-        0.2 -> lowest intensity
-        0.35-> highest intensity
-
+        :param l: lowest line intensity in the pattern.
+        :param h: highest line intensity in the pattern.
+        :return: the opacity, from 0.2 to 0.35. If *l* equals *h*, 0.35.
+        :rtype: float
         """
         if h==l:
             return 0.35
@@ -372,6 +369,9 @@ class Line:
 
 
     def to_dict(self):
+        """
+        Return the line as a dictionary: ``{'pt1': (x1, y1), 'pt2': (x2, y2), 'int': intensity}``.
+        """
         x1, y1 = self._pt1
         x2, y2 = self._pt2
         return {'pt1': (x1,y1),
@@ -380,14 +380,16 @@ class Line:
 
 class Index:
 
-    '''
-    
-    Miller Indexes of a diffracted beam representation in kinematic
-    diffraction pattern.
-
-    '''
+    """
+    The Miller indices ``(h, k, l)`` of a diffracted beam.
+    """
     def __init__(self, I0=(0,0,0)):
 
+        """
+        :param I0: the three indices.
+        :type I0: tuple of int, optional
+        :raise ~pyemaps.errors.PIndexError: if an index isn't an integer.
+        """
         setattr(self, 'I1', I0[0])
         setattr(self, 'I2', I0[1])
         setattr(self, 'I3', I0[2])
@@ -395,30 +397,25 @@ class Index:
     @property
     def I1(self):
 
-        '''
-    
-        The first element of Miller Index of a diffracted beam
-
-        '''
+        """
+        The first Miller index, *h*.
+        """
         return self._I1
 
     @property
     def I2(self):
 
-        '''
-        
-        The second element of Miller Index of a diffracted beam
-
-        '''
+        """
+        The second Miller index, *k*.
+        """
         return self._I2
 
     @property
     def I3(self):
 
-        '''
-        The third element of Miller Index of a diffracted beam
-
-        '''
+        """
+        The third Miller index, *l*.
+        """
         return self._I3
         
     @I1.setter
@@ -485,13 +482,21 @@ class Index:
 
 class Disk:
 
-    '''
-    
-    Diffracted beams representation in kinematic diffraction patterns
-
-    '''
+    """
+    A diffracted beam in a kinematic diffraction pattern: its center, radius and Miller
+    indices.
+    """
     def __init__(self, c=Point(), r=0.0, i=Index()):
 
+        """
+        :param c: the center.
+        :type c: :py:class:`~pyemaps.kdiffs.Point`, optional
+        :param r: the radius.
+        :type r: float, optional
+        :param i: the Miller indices.
+        :type i: :py:class:`~pyemaps.kdiffs.Index`, optional
+        :raise ~pyemaps.errors.DiskError: if *c*, *r* or *i* is invalid.
+        """
         setattr(self, 'c', c)
         setattr(self, 'r', r)
         setattr(self, 'idx', i)
@@ -499,31 +504,25 @@ class Disk:
     @property 
     def c(self):
 
-        '''
-        
-        The center point of a diffracted beam.
-
-        '''
+        """
+        The center of the diffracted beam, a :py:class:`~pyemaps.kdiffs.Point`.
+        """
         return self._c
     
     @property
     def r(self):
 
-        '''
-        
-        The radius of a diffracted beam.
-
-        '''
+        """
+        The radius of the diffracted beam.
+        """
         return self._r
     
     @property
     def idx(self):
 
-        '''
-        
-        The Miller index of a diffracted beam.
-
-        '''
+        """
+        The Miller indices of the diffracted beam, an :py:class:`~pyemaps.kdiffs.Index`.
+        """
         return self._idx
 
     @c.setter
@@ -567,12 +566,9 @@ class Disk:
     
     def __iadd__(self, other):
 
-        '''
-        
-        This operator override is for shifting the line when
-        other line object has the same pt1 and ot2
-        
-        '''
+        """
+        Shift the disk by adding a :py:class:`~pyemaps.kdiffs.Point` to its center.
+        """
         if isinstance(other, Point):
             self._c += other
             return self
@@ -580,12 +576,9 @@ class Disk:
         raise DiskError('addition cannot be done with non-Disk type')
     
     def __isub__(self, other):
-        '''
-        
-        This operator override is for shifting the line when
-        other line object has the same pt1 and ot2
-        
-        '''
+        """
+        Shift the disk by subtracting a :py:class:`~pyemaps.kdiffs.Point` from its center.
+        """
         if isinstance(other, Point):
             self._c -= other
             return self
@@ -619,11 +612,9 @@ class Disk:
 
     def to_dict(self):
 
-        '''
-        
-        Creates a diffracted beam object from a dict pyton object
-
-        '''
+        """
+        Return the disk as a dictionary: ``{'c': (x, y), 'idx': (h, k, l), 'r': radius}``.
+        """
         dd = {}  
         dd['c'] = self._c.__key__()
         dd['idx'] = self._idx.__key__()
@@ -652,23 +643,21 @@ class Disk:
 
 class diffPattern:
 
-    '''
-    
-    Create a kinematic diffraction pattern based on the pyemaps
-    kinematic simulation output in python dict object.
+    """
+    A kinematic diffraction pattern: its Kikuchi lines, HOLZ lines and diffracted beams.
 
-    See :doc:Visualization for how to visualize 
-    kinematic diffraction patterns using this object.
-
-    '''
+    :py:meth:`~pyemaps.crystals.Crystal.generateDP` returns one, and
+    :py:func:`~pyemaps.display.showDif` displays it. Its coordinates are shifted by
+    :py:attr:`shift`. For drawing it with other tools, see :doc:`/user_guide/third_party`.
+    """
     def __init__(self, diff_dict):
 
-        '''
-
-        :param diff_dict: Only accepts output from pyemaps kinematic diffraction run.
+        """
+        :param diff_dict: the raw pattern data from a kinematic simulation. Create diffraction
+            patterns with :py:meth:`~pyemaps.crystals.Crystal.generateDP` rather than directly.
         :type diff_dict: dict, required
-
-        '''
+        :raise ~pyemaps.errors.DPError: if *diff_dict* is missing data or has invalid values.
+        """
         if not diff_dict or not isinstance(diff_dict, dict):
             raise DPError("failed to construct diffraction pattern object")
 
@@ -706,81 +695,65 @@ class diffPattern:
     @property
     def klines(self):
 
-        ''' 
-        
-        Kikuchi lines array 
-        
-        '''
+        """
+        The Kikuchi lines, a list of :py:class:`~pyemaps.kdiffs.Line`.
+        """
         return self._klines
 
     @property
     def hlines(self):
 
-        ''' 
-        
-        Holz lines array 
-        
-        '''
+        """
+        The HOLZ lines, a list of :py:class:`~pyemaps.kdiffs.Line`. Only CBED patterns have them.
+        """
         return self._hlines
 
     @property
     def disks(self):
 
-        ''' 
-        
-        Disks array 
-        
-        '''
+        """
+        The diffracted beams, a list of :py:class:`~pyemaps.kdiffs.Disk`.
+        """
         return self._disks
 
     @property
     def nklines(self):
 
-        ''' 
-        
-        Number of Kikuchi lines 
-        
-        '''
+        """
+        The number of Kikuchi lines.
+        """
         return self._nklines
 
     @property
     def nhlines(self):
 
-        ''' 
-        
-        Number of HOLZ lines 
-        
-        '''
+        """
+        The number of HOLZ lines.
+        """
         return self._nhlines
 
     @property
     def ndisks(self):
 
-        ''' 
-        
-        Number of Disks 
-        
-        '''
+        """
+        The number of diffracted beams.
+        """
         return self._ndisks
 
     @property
     def shift(self):
 
-        ''' 
-        
-        Shifts of the diffraction pattern 
-        
-        '''
+        """
+        The shift applied to the pattern's coordinates, a :py:class:`~pyemaps.kdiffs.Point`.
+        """
         return self._shift
 
     @property
     def name(self):
 
-        ''' 
-        
-        Crystal name 
-        
-        '''
+        """
+        The crystal's name.
+        """
         return self._name
 
     @klines.setter
@@ -977,11 +950,9 @@ class diffPattern:
 
     def _difference(self, other):
 
-        '''
-        
-        Internal testing use only
-        
-        '''
+        """
+        For internal testing only.
+        """
         # A - B (self - other)
         if not isinstance(other, diffPattern):
             raise DPError("DP object does not compare with objects of DP types")
@@ -1013,27 +984,55 @@ class diffPattern:
 
 class Diffraction:
 
-    '''
+    """
+    A list of kinematic diffraction patterns (available as ``DPList``), each paired with the
+    microscope controls it was simulated with. :py:func:`~pyemaps.display.showDif` displays
+    one.
 
-    List of DP objects and its associated EMControl objects.
+    .. code-block:: python
 
-    '''
+        from pyemaps import Crystal, DPList
+
+        si = Crystal.from_builtin('Silicon')
+        dpl = DPList('Silicon')
+        emc, dp = si.generateDP()
+        dpl.add(emc, dp)
+
+        for emc, dp in dpl:
+            print(emc.zone, dp.ndisks)
+    """
     def __init__(self, name, mode=DEF_MODE):
         
+        """
+        :param name: the crystal's name.
+        :type name: str, required
+        :param mode: 1 for normal patterns, 2 for CBED.
+        :type mode: int, optional
+        :raise ~pyemaps.errors.DPListError: if *name* is empty or *mode* isn't 1 or 2.
+        """
         setattr(self, 'name', name)
         setattr(self, 'mode', mode)
         setattr(self, 'diffList', [])
 
     @property
     def name(self):
+        """
+        The crystal's name.
+        """
         return self._name
 
     @property
     def mode(self):
+        """
+        The diffraction mode: 1 for normal, 2 for CBED.
+        """
         return self._mode
     
     @property
     def diffList(self):
+        """
+        The patterns, as a list of ``(controls, pattern)`` tuples.
+        """
         return self._diffList
 
     @name.setter
@@ -1066,12 +1065,15 @@ class Diffraction:
     # Adding new diffraction patterns
     def add(self, emc, diffP):
 
-        '''
-        
-        Append a new kenematic diffraction pattern with its associated 
-        controls
-        
-        '''
+        """
+        Add a diffraction pattern, with the controls it was simulated with.
+
+        :param emc: the controls.
+        :type emc: :py:class:`~pyemaps.emcontrols.EMControl`, required
+        :param diffP: the diffraction pattern.
+        :type diffP: :py:class:`~pyemaps.kdiffs.diffPattern`, required
+        :raise ~pyemaps.errors.DPListError: if *diffP* isn't a diffPattern.
+        """
         if not isinstance(diffP, diffPattern):
             raise DPListError('failed to add DP')
 
@@ -1080,20 +1082,16 @@ class Diffraction:
     
     def sort(self):
 
-        ''' 
-
-        Sorting diffraction list by controls
-        
-        '''
+        """
+        Sort the patterns by their controls.
+        """
         self._diffList.sort(key=lambda x: x[0])
             
     def __eq__(self, other):
 
-        '''
-        
-        Test if two diffraction list is the same
-        
-        '''
+        """
+        Return ``True`` if both lists have the same name, mode and patterns.
+        """
         if not isinstance(other, Diffraction):
             return False
         
@@ -1121,27 +1119,21 @@ class Diffraction:
             
     def __getitem__(self, key):
 
-        '''
-        
-        Array like method for retrieving DP
-        
-        '''
+        """
+        Return the ``(controls, pattern)`` tuple at *key*.
+        """
         return self._diffList[key]
             
     def clear(self):
 
-        '''
-
-        Empty the DP list, leaving it as empty.
-
-        '''
+        """
+        Remove all patterns from the list.
+        """
         self._diffList.clear()
 
     def _report_difference(self, other):
-        """ 
-        
-        internal testing call
-        
+        """
+        For internal testing only.
         """
         if not isinstance(other, Diffraction):
             raise DPListError('connt report difference between two different type of objects')

@@ -1,21 +1,21 @@
 """
-.. This file is part of pyEMAPS. 
+.. This file is part of pyEMAPS.
 
-This class is a helper for handling pyEMAPS microscope controls.
+Microscope and simulation controls.
 
-There are two controls classes this module defines: `microscope controls <modules.html#pyemaps.emcontrols.EMControl>`_
-and `simulations controls <modules.html#pyemaps.emcontrols.SIMControl>`_. 
+This module defines two control classes: :py:class:`EMControl` for the microscope, sample
+and detector, and :py:class:`SIMControl` for the simulation. The simulation controls change
+less often, so an EMControl holds a SIMControl.
 
-Since the latter changes much less frequently than the former, 
-simulation control is embedded as a member of a microscope controls class.
+The main classes are also available from ``pyemaps`` as ``EMC`` and ``SIMC``.
 
-Simulation control constants and default values
------------------------------------------------
+Simulation control defaults
+---------------------------
 
 .. data:: DEF_EXCITATION
     :value: (0.3, 2.0)
 
-.. data:: DEF_GMAX 
+.. data:: DEF_GMAX
     :value: 3.5
 
 .. data:: DEF_BMIN
@@ -36,12 +36,11 @@ Simulation control constants and default values
 .. data:: DEF_SAMPLING
     :value: 8
 
-.. data:: SAMPLE_THICKNESS
+.. data:: DEF_THICKNESS
     :value: (200, 200, 100)
 
-
-Microscope control constants and default values
------------------------------------------------
+Microscope control defaults
+---------------------------
 
 .. data:: DEF_TILT
     :value: (0.0, 0.0)
@@ -74,12 +73,12 @@ Microscope control constants and default values
     :value: 1
 
 .. data:: DEF_CBED_DSIZE
-    :value: 0.16 
+    :value: 0.16
 
-.. pyEMAPS is free software. You can redistribute it and/or modify 
-.. it under the terms of the GNU General Public License as published 
-.. by the Free Software Foundation, either version 3 of the License, 
-.. or (at your option) any later version..
+.. pyEMAPS is free software. You can redistribute it and/or modify
+.. it under the terms of the GNU General Public License as published
+.. by the Free Software Foundation, either version 3 of the License,
+.. or (at your option) any later version.
 
 .. pyEMAPS is distributed in the hope that it will be useful,
 .. but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -89,13 +88,12 @@ Microscope control constants and default values
 .. You should have received a copy of the GNU General Public License
 .. along with pyEMAPS.  If not, see `<https://www.gnu.org/licenses/>`_.
 
-.. Contact supprort@emlabsoftware.com for any questions and comments.
+.. Contact support@emlabsoftware.com for any questions and comments.
 
 .. ----
 
 .. Author:     EMLab Solutions, Inc.
-.. Date:       May 09, 2022   
-
+.. Date:       May 09, 2022
 """
 
 from . import  EMCError
@@ -139,15 +137,15 @@ DEF_SIMC = {
     'sth': DEF_THICKNESS[0]
 }           
 SIMC_DESC = {
-    'excitation': 'Excitation error range in (min, max)',
-    'gmax': 'Maximum recipricol vector length', 
+    'excitation': 'Excitation error range (min, max)',
+    'gmax': 'Maximum reciprocal vector length (1/Å)', 
     'bmin': 'Beta perturbation cutoff',
-    'intensity': 'Kinematic diffraction intensity cutoff level and scale in (level, scale)',
-    'gctl': 'Maximum index number for g-list',
-    'zctl': 'Maximum zone or Miller index number',
-    'omega': 'Diagnization cutoff value',
+    'intensity': 'Kinematic diffraction intensity cutoff level and scale (level, scale)',
+    'gctl': 'Maximum index for the g-list',
+    'zctl': 'Maximum zone axis index',
+    'omega': 'Diagonalization cutoff',
     'sampling': 'Number of sampling points',
-    'sth': 'Samples thickness'
+    'sth': 'Sample thickness (Å)'
 }
 
 def doc_dec_simc(k):
@@ -161,10 +159,19 @@ def _print_default(sdecs, dv):
      return sdecs + ' [default=' + str(dv) + ']: '
 
 class SIMControl:
-    '''
-    Simulation controls, to be embedded in EMControl
+    """
+    Simulation controls. An :py:class:`EMControl` holds one as its ``simc``; it's also
+    available from ``pyemaps`` as ``SIMC``.
 
-    '''
+    .. code-block:: python
+
+        from pyemaps import EMC, SIMC
+
+        emc = EMC(zone=(1, 1, 0), simc=SIMC(gmax=1.0, excitation=(0.3, 1.0)))
+
+    The dynamic diffraction methods also record ``omega``, ``sampling`` and ``sth`` (sample
+    thickness, Å) here.
+    """
     def __init__(self, excitation = DEF_SIMC['excitation'], \
                        gmax = DEF_SIMC['gmax'], \
                        bmin = DEF_SIMC['bmin'], \
@@ -173,6 +180,22 @@ class SIMControl:
                        zctl = DEF_SIMC['zctl']
                        ):
 
+        """
+        :param excitation: excitation error range ``(min, max)``. Defaults to (0.3, 2.0).
+        :type excitation: tuple of float, optional
+        :param gmax: maximum reciprocal vector length, in 1/Å. Defaults to 3.5.
+        :type gmax: float, optional
+        :param bmin: beta perturbation cutoff. Defaults to 0.1.
+        :type bmin: float, optional
+        :param intensity: kinematic intensity cutoff level and scale, ``(level, scale)``. Defaults
+            to (0.0, 5).
+        :type intensity: tuple of float, optional
+        :param gctl: maximum index for the g-list. Defaults to 6.
+        :type gctl: int, optional
+        :param zctl: maximum zone axis index. Defaults to 5.
+        :type zctl: int, optional
+        :raise ~pyemaps.errors.EMCError: if a value is invalid, or a range isn't in ascending order.
+        """
         setattr(self, 'excitation', excitation)
         setattr(self, 'gmax', gmax)
         setattr(self, 'bmin', bmin)
@@ -186,9 +209,8 @@ class SIMControl:
 
     def __call__(self, **kwargs):
         """
-        Adding more simulation control patameters during Bloch 
-        or other simulations.
-
+        Set controls by keyword, e.g. ``simc(omega=12, sampling=10)``. The simulation methods use
+        this to record the values they ran with.
         """
         for k, v in kwargs.items():
             if k not in DEF_SIMC:
@@ -406,11 +428,13 @@ class SIMControl:
        return "\n\t".join(simulation)
 
     def plot_format(self):
-        '''
-        Format simulation controls in builtin display functions
-        Only plot those parameter that are not defaults
+        """
+        Format the controls that aren't at their defaults, for the captions of the built-in
+        displays.
 
-        '''
+        :return: the controls, as ``name=value`` pairs separated by semicolons.
+        :rtype: str
+        """
         simcstrs = []
 
         for k in DEF_SIMC:
@@ -449,13 +473,17 @@ class SIMControl:
     @classmethod
     def from_random(cls):
 
-        ''' For backward compatibility only'''
+        """
+        Create controls with random values. Kept for backward compatibility; for testing.
+        """
         return cls._from_random()
 
     @classmethod
     def _from_random(cls):
 
-        ''' Design for internal testing purpose only'''
+        """
+        Create controls with random values. For internal testing.
+        """
 
         import random
 
@@ -489,15 +517,15 @@ DEF_EMC = {
     'mode': {'defval': DEF_MODE, 'desc': 'Simulation mode'},
     'dsize': {'defval': DEF_CBED_DSIZE, 'desc': 'Diffracted beam size'},
     'zone': {'defval': DEF_ZONE, 'desc': 'Starting zone axis'},
-    'tilt': {'defval': DEF_TILT, 'desc': 'Tilt in x and y directions (x,y)'},
-    'defl': {'defval': DEF_DEFL, 'desc': 'Shifts in x and y directions (x, y)'},
-    'cl': {'defval': DEF_CL, 'desc': 'Camera length'},
-    'vt': {'defval': DEF_KV, 'desc': 'High voltage'},
-    'xaxis': {'defval': DEF_XAXIS, 'desc': 'Crystal horizontal axis in reciprical space'},
-    'pix_size': {'defval': DEF_PIXSIZE, 'desc': 'Detector pixel size in microns'},
-    'det_size': {'defval': DEF_DETSIZE, 'desc': 'Detector size in microns'},
-    'aperture': {'defval': DEF_APERTURE, 'desc': 'Objective lense aperture'},
-    'simc': {'defval': None, 'desc': 'Simulation Controls'}
+    'tilt': {'defval': DEF_TILT, 'desc': 'Tilt in x and y directions (x, y)'},
+    'defl': {'defval': DEF_DEFL, 'desc': 'Shift in x and y directions (x, y)'},
+    'cl': {'defval': DEF_CL, 'desc': 'Camera length (mm)'},
+    'vt': {'defval': DEF_KV, 'desc': 'High voltage (kV)'},
+    'xaxis': {'defval': DEF_XAXIS, 'desc': 'Crystal horizontal axis in reciprocal space'},
+    'pix_size': {'defval': DEF_PIXSIZE, 'desc': 'Detector pixel size (microns)'},
+    'det_size': {'defval': DEF_DETSIZE, 'desc': 'Detector size (pixels)'},
+    'aperture': {'defval': DEF_APERTURE, 'desc': 'Objective lens aperture'},
+    'simc': {'defval': None, 'desc': 'Simulation controls'}
 } 
 
 # can we use the above lookup for the property docstring?
@@ -508,26 +536,33 @@ def doc_dec(k):
     return doc_str
 
 class EMControl:
-    '''
-    Microscope and sample property controls class. Its attributes include:
+    """
+    Microscope, sample and detector controls for a simulation, holding the simulation controls
+    too. Also available from ``pyemaps`` as ``EMC``.
 
-    * **tilt**: sample tilt in x and y directory (x,y)
     * **zone**: starting zone axis
-    * **defl**: shifts in x and y direction (x, y)
-    * **cl**: cameral length
-    * **vt**: hight voltage in kilo-volts
-    * **simc*: `SIMControl <pyemaps.emcontrols.html#pyemaps.emcontrols.SIMControl>`_ object
+    * **tilt**: sample tilt in x and y, ``(x, y)``
+    * **defl**: shift in x and y, ``(x, y)``
+    * **cl**: camera length, in mm
+    * **vt**: high voltage, in kV
+    * **simc**: simulation controls, a :py:class:`SIMControl`
 
-    Other optional emcontrol parameters:
+    The simulation methods also record these in it:
 
-    * **aperture**: Objective len aperture
-    * **pix_size**: detector pixel size
-    * **det_size**: detector size
-    * **xaxis**: crystal horizontal axis in reciprical space
-    * **mode**: simulation mode: 1- normal, 2-CBED
-    * **dsize**: diffracted beam size
+    * **mode**: 1 for normal diffraction, 2 for CBED
+    * **dsize**: diffracted beam (disk) size, used in CBED mode
+    * **aperture**: objective lens aperture
+    * **pix_size**: detector pixel size, in µm
+    * **det_size**: detector size, in pixels
+    * **xaxis**: the crystal's horizontal axis in reciprocal space
 
-    '''
+    .. code-block:: python
+
+        from pyemaps import Crystal, EMC
+
+        si = Crystal.from_builtin('Silicon')
+        emc, dp = si.generateDP(em_controls=EMC(zone=(1, 1, 0), cl=1500))
+    """
 
     def __init__(self, tilt = DEF_TILT, 
                        zone = DEF_ZONE, 
@@ -536,6 +571,21 @@ class EMControl:
                        cl = DEF_CL,
                        simc = SIMControl()):
         
+        """
+        :param tilt: sample tilt ``(x, y)``. Defaults to (0.0, 0.0).
+        :type tilt: tuple of float, optional
+        :param zone: starting zone axis, three integers, not (0, 0, 0). Defaults to (0, 0, 1).
+        :type zone: tuple of int, optional
+        :param defl: shift ``(x, y)``. Defaults to (0.0, 0.0).
+        :type defl: tuple of float, optional
+        :param vt: high voltage, in kV. Defaults to 200.
+        :type vt: float, optional
+        :param cl: camera length, in mm. Defaults to 1000.
+        :type cl: float, optional
+        :param simc: simulation controls. Defaults to the default :py:class:`SIMControl`.
+        :type simc: :py:class:`SIMControl`, optional
+        :raise ~pyemaps.errors.EMCError: if a value is invalid.
+        """
         emc_dict = dict(tilt = tilt, 
                        zone = zone, 
                        defl = defl,
@@ -555,8 +605,9 @@ class EMControl:
 
     def __call__(self, **kwargs):
         """
-        Additional class members added as simulation is run.
-
+        Set controls by keyword, e.g. ``emc(mode=2, dsize=0.2)``. Keys that aren't controls are
+        ignored, with a message. The simulation methods use this to record the values they ran
+        with.
         """
         
         for k, v in kwargs.items():
@@ -568,14 +619,17 @@ class EMControl:
     @classmethod
     def from_dict(cls, emc_dict):
 
-        '''
-        Create an EMControl object from a python dict object
+        """
+        Create controls from a dictionary.
 
-        :param emc_dict: Microscope control dict object
+        :param emc_dict: the controls, with the keys ``tilt``, ``zone``, ``defl``, ``vt`` and
+            ``cl``. Other keys are ignored, and the simulation controls are set to their defaults.
         :type emc_dict: dict, required
-        :raises: EMCError, if validation fails
-
-        '''
+        :return: the controls.
+        :rtype: :py:class:`EMControl`
+        :raise ~pyemaps.errors.EMCError: if *emc_dict* isn't a dictionary, or a value is missing or
+            invalid.
+        """
         if not isinstance(emc_dict, dict):
             raise EMCError('invalid data input in constructing EMC from a dictionary')
 
@@ -909,11 +963,9 @@ class EMControl:
         return sdef + str(v)
         
     def __str__(self):
-        '''
-        Readable printout of the EMC class object.
-        The output will include all class attribute values and annotate
-        those with default values with [**default**] string 
-        '''
+        """
+        Return the controls as readable text, marking those at their defaults.
+        """
 
         cstr = ['Electron Microscope Controls:',]
 
@@ -949,11 +1001,13 @@ class EMControl:
         return v == DEF_EMC[k]['defval']
 
     def plot_format(self):
-        '''
-        Format simulation controls in builtin display functions
-        Only plot those parameter that are not defaults
+        """
+        Format the controls, including the simulation controls, that aren't at their defaults,
+        for the captions of the built-in displays.
 
-        '''
+        :return: the controls, as ``name=value`` pairs separated by semicolons.
+        :rtype: str
+        """
         emcstrs = []
 
         for k in DEF_EMC:
@@ -1003,6 +1057,11 @@ class EMControl:
     
     @staticmethod
     def def_dict(): 
+        """
+        Return the default value of every microscope and simulation control.
+
+        :rtype: dict
+        """
         retdict={}
         for k in DEF_EMC:
 
