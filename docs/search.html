@@ -60,8 +60,18 @@
   
     
   
+  <link rel="preload" href="_static/fonts/source-sans-3-latin-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="_static/fonts/fonts.css">
   <style>
-/* pyEMAPS docs: brand colour and landing-page layout */
+/* pyEMAPS docs: fonts, brand colour and landing-page layout */
+
+/* Source Sans 3 body, Source Serif 4 headings, Source Code Pro code (self-hosted,
+   see _fonts/fonts.css). The fallbacks are used until the fonts load. */
+:root {
+  --pst-font-family-base: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --pst-font-family-heading: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --pst-font-family-monospace: "Source Code Pro", ui-monospace, "Cascadia Code", Consolas, monospace;
+}
 html[data-theme="light"] {
   --pst-color-primary: #1d5fa6;
   --pst-color-secondary: #0f8a8a;
