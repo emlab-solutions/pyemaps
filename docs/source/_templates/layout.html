@@ -3,6 +3,9 @@
 {%- extends "!layout.html" %}
 {%- block extrahead %}
   {{ super() }}
+  {#- Self-hosted fonts; conf.py copies source/_fonts to _static/fonts. #}
+  <link rel="preload" href="{{ pathto('_static/fonts/source-sans-3-latin-normal.woff2', 1) }}" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{{ pathto('_static/fonts/fonts.css', 1) }}">
   <style>
 {% include "pyemaps.css" %}
   </style>
