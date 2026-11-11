@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Licences for pyEMAPS" href="license.html" />
-    <link rel="prev" title="Visualisation" href="visualization.html" /> 
+    <link rel="prev" title="Visualization" href="visualization.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -36,7 +36,7 @@
           <a href="license.html" title="Licences for pyEMAPS"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="visualization.html" title="Visualisation"
+          <a href="visualization.html" title="Visualization"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">pyemaps 2.0.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Frequently Asked Questions</a></li> 
@@ -52,16 +52,25 @@
 <h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this heading">¶</a></h1>
 <section id="what-s-likely-the-cause-of-installation-failure">
 <h2>What’s Likely the Cause of Installation Failure?<a class="headerlink" href="#what-s-likely-the-cause-of-installation-failure" title="Permalink to this heading">¶</a></h2>
-<p><strong>pyEMAPS</strong> installation includes version requirements on pip,
-its setuptools and wheel that make downloading and installing the package correct and fast.
-These tools and their right versions may not come with your <em>python</em> installation and environment.
-Without them, pip tries to re-build <strong>pyEMAPS</strong> from source and will fail due to the fact
-that <strong>pyEMAPS</strong> contains extensions modules.</p>
-<p>Make sure you have updated versions of pip, setuptools, and wheel:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install -U pip setuptools wheel</span>
+<p>The most likely cause is an unsupported Python version. pyEMAPS 2.x runs on Python 3.12,
+3.13, 3.14 and 3.15 on 64-bit Windows, and its compiled backend, <em>emaps</em>, ships one prebuilt
+package (wheel) per supported Python version.</p>
+<p>On another Python version, pip can’t use those wheels. It falls back to an older pyEMAPS
+release and tries to build <em>emaps</em> from source, which fails with an error like:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Getting requirements to build wheel: finished with status 'error'</span>
+<span class="go">error: subprocess-exited-with-error</span>
+<span class="go">...</span>
+<span class="go">`numpy.distutils` is deprecated since NumPy 1.23.0 ...</span>
 </pre></div>
 </div>
-<p>before trying <a class="reference internal" href="usage.html#installation"><span class="std std-ref">installation</span></a> again.</p>
+<p>To fix it, check your Python version with <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">--version</span></code>, then install pyEMAPS in an
+environment with a supported Python, for example:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda create -n pyemaps python=3.12</span>
+<span class="go">conda activate pyemaps</span>
+<span class="go">pip install pyemaps</span>
+</pre></div>
+</div>
+<p>Python 3.7 users can keep using pyEMAPS 1.1.x, which pip installs there automatically.</p>
 </section>
 <section id="how-do-i-install-and-run-pyemaps-in-anaconda-environment-with-jupyter-notebook">
 <h2>How Do I Install and Run <strong>pyEMAPS</strong> in Anaconda Environment With Jupyter Notebook?<a class="headerlink" href="#how-do-i-install-and-run-pyemaps-in-anaconda-environment-with-jupyter-notebook" title="Permalink to this heading">¶</a></h2>
@@ -128,11 +137,11 @@ slower than that of kinematic simulation.</p>
 there are still rooms for enhancements and we are still looking for
 opportunities to make constant progress.</p>
 <p>Meanwhile, you can also add to this effort in your simulation with
-<strong>pyEMAPS</strong> by taking advantages of python features such as parallell
+<strong>pyEMAPS</strong> by taking advantages of python features such as parallel
 processing.</p>
 <p>For example:</p>
 <ul class="simple">
-<li><p>Using python mutiprocessing if your simulation involves multiple controls input.</p></li>
+<li><p>Using python multiprocessing if your simulation involves multiple controls input.</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ProcessPoolExecutor</span><span class="p">(</span><span class="n">max_workers</span><span class="o">=</span><span class="n">MAX_PROCWORKERS</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
 
@@ -164,7 +173,7 @@ where file I/O performance is much higher than that of the normal folder.</p></l
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="requirements.html">Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualisation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently Asked Questions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#what-s-likely-the-cause-of-installation-failure">What’s Likely the Cause of Installation Failure?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#how-do-i-install-and-run-pyemaps-in-anaconda-environment-with-jupyter-notebook">How Do I Install and Run <strong>pyEMAPS</strong> in Anaconda Environment With Jupyter Notebook?</a></li>
@@ -179,7 +188,7 @@ where file I/O performance is much higher than that of the normal folder.</p></l
   <div>
     <h4>Previous topic</h4>
     <p class="topless"><a href="visualization.html"
-                          title="previous chapter">Visualisation</a></p>
+                          title="previous chapter">Visualization</a></p>
   </div>
   <div>
     <h4>Next topic</h4>
@@ -213,7 +222,7 @@ where file I/O performance is much higher than that of the normal folder.</p></l
           <a href="license.html" title="Licences for pyEMAPS"
              >next</a> |</li>
         <li class="right" >
-          <a href="visualization.html" title="Visualisation"
+          <a href="visualization.html" title="Visualization"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">pyemaps 2.0.0 Stable documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Frequently Asked Questions</a></li> 

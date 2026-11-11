@@ -5,22 +5,33 @@ Frequently Asked Questions
 What's Likely the Cause of Installation Failure?
 ------------------------------------------------
 
-**pyEMAPS** installation includes version requirements on pip, 
-its setuptools and wheel that make downloading and installing the package correct and fast. 
-These tools and their right versions may not come with your *python* installation and environment. 
-Without them, pip tries to re-build **pyEMAPS** from source and will fail due to the fact 
-that **pyEMAPS** contains extensions modules. 
+The most likely cause is an unsupported Python version. pyEMAPS 2.x runs on Python 3.12,
+3.13, 3.14 and 3.15 on 64-bit Windows, and its compiled backend, *emaps*, ships one prebuilt
+package (wheel) per supported Python version.
 
-Make sure you have updated versions of pip, setuptools, and wheel:
+On another Python version, pip can't use those wheels. It falls back to an older pyEMAPS
+release and tries to build *emaps* from source, which fails with an error like:
 
 .. code-block:: console
-    
-    pip install -U pip setuptools wheel 
 
-before trying :ref:`installation <installation>` again.
+    Getting requirements to build wheel: finished with status 'error'
+    error: subprocess-exited-with-error
+    ...
+    `numpy.distutils` is deprecated since NumPy 1.23.0 ...
+
+To fix it, check your Python version with ``python --version``, then install pyEMAPS in an
+environment with a supported Python, for example:
+
+.. code-block:: console
+
+    conda create -n pyemaps python=3.12
+    conda activate pyemaps
+    pip install pyemaps
+
+Python 3.7 users can keep using pyEMAPS 1.1.x, which pip installs there automatically.
 
 How Do I Install and Run **pyEMAPS** in Anaconda Environment With Jupyter Notebook?
----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
 
 Installing pyEMAPS in an virtual environment provides isolation and prevents conflicts.
 Anaconda and python's own virtual environment are good choices.
@@ -84,7 +95,7 @@ Follow the steps below to install and run pyEMAPS in Anaconda with Jupyter Noteb
 
   
 What can I do to speed up dynamic diffraction simulations?
----------------------------------------------------------
+----------------------------------------------------------
 
 **pyEMAPS** Bloch simulation, e. g. dynamic diffraction simulation costs
 significant computation resource and operations. As a result, it is much
@@ -95,12 +106,12 @@ there are still rooms for enhancements and we are still looking for
 opportunities to make constant progress.
 
 Meanwhile, you can also add to this effort in your simulation with 
-**pyEMAPS** by taking advantages of python features such as parallell 
+**pyEMAPS** by taking advantages of python features such as parallel 
 processing. 
 
 For example:
 
-- Using python mutiprocessing if your simulation involves multiple controls input.
+- Using python multiprocessing if your simulation involves multiple controls input.
 
 .. code-block:: python
 
