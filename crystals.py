@@ -140,6 +140,11 @@ class Cell:
 
     @property
     def session_controls(self):
+        """
+        Microscope controls attached to the cell, an :py:class:`~pyemaps.emcontrols.EMControl`.
+        Set it by calling the cell with the controls: ``cell(emc)``. pyEMAPS doesn't use it, and
+        it can't be read until it's set.
+        """
         return self._session_controls
 
     @property
