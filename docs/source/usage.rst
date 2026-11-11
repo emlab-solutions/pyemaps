@@ -317,18 +317,15 @@ pattern that best matches the image. For all the parameters, see
 `StackImage.indexImage <modules.html#pyemaps.stackimg.StackImage.indexImage>`_. The *al_ediom.py*
 sample runs this whole example.
 
-.. note:: 
+.. note::
 
-   Diffraction pattern indexing feature is now in preview. Current limitations of the preview
-   feature in this free package:
+   Diffraction pattern indexing supports crystals of any crystal system, with these limits:
 
-   1. Crystals that are in cubic space group with space numbers of 225.
-   2. The experimental DP image sizes are limited 100 up to 512 pixels.
-   3. Diffraction database resolution is restricted in range 100 and 300 sampling points.
-   
-   Again, we appreciate any comments and suggestions for us to improve this feature. Contact us
-   at support@emlabsoftware.com to send us your thoughts or inquiries for full packages 
-   without above restrictions. 
+   1. Experimental images must be 100 to 512 pixels in each dimension.
+   2. The database resolution (*res* in *generateDPDB*) can be 100 to 500 sampling points.
+
+   We appreciate any comments and suggestions to improve this feature. Contact us at
+   support@emlabsoftware.com.
 
 Samples code
 ------------

@@ -87,7 +87,7 @@ def add_dpgen(target):
         :param xa: x-axis, optional
         :type xa: three integer tuple.
 
-        :param res: resolution of stereo projection map, ranging from *LOW_RES*=100 to *HIGH_RES*=300 that is
+        :param res: resolution of stereo projection map, ranging from 100 (*LOW_RES*) to 500 (*HIGH_RES*), that is
                     the number of sampling points along the radius. The higher the resolution, the more 
                     diffraction patterns are generated in the database file.
 
