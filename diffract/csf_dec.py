@@ -62,31 +62,26 @@ def add_csf(target):
 
     def printCSF(self, sfs):
         """
-        Formats and prints structure factors to standard output.
+        Print structure factors from :py:meth:`~pyemaps.crystals.Crystal.generateCSF` as a table.
 
-        :param sfs: structure factor data generated from 
-         `generateCSF <pyemaps.crystals.html#pyemaps.crystals.Crystal.generateCSF>`_.
-        :type sfs: dict, required
-        
-        Example of the output for a X-Ray Structure Factor for Silicon:
+        :param sfs: the list returned by :py:meth:`~pyemaps.crystals.Crystal.generateCSF`.
+        :type sfs: list of dict, required
+
+        Example output, X-ray structure factors of Silicon as amplitude and phase:
 
         .. code-block:: console
 
-                -----X-ray Structure Factors----- 
-            crystal            : Silicon
-            h k l              : Miller Index
-            s-w                : Sin(ϴ)/Wavelength <= 1.0
-            d-s                : D-Spacing
+            -----X-ray Structure Factors-----
+                 crystal            : Silicon
+                 h k l              : Miller Index
+                 s-w                : Sin(theta)/Wavelength <= 0.5
+                 d-s                : D-Spacing
 
-            h   k   l        s-w             d-s          amplitude         phase
+             h   k   l        s-w             d-s          amplitude         phase
 
-            1   1   1    0.1594684670    3.1354161069    58.89618        180.000000
-            0   0   2    0.1841383247    2.7153500000    6.565563e-31    0.000000
-            0   2   2    0.2604109162    1.9200423983    67.56880        180.000000
-            1   1   3    0.3053588663    1.6374176590    44.24472        180.000000
-            2   2   2    0.3189369340    1.5677080534    8.151511e-14    180.000000
-            ...
-
+             1   1   1    0.1594684869    3.1354157925    58.89618        180.000000
+             0   0   2    0.1841383278    2.7153499126    1.171896e-06    180.000000
+             ...
         """
         sftype =sfs[0]['sftype']
         aptype =sfs[0]['aptype']
@@ -146,62 +141,49 @@ def add_csf(target):
 
     def cleanCSF(self):
         """
-        Cleans up memories used by structure factor calculation. 
-        This also includes the crystal data loaded into pyemaps'
-        backend simulation module.
-
+        Free the memory used by the structure factor calculation, and unload the crystal from the
+        simulation backend. :py:meth:`~pyemaps.crystals.Crystal.generateCSF` calls this itself.
         """
         csf.delete_sfmem()
         self.unload()
                 
     def generateCSF(self, kv = 100, smax = 0.5, sftype = 1, aptype = 0):
         """
-        Calculates structure factors.
+        Calculate the crystal's structure factors.
 
-        :param kv:Accelaration Voltage in Kilo-Volts, default value 100
+        :param kv: accelerating voltage, in kV. Used for the electron structure factors.
         :type kv: int or float, optional
-
-        :param smax: Limit of Sin(theta)/Wave length, default value 0.5
+        :param smax: largest sin(θ)/λ to include, in 1/Å.
         :type smax: int or float, optional
-        
-        :param sftype: Structure factor types to be generated, default value 1 - x-ray
-        :type sftype: , int, optional
+        :param sftype: the structure factor type:
 
-        :param aptype: Output format type, default value 0 - amplitude and phase 
-        :type aptype: , int, optional
+            1. X-ray (the default)
+            2. electron, in volts
+            3. electron, in 1/Å²
+            4. electron absorption, in 1/Å²
 
-        :return: a dict object with structure factor data
-        :rtype: dict
+        :type sftype: int, optional
+        :param aptype: the output format: 0 for real and imaginary parts (the default), or 1 for
+            amplitude and phase (in degrees).
+        :type aptype: int, optional
+        :return: a list of dictionaries. The first holds the inputs: ``kv``, ``smax``, ``sftype``
+            and ``aptype``. Each one after it is one reflection:
 
-        :raises CSFError: if the backend fails to generate structure factors,
-         *sftype* is invalid, or the number of reflections within *smax*
-         exceeds the backend beam limit (reduce *smax* and retry).
+            .. code-block:: python
 
-        .. note:: *sftype* has the following value representing:
+                {
+                    'hkl': (h, k, l),     # Miller indices
+                    'sw': s,              # sin(theta)/lambda, 1/Å
+                    'ds': d,              # d-spacing, Å
+                    'amp_re': ar,         # amplitude, or real part
+                    'phase_im': ph        # phase in degrees, or imaginary part
+                }
 
-            1. x-ray structure factor (default)
-            2. electron structure factor in volts (KV)
-            3. electron structure factor in 1/angstrom^2 in (KV)
-            4. electron absorption structure factor in 1/angstrom^2 (KV)
+        :rtype: list of dict
+        :raise ~pyemaps.errors.CSFError: if the calculation fails, *sftype* is invalid, or there are more
+            reflections within *smax* than the backend can handle; in that case, lower *smax*.
 
-        .. note:: *aptype* has the following value representing structure factor format:
-
-            0: amplitude and phase
-            1: real and imaginary
-
-        The return of an array of structure factors in the following 
-        python dictionary format:
-
-        .. code-block:: python
-   
-            {
-                'hkl': (h,k,l),         # Miller Indices 
-                'sw': s,                # Sin(theta)/Wave length
-                'ds': d,                # d-spacing value
-                'amp_re': ar            # amplitude or real part 
-                'phase_im': ph          # phase or imaginary part
-            }
-
+        To print the result as a table, pass it to :py:meth:`~pyemaps.crystals.Crystal.printCSF`.
         """
         sfs = [dict(kv = kv, smax = smax, sftype = sftype, aptype = aptype)]
 

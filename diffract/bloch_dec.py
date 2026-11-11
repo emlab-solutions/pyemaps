@@ -110,63 +110,38 @@ def add_bloch(target):
                                             )
                     ):
         """
+        Start a dynamic diffraction (Bloch wave) simulation session.
 
-        Begins a dynamic diffraction (Bloch) simulation session. 
-        The simulation results are retained in the session between this and 
-        `endBloch call <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_. 
-        
-        :param aperture: Optional. Objective aperture
-        :type aperture: float
-        
-        :param omega: Optional. Diagnization cutoff value
-        :type omega: float
-        
-        :param sampling: Optional. Number of sampling points
-        :type sampling: int
-        
-        :param dbsize: Diffracted beams size.
+        The results stay in the backend until :py:meth:`~pyemaps.crystals.Crystal.endBloch`. Between the two calls you can
+        retrieve them with:
+
+        1. :py:meth:`~pyemaps.crystals.Crystal.getBlochImages`: the diffraction images, for one or more sample thicknesses;
+        2. :py:meth:`~pyemaps.crystals.Crystal.getSCMatrix`: the scattering matrix, eigenvalues and diffracted beams at one
+           sampling point;
+        3. :py:meth:`~pyemaps.crystals.Crystal.getIBDetails`: the sampling points and their beam tilts;
+        4. :py:meth:`~pyemaps.crystals.Crystal.getCalculatedBeams`: the diffracted beams used in the calculation.
+
+        To get images in one call, use :py:meth:`~pyemaps.crystals.Crystal.generateBloch` instead.
+
+        :param aperture: objective aperture. Defaults to *DEF_APERTURE* (1.0).
+        :type aperture: float, optional
+        :param omega: diagonalization cutoff. Defaults to *DEF_OMEGA* (10).
+        :type omega: int, optional
+        :param sampling: number of sampling points along the disk radius. Defaults to
+            *DEF_SAMPLING* (8).
+        :type sampling: int, optional
+        :param dbsize: diffracted beam (disk) size, within *DEF_DSIZE_LIMITS* (0.01 to 1.0).
+            Defaults to *DEF_CBED_DSIZE* (0.16).
         :type dbsize: float, optional
-        
-        :param em_controls: Optional. electron `microscope control <pyemaps.emcontrols.html#module-pyemaps.emcontrols>`_ object. 
-        :type em_controls: pyemaps.EMC
-        
-        :return: a tuple (n, ns) where ns is a list of sampling points; n is the number of sampling points
-        :rtype: tuple 
-
-        Default values:
-
-        ::
-
-            DEF_APERTURE = 1.0
-            DEF_OMEGA = 10
-            DEF_SAMPLING = 8
-            DEF_CBED_DSIZE - 0.16
-            DEF_DSIZE_LIMITS =(0.01, 0.5)
-
-        .. note:: 
-
-            During the simulation session, results are retained in pyemaps 
-            bloch module. The following methods are used to retrieve the
-            result before the end of session:
-
-            1. `getBlochimages <pyemaps.crystals.html#pyemaps.crystals.Crystal.getBlochImages>`_. 
-               Retrieve a list of bloch images
-
-            2. `getSCMatrix <pyemaps.crystals.html#pyemaps.crystals.Crystal.getSCMatrix>`_. 
-               Retrieve a scattering matrix at a sampling point
-        
-        .. note:: 
-
-            Other information available during the session:
-            
-            a. List of sampling points, diffraction beams tilts etc 
-               with `getIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.getIBDetails>`_;
-            
-            b. getEigen function is folded into getSCMatrix call starting from Stable verion 1.0.3
-            
-            c. Diagnization Miller indexes at each sampling point: 
-               `getBeams <pyemaps.crystals.html#pyemaps.crystals.Crystal.getBeams>`_;
-        
+        :param em_controls: microscope and simulation controls. Defaults to a camera length of
+            200 mm, ``gmax`` 1.0 and excitation error limits (0.3, 1.0). The object is updated with
+            the settings used and kept as the crystal's session controls.
+        :type em_controls: :py:class:`~pyemaps.emcontrols.EMControl`, optional
+        :return: ``(n, points)``: the number of sampling points, and the points as a list of
+            ``(i, j)`` tuples.
+        :rtype: tuple
+        :raise ~pyemaps.errors.BlochError: if an input is invalid, the backend's resource limit is reached, or the
+            simulation fails.
         """
         if aperture is None or not isinstance(aperture, (int, float)):
             raise BlochError('Objective aperture must be valid numberal')
@@ -261,56 +236,39 @@ def add_bloch(target):
                   nType = TY_NORMAL,
                   bSave = False):
        """
-        Retrieves a set of dynamic diffraction image from the simulation 
-        sessiom marked by:
+       Get the dynamic diffraction images from the session started by :py:meth:`~pyemaps.crystals.Crystal.beginBloch`:
+       one image per sample thickness, or, for large-angle CBED, one per thickness and calculated
+       beam.
 
-        `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_. and 
-        `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.   
-        
-        :param thickness: sample thickness range and step in tuple of three integers (th_start, th_end, th_step)
-        :type thickness: int, optional
+       :param sample_thickness: ``(start, end, step)``, in Å. Images are made at *start*,
+           *start* + *step*, ... below *end*, and at *end*. At most *MAX_DEPTH* (200) thicknesses.
+           Defaults to *DEF_THICKNESS*, ``(200, 200, 100)``: one image at 200 Å.
+       :type sample_thickness: tuple of int, optional
+       :param pix_size: detector pixel size, in µm. Defaults to *DEF_PIXSIZE* (25).
+       :type pix_size: int, optional
+       :param det_size: detector size in pixels; each image is *det_size* × *det_size*. Defaults
+           to *DEF_DETSIZE* (512).
+       :type det_size: int, optional
+       :param nType: ``TY_NORMAL`` (0) for normal images, or ``TY_LACBED`` (1) for large-angle
+           CBED images.
+       :type nType: int, optional
+       :param bSave: if ``True``, also save the images to a raw ``.im3`` file in the ``bloch``
+           folder of the pyEMAPS data folder; see :ref:`Environment Variables <Environment Variables>`.
+       :type bSave: bool, optional
+       :return: the images, each with the controls and thickness it was made with.
+       :rtype: :py:class:`~pyemaps.ddiffs.BlochImgs`
+       :raise ~pyemaps.errors.BlochListError: if *sample_thickness*, *pix_size* or *det_size* is invalid, or there
+           are too many thicknesses.
+       :raise ~pyemaps.errors.BlochError: if the images can't be made or the file can't be written.
 
-        :param pix_size: Detector pixel size in microns
-        :type pix_size: int, optional
+       .. warning::
 
-        :param det_size: Detector size or output image size
-        :type det_size: int, optional
+           Dynamic diffraction needs a lot of memory, and large-angle CBED
+           (``nType = TY_LACBED``) needs much more than normal images. To reduce it, lower:
 
-        :param nType: type of bloch images generated. 0 for normal or 1 for large angle CBED images
-        :type nType: int, optional. defaults to 0
-
-        :param bSave: True - save the output to a raw image file with extension of 'im3'
-        :type bSave: bool, optional
-
-        :return: `BImgList <pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs>`_ object
-        :rtype: BImgList
-
-        Default values:
-
-        ::
-
-            DEF_PIXSIZE = 25
-            DEF_DETSIZE = 512
-            DEF_THICKNESS = (200, 200, 100)
-
-        .. warning::
-
-            Dynamic diffraction pattern generation or Bloch has an extensive memory 
-            requirement for regular image generation:
-            
-                nType = TY_NORMAL
-
-            Even more so for a large angle CBED generation when nType = TY_LACBED. 
-
-            To reduce the memory needed, it is recommended to lower input parameters, particularly:
-
-            - The detector size *det_size*. 
-              A reduction of the default value of 512 to 218 for example can reduce memory usage in 
-              pyemaps without losing accuracies of the results.
-
-            - The number of sampling points in *sampling*. 
-              With less available memory on the system where pyemaps is running, decreased sampling 
-              points in *sampling* parameter can make a big difference in pyemaps performance. 
+           - the detector size *det_size*: 256 instead of the default 512, for example, uses a
+             quarter of the image memory;
+           - the number of sampling points *sampling*.
        """
        from copy import deepcopy
 
@@ -399,18 +357,18 @@ def add_bloch(target):
        return bimgs
            
     def getIBDetails(self, bPrint=True):
-        '''
-        Retrieve a dynamic diffraction simulation details during a session
-        marked by 
-        `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_. and 
-        `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.   
+        """
+        Get the sampling points of the session started by :py:meth:`~pyemaps.crystals.Crystal.beginBloch`, with the incident
+        beam tilt at each one.
 
-        Information regarding the simulation session include sampling points and their
-        associated diffracted beam directions etc.
-
-        The information is available right after beginBloch call.
-
-        '''
+        :param bPrint: also print them.
+        :type bPrint: bool, optional
+        :return: ``(n, details)``: the number of sampling points, and a list of dictionaries with
+            the keys ``ib``, the point as an ``(i, j)`` tuple, and ``tilt``, the beam tilt in
+            reciprocal space as three numbers.
+        :rtype: tuple
+        :raise ~pyemaps.errors.BlochError: if the session has no sampling points or they can't be retrieved.
+        """
         nib = bloch.get_nsampling()
         if nib <=0:
             raise BlochError("Failed to retrieve number of incidental beams")
@@ -457,21 +415,15 @@ def add_bloch(target):
         return nib, ibs_list
 
     def getCalculatedBeams(self, bPrint=False):
-        '''
-        Retieves and/or prints calculated beams for current dynamic diffraction simulation 
-        session marked by 
-        `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
-        and `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.
-        
-        This information is available right after beginBloch call.
+        """
+        Get the diffracted beams used in the session started by :py:meth:`~pyemaps.crystals.Crystal.beginBloch`.
 
-        :param bPrint: whether to print selected diffracted beams info on standard output
-        :type bPrint: bool, optional, default `False`
-
-        :return: The number of selected beams and the selected beams list in Miller indexes.
-        :rtype: a python tuple.
-
-        '''    
+        :param bPrint: also print them.
+        :type bPrint: bool, optional
+        :return: ``(n, beams)``: the number of beams, and their Miller indices as an n × 3 array.
+        :rtype: tuple
+        :raise ~pyemaps.errors.BlochError: if the beams can't be retrieved.
+        """
         ncalcbeams = bloch.getncalcbeams()
         if ncalcbeams <= 0:
             raise BlochError("failed to retrieve diffracted beams info")
@@ -545,51 +497,31 @@ def add_bloch(target):
                     sample_thickness = DEF_THICKNESS[0],
                     rvec = (0.0,0.0,0.0)
                     ):
-        '''
-        
-        Obtains scattering matrix at a given sampling point. To get a list of sampling 
-        points used in this dynamic simulation session, call 
-        `getIBDetails <pyemaps.crystals.html#pyemaps.crystals.Crystal.getIBDetails>`_
-        after `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_.
-        In addition to the scattering matrix, it also generates associated eigen values
-        and diffracted beams.
-        
-        This call must be made during a dynamic simulation session marked by
-        `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_ and   
-        `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_.
+        """
+        Get the scattering matrix at one sampling point of the session started by
+        :py:meth:`~pyemaps.crystals.Crystal.beginBloch`, with its eigenvalues and diffracted beams. For the session's sampling
+        points, call :py:meth:`~pyemaps.crystals.Crystal.getIBDetails`.
 
-        :param ib_coords: Sampling point coordinates tuple.
-        :type ib_coords: tuple, optional, defaults to (0, 0)
+        :param ib_coords: the sampling point, as an ``(i, j)`` tuple of integers.
+        :type ib_coords: tuple, optional
+        :param sample_thickness: sample thickness, in Å. Defaults to 200.
+        :type sample_thickness: int, optional
+        :param rvec: the R vector, three numbers between 0.0 and 1.0, that shifts the atom
+            positions in the crystal.
+        :type rvec: tuple of float, optional
+        :return: ``(n, scm, ev, beams)``: the matrix dimension; the n × n complex scattering matrix;
+            the n complex eigenvalues; and the diffracted beams' Miller indices as an n × 3 array.
+        :rtype: tuple
+        :raise ~pyemaps.errors.BlochError: if an input is invalid, or there's no scattering matrix for that point.
 
-        :param thickness: Sample thickness.
-        :type thickness: int, optional, defaults to 200
-
-        :param rvec: R vector shifting atom coordinates in crystal, each value between 0.0 and 1.0.
-        :type rvec: tuple of 3 floats, optional, defaults to (0.0,0.0,0.0)
-
-        :return: scattering matrix size; scattering matrix; eigen values; diffracted beams.
-        :rtype: a tuple. 
-
-        Default values for sample_thickness:
-        
-        ::
-
-            DEF_THICKNESS[0] = 200
-
-        Example of the eigen vales:
+        Example eigenvalues:
 
         .. code-block:: console
 
-            Eigen values at: (0, 0):
             [ 0.04684002-0.00218389j -0.2064669 -0.00147516j -0.30446348+0.00055009j
-            -0.27657617+0.00023512j -0.2765751 +0.00023515j  0.00539041-0.00382443j
-            -0.535879  -0.00023585j -0.5612881 +0.00045343j -0.55369247+0.00026236j
-            -0.55368818+0.00026249j -0.19093572+0.00066419j -0.1550311 +0.00045471j
-            -0.15503166+0.00045471j -0.58842399-0.00202841j -0.67850191+0.00042728j
-            -0.72713566+0.00060655j -0.70972681+0.00052279j -0.72092338+0.0005903j
-            -0.72093237+0.00059052j -0.64608335-0.0001983j  -0.64607544-0.00019853j]
-
-        '''
+             -0.27657617+0.00023512j -0.2765751 +0.00023515j  0.00539041-0.00382443j
+             ...]
+        """
 
         #  validate the input values
         if ib_coords is None or len(ib_coords) != 2 or not all(isinstance(v, int) for v in ib_coords):  
@@ -618,10 +550,8 @@ def add_bloch(target):
 
     def endBloch(self):
        """
-       Clean up Bloch module. This function follows 
-        `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_
-       to mark the end of a dynamic simulation session.
-
+       End the dynamic diffraction session started by :py:meth:`~pyemaps.crystals.Crystal.beginBloch`, and free the
+       backend's memory for it.
        """
        dif.diff_delete()
        bloch.free_bloch()
@@ -638,85 +568,50 @@ def add_bloch(target):
                             nType = TY_NORMAL,
                             bSave = False):
         """
-        Generates dynamic diffraction (Bloch) image(s). This function is equivalent to 
-        calling :
-        
-        1. `beginBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.beginBloch>`_ 
-        2. `getBlockImages <pyemaps.crystals.html#pyemaps.crystals.Crystal.getBlockImages>`_
-        3. `endBloch <pyemaps.crystals.html#pyemaps.crystals.Crystal.endBloch>`_
+        Simulate dynamic diffraction (Bloch wave) images in one call. It's the same as calling
+        :py:meth:`~pyemaps.crystals.Crystal.beginBloch`, :py:meth:`~pyemaps.crystals.Crystal.getBlochImages` and :py:meth:`~pyemaps.crystals.Crystal.endBloch`.
 
-        :param aperture: Objective aperture.
+        :param aperture: objective aperture. Defaults to *DEF_APERTURE* (1.0).
         :type aperture: float, optional
-
-        :param omega: Diagnization cutoff value, defaults to 10.
-        :type omega: float, optional
-
-        :param sampling: Number of sampling points
+        :param omega: diagonalization cutoff. Defaults to *DEF_OMEGA* (10).
+        :type omega: int, optional
+        :param sampling: number of sampling points along the disk radius. Defaults to
+            *DEF_SAMPLING* (8).
         :type sampling: int, optional
-
-        :param pix_size: Detector pixel size in microns
+        :param pix_size: detector pixel size, in µm. Defaults to *DEF_PIXSIZE* (25).
         :type pix_size: int, optional
-
-        :param det_size: Detector size or output image size
+        :param det_size: detector size in pixels; each image is *det_size* × *det_size*. Defaults
+            to *DEF_DETSIZE* (512).
         :type det_size: int, optional
-
-        :param disk_size: Diffracted beams size in range
+        :param disk_size: diffracted beam (disk) size, within *DEF_DSIZE_LIMITS* (0.01 to 1.0).
+            Defaults to *DEF_CBED_DSIZE* (0.16).
         :type disk_size: float, optional
-
-        :param sample_thickness: Sample thickness in (start, end, step) tuple
+        :param sample_thickness: ``(start, end, step)``, in Å: one image at *start*,
+            *start* + *step*, ... below *end*, and at *end*. Defaults to *DEF_THICKNESS*,
+            ``(200, 200, 100)``.
         :type sample_thickness: tuple of int, optional
-        
-        :param nType: type of bloch images generated. 0 for normal or 1 for large angle CBED images
-        :type nType: int, optional. defaults to 0
-
-        :param em_controls: Microscope controls object
-        :type em_controls: `Microscope control <pyemaps.emcontrols.html#module-pyemaps.emcontrols>`_, optional
-
-        :param bSave: `True` - save the output to a raw image file (ext: im3)
+        :param em_controls: microscope and simulation controls. Defaults to a camera length of
+            200 mm, ``gmax`` 1.0 and excitation error limits (0.3, 1.0).
+        :type em_controls: :py:class:`~pyemaps.emcontrols.EMControl`, optional
+        :param nType: ``TY_NORMAL`` (0) for normal images, or ``TY_LACBED`` (1) for large-angle
+            CBED images, one per thickness and calculated beam.
+        :type nType: int, optional
+        :param bSave: if ``True``, also save the images to a raw ``.im3`` file in the ``bloch``
+            folder of the pyEMAPS data folder.
         :type bSave: bool, optional
-
-        :return: `BImgList <pyemaps.ddiffs.html#pyemaps.ddiffs.BlochImgs>`_ object
-        :rtype: BImgList
-        
-        Default values:
-
-        ::
-
-            DEF_APERTURE = 1.0
-            DEF_OMEGA = 10
-            DEF_SAMPLING = 8
-            DEF_CBED_DSIZE = 0.16
-            DEF_DSIZE_LIMITS =(0.01, 0.5)
-            DEF_PIXSIZE = 25
-            DEF_DETSIZE = 512
-            DEF_THICKNESS = (200, 200, 100)
-
-        .. note::
-
-            There will be one slice of image generated for each sample
-            thickness specified by sample_thickness = (start, end, step) arguement:
-
-            start, start+step ... start+N*step, end
+        :return: the images, each with the controls and thickness it was made with.
+        :rtype: :py:class:`~pyemaps.ddiffs.BlochImgs`
+        :raise ~pyemaps.errors.BlochError: if an input is invalid or the simulation fails.
+        :raise ~pyemaps.errors.BlochListError: if *sample_thickness*, *pix_size* or *det_size* is invalid.
 
         .. warning::
 
-            Dynamic diffraction pattern generation or Bloch has an extensive memory 
-            requirement for regular image generation:
-            
-                nType = TY_NORMAL
+            Dynamic diffraction needs a lot of memory, and large-angle CBED
+            (``nType = TY_LACBED``) needs much more than normal images. To reduce it, lower:
 
-            Even more so for a large angle CBED generation when nType = TY_LACBED. 
-
-            To reduce the memory needed, it is recommended to lower input parameters, particularly:
-
-            - The detector size *det_size*. 
-              A reduction of the default value of 512 to 218 for example can reduce memory usage in 
-              pyemaps without losing accuracies of the results.
-
-            - The number of sampling points in *sampling*. 
-              With less available memory on the system where pyemaps is running, decreased sampling 
-              points in *sampling* parameter can make a big difference in pyemaps performance. 
-
+            - the detector size *det_size*: 256 instead of the default 512, for example, uses a
+              quarter of the image memory;
+            - the number of sampling points *sampling*.
         """
         try:
            
