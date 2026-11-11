@@ -1,7 +1,7 @@
 /* pyEMAPS docs: fonts, brand colour and landing-page layout */
 
 /* Source Sans 3 body, Source Serif 4 headings, Source Code Pro code (self-hosted,
-   see _fonts/fonts.css). The fallbacks are used until the fonts load. */
+   see fonts/fonts.css). The fallbacks are used until the fonts load. */
 :root {
   --pst-font-family-base: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
   --pst-font-family-heading: "Source Serif 4", Georgia, "Times New Roman", serif;
