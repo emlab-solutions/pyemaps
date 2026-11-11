@@ -244,8 +244,12 @@ class StackImage():
         self._data = idata
 
     def __del__(self):
-        
-        stem4d.freeStem4d()
+        # At interpreter exit, the stem4d extension module can be torn down
+        # before this object, leaving freeStem4d as None. The process is ending
+        # then, so there is nothing left to free.
+        free = getattr(stem4d, 'freeStem4d', None)
+        if callable(free):
+            free()
 
     def loadImage(self, rmode= EL_ONE, stack = 1):
         """
