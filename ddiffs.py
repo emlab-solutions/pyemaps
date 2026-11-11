@@ -33,21 +33,40 @@ BLOCH_TOLERANCE = 1.0e-04
 
 class BlochImgs:
 
-    '''
-    list of Bloch image objects and its associated controls 
+    """
+    A list of dynamic diffraction (Bloch) images, each paired with the microscope controls it
+    was simulated with, including its sample thickness. Returned by
+    :py:meth:`~pyemaps.crystals.Crystal.generateBloch` and
+    :py:meth:`~pyemaps.crystals.Crystal.getBlochImages`, and displayed by
+    :py:func:`~pyemaps.display.showBloch`. It's also available as ``BImgList``.
 
-    '''
+    .. code-block:: python
+
+        for emc, img in bloch_imgs:
+            print(emc.simc.sth, img.shape)     # thickness (Å) and image size
+    """
     def __init__(self, name):
         
+        """
+        :param name: the crystal's name.
+        :type name: str, required
+        :raise ~pyemaps.errors.BlochListError: if *name* is empty.
+        """
         setattr(self, 'name', name)
         setattr(self, 'blochList', [])
 
     @property
     def name(self):
+        """
+        The crystal's name.
+        """
         return self._name
 
     @property
     def blochList(self):
+        """
+        The images, as a list of ``(controls, image)`` tuples; each image is a 2-D numpy array.
+        """
         return self._blochList
 
     @name.setter
@@ -72,6 +91,15 @@ class BlochImgs:
 
     # Adding new diffraction patterns
     def add(self, emc, b):
+        """
+        Add an image, with the controls it was simulated with.
+
+        :param emc: the controls.
+        :type emc: :py:class:`~pyemaps.emcontrols.EMControl`, required
+        :param b: the image.
+        :type b: 2-D numpy.ndarray, required
+        :raise ~pyemaps.errors.BlochListError: if *emc* isn't an EMControl or *b* isn't a 2-D array.
+        """
         if not isinstance(emc, EMC) or \
            not hasattr(b, "__len__") or \
            b.ndim != 2:
@@ -81,31 +109,24 @@ class BlochImgs:
     
     def sort(self):
 
-        '''
-
-        Sort the bloch simulation results by controls
-
-        '''
+        """
+        Sort the images by their controls.
+        """
         self._blochList.sort(key=lambda x: x[0])
                 
     def __getitem__(self, key):
 
-        '''
-
-        Array like method for retrieving DP
-        
-        '''
+        """
+        Return the ``(controls, image)`` tuple at *key*.
+        """
         
         return self._blochList[key]
     
     def __contains__(self, emc, b):
-        '''
-
-        Given a dynamic image in 2-d array and corresponding simulation controls,
-        test if the pair is part of dynamic diffraction paterns list. Internal
-        function used for == operator overload.
-
-        '''
+        """
+        Return ``True`` if the list has an image with controls equal to *emc* and pixels within
+        1e-4 of *b*. Used by ``==``.
+        """
         if not isinstance(emc, EMC) or \
            not hasattr(b, "__len__") or \
            b.ndim != 2:
@@ -124,11 +145,9 @@ class BlochImgs:
         return False
     
     def __eq__(self, other):
-        '''
-        
-        Overloading == operator for the class
-
-        '''
+        """
+        Return ``True`` if both lists have the same name and matching images.
+        """
         if len(self._blochList) != len(other.blochList):
             print(f'Dimension of bloch image differs')
             return False
