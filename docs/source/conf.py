@@ -56,8 +56,9 @@ exclude_patterns = ['_build', '**.ipynb_checkpoints']
 # html_theme = 'agogo'
 html_theme = 'pydata_sphinx_theme'
 html_title = 'pyEMAPS'
-html_static_path = ['_static']
-html_css_files = ['custom.css']
+# No html_static_path: Sphinx won't copy it from inside the output folder (docs/). Our CSS
+# is inlined by _templates/layout.html from _templates/pyemaps.css.
+html_static_path = []
 html_theme_options = {
     'logo': {'text': 'pyEMAPS'},
     'navbar_align': 'left',

@@ -1,0 +1,9 @@
+{#- pyEMAPS styles, inlined: Sphinx won't copy html_static_path from inside the output
+    folder, and these docs build source/ into its parent docs/. -#}
+{%- extends "!layout.html" %}
+{%- block extrahead %}
+  {{ super() }}
+  <style>
+{% include "pyemaps.css" %}
+  </style>
+{%- endblock extrahead %}
