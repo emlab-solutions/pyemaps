@@ -473,11 +473,10 @@ def add_dif(target):
             intz0, intctl = simc.intensity
             dif.setintensities(intctl, intz0)
 
-        if simc._check_def('gctl'):
+        if not simc._check_def('gctl'):
             dif.setgctl(simc.gctl)
 
-        if simc._check_def('zctl'):
-            dif.setzctl(simc.zctl)
+        if not simc._check_def('zctl'):
             dif.setzctl(simc.zctl)
 
     target.generateDP = generateDP

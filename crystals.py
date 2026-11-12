@@ -106,6 +106,8 @@ class Cell:
             neither a dictionary nor a list.
         :raise ~pyemaps.errors.CellValueError: if a value isn't a number or a numeric string.
         """
+        self._session_controls = None
+
         if data is None:
             setattr(self, 'a', 0.0)
             setattr(self, 'b', 0.0)
@@ -142,8 +144,8 @@ class Cell:
     def session_controls(self):
         """
         Microscope controls attached to the cell, an :py:class:`~pyemaps.emcontrols.EMControl`.
-        Set it by calling the cell with the controls: ``cell(emc)``. pyEMAPS doesn't use it, and
-        it can't be read until it's set.
+        Set it by calling the cell with the controls, ``cell(emc)``, and clear it with ``cell()``.
+        It's ``None`` until set. pyEMAPS doesn't use it.
         """
         return self._session_controls
 
@@ -198,7 +200,7 @@ class Cell:
             self._a = float(av)
 
         except ValueError as e:
-            raise CellValueError(1, "b")
+            raise CellValueError(1, "a")
 
     @b.setter
     def b(self, v=None):
@@ -245,7 +247,7 @@ class Cell:
             self._alpha = float(av)
 
         except ValueError as e:
-            raise CellValueError("alpha")
+            raise CellValueError(2, "alpha")
 
     @beta.setter
     def beta(self, v=0.0):
@@ -260,7 +262,7 @@ class Cell:
             self._beta = float(bv)
 
         except ValueError as e:
-            raise CellValueError("beta")
+            raise CellValueError(2, "beta")
 
     @gamma.setter
     def gamma(self, v=0.0):
@@ -275,13 +277,13 @@ class Cell:
             self._gamma = float(gv)
 
         except ValueError as e:
-            raise CellValueError("gamma")
+            raise CellValueError(2, "gamma")
     
     @session_controls.setter
     def session_controls(self, sv):
         from . import EMC
 
-        if not isinstance(sv, EMC):
+        if sv is not None and not isinstance(sv, EMC):
             raise CrystalClassError('Invalid session controls')
 
         self._session_controls = sv
@@ -322,8 +324,8 @@ class Cell:
         return farray(celarr, dtype=float)
 
     def __iter__(self):
-        for key in self.__dict__:
-            yield (key[1:], getattr(self, key))
+        for key in cell_keys:
+            yield (key, getattr(self, key))
 
 class Atom:
     """
@@ -444,7 +446,7 @@ class Atom:
         """
         return self._loc
 
-    @symb.setter
+    @atype.setter
     def atype(self, a_type=iso.value):
         """
         Set the thermal factor type.
@@ -488,10 +490,10 @@ class Atom:
         keylen = len(akeys)
 
         if locdata is None or len(locdata) == 0:
-            locdata = [0.0]*keylen
-            locdata[-1] = 1.0
-            self._loc = locdata
             # defaults if location data is not provided
+            self._loc = [0.0]*(keylen-1)
+            self._loc[-1] = 1.0
+            self._data = dict(zip(akeys[1:], self._loc))
             return
 
 
@@ -519,7 +521,7 @@ class Atom:
         if self._atype != other.atype: 
             return False
 
-        if self._symb.lower() != other._symb.lowder(): 
+        if self._symb.lower() != other.symb.lower():  
             return False
 
         if self._loc != other.loc:
@@ -858,6 +860,10 @@ class Crystal:
             }
         """
          
+        # initially nothing is loaded, no rvec and no load type
+        self._loaded = False
+        self._ltype = -1
+
         setattr(self, 'name', name)
 
         if data is None:
@@ -885,8 +891,8 @@ class Crystal:
             
             if 'symb' not in at:
                 raise CrystalClassError("Atom data input must have symbol")
-            sym = sym=at['symb']
-            del at['symb']
+            at = dict(at)
+            sym = at.pop('symb')
 
             att = Atom(a_type = self._dw, sym=sym, data = at)
             catoms.append(att)
@@ -895,10 +901,6 @@ class Crystal:
 
         spg = SPG(data = data['spg'])
         setattr(self, 'spg', spg)
-
-        # initially nothing is loaded, no rvec and no load type
-        self._loaded = False
-        self._ltype = -1
 
     @property
     def cell(self):
@@ -1005,8 +1007,8 @@ class Crystal:
         return self._dw == iso.value
 
     def __del__(self):
-        
-        if self._loaded:
+
+        if getattr(self, '_loaded', False):
             self.unload()
 
     def __eq__(self, other):
@@ -1024,6 +1026,9 @@ class Crystal:
             return False
 
         if not self.spg == other.spg:
+            return False
+
+        if len(self._atoms) != len(other.atoms):
             return False
 
         for a in self._atoms:
@@ -1172,7 +1177,7 @@ class Crystal:
         except (XTLError, CellError, UCError, SPGError) as e:
             raise CrystalClassError(e.message)
         except (FileNotFoundError, AttributeError) as e:
-            raise CrystalClassError(e.message)
+            raise CrystalClassError(str(e)) from e
         else:
             return xtl
     
@@ -1206,8 +1211,10 @@ class Crystal:
             name, data = loadCrystalCIFData(cfn)
             cif = cls(name=name, data=data)
 
-        except (CIFError, AttributeError, CellError, UCError, SPGError) as e:
+        except (CIFError, CellError, UCError, SPGError) as e:
             raise CrystalClassError(e.message) from None
+        except AttributeError as e:
+            raise CrystalClassError(str(e)) from e
         else:
             return cif
 
