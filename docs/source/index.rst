@@ -87,7 +87,7 @@ What you can simulate
          :link: user_guide/crystals
          :link-type: doc
 
-         41 built-in crystals, CIF import, structure factors and supercells.
+         44 built-in crystals, CIF import, structure factors and supercells.
 
       .. grid-item-card:: 4D-STEM indexing :bdg-info:`Licensed`
          :img-top: _static/images/ediom_img1.png
@@ -157,7 +157,7 @@ Learn more
 
       Every class and function.
 
-pyEMAPS is developed by `EMLab Solutions <https://www.emlabsolutions.com>`_. The simulations
+pyEMAPS is developed by EMLab Solutions. The simulations
 follow the kinematic and dynamical theory in Spence and Zuo, *Electron Microdiffraction*
 (Plenum, 1992). Questions: support@emlabsoftware.com.
 
