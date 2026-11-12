@@ -1,8 +1,9 @@
 Examples
 ========
 
-pyEMAPS ships with sample scripts for each feature. Copy them into a *pyemaps_samples* folder
-in the current directory, then run any of them with ``python``:
+pyEMAPS ships with sample scripts for each feature. ``pyemaps -cp`` copies them into a
+*pyemaps_samples* folder in the current directory, after asking you to confirm. Then run any of
+them with ``python``:
 
 .. code-block:: console
 

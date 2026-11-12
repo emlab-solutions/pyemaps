@@ -87,7 +87,7 @@ What you can simulate
          :link: user_guide/crystals
          :link-type: doc
 
-         41 built-in crystals, CIF import, structure factors and supercells.
+         44 built-in crystals, CIF import, structure factors and supercells.
 
       .. grid-item-card:: 4D-STEM indexing :bdg-info:`Licensed`
          :img-top: _static/images/ediom_img1.png

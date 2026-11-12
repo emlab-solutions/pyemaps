@@ -1,54 +1,55 @@
 About pyEMAPS
 =============
 
-**pyEMAPS** package is a collection of python modules and libraries designed
-for transmission electron diffraction simulations and related crystallographic
-calculations for all crystal systems. The simulation is based on the theories
-of kinematical and dynamical electron diffraction, as described by Spence and Zuo
-in the book of Electron Microdiffraction (Plenum, New York, 1992).
+**pyEMAPS** is a Python package for transmission electron diffraction simulations and
+crystallographic computing, for all crystal systems. Its simulations are based on the theories of
+kinematical and dynamical electron diffraction described by J. C. H. Spence and J. M. Zuo in
+*Electron Microdiffraction* (Plenum Press, New York, 1992).
 
-PyEMAPS serves as the backbone of `cloudEMAPS on premise <https://www.emlabsolutions.com/software/#cloudemapsop>`_
-and can also be used as a fully functional standalone Python package.
+pyEMAPS is the backbone of
+`cloudEMAPS on premise <https://www.emlabsolutions.com/software/#cloudemapsop>`_, and is also a
+complete standalone Python package.
 
-The base version is free for personal and commercial use, while additional licensed features in 4DSTEM are available for enhanced functionality.
+The base features are free software under the GNU General Public License v3.0, for personal and
+commercial use. The extended 4D-STEM features need a license. See :doc:`license`.
 
 Features
---------------
+--------
 
-Free base features:
+The free base features:
 
-* Crystallography
+* **Crystallography**
 
-  * Crystal constructor
-  * Loading from a built-in crystal library
+  * Crystal construction, from your own data or the built-in crystal library
   * CIF import
   * Crystallographic transformations
-  * Real and reciprocal vector calculations
-  * Stereodiagram plotting
-  * Crystal Structure Factors Calculations
+  * Real and reciprocal space vector calculations
+  * Stereodiagrams
+  * Crystal structure factors
 
-* Electron diffraction pattern, dynamical
-
-  * Convergent beam electron diffraction
-  * Electron scattering Matrix
-  * Electron dispersion
-
-* Electron diffraction pattern, kinematical
+* **Kinematical electron diffraction**
 
   * Selected area diffraction
-  * Kikuchi and high order Laue zone line geometry
-  * Convergent beam electron diffraction
-  * Electron powder diffraction simulations
+  * Kikuchi and higher order Laue zone (HOLZ) line geometry
+  * Convergent beam electron diffraction (CBED)
+  * Electron powder diffraction
 
-**Extended features** (requires :ref:`License Activation`):
+* **Dynamical electron diffraction** (Bloch wave)
 
-  * Electron diffraction patterns database builder and explore
-  * Electron diffraction pattern indexing
-  * Annular bright and dark field
-  * Masked images
+  * Convergent beam electron diffraction, including large-angle CBED
+  * The electron scattering matrix
+  * Electron dispersion (the eigenvalues of the Bloch wave solution)
+
+The extended 4D-STEM features, which need :ref:`License Activation`:
+
+* Building and searching diffraction pattern databases
+* Indexing experimental diffraction patterns
+* Annular bright and dark field images
+* Masked images
 
 In development
 --------------
+
 * Coherent convergent beam electron diffraction
 * Electron image simulation
 * Pendellösung calculation
@@ -57,15 +58,17 @@ In development
 Implementation
 --------------
 
-*pyEMAPS* is implemented as the object-oriented python modules supported
-by compiled Fortran 90 libraries that handle the backend computations.
+pyEMAPS is a set of object-oriented Python modules. The computations run in **emaps**, its
+compiled backend of Fortran and C++ libraries, which pip installs with pyEMAPS.
 
 To install pyEMAPS and run a first simulation, see :doc:`getting_started`.
 
 .. note::
 
-   **Developer Contributors Wanted**
+   **Contributors wanted**
 
-   Pyemaps is developed by EMLab Solutions, Champaign, IL for microscopy and crystallography research
-   and education. We welcome community input, contributions, and donations `PayPal <https://www.paypal.com/paypalme/pyemaps22>`_.
-   Your generous support will help the development of free software to the electron microscopy and research communities.
+   pyEMAPS is developed by EMLab Solutions, Champaign, IL, for microscopy and crystallography
+   research and education. We welcome community input and contributions; see
+   `DEVELOPMENT.md <https://github.com/emlab-solutions/pyemaps/blob/main/DEVELOPMENT.md>`_.
+   Donations through `PayPal <https://www.paypal.com/paypalme/pyemaps22>`_ help us keep
+   providing free software to the electron microscopy and research communities.
