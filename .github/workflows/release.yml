@@ -1,0 +1,126 @@
+name: Release
+
+# Builds a pyemaps release and publishes it to pypi.org with Trusted Publishing, so each file on
+# PyPI gets a signed provenance attestation (PEP 740) that links it to this workflow and commit.
+#
+# Run it by hand on main (Actions tab, "Run workflow", or
+# `gh workflow run release.yml --ref main -f version=X.Y.Z`).
+# 1. The build job builds the wheel and sdist for that version from main and saves them as the
+#    "pyemaps-dist" artifact. The release candidate is tested from exactly these files.
+# 2. The publish job uploads the same files. It runs in the "pypi" environment, which must
+#    require a reviewer's approval, so it waits until the maintainer approves the deployment.
+#    To drop the candidate instead, cancel the run.
+#
+# The pyemaps GitHub Release (vX.Y.Z) is created afterwards, by hand, at the built commit. That
+# starts the Docs workflow, which deploys the docs for the release.
+#
+# PyPI setup (once): the pyemaps project's trusted publisher is owner emlab-solutions,
+# repository pyemaps, workflow release.yml, environment pypi.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'pyemaps version to release, such as 2.2.0'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build pyemaps ${{ inputs.version }}
+    # build_pyemaps uses setup_win.cfg, the release metadata, only on Windows.
+    runs-on: windows-latest
+    timeout-minutes: 20
+    env:
+      VERSION: ${{ inputs.version }}
+      PYTHONUTF8: '1'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - name: Check the branch and version
+        run: |
+          if ($env:GITHUB_REF -ne 'refs/heads/main') {
+            Write-Error "Releases are built from main, not $env:GITHUB_REF"; exit 1
+          }
+          if ($env:VERSION -notmatch '^[0-9]+\.[0-9]+\.[0-9]+$') {
+            Write-Error "The version must look like 2.2.0: $env:VERSION"; exit 1
+          }
+          # PyPI never accepts a version twice, so stop before building one it already has.
+          $releases = (Invoke-RestMethod https://pypi.org/pypi/pyemaps/json).releases
+          if ($releases.PSObject.Properties.Name -contains $env:VERSION) {
+            Write-Error "pyemaps $env:VERSION is already on PyPI"; exit 1
+          }
+
+      - name: Build the wheel and sdist
+        run: |
+          python -m pip install --upgrade pip build setuptools wheel twine
+          python build_pyemaps -v $env:VERSION
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+
+      - name: Check the files
+        run: |
+          $files = Get-ChildItem dist | Sort-Object Name
+          $expected = @("pyemaps-$env:VERSION-py3-none-any.whl", "pyemaps-$env:VERSION.tar.gz") | Sort-Object
+          if ((($files.Name) -join ',') -ne ($expected -join ',')) {
+            Write-Error "dist holds $($files.Name -join ', '), not $($expected -join ', ')"; exit 1
+          }
+          python -m twine check --strict $files.FullName
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          # The wheel's METADATA uses CRLF line endings when built on Windows, so parse it as headers.
+          python -c "import email, sys, zipfile; z = zipfile.ZipFile(sys.argv[1]); v = email.message_from_bytes(z.read('pyemaps-' + sys.argv[2] + '.dist-info/METADATA'))['Version']; assert v == sys.argv[2], 'the wheel says version ' + str(v)" "dist\pyemaps-$env:VERSION-py3-none-any.whl" $env:VERSION
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          "### pyemaps $env:VERSION from ``$env:GITHUB_SHA``" >> $env:GITHUB_STEP_SUMMARY
+          "" >> $env:GITHUB_STEP_SUMMARY
+          "| File | Size | SHA-256 |" >> $env:GITHUB_STEP_SUMMARY
+          "|---|---|---|" >> $env:GITHUB_STEP_SUMMARY
+          foreach ($f in $files) {
+            $h = (Get-FileHash -Algorithm SHA256 $f.FullName).Hash.ToLower()
+            "| $($f.Name) | $($f.Length) | ``$h`` |" >> $env:GITHUB_STEP_SUMMARY
+          }
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: pyemaps-dist
+          path: dist/
+          if-no-files-found: error
+          retention-days: 30
+
+  publish:
+    name: Publish to PyPI
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: pypi
+      url: https://pypi.org/project/pyemaps/${{ inputs.version }}/
+    permissions:
+      # Trusted Publishing: PyPI accepts this job's OIDC identity instead of an API token,
+      # and the attestations are signed with it.
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: pyemaps-dist
+          path: dist/
+
+      - name: Show what will be uploaded
+        run: sha256sum dist/*
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          attestations: true
+          print-hash: true
