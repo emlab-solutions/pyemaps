@@ -61,15 +61,8 @@ def _getDateTimeString():
     # Get the current date and time
     current_time = datetime.now()
 
-    # Format the date-time string (up to seconds)
-    date_time_string = current_time.strftime("%Y-%m-%d %H:%M:%S")
-
-    # Remove all whitespace characters using join and a generator
-    date_time_string_no_spaces = ''.join(char for char in date_time_string if not char.isspace())
-
-    print("Current date-time string without spaces:", date_time_string_no_spaces)
-    
-    return date_time_string_no_spaces
+    # Format the date-time string (up to seconds); no characters that Windows file names reject
+    return current_time.strftime("%Y%m%d_%H%M%S")
 
 class StackImage():
     """
@@ -237,7 +230,9 @@ class StackImage():
             d[0] < MIN_IMAGESIZE or d[1] < MIN_IMAGESIZE or d[2] < MIN_IMAGESTACK or \
             d[0] > MAX_IMAGESIZE or d[1] > MAX_IMAGESIZE or d[2] > MAX_IMAGESTACK:
 
-            raise XDPImageError('Invalid image data offset')
+            raise XDPImageError(f'Image dimensions must be (width, height, stacks), with width and height '
+                                f'from {MIN_IMAGESIZE} to {MAX_IMAGESIZE} pixels and {MIN_IMAGESTACK} to '
+                                f'{MAX_IMAGESTACK} stacks')
 
         self._dim = d
 
@@ -340,7 +335,7 @@ class StackImage():
         
         xnc, xnr, nl = self._dim[0], self._dim[1], self._dim[2]
         
-        if iStack < 1 or iStack > nl+1:
+        if iStack < 1 or iStack > nl:
             print(f'The stack number of the image is invalid')
             return
         
@@ -350,7 +345,7 @@ class StackImage():
         
         try:
             yi = np.ascontiguousarray(self._data, 
-                                      dtype=np.float32).reshape(xnc, xnr)
+                                      dtype=np.float32).reshape(xnr, xnc)
         except Exception as e:
             print("Error converting image data to numpy array")
             raise XDPImageError from e
@@ -369,8 +364,8 @@ class StackImage():
                     print(f'Python ----Failed to get diffraction patterns for the experimental image')
                     return ret
                 
-            displayXImage(yi, 
-                          fsize=(xnc, xnr), 
+            displayXImage(yi,
+                          fsize=(xnr, xnc),  
                           iShow = iShow, 
                           ds = xkdisk,
                           suptitle = title)
@@ -401,14 +396,15 @@ class StackImage():
         
         if ret != 0:
             print(f'Python ----Failed to get diffraction disks list')
-            exit(1)
+            return -1
         displayXImage(img1d, 
                       fsize=(nc,nr), 
                       iShow=True, 
                       ds=kdisk,
                       suptitle = 'Matching Database Diffraction Pattern')
+        return 0
         
-    staticmethod
+    @staticmethod
     def displayFitImage(nr, nc):
         """
         Display the fit image from peak search. Used internally for debugging.
@@ -888,13 +884,14 @@ class StackImage():
             print(f'The scancol input must be numeral and positive')
             return -1, None
         
-        if not isinstance(maskfn, str) and maskfn.strip():
+        if not isinstance(maskfn, str) or not maskfn.strip():
             print(f'The mask image file name must be string and not empty ')
             return -2, None
         
         try:
-            self.loadImage(rmode = EL_MORE) 
+            self.loadImage(rmode = EL_MORE)
         except Exception as e:
+            print(f'Error loading the experimental image with message: {e}')
             return -4, None
 
         ret = send.getMaskedImage(maskfn, scancol)
@@ -915,7 +912,7 @@ class StackImage():
 
     @staticmethod
     def convertImage(
-                imgfn, 
+                imgfn,
                 nformat=E_RAW,
                 ndtype = E_FLOAT,
                 dim = (MIN_IMAGESIZE,
@@ -923,96 +920,101 @@ class StackImage():
                         MIN_IMAGESTACK),
                 noffset = 8):
         """
-        Convert a raw image file to pyEMAPS' small-header format (``.im3``).
+        Convert a raw image file, or a numpy image, to pyEMAPS' small-header format (``.im3``).
 
         The stem4d module needs auxiliary images, such as the masks for
         :py:meth:`~pyemaps.stackimg.StackImage.generateMaskedImage`, in this format. See the sample
         ``convert_image.py``.
 
-        :param imgfn: path of the raw image file.
-        :type imgfn: str
-        :param nformat: the input format. Only ``E_RAW`` (the default) works.
+        :param imgfn: path of the raw image file, or with ``nformat=E_NPY``, the image as a 2-D
+            numpy array.
+        :type imgfn: str or numpy.ndarray
+        :param nformat: the input format: ``E_RAW`` (the default) or ``E_NPY``.
         :type nformat: int, optional
-        :param ndtype: the pixel data type. Defaults to ``E_FLOAT``. See
+        :param ndtype: the pixel data type of a raw file. Defaults to ``E_FLOAT``. See
             :py:attr:`~pyemaps.stackimg.StackImage.ndtype`.
         :type ndtype: int, optional
-        :param dim: the image dimensions ``(width, height, stacks)``. Defaults to ``(100, 100, 1)``.
+        :param dim: the dimensions ``(width, height, stacks)`` of a raw file. Defaults to
+            ``(100, 100, 1)``.
         :type dim: tuple of int, optional
-        :param noffset: where the pixel data starts in the file, in bytes. Defaults to 8.
+        :param noffset: where the pixel data starts in a raw file, in bytes. Defaults to 8.
         :type noffset: int, optional
-        :raise ValueError: if *nformat* isn't ``E_RAW``, or the file name is invalid.
+        :return: the path of the converted file.
+        :rtype: str
+        :raise ValueError: if *nformat* isn't ``E_RAW`` or ``E_NPY``, the file name is invalid, or
+            the numpy image isn't a numpy array.
         :raise FileNotFoundError: if the file isn't found.
+        :raise ~pyemaps.errors.XDPImageError: if the image can't be loaded or saved.
 
         A file name without a folder is looked for in the folder set by the ``PYEMAPS_DATA``
         environment variable, or else in the current working directory.
 
         The output is saved in a ``sh_converted`` folder next to the input file, with the same name
-        and the extension ``.im3``, so that folder must be writable. If the conversion fails, a
-        message is printed and nothing is raised.
+        and the extension ``.im3``. A numpy image is saved in a ``sh_converted`` folder in the
+        ``PYEMAPS_DATA`` folder, or else in the current working directory, named
+        ``numpy_image_`` followed by the date and time. That folder must be writable.
         """
+        import os
 
-        if nformat==E_SH or (nformat != E_RAW and nformat !=E_NPY):
+        if nformat != E_RAW and nformat != E_NPY:
             raise ValueError('pyEmaps only converts raw and numpy images to its proprietory format.')
-        
-        oExt = '.im3'
-        iname = ''
-        idir=''
-        imgFile = imgfn
-        if nformat !=E_NPY:
-            import os
 
-            if not imgfn or imgfn is None:
+        oExt = '.im3'
+
+        if nformat == E_NPY:
+            if not isinstance(imgfn, np.ndarray):
+                raise ValueError('A numpy image must be given as a numpy array')
+
+            idir = os.environ.get('PYEMAPS_DATA') or os.getcwd()
+            iname = "numpy_image_" + _getDateTimeString()
+            source = 'numpy image'
+            img = StackImage('', nformat=E_NPY)
+            img.data = imgfn
+
+        else:
+            if not isinstance(imgfn, str) or not imgfn:
                 raise ValueError("Input image file error!")
-            
+
             # first, split the image path
             idir, ifile = os.path.split(imgfn)
 
             if not ifile:
                 raise ValueError("Input image file error!")
-            
+
             if not idir:
-                if 'PYEMAPS_DATA' in os.environ:
-                    idir = os.environ['PYEMAPS_DATA']
-                else:
-                    idir = os.getcwd()
+                idir = os.environ.get('PYEMAPS_DATA') or os.getcwd()
 
             imgFile = os.path.join(idir, ifile)
             if not os.path.exists(imgFile):
-                raise FileNotFoundError("Input image file not found!")            
+                raise FileNotFoundError("Input image file not found!")
 
             iname, inxt = os.path.splitext(ifile)
-            
+
             if not iname or not inxt:
                 raise ValueError('Input file name error!')
-            
-        else:
-            if 'PYEMAPS_DATA' in os.environ:
-                idir = os.environ['PYEMAPS_DATA']
-            else:
-                idir = os.getcwd()
-            iname = "shimage_from_numpy" + _getDateTimeString()
+
+            source = f'image file {imgFile}'
+            img = StackImage(imgFile,
+                            nformat=nformat,
+                            ndtype = ndtype,
+                            dim = dim,
+                            noffset = noffset)
 
         odir = os.path.join(idir, 'sh_converted')
 
-        os.makedirs(odir, exist_ok=True)    
+        os.makedirs(odir, exist_ok=True)
         oImageFn = os.path.join(odir, f"{iname}{oExt}")
 
-        # now create a StackImage object.
-
-        img = StackImage(imgFile, 
-                        nformat=nformat, 
-                        ndtype = ndtype, 
-                        dim = dim, 
-                        noffset = noffset)
         try:
             img.loadImage()
-            stem4d.saveImage(oImageFn)
-
+            ret = stem4d.saveImage(oImageFn)
+        except XDPImageError:
+            raise
         except Exception as e:
-            print(f'Error converting image into pyEMAPS proprietory image file: {e}')
+            raise XDPImageError(f'Error converting the {source} to pyEMAPS image format: {e}') from e
 
-        else:
-            print(f"The image file {imgFile} was successfully converted to pyEMAPS image format and saved as {oImageFn}")
-        
+        if ret != 0:
+            raise XDPImageError(f'Error saving the {source} as {oImageFn}')
 
-
+        print(f"The {source} was successfully converted to pyEMAPS image format and saved as {oImageFn}")
+        return oImageFn

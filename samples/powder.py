@@ -45,7 +45,8 @@ def main():
     from pyemaps import plot2Powder
     psi, pdi = runPowderTests()
     
-    plot2Powder(psi, pdi)
+    plot2Powder(psi, pdi, titles=('Silicon', 'Diamond'),
+                ylabels=('Intensity', 'Intensity /w Absorption'))
 
 if __name__ == "__main__":
     main()
