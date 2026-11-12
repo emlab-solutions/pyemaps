@@ -22,9 +22,24 @@ Commercial License for Extended Features
 **NOTE:** The extended features of pyEMAPS require a separate license for use in commercial or
 production environments. These features are not covered by the GNU General Public License above.
 
-To obtain a commercial license for the extended features, contact us at
-support@emlabsoftware.com or visit `our website <https://www.emlabsolutions.com>`_. To activate
-a license, see :ref:`License Activation`.
+To buy a license for the extended features:
+
+1. Write to support@emlabsoftware.com with the license you need.
+2. We create your order, and you receive a 19-character license activation token, in the form
+   ``XXXX-XXXX-XXXX-XXXX``, by email.
+3. Activate the license with the token. Activation works online or offline:
+
+   .. code-block:: console
+
+      pyemaps --license XXXX-XXXX-XXXX-XXXX
+
+4. Check that the license is active:
+
+   .. code-block:: console
+
+      pyemaps --license info
+
+See :ref:`License Activation` for the details, including the 7-day trial license.
 
 Usage of extended features without a valid license may be subject to legal action.
 
