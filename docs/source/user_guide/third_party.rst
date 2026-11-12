@@ -4,8 +4,11 @@ Using results in other tools
 ============================
 
 
-pyEMAPS kinematic diffraction simulation results are captured by 
-:py:obj:`DP or diffPattern <pyemaps.kdiffs.diffPattern>` class:
+Kinematic diffraction patterns
+------------------------------
+
+:py:meth:`~pyemaps.crystals.Crystal.generateDP` returns the kinematic diffraction pattern as a
+:py:class:`~pyemaps.kdiffs.diffPattern`, whose parts you can read directly:
 
 .. code-block:: python
     
@@ -20,17 +23,17 @@ pyEMAPS kinematic diffraction simulation results are captured by
     dp.disks    # diffracted beams list
     dp.ndisks   # number of diffracted beams, same as len(dp.disks)
     dp.hlines   # HOLZ lines list
-    dp.nklines  # number of HOLZ lines, same as len(dp.hlines)
+    dp.nhlines  # number of HOLZ lines, same as len(dp.hlines)
 
-where dp.klines is a python list of :py:obj:`Line class <pyemaps.kdiffs.Line>` 
-objects and dp.disks of :py:obj:`Disk class <pyemaps.kdiffs.Disk>` objects 
-and so on. Each of the objects is accessible for its own data such as points when plotting.
+*dp.klines* and *dp.hlines* are lists of :py:class:`~pyemaps.kdiffs.Line` objects, and
+*dp.disks* is a list of :py:class:`~pyemaps.kdiffs.Disk` objects. A line unpacks to its end
+points and intensity, ``x1, y1, x2, y2, intensity``, and a disk to its center, radius and Miller
+indices, ``x, y, r, h, k, l``, ready for plotting in other tools.
 
-Below is an example of rendering a diffraction pattern generated for *Diamond* builtin crystal
-in DigitalMicrograph:
-
-.. note::
-    For complete python script integrating pyEMAPS into DM, see *si_stereo.py* in samples directory.
+The function below draws a kinematic diffraction pattern in DigitalMicrograph (DM). It's from the
+*dm_diff.py* sample, which has the complete script: it imports ``numpy as np`` and
+``DigitalMicrograph as DM``, and defines *mult*, *DIFF_MODE* and *SetCommonProp*, which the
+function uses. ``pyemaps -cp`` copies the samples into a *pyemaps_samples* folder.
 
 .. code-block:: python
 
@@ -40,7 +43,7 @@ in DigitalMicrograph:
 
         shape = (2*XMAX*mult,2*YMAX*mult)
 
-        #A new image from numpy array and initilize it to black background
+        #A new image from numpy array, initialized to a white background
         dif_raw = np.ones((shape), dtype = np.float32)
         dif_raw[:,:] = 255.0
 
@@ -139,39 +142,36 @@ in DigitalMicrograph:
                     SetCommonProp(hline)
                     
                     if inten/5 > 0.8:
-                        hline.SetForegroundColor(0.1,0.7,0.3) # dark grey
+                        hline.SetForegroundColor(0.1,0.7,0.3)
                     elif inten/5 > 0.6:
                         hline.SetForegroundColor(0.1,0.7,0.6)
                     elif inten/5 > 0.4:
                         hline.SetForegroundColor(0.1,0.7,0.8)
                     else:
-                        hline.SetForegroundColor(0.1,0.7,0.9) # light grey
+                        hline.SetForegroundColor(0.1,0.7,0.9)
                     
         del dm_dif_img
         return 0        
 
-where *dp* is the kinematic diffraction pattern generated from generateDP call.
+where *dp* is a kinematic diffraction pattern from *generateDP*.
 
-.. note:: 
+.. note::
 
-    To get the above display work in *DM*, *pyEMAPS* must be installed in *DM*'s 
-    python environment.
+    To run this in DM, pyEMAPS must be installed in DM's Python environment, and that Python must
+    be a version pyEMAPS supports (3.12 to 3.15).
 
-Dynamic Diffraction Patterns
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Dynamic diffraction images
+--------------------------
 
-The output from bloch dynamic diffraction simulation is an array of 2 or 3 dimensional floating
-numbers representing image intensities, depending on whether one or multiple slices of 
-dynamic diffraction images are generated. 
+:py:meth:`~pyemaps.crystals.Crystal.generateBloch` returns a
+:py:class:`BImgList <pyemaps.ddiffs.BlochImgs>` with one image per sample thickness: each entry
+is the controls used and the image, a 2-D ``float32`` NumPy array (512 × 512 pixels by default).
 
-**pyEMAPS** provides an option for users to save the images as raw image files that
-can be imported into ImageJ or DigitalMicrograph. Refer to 
-:py:obj:`generateBloch <pyemaps.crystals.Crystal.generateBloch>` or
-:py:obj:`getBlochImages <pyemaps.crystals.Crystal.getBlochImages>` for
-details.
+With ``bSave=True``, :py:meth:`~pyemaps.crystals.Crystal.generateBloch` and
+:py:meth:`~pyemaps.crystals.Crystal.getBlochImages` also save the images in a raw image file that
+ImageJ or DigitalMicrograph can import.
 
-Below is a visualization of a raw bloch images files saved from a pyEMAPS dynamic simulation
-run in Digita;Micrograph. The raw image contains 10 images each at a sample thickness 
-range betwwen 0 and 1000.
+Here are the images in a raw file from a pyEMAPS dynamic simulation, shown in DigitalMicrograph.
+The file holds 10 images, at sample thicknesses from 0 to 1000 Å.
 
 .. image:: /_static/images/bloch_3d_dm.png
