@@ -1,68 +1,71 @@
 Crystals
 ========
 
-All pyEMAPS simulations and calculations start from its 
-:py:obj:`Crystal class <pyemaps.crystals.Crystal>`. 
-To import the class:
+Every pyEMAPS simulation and calculation starts from a :py:class:`~pyemaps.crystals.Crystal`
+object loaded with crystal data. This example loads Silicon from the built-in crystal library
+with :py:meth:`~pyemaps.crystals.Crystal.from_builtin`:
 
 .. code-block:: python
 
    from pyemaps import Crystal
 
-Before starting pyEMAPS diffraction simulation, the crystal
-object must be created and data loaded. The following example
-creates a *si* crystal object by loading it from pyEMAPS 
-built-in database for Silicon crystal using 
-:py:obj:`from_builtin <pyemaps.crystals.Crystal.from_builtin>` 
+   si = Crystal.from_builtin('Silicon')
 
-.. code-block:: python
- 
-    from pyemaps import Crystal as cr  
+The crystal is then ready for simulations and calculations.
 
-    si = cr.from_builtin('Silicon')
+Crystals can also be loaded from your own data:
 
-.. note::
-   
-   Pyemaps also provides methods for creating crystal objects from other 
-   data sources, including imports from CIF, JSON formatted files. Go to 
-   :py:obj:`Crystal class <pyemaps.crystals.Crystal>`
-   for more details.
+* :py:meth:`~pyemaps.crystals.Crystal.from_xtl`: an EMAPS ``.xtl`` file
+* :py:meth:`~pyemaps.crystals.Crystal.from_cif`: a CIF file
+* :py:meth:`~pyemaps.crystals.Crystal.from_json`: a JSON file
+* :py:meth:`~pyemaps.crystals.Crystal.from_dict`: a Python dictionary
 
-
-Once a crystal object is created and loaded, it is ready for simulations
-and calculations.
+A file name without a folder is looked for in the current working directory, then in the data
+folder. See :doc:`configuration`.
 
 Built-in crystals
 -----------------
 
-To see all crystal names in the *pyEMAPS* built-in database, call 
-:py:obj:`list_all_builtin_crystals <pyemaps.crystals.Crystal.list_all_builtin_crystals>`:
+:py:meth:`~pyemaps.crystals.Crystal.list_all_builtin_crystals` returns the names of the built-in
+crystals:
 
 .. code-block:: python
 
-   from pyemaps import Crystal as cr
-   cr.list_all_builtin_crystals()
+   from pyemaps import Crystal
 
-Current list of built-in crystals in *pyEMAPS*:
+   print(Crystal.list_all_builtin_crystals())
+
+The library has 44 crystals:
 
 ::
 
-   'Aluminium', 'AluminiumOxide', 'Aluminium_FCC', 'BariumTitanate_180k', 'BariumTitanate_270k', 
-   'BariumTitanate_Tetra', 'Boron_Tetra', 'CadmiumSelenide_Hex', 'CadmiumSulfide_Cubic', 
-   'CadmiumSulfide_Hex', 'Chromium_BCC', 'CopperOxide', 'Copper_FCC', 'Cu2O_Cuprite', 'Diamond', 
-   'ErbiumPyrogermanate', 'FePd_Tetra', 'FeS2_Pyrite', 'GalliumAntimonide', 'GalliumArsenide', 
-   'GalliumNitride', 'Germanium', 'Gold_FCC', 'IndiumArsenide', 'LaMnO3', 'LeadZirconateTitanate', 
-   'Li2MnO3', 'limno2', 'NaFeO2', 'Nb3Sn', 'Silicon', 'StrontiumTitanate', 'TelluriumDioxide', 
-   'TinDioxide_RT', 'TitaniumDioxide_Anatase', 'TitaniumDioxide_Rutile', 'TungstenDiselenide', 
-   'VanadiumDioxide_RT', 'ZincOxide', 'Zinc_HCP', 'ZirconiumNitride'
+   'Aluminium', 'AluminiumOxide', 'Aluminium_FCC', 'BariumTitanate_180k', 'BariumTitanate_270k',
+   'BariumTitanate_Tetra', 'BiMnO3', 'Boron_Tetra', 'CadmiumSelenide_Hex', 'CadmiumSulfide_Cubic',
+   'CadmiumSulfide_Hex', 'Chromium_BCC', 'CopperOxide', 'Copper_FCC', 'CoSb3_Skutterudite',
+   'Cu2O_Cuprite', 'Diamond', 'ErbiumPyrogermanate', 'FePd_Tetra', 'FeS2_Pyrite',
+   'GalliumAntimonide', 'GalliumArsenide', 'GalliumNitride', 'Germanium', 'Gold_FCC',
+   'IndiumArsenide', 'LaMnO3', 'LeadZirconateTitanate', 'Li2MnO3', 'limno2', 'NaFeO2', 'Nb3Sn',
+   'Pentacene', 'Silicon', 'StrontiumTitanate', 'TelluriumDioxide', 'TinDioxide_RT',
+   'TitaniumDioxide_Anatase', 'TitaniumDioxide_Rutile', 'TungstenDiselenide', 'VanadiumDioxide_RT',
+   'ZincOxide', 'Zinc_HCP', 'ZirconiumNitride'
 
 Constructing crystal structures
 -------------------------------
 
-*pyEMAPS*' :py:obj:`generateMxtal <pyemaps.crystals.Crystal.generateMxtal>`
-function produces .XYZ file that can be improted into 
-`Jmol <http://www.jmol.org/>`_ and visualize the 
-crystal in 3D atomic structure. The following is an example of such rendering:
+:py:meth:`~pyemaps.crystals.Crystal.generateMxtal` builds a block of the crystal's atomic
+structure (a supercell) from its unit cell, and
+:py:meth:`~pyemaps.crystals.Crystal.writeXYZ` saves it as an ``.xyz`` file:
 
+.. code-block:: python
 
-.. image:: https://github.com/emlab-solutions/imagepypy/raw/main/mxtal01.png
+   from pyemaps import Crystal
+
+   si = Crystal.from_builtin('Silicon')
+   mx = si.generateMxtal()
+   si.writeXYZ(mx)
+
+The file is saved in the *mxtal* subfolder of the data folder. Tools such as
+`Jmol <https://jmol.sourceforge.net/>`_ can import it to show the structure in 3D:
+
+.. image:: ../_static/images/mxtal01.png
+   :alt: A crystal structure from generateMxtal, shown in Jmol

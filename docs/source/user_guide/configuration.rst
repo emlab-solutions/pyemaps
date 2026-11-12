@@ -6,34 +6,34 @@ Data folder and license
 Environment Variables
 ---------------------
 
-*PYEMAPS_DATA* environment variable is set to represent pyEMAPS' data home directory.
-It provides a central location for organizing your own crystal data, and it is also used 
-for storing your simulation and calculation results.   
+The *PYEMAPS_DATA* environment variable names pyEMAPS' data folder: one place for your own
+crystal files and for the results pyEMAPS saves. pyEMAPS creates the folder if it doesn't exist.
+If *PYEMAPS_DATA* isn't set, or its folder can't be created, the current working directory is
+the data folder.
 
-**pyEMAPS** searches crystal files in the following order when only file name is provided:
+When you give a crystal file name without a folder, pyEMAPS looks for it:
 
-1. Current working directory. 
-2. Data home directory pointed by *PYEMAPS_DATA*.
+1. in the current working directory, then
+2. in the *crystals* subfolder of the data folder.
 
-For output from **pyEMAPS** simulations and calculations, the placement order is reversed:
+pyEMAPS saves each kind of result in its own subfolder of the data folder, and creates the
+subfolder when it's first needed:
 
-1. Data home directory pointed by *PYEMAPS_DATA* if it is set. 
-2. Current working directory.
+.. code-block:: text
 
-The layout of the pyEMAPS data home directory is as follows:
-
-.. code-block:: console
-
-    $(PYEMAPS_DATA)=<local directory>  # pyemaps data home, must have read and write permissions
-    $(PYEMAPS_DATA)/crystals           # hosts all custom crystal data files (.xtl, .cif)
-    $(PYEMAPS_DATA)/dif                # location for all kinematic diffraction simulation output
-    $(PYEMAPS_DATA)/bloch              # location for all Bloch dynamic simulations images output files
-    $(PYEMAPS_DATA)/stereo             # location for all stereodiagram output files
-    $(PYEMAPS_DATA)/mxtal              # place for all crystal constructor output files such as *.xyz
+    %PYEMAPS_DATA%            the data folder, which needs read and write permission
+    %PYEMAPS_DATA%\crystals   your crystal files (.xtl, .cif, .json)
+    %PYEMAPS_DATA%\dif        kinematic diffraction plots
+    %PYEMAPS_DATA%loch      dynamic diffraction images and plots
+    %PYEMAPS_DATA%\stereo     stereodiagram plots
+    %PYEMAPS_DATA%\mxtal      crystal structures (.xyz)
+    %PYEMAPS_DATA%\dpdb       diffraction pattern databases
 
 .. note::
-   
-   The legacy environment variable $(PYEMAPS_CRYSTALS) is still supported if it is set.
+
+   The older *PYEMAPS_CRYSTALS* variable is still supported. If it's set, pyEMAPS uses its
+   folder as the data folder instead, and keeps everything in that folder itself, without
+   subfolders.
 
 
 .. _License Activation:
@@ -41,38 +41,29 @@ The layout of the pyEMAPS data home directory is as follows:
 License Activation
 ------------------
 
-There is no license requirement for many of **pyEMAPS**' base features. However, to access 
-its extended features like 4DSTEM, a license activation is required. The activations in pyEMAPS can 
-also be done without internet connection if isolation is desired. Finally, once license is activated,
-all license checks are offline without requirement for internet connections. 
+**pyEMAPS**' base features need no license. Its extended features, such as 4D-STEM, need an
+activated license. Activation also works offline, and once a license is activated, all license
+checks are offline. ``-l`` is the short form of ``--license`` in the commands below.
 
-To obtain a **pyEMAPS** license:
-
-* **Trial license**: **pyEMAPS** has a 7-days trial license that allows users to check out 
-  the features without committing to a purchase. This license can also be converted or upgraded 
-  to production license.
-
-  Use the following command to get the trial license when internet connection is available:
+* **Trial license**: a 7-day trial license lets you try the extended features before you buy.
+  It can be converted or upgraded to a production license later. Activating it needs an
+  internet connection:
 
   .. code-block:: console
 
-   pyemaps --license trial (-l)
+     pyemaps --license trial
 
-* **License activation token**: contact support@emlabsoftware.com for the 19 character license
-  activation token. This way of activation can be used for both trial and product license
-  activation online or offline.  
-
-  .. code-block:: console
-
-   pyemaps --license <license token> (-l)
-
-  where <license token> is of format: XXXX-XXXX-XXXX-XXXX here X is an alphanumeric character.
-
-  Contact support@emlabsoftware.com for obtaining a license activation token.
-
-* **License information**: use the following command to find out if a license exists and valid.
-  If so, the license information is displayed.
+* **License activation token**: activates a trial or production license, online or offline.
+  Write to support@emlabsoftware.com for a token. It has 19 characters, in the form
+  ``XXXX-XXXX-XXXX-XXXX``, where each X is a letter or digit:
 
   .. code-block:: console
 
-   pyemaps --license info (-l)
+     pyemaps --license XXXX-XXXX-XXXX-XXXX
+
+* **License information**: shows whether a license is activated and valid, and if it is, its
+  details:
+
+  .. code-block:: console
+
+     pyemaps --license info

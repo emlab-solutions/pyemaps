@@ -40,8 +40,8 @@ Check the installation
    pyemaps --version
    pyemaps --sample
 
-``--version`` prints the pyEMAPS and emaps versions, and ``--sample`` runs a short kinematic
-simulation and shows the pattern.
+``--version`` prints the pyEMAPS version, and ``--sample`` runs short kinematic and dynamic
+simulations of Silicon and shows the results. Its plot windows close by themselves.
 
 Your first diffraction pattern
 ------------------------------

@@ -1,12 +1,13 @@
 Stereodiagrams
 ==============
 
-Similar build-in function to display stereodiagram output from *pyEMAPS*
-is showStereo function in *pyEMAPS*'s *display* module. It takes a 
-stereodiagram dictionary objects generated from *pyEMAPS*' 
-:py:obj:`generateStereo <pyemaps.crystals.Crystal.generateStereo>`
-and renders each element by accessing the dictionary objects directly
-as demonstrated below:
+:py:meth:`~pyemaps.crystals.Crystal.generateStereo` calculates a crystal's stereodiagram: the
+projected poles, each a dictionary with its center, radius and Miller indices.
+:py:func:`~pyemaps.display.showStereo`, from the :py:mod:`display module <pyemaps.display>`,
+draws a list of stereodiagrams.
+
+This example makes Silicon stereodiagrams at six zone axes, in parallel processes, and shows
+them as a table:
 
 .. code-block:: python
 
@@ -59,5 +60,6 @@ as demonstrated below:
                 zLimit = 1,
                 layout='table')
 
-.. image:: https://github.com/emlab-solutions/imagepypy/raw/main/stereo_table.png
-    :target: https://github.com/emlab-solutions/imagepypy/raw/main/stereo_table.png
+.. image:: ../_static/images/stereo_table.png
+   :alt: Stereodiagrams of Silicon at six zone axes
+   :target: ../_static/images/stereo_table.png

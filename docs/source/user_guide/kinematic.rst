@@ -26,33 +26,29 @@ Kinematic diffraction
    Jupyter notebooks don't need it.
 
 
-Here crystal class method *generateDP* produces a kinematic diffraction pattern or
-:py:obj:`DPList <pyemaps.kdiffs.diffPattern>` (si_dp) 
-using all default control parameters . 
+:py:meth:`~pyemaps.crystals.Crystal.generateDP` returns the microscope and simulation controls
+it used (*emc*) and the kinematic diffraction pattern (*si_dp*), a
+:py:class:`~pyemaps.kdiffs.diffPattern`. Called without arguments, it uses the default controls.
+For all its parameters, see :py:meth:`~pyemaps.crystals.Crystal.generateDP`.
 
-Go to :py:obj:`generateDP <pyemaps.crystals.Crystal.generateDP>` for a complete
-list of control parameters. 
-
-*showDif*, a method in the pyEMAPS :py:mod:`display module <pyemaps.display>`  
-visualizes the *si_dp* diffraction pattern with options controlling whether to show Kikuchi lines or
-Miller Indexes.
+:py:func:`~pyemaps.display.showDif`, from the :py:mod:`display module <pyemaps.display>`, shows
+the patterns in a :py:class:`DPList <pyemaps.kdiffs.Diffraction>`. Its options show or hide the
+Kikuchi lines (*kShow*), the Miller indices of the diffracted beams (*iShow*) and the non-default
+controls (*cShow*).
 
 Displaying a series of patterns
 -------------------------------
 
-Additional example of *pyEMAPS*'s builtin functions for rendering 
-kinematic diffraction simulations for *silicon* crystal with starting zone 
-changing and camera length set at 2500:
+This example makes CBED patterns of Silicon at six zone axes, with a camera length of 2500 mm.
+It runs the simulations in parallel processes, then shows the patterns as a table:
 
-.. image:: https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png
-    :target: https://github.com/emlab-solutions/imagepypy/raw/main/dif_table.png
-
-with the following sample code:
+.. image:: ../_static/images/dif_table.png
+   :alt: Kinematic CBED patterns of Silicon at six zone axes
+   :target: ../_static/images/dif_table.png
 
 .. code-block:: python
 
-        
-    from pyemaps import DEF_CBED_DSIZE, DEF_MODE
+    from pyemaps import DEF_MODE
     from pyemaps import EMC
 
     MAX_PROCWORKERS = 4
@@ -65,9 +61,6 @@ with the following sample code:
 
         cr = cryst.from_builtin(name)
 
-        if mode == 2:
-            dsize = DEF_CBED_DSIZE
-        
         zlist=[(0,0,1), (1,1,2), (1,1,1),
                (1,3,3), (0,1,2), (0,1,3)]
         
@@ -80,7 +73,7 @@ with the following sample code:
         with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
 
             for ec in emclist:
-                fs.append(e.submit(cr.generateDP, mode=mode,  dsize=dsize, em_controls = ec))
+                fs.append(e.submit(cr.generateDP, mode=mode, em_controls = ec))
 
             for f in concurrent.futures.as_completed(fs):
                 try:
