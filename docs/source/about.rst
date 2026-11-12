@@ -6,10 +6,6 @@ crystallographic computing, for all crystal systems. Its simulations are based o
 kinematical and dynamical electron diffraction described by J. C. H. Spence and J. M. Zuo in
 *Electron Microdiffraction* (Plenum Press, New York, 1992).
 
-pyEMAPS is the backbone of
-`cloudEMAPS on premise <https://www.emlabsolutions.com/software/#cloudemapsop>`_, and is also a
-complete standalone Python package.
-
 The base features are free software under the GNU General Public License v3.0, for personal and
 commercial use. The extended 4D-STEM features need a license. See :doc:`license`.
 
