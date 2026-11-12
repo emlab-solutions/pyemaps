@@ -1,201 +1,135 @@
-<!-- #  Open Source __pyEMAPS__ Development Guidelines -->
+# pyEMAPS
 
-1. <a id="contents"></a>[What's in pyEMAPS](#overview)
-2. <a id="contents"></a>[Build pyEMAPS](#build)
-3. <a id="contents"></a>[Installation](#installation)
-4. <a id="contents"></a>[Testing](#test)
-5. <a id="contents"></a>[Development Guidelines](#process)
-5. <a id="contents"></a>[pyEMAPS Contributor License Agreement](#CLA)
-5. <a id="contents"></a>[Code of Conduct](#COC)
+**pyEMAPS** is a Python package for transmission electron diffraction simulations and
+crystallographic computing, for all crystal systems. Its simulations are based on the theories of
+kinematical and dynamical electron diffraction described by J. C. H. Spence and J. M. Zuo in
+*Electron Microdiffraction* (Plenum Press, New York, 1992).
 
-## What's in pyEMAPS [`↩`](#contents) <a id="overview"></a>
-**pyEMAPS** package is a collection of python modules and libraries designed 
-for transmission electron diffraction simulations and crystallographic calculations 
-for all crystal systems. The simulation is based on the theories of kinematical and 
-dynamical electron diffraction, as described by Spence and Zuo in the book of Electron Microdiffraction (Plenum, New York, 1992).
+[Documentation](https://emlab-solutions.github.io/pyemaps/) ·
+[Get started](https://emlab-solutions.github.io/pyemaps/getting_started.html) ·
+[Examples](https://emlab-solutions.github.io/pyemaps/examples.html) ·
+[Release notes](https://emlab-solutions.github.io/pyemaps/rn.html) ·
+[Issues](https://github.com/emlab-solutions/pyemaps/issues)
 
-The base version is free for personal and commercial use, while additional licensed features in 4DSTEM are available for enhanced functionality.
+## Features
 
-### Features:
-Free base features:
-- Crystallography
-  - Crystal constructor
-  - Loading from a built-in crystal library
+The base features are free, under the GNU General Public License v3.0:
+
+- **Crystallography**
+  - Crystal construction, from your own data or the built-in crystal library
   - CIF import
   - Crystallographic transformations
-  - Real and reciprocal vector calculations
-  - Stereodiagram plotting
-  - Crystal Structure Factors Calculations
-
-- Electron diffraction pattern, dynamical
-  - Convergent beam electron diffraction
-  - Electron scattering Matrix
-  - Electron dispersion
-
-- Electron diffraction pattern, kinematical
+  - Real and reciprocal space vector calculations
+  - Stereodiagrams
+  - Crystal structure factors
+- **Kinematical electron diffraction**
   - Selected area diffraction
-  - Kikuchi and high order Laue zone line geometry
-  - Convergent beam electron diffraction
-  - Electron powder diffraction simulations
+  - Kikuchi and higher order Laue zone (HOLZ) line geometry
+  - Convergent beam electron diffraction (CBED)
+  - Electron powder diffraction
+- **Dynamical electron diffraction** (Bloch wave)
+  - Convergent beam electron diffraction, including large-angle CBED
+  - The electron scattering matrix
+  - Electron dispersion (the eigenvalues of the Bloch wave solution)
 
-**Extended features** (requires license):
-- Electron diffraction patterns database builder and explore
-- Electron diffraction pattern indexing
-- Annular bright and dark field
-- Masked images 
+The extended 4D-STEM features need a license:
 
-Check our full [pyemaps documentation](https://emlab-solutions.github.io/pyemaps) for details of __pyEMAPS__ python classes designs and their interfaces.
+- Building and searching diffraction pattern databases
+- Indexing experimental diffraction patterns
+- Annular bright and dark field images
+- Masked images
 
-We are looking for experts in electron microscope and crystallography, and/or python enthusiasts to join pyEMAPS project as contributors, please contact us at support@emlabsoftware.com if you are interested.
+## Requirements
 
-We greatly appreciate your contributions to pyEMAPS and look forward to making it a tool for the communty to accelaerate microscopy and crystallography education and research. If you benefit from __pyEMAPS__ in your microscopy and crystallography research and education, go to [PayPal](https://www.paypal.com/paypalme/pyemaps22) to donate. Your generous donations keep us in the business of providing software tools to the education and research communities. 
+- 64-bit Windows
+- Python 3.12, 3.13, 3.14 or 3.15
+- 8 GB of RAM or more is recommended
 
-See instructions below for contributor:
+pip also installs NumPy (2.0 or later), matplotlib (3.8.4 or later) and **emaps**, the compiled
+simulation backend for your Python version. On Python 3.7, pip installs pyEMAPS 1.1.x.
 
-## Build pyEMAPS [`↩`](#content) <a id="build"></a>
+## Installation
 
-Requirements and recommendations:
-* __Python__: Version 3.12, 3.13, 3.14 or 3.15
-* __Operating Systems__: Windows
-* __VSCode__: code editing (recommended, for contributors only)
+Install pyEMAPS in its own virtual environment, so its dependencies don't clash with your other
+packages:
 
-Building __pyEMAPS__ itself needs no compiler, because it is pure Python. Its compiled backend, __emaps__, supports Windows with Python 3.12 to 3.15, so __pyEMAPS__ does too. pyEMAPS 1.1.x remains available for Python 3.7. We are also looking for contributors to extend it to other platforms. 
-
-Like many python development, a virtual python environment is recommended to isolate your pyEMAPS development environment from your other python development projects.
-
-Below are steps to establish __pyEMAPS__ build environment with python 3.12 as an example:
-
-* Download the Python 3.12 Windows installer (64-bit) from [python.org](https://www.python.org/downloads/windows/).
-* Run the installer, choose the following in installer GUI:
-  
-     * Select Customize Installation
-     * Check and select pip
-     * Install for all users/specific users   
-* Create a virtual environment called "pyemaps_build" for the build
-     * Create a dev directory:
-       ```
-       mkdir pyemaps-dev
-       ``` 
-       (or choose your own directory name)
-     * Create pyemaps_build virtual environemnt:
-       ```
-       py -3.12 -m venv pyemaps_build
-       ```
-* Activate pyemaps_build vitual environment:
-     ```
-    .\pyemaps_build\Scripts\activate
-     ```
-* Update pip:
-  ```
-   python -m pip install pip --upgrade
-  ```
-* Install other python packages required for building pyemaps, using pip:
-  ``` 
-  pip install setuptools wheel build
-  ```
-* Build directory structure:
-
-<pre>
-📦pyemaps
-  ┣━ 📂.git          <----Source repository configurations
-  ┣━ 📂build         <----Intermediate build folder
-  ┣━ 📂dist          <----Build package files
-  ┣━ 📂cdata         <----Built-in crystal data in proprietory format
-  ┣━ 📂CifFile       <----CIF crystal data reader
-  ┣━ 📂diffract      <----Diffraction modules python interfaces
-  ┣━ 📂docs          <----Documentation using Sphinx. Document your changes!
-  ┣━ 📂samples       <----Sample code. Offical sample code for guiding pyemaps usages
-  ┣━ 📂scattering    <----Scattering data module
-  ┣━ 📂spg           <----Space group data module
-  ┗━ 📂test          <----Test cases including sanity, unit and stree tests. Keep adding them!
-</pre>
-where _docs_ for creation of documents requires Sphinx python package:
-- Sphinx for documentation can be installed:
 ```
-       pip install Sphinx=5.3.0
+python -m venv .venv
+.venv\Scripts\activate
+pip install pyemaps
 ```
 
-* Build pyEMAPS package, run:
-  ```
-   python build_pyemaps -t -v 1.0.0
-  ```
-  Here the option "-t" indicates build is for local testing purposes. 
-  You can replace the version number '1.0.0' with the one you desire.
+Check the installation:
 
-  When the option _-v_ is not specified. The build script will figure out the version
-  from pypi.org repository.
+```
+pyemaps --version
+pyemaps --sample
+```
 
-  Note: there will be two additional diretcories:
-  - _build_.  folder holding intermediate build files.
-  - _dist_. folder for final package that includes .whl and .tgz. The former is the package file and the latter is the current source code used to build the pacage in compressed format. 
+`--version` prints the pyEMAPS version, and `--sample` runs a short kinematical simulation and
+shows the pattern. If the installation fails, see the
+[FAQ](https://emlab-solutions.github.io/pyemaps/faq.html).
 
-## Installation [`↩`](#contents) <a id="installation"></a>
+## Quick start
 
-* Install the new pyEMAPS package:
-  ```
-   pip install .\dist\pyemaps-1.0.0-py3-none-any.whl
-  ```
-  This will install new pyEMAPS just built in current python virtual environment
-  along with all of its dependent packages. 
-  
-  If you have a previous _pyemaps_ with versiual or larger than current package version.
-  In that case, you need to uninstall previous version before installing the new package:
-  ```
-  pip uninstall pyemaps
-  ```
+Load Silicon from the built-in crystal library, generate its kinematical diffraction pattern with
+the default settings, and show it:
 
-## Testing [`↩`](#contents) <a id="test"></a>
+```python
+from pyemaps import Crystal, DPList, showDif
 
-  Current pyEMAPS development comes with a set of basic testing suites, including 
-   * sanity checks
-   * unit tests
-   * stress tests.
+if __name__ == '__main__':
+    si = Crystal.from_builtin('Silicon')
+    emc, si_dp = si.generateDP()
 
-   To run these test suites, call:
-   ```
-      .\test\sanity\sanity.bat
-   ```
-   We are looking for your tests contributions to make the development to keep high quality standards for _pyEMAPS_.
+    dpl = DPList('Silicon')
+    dpl.add(emc, si_dp)
+    showDif(dpl)
+```
 
-## Development Guidelines [`↩`](#contents) <a id="process"></a>
+Keep the `if __name__ == '__main__':` line in scripts. The `show` functions draw in a separate
+process, which on Windows runs your script again. Jupyter notebooks don't need it.
 
-As any open source development project, we strongly recommend contributors to adhere to the following guidelines:
+`pyemaps --copysamples` copies the sample scripts into the current folder. The
+[documentation](https://emlab-solutions.github.io/pyemaps/) has a user guide, an examples
+gallery and the full API reference.
 
-* __Issues creation__. Before making changes for bug fix or feature implementation, create an issue in   the pyEMAPS' repository. Your concise description of the issue(s) serves well not only in laying good foundations for your design and implementations, but also in communicating to your fellow contributors.
+## Licensing
 
-* __Development Branch__. Create your own branch from 'main' where you work on your changes. The main branch is kept as production base.
-  
-* __Backwards Compatibilities Tests__. Existing test suites designed for testing most of the features are to ensure that no existing implementations are unintentionally broken after new changes are introduced.
+The base features are free software under the
+[GNU General Public License v3.0](https://emlab-solutions.github.io/pyemaps/license.html), for
+personal and commercial use. The extended 4D-STEM features need a license:
 
-* __New Tests Additions__. Writing new test cases for the new implementations are strongly encouraged. 
-  
-* __Pull Requests__. Before merging your changes into production branch "main", a pull request is required. The request should also accompany a list of code reviewers from the contributors. 
-  
-* __Code Review__. We took code review seriously, whether you are reviewing code or your code is being reviewed. This process provides important step of making sound implementations and preventing new bugs.  
-  
-* __Documentation__. You are the author of the new implementations, so please take the pride by documenting them!  
-  We use sphinx tool for documentation generation. To install sphinx, run:
-  ```
-  pip install -U sphinx
-  ```
-  in your python build virtual environment (pyemaps_build in our example).
+- `pyemaps --license trial` activates a 7-day trial license. It needs an internet connection.
+- `pyemaps --license <token>` activates a trial or production license with a license activation
+  token, online or offline. Write to support@emlabsoftware.com for a token.
+- `pyemaps --license info` shows the current license.
 
-  Most of the documentations files are in "docs" directory. After making documentation changes to record your changes, compile them with sphinx:
-  ```
-  sphinx-build -b html source .
-  ```
-  The changes resulted from the above can be previewed by opening index.html with avaliable browser.
-  
-## pyEMAPS Contributor License Agreement [`↩`](#contents) <a id="CLA"></a>
+After activation, all license checks are offline. See
+[License Activation](https://emlab-solutions.github.io/pyemaps/user_guide/configuration.html#license-activation)
+for details.
 
-Please read and agree to our [Contributor License Agreement](CONTRIBUTING.md) before contributing to this project.
+## Support
 
-## Code of Conduct [`↩`](#contents) <a id="COC"></a>
+Report bugs and request features on [GitHub](https://github.com/emlab-solutions/pyemaps/issues),
+and send other questions to support@emlabsoftware.com.
 
-pyEMAPS is committed to providing a welcoming and inclusive environment for all contributors. We follow the [Contributor Covenant](https://www.contributor-covenant.org/version/2/0/code_of_conduct/) as our code of conduct. Please make sure to review it before contributing.
+If pyEMAPS helps your microscopy and crystallography research or teaching, please consider a
+[donation](https://www.paypal.com/paypalme/pyemaps22). Donations keep us providing software
+tools to the education and research communities.
 
-**[Read the Contributor Covenant](https://www.contributor-covenant.org/version/2/0/code_of_conduct/)**
+## Contributing
 
-Any instances of unacceptable behavior can be reported to support@emlabsoftware.com.
+We're looking for experts in electron microscopy and crystallography, and Python enthusiasts, to
+join the project. Contact us at support@emlabsoftware.com if you're interested.
 
+- [DEVELOPMENT.md](https://github.com/emlab-solutions/pyemaps/blob/main/DEVELOPMENT.md)
+  explains how to build pyEMAPS, run its tests and build the documentation, and how we work.
+- Please read and agree to our
+  [Contributor License Agreement](https://github.com/emlab-solutions/pyemaps/blob/main/CONTRIBUTING.md)
+  before contributing.
+- We follow the
+  [Contributor Covenant](https://www.contributor-covenant.org/version/2/0/code_of_conduct/) as our
+  code of conduct. Report unacceptable behavior to support@emlabsoftware.com.
 
+pyEMAPS is developed by EMLab Solutions, Inc.

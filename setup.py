@@ -173,6 +173,12 @@ setup(name                              ="pyemaps",
                                             'pyemaps=pyemaps.__main__:main',  # This makes 'pyemaps' a command-line executable
                                             ],
                                             },
+      project_urls                      = {
+                                            'Documentation': 'https://emlab-solutions.github.io/pyemaps/',
+                                            'Source': 'https://github.com/emlab-solutions/pyemaps',
+                                            'Issues': 'https://github.com/emlab-solutions/pyemaps/issues',
+                                            'Changelog': 'https://emlab-solutions.github.io/pyemaps/rn.html',
+                                            },
       install_requires                  = get_install_requires(),
       cmdclass                          = {'install_data': install_data_in_package},
 
