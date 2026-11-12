@@ -1,8 +1,11 @@
 Release Notes
 =============
 
-Unreleased
-----------
+Version 2.1.0 Stable
+--------------------
+
+11-12-2026
+~~~~~~~~~~
 
 Changes
 ~~~~~~~
@@ -57,6 +60,8 @@ Improvements
   - :py:func:`~pyemaps.fileutils.compose_ofn` accepts an empty file name.
   - :py:meth:`~pyemaps.crystals.Crystal.from_cif` reports a missing CIF file, and a space group setting or number out of range, with the right error.
   - Each :py:class:`~pyemaps.xtal.ACoord` created without coordinates gets its own coordinate list.
+
+- Requires ``emaps >= 2.0.0``.
 
 Version 2.0.0 Stable
 --------------------
