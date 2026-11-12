@@ -157,7 +157,7 @@ Learn more
 
       Every class and function.
 
-pyEMAPS is developed by `EMLab Solutions <https://www.emlabsolutions.com>`_. The simulations
+pyEMAPS is developed by EMLab Solutions. The simulations
 follow the kinematic and dynamical theory in Spence and Zuo, *Electron Microdiffraction*
 (Plenum, 1992). Questions: support@emlabsoftware.com.
 
