@@ -10,7 +10,10 @@ says so and exits 0.
 What it checks:
 - image loading: numpy images of every supported dtype, shape and memory layout load
   through StackImage(nformat=E_NPY) and read back from the backend pixel for pixel;
-  invalid images raise XDPImageError (pyemaps#89).
+  invalid images raise XDPImageError (pyemaps#89). Small-header (.im3) files with several
+  stacks, 16-bit integer and float32, read back pixel for pixel, every stack, both one stack
+  at a time and with all stacks loaded. emaps 2.0.1 and earlier read 16-bit pixels as
+  32-bit, and crash loading one stack; fixed in the next emaps release.
 - dpgen: generating the Aluminium diffraction pattern database succeeds.
 - indexing: al.img indexed from its file and from numpy (float32, float64, Fortran
   order) gives the same result lines, and those match baseline/stem4d/al_index.txt
@@ -55,6 +58,16 @@ LOAD_CASES = {
 }
 # Invalid images, which must raise XDPImageError.
 ERROR_CASES = ['err_complex', 'err_1d', 'err_small', 'err_list']
+# Small-header files with several stacks. name: (dtype, rmode); rmode 1 (EL_ONE) loads one
+# stack at a time, rmode 2 (EL_MORE) all of them.
+SH_CASES = {
+    'sh_int16_one':   ('int16',   1),
+    'sh_int16_all':   ('int16',   2),
+    'sh_float32_one': ('float32', 1),
+    'sh_float32_all': ('float32', 2),
+}
+SH_DIMS = (128, 120, 3)          # width, height, stacks
+SH_TYPES = {'int16': 11, 'float32': 12}   # header data type: 10 + E_INT or E_FLOAT, multi-stack
 INDEX_MODES = ['file', 'npy32', 'npy64', 'npyF']
 
 
@@ -112,6 +125,47 @@ def case_error(name):
         print(f'RESULT FAIL raised {type(e).__name__}, not XDPImageError: {e}')
         return
     print('RESULT FAIL no error raised')
+
+
+def make_sh_file(path, dtype):
+    '''
+    Write a small-header file with SH_DIMS stacks of *dtype* pixels: an 8-byte header of four
+    little-endian shorts (width, height, stacks, data type), then the stacks, row by row.
+    Returns the stacks as an array.
+    '''
+    import numpy as np
+    width, height, nstacks = SH_DIMS
+    rng = np.random.default_rng(23)
+    stacks = (rng.random((nstacks, height, width)) * 2000 - 500).astype(dtype)
+    with open(path, 'wb') as f:
+        f.write(np.array([width, height, nstacks, SH_TYPES[dtype]], dtype='<i2').tobytes())
+        f.write(stacks.astype(np.dtype(dtype).newbyteorder('<')).tobytes())
+    return stacks
+
+
+def case_sh(name):
+    import tempfile
+    import numpy as np
+    from pyemaps import StackImage
+
+    dtype, rmode = SH_CASES[name]
+    with tempfile.TemporaryDirectory() as tmp:
+        path = os.path.join(tmp, f'{name}.im3')
+        stacks = make_sh_file(path, dtype)
+        bad = []
+        for i, expected in enumerate(stacks, start=1):
+            si = StackImage(path)
+            si.loadImage(rmode=rmode, stack=i)
+            back = np.array(si.data, dtype=np.float64)
+            if not np.array_equal(back, expected.astype(np.float64).ravel()):
+                bad.append(i)
+        ncol, nrow, nl = si.dim
+    if (ncol, nrow, nl) != SH_DIMS:
+        print(f'RESULT FAIL dims {(ncol, nrow, nl)}, expected {SH_DIMS}')
+    elif bad:
+        print(f'RESULT FAIL stacks {bad} of {len(stacks)} differ from the file')
+    else:
+        print(f'RESULT PASS {len(stacks)} stacks of {nrow}x{ncol} {dtype} read back exactly')
 
 
 def headless_plots():
@@ -199,6 +253,11 @@ def check_loading():
         results.append((f'load {name}', ok, line[7:] if line else child_failure(code, err)))
     for name in ERROR_CASES:
         code, out, err = run_child('error', name)
+        line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
+        ok = code == 0 and line is not None and line.startswith('RESULT PASS')
+        results.append((f'load {name}', ok, line[7:] if line else child_failure(code, err)))
+    for name in SH_CASES:
+        code, out, err = run_child('sh', name)
         line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
         ok = code == 0 and line is not None and line.startswith('RESULT PASS')
         results.append((f'load {name}', ok, line[7:] if line else child_failure(code, err)))
@@ -317,6 +376,8 @@ if __name__ == '__main__':
             case_load(*rest)
         elif kind == 'error':
             case_error(*rest)
+        elif kind == 'sh':
+            case_sh(*rest)
         elif kind == 'index':
             case_index(*rest)
         sys.exit(0)
