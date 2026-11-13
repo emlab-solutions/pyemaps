@@ -92,7 +92,7 @@ Next steps
       :link: examples
       :link-type: doc
 
-      ``pyemaps -cp`` copies them into a *pyemaps_samples* folder.
+      ``pyemaps -cp samples`` copies them into a *pyemaps_samples* folder.
 
    .. grid-item-card:: Set up your data folder
       :link: user_guide/configuration

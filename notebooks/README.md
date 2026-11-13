@@ -17,7 +17,12 @@ environment, then start Jupyter in the folder holding the notebooks:
 
 ```
 pip install pyemaps jupyter
-jupyter notebook
+pyemaps -cp notebooks
+jupyter notebook pyemaps_notebooks
 ```
+
+`pyemaps -cp notebooks` copies the notebooks that come with pyEMAPS into a `pyemaps_notebooks`
+folder, without their results, so you see them appear as you run each cell. It doesn't overwrite
+notebooks already there, so copying again keeps your changes.
 
 In a notebook, pyEMAPS draws its plots in the notebook.

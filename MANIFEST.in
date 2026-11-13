@@ -11,3 +11,4 @@ include license.txt
 
 include cdata/*.xtl
 include samples/*.py
+include notebooks/*.ipynb

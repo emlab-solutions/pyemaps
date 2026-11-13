@@ -26,46 +26,71 @@
 '''
 
 rel_stage = 'Stable'
-pyemaps_samples_dir = 'pyemaps_samples'
 
-def copy_samples():
+# What pyemaps -cp copies: (description, folder in the package, folder it copies into).
+COPY_SETS = {
+    'samples': ('sample scripts', 'samples', 'pyemaps_samples'),
+    'notebooks': ('notebooks', 'notebooks', 'pyemaps_notebooks'),
+}
+
+# The sample that pyemaps -s runs; it isn't copied.
+COPY_SKIP = {'si_pyemaps.py'}
+
+
+def copy_examples(what):
     '''
-    Copies sample code from package directory to current diretory 
-    for easy access.
+    Copy the sample scripts, the notebooks, or both into folders in the current directory,
+    after asking to confirm. *what* is 'samples', 'notebooks' or 'all'. Files that already exist
+    there are left alone, so copying again doesn't overwrite your changes.
     '''
-    import os, sys
+    import os
     import shutil
+    import sys
 
+    names = list(COPY_SETS) if what == 'all' else [what]
+    pkg_dir = os.path.dirname(os.path.abspath(__file__))
     curr_dir = os.getcwd()
-    
-    q = str(f"Copy pyemaps samples into {pyemaps_samples_dir} in current directory?\n ")
-    
-    inp = input(q +"[Y/n] ")
 
-    if inp and not inp.lower().strip()[:1] == "y":
-        print("No sample code is copied!")
+    plan = ' and '.join(f'the {COPY_SETS[n][0]} into {COPY_SETS[n][2]}' for n in names)
+    inp = input(f'Copy {plan}, in the current directory? [Y/n] ')
+    if inp and not inp.lower().strip()[:1] == 'y':
+        print('Nothing copied.')
         sys.exit(1)
 
-    curr_samples_dir = os.path.join(curr_dir, pyemaps_samples_dir)
-
-    if not os.path.exists(curr_samples_dir):
-        os.makedirs(curr_samples_dir)
-    
-    pyemaps_pkgdir = os.path.dirname(os.path.abspath(__file__))
-    pkg_samples_dir = os.path.join(pyemaps_pkgdir, "samples")
-
-    for file_name in os.listdir(pkg_samples_dir):
-        
-        if file_name == 'si_pyemaps.py':
+    for n in names:
+        desc, pkg_sub, dest_sub = COPY_SETS[n]
+        source_dir = os.path.join(pkg_dir, pkg_sub)
+        if not os.path.isdir(source_dir):
+            print(f'This pyEMAPS installation has no {desc}.')
             continue
-        source = os.path.join(pkg_samples_dir, file_name)
-        destination = os.path.join(curr_samples_dir, file_name)
-        
-        if os.path.isfile(source):
-            shutil.copy(source, destination)
-            print(f'Copied sample code: {file_name} in pyemaps package to {destination}')
 
-    print(f'Run sample code by typing: \"python pyemaps_samples\\<sample>\"')
+        dest_dir = os.path.join(curr_dir, dest_sub)
+        os.makedirs(dest_dir, exist_ok=True)
+
+        copied, skipped = 0, []
+        for file_name in sorted(os.listdir(source_dir)):
+            source = os.path.join(source_dir, file_name)
+            if not os.path.isfile(source) or file_name in COPY_SKIP:
+                continue
+            destination = os.path.join(dest_dir, file_name)
+            if os.path.exists(destination):
+                skipped.append(file_name)
+                continue
+            shutil.copy(source, destination)
+            copied += 1
+            print(f'Copied {file_name} to {destination}')
+
+        print(f'Copied {copied} files into {dest_dir}.')
+        if skipped:
+            print(f'Skipped {len(skipped)} that already exist there: {", ".join(skipped)}. '
+                  'To get fresh copies, rename or delete them and copy again.')
+
+        if n == 'samples':
+            print(f'Run a sample with: python {os.path.join(dest_sub, "<sample>.py")}')
+        else:
+            print(f'Open the notebooks with Jupyter (pip install jupyter): '
+                  f'jupyter notebook {dest_sub}')
+
 
 def is_alphanumeric_with_dash(s, slen):
     """
@@ -85,7 +110,7 @@ def main():
     Usage:
         pyemaps -s (--sample)
         pyemaps -c (--copyright)
-        pyemaps -cp (--copysamples)
+        pyemaps -cp (--copy) [samples|notebooks]
         pyemaps -v (--version)
         pyemaps -l (--license) <trial|info|license token>
 
@@ -114,11 +139,16 @@ def main():
                         action='store_true',
                         help="display pyEMAPS copyrights.", 
                         required=False)
-    parser.add_argument("-cp", 
-                        "--copysamples", 
-                        default=False, 
-                        action='store_true',
-                        help="copy sample code into current working directory.", 
+    parser.add_argument("-cp",
+                        "--copy",
+                        "--copysamples",
+                        nargs='?',
+                        const='all',
+                        default=None,
+                        metavar='samples|notebooks',
+                        help="copy the sample scripts into pyemaps_samples, the Jupyter\n"
+                             "notebooks into pyemaps_notebooks, or, with neither, both.\n"
+                             "Files that already exist there aren't overwritten.",
                         required=False)
     
     if PKG_TYPE != TYPE_FREE:
@@ -155,6 +185,9 @@ The token is obtained from EMLab Solutions, Inc. by writing to support@emlabsoft
         parser.print_help()
         exit(1)
 
+    if args.copy not in (None, 'all', *COPY_SETS):
+        parser.error(f"argument -cp/--copy: expected 'samples' or 'notebooks', not '{args.copy}'")
+
     ver = dist_version("pyemaps") + str(f" {rel_stage}").lower()
     
     copyrit = ['PyEMAPS - Transmission Electron Diffraction Simulations In Python']
@@ -181,8 +214,8 @@ The token is obtained from EMLab Solutions, Inc. by writing to support@emlabsoft
         copyrit.append('--------------------------------')
         print('\n'.join(copyrit)) 
           
-        if args.copysamples:
-            copy_samples()
+        if args.copy:
+            copy_examples(args.copy)
             exit(0)
         
         if args.sample:

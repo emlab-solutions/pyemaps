@@ -85,6 +85,35 @@ def get_samples(sdn = 'samples'):
 
     return [os.path.join(sdn, os.path.basename(name)) for name in sfile_list]
 
+def get_notebooks(sdn='notebooks'):
+    '''
+    The Jupyter notebooks to install, without their outputs. Students see the results by running
+    them, and the copies with figures, about twenty times larger, stay on GitHub. Writes the
+    stripped copies under build/ and returns their paths.
+    '''
+    import glob
+    import json
+
+    here = os.path.dirname(os.path.realpath(__file__))
+    out_dir = os.path.join('build', sdn)
+    os.makedirs(os.path.join(here, out_dir), exist_ok=True)
+
+    files = []
+    for src in sorted(glob.glob(os.path.join(here, sdn, '*.ipynb'))):
+        with open(src, encoding='utf-8') as f:
+            nb = json.load(f)
+        for cell in nb['cells']:
+            if cell['cell_type'] == 'code':
+                cell['outputs'] = []
+                cell['execution_count'] = None
+        dest = os.path.join(out_dir, os.path.basename(src))
+        with open(os.path.join(here, dest), 'w', encoding='utf-8', newline='\n') as f:
+            json.dump(nb, f, indent=1, ensure_ascii=False)
+            f.write('\n')
+        files.append(dest)
+
+    return files
+
 def get_cdata(sdn = 'cdata'):
     '''
     input: sdn = sample directory name under pyemaps
@@ -190,6 +219,7 @@ setup(name                              ="pyemaps",
                                             'COPYING',
                                             'license.txt']),
                                             ('pyemaps/samples', get_samples()),
+                                            ('pyemaps/notebooks', get_notebooks()),
                                             ('pyemaps/cdata', get_cdata()),
 
                                           ],
