@@ -3,20 +3,18 @@ Kinematic diffraction
 
 .. code-block:: python
 
-   from pyemaps import Crystal             # pyemaps crystal module
-   from pyemaps import DPList, showDif     # helper modules
+   from pyemaps import Crystal, DPList, showDif
 
-   if __name__ == '__main__':              # needed in scripts, see the note below
-       si = Crystal.from_builtin('Silicon')    # load Silicon from the built-in database
-       emc, si_dp = si.generateDP()            # generate a kinematic diffraction pattern
-                                               # emc: the microscope and simulation controls used
-                                               # si_dp: the diffraction pattern
-       print(si_dp)                            # raw representation of the pattern
+   if __name__ == '__main__':    # needed in scripts; see the note below
+       silicon = Crystal.from_builtin('Silicon')
 
-       dpl = DPList('Silicon')                 # a list to hold the results
-       dpl.add(emc, si_dp)                     # add more if desired
+       # emc: the microscope and simulation controls used; pattern: the diffraction pattern
+       emc, pattern = silicon.generateDP()
+       print(pattern)
 
-       showDif(dpl, bClose=False)              # show the diffraction pattern
+       patterns = DPList('Silicon')    # a list of patterns to display
+       patterns.add(emc, pattern)
+       showDif(patterns)
 
 .. note::
 
@@ -27,7 +25,7 @@ Kinematic diffraction
 
 
 :py:meth:`~pyemaps.crystals.Crystal.generateDP` returns the microscope and simulation controls
-it used (*emc*) and the kinematic diffraction pattern (*si_dp*), a
+it used (*emc*) and the kinematic diffraction pattern (*pattern*), a
 :py:class:`~pyemaps.kdiffs.diffPattern`. Called without arguments, it uses the default controls.
 For all its parameters, see :py:meth:`~pyemaps.crystals.Crystal.generateDP`.
 
@@ -48,47 +46,36 @@ It runs the simulations in parallel processes, then shows the patterns as a tabl
 
 .. code-block:: python
 
-    from pyemaps import DEF_MODE
-    from pyemaps import EMC
+    import concurrent.futures
+    import sys
 
-    MAX_PROCWORKERS = 4
+    from pyemaps import EMC, Crystal, DPList, showDif
 
-    def generate_difs(name = 'Silicon', mode = DEF_MODE):
-        
-        from pyemaps import DPList
-        import concurrent.futures
-        from pyemaps import Crystal as cryst
+    ZONES = [(0, 0, 1), (1, 1, 2), (1, 1, 1), (1, 3, 3), (0, 1, 2), (0, 1, 3)]
+    MAX_WORKERS = 4    # number of parallel processes
 
-        cr = cryst.from_builtin(name)
 
-        zlist=[(0,0,1), (1,1,2), (1,1,1),
-               (1,3,3), (0,1,2), (0,1,3)]
-        
-        fs=[]
+    def generate_patterns(name='Silicon', mode=2):
+        """Generate diffraction patterns at each zone axis in ZONES, in parallel."""
+        crystal = Crystal.from_builtin(name)
 
-        difs = DPList(name, mode = mode)
+        patterns = DPList(name, mode=mode)
+        with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_WORKERS) as executor:
+            futures = [executor.submit(crystal.generateDP, mode=mode,
+                                       em_controls=EMC(zone=zone, cl=2500))
+                       for zone in ZONES]
 
-        emclist =[EMC(zone=z, cl=2500) for z in zlist] 
-
-        with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
-
-            for ec in emclist:
-                fs.append(e.submit(cr.generateDP, mode=mode, em_controls = ec))
-
-            for f in concurrent.futures.as_completed(fs):
+            for future in concurrent.futures.as_completed(futures):
                 try:
-                    emc, diffP = f.result()
-                    difs.add(emc, diffP)
-                    
+                    emc, pattern = future.result()
                 except Exception as e:
-                    print(f'{f} generated an exception: {e}')
-                    exit(1)
-        difs.sort()
-        return difs
+                    sys.exit(f'Failed to generate a diffraction pattern: {e}')
+                patterns.add(emc, pattern)
+
+        patterns.sort()
+        return patterns
+
 
     if __name__ == '__main__':
-        
-        from pyemaps import showDif
-
-        dpl = generate_difs(mode = 2)
-        showDif(dpl, cShow = True, iShow=True, layout='table', bSave = True)
+        patterns = generate_patterns(mode=2)    # 2: CBED mode
+        showDif(patterns, cShow=True, iShow=True, layout='table', bSave=True)

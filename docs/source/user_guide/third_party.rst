@@ -12,21 +12,20 @@ Kinematic diffraction patterns
 
 .. code-block:: python
     
-    from pyemaps import Crystal as cr
-    
-    si = cr.from_builtin('Silicon')
+    from pyemaps import Crystal
 
-    _, dp = si.generateDP()
+    silicon = Crystal.from_builtin('Silicon')
+    _, pattern = silicon.generateDP()
 
-    dp.klines   # Kikuchi lines list
-    dp.nklines  # number of Kikuchi lines, same as len(dp.klines)
-    dp.disks    # diffracted beams list
-    dp.ndisks   # number of diffracted beams, same as len(dp.disks)
-    dp.hlines   # HOLZ lines list
-    dp.nhlines  # number of HOLZ lines, same as len(dp.hlines)
+    pattern.klines     # the Kikuchi lines
+    pattern.nklines    # the number of Kikuchi lines, same as len(pattern.klines)
+    pattern.disks      # the diffracted beams
+    pattern.ndisks     # the number of diffracted beams, same as len(pattern.disks)
+    pattern.hlines     # the HOLZ lines
+    pattern.nhlines    # the number of HOLZ lines, same as len(pattern.hlines)
 
-*dp.klines* and *dp.hlines* are lists of :py:class:`~pyemaps.kdiffs.Line` objects, and
-*dp.disks* is a list of :py:class:`~pyemaps.kdiffs.Disk` objects. A line unpacks to its end
+*pattern.klines* and *pattern.hlines* are lists of :py:class:`~pyemaps.kdiffs.Line` objects,
+and *pattern.disks* is a list of:py:class:`~pyemaps.kdiffs.Disk` objects. A line unpacks to its end
 points and intensity, ``x1, y1, x2, y2, intensity``, and a disk to its center, radius and Miller
 indices, ``x, y, r, h, k, l``, ready for plotting in other tools.
 

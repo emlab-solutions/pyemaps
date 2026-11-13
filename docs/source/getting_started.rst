@@ -55,18 +55,18 @@ show it:
    from pyemaps import Crystal, DPList, showDif
 
    if __name__ == '__main__':
-       si = Crystal.from_builtin('Silicon')
-       emc, si_dp = si.generateDP()
+       silicon = Crystal.from_builtin('Silicon')
+       emc, pattern = silicon.generateDP()
 
-       dpl = DPList('Silicon')
-       dpl.add(emc, si_dp)
-       showDif(dpl)
+       patterns = DPList('Silicon')
+       patterns.add(emc, pattern)
+       showDif(patterns)
 
 .. image:: _static/images/si_dif1.png
    :alt: Kinematic diffraction pattern of Silicon
    :width: 320px
 
-*emc* holds the microscope and simulation controls that were used, and *si_dp* is the
+*emc* holds the microscope and simulation controls that were used, and *pattern* is the
 diffraction pattern: its Kikuchi lines, HOLZ lines and diffracted beams.
 
 .. note::

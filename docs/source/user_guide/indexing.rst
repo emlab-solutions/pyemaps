@@ -10,12 +10,12 @@ First, generate a DP database for the crystal, here Aluminium:
 
 .. code-block:: python
 
-   from pyemaps import Crystal, EMC, StackImage
+   from pyemaps import EMC, Crystal, StackImage
 
-   al = Crystal.from_builtin('Aluminium')
-   ret, dbfn = al.generateDPDB(emc=EMC(zone=(0, 0, 1)), res=200, xa=(2, 0, 0))
+   aluminium = Crystal.from_builtin('Aluminium')
+   ret, db_file = aluminium.generateDPDB(emc=EMC(zone=(0, 0, 1)), res=200, xa=(2, 0, 0))
 
-*ret* is 0 on success, and *dbfn* is the database file name. An optional *vertices* argument,
+*ret* is 0 on success, and *db_file* is the database file name.An optional *vertices* argument,
 an array of 3 or 4 zone axis indexes, encloses the orientation area within which the
 diffraction patterns are generated. For details, see
 :py:obj:`generateDPDB <pyemaps.crystals.Crystal.generateDPDB>`.
@@ -27,16 +27,16 @@ current directory (see :doc:`../examples`). Run the example from that folder.
 
 .. code-block:: python
 
-   img = StackImage('al.img')
-   img.indexImage(dbfn,
-                  cc               = 29.0,
-                  sigma            = 3.0,
-                  img_center       = (99.923, 99.919),
-                  rmin             = 10,
-                  search_box       = 10.0,
-                  scaling_option   = (1, 2),
-                  filter_threshold = 0.0,
-                  peak_threshold   = 0.8)
+   image = StackImage('al.img')
+   image.indexImage(db_file,
+                    cc=29.0,                       # camera constant, pixels per 1/Å
+                    sigma=3.0,                     # estimated peak width, in pixels
+                    img_center=(99.923, 99.919),   # pattern center, in pixels
+                    rmin=10,                       # radius excluded around the center
+                    search_box=10.0,               # peak search box size, in pixels
+                    scaling_option=(1, 2),         # intensity scaling for matching
+                    filter_threshold=0.0,          # 0 searches every database pattern
+                    peak_threshold=0.8)            # drops noisy peaks
 
    StackImage.showMatchedDBDP()
 
