@@ -53,10 +53,13 @@ def add_csf(target):
         5: 'backend reflection-count estimate was too low (internal error)',
     }
         
+    # printCSF titles, by structure factor type (sftype 1-4). The units match the backend's
+    # scaling: type 2 is the crystal potential coefficient V_g, in volts; types 3 and 4 are
+    # U_g = 2meV_g/h^2 (relativistic) and its absorption counterpart, both in 1/Angstrom^2.
     sf_type_lookup = ['X-ray Structure Factors',
-                  'Electron Strcture Factors in kV',
-                  'Electron Structure Factor in 1/lambda',
-                  'Electron Absorption Structure Factor in 1/lambda^2']
+                  'Electron Structure Factors in Volts',
+                  'Electron Structure Factors in 1/Angstrom^2',
+                  'Electron Absorption Structure Factors in 1/Angstrom^2']
 
     sf_ap_flag = [('real', 'imaginary'), ('amplitude', 'phase')]
 
@@ -106,7 +109,7 @@ def add_csf(target):
         print(dss)
         
         if sftype > 1:
-            print(f"     high voltage\t: {sfs[0]['kv']} V\n")
+            print(f"     high voltage\t: {sfs[0]['kv']} kV\n")
         else:
             print(f" ")
 
