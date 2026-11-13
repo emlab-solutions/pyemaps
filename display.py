@@ -169,9 +169,21 @@ class DifPlotter:
         iax.clear()
         iax.set_xlim(-XMAX*PLOT_MULTIPLIER, XMAX*PLOT_MULTIPLIER)
         iax.set_ylim(-YMAX*PLOT_MULTIPLIER, YMAX*PLOT_MULTIPLIER)
-        iax.set_axis_off()
         iax.set_aspect('equal')
 
+        # In a table, a light frame shows where each pattern ends, and Miller indices are cut
+        # off at it, so they don't run into the next pattern.
+        in_table = self.layout == 'table'
+        if in_table:
+            iax.set_axis_on()
+            iax.set_xticks([])
+            iax.set_yticks([])
+            for spine in iax.spines.values():
+                spine.set_color('lightgrey')
+        else:
+            iax.set_axis_off()
+
+        labels = []
         if dp.nklines > 0:
             intlist = [k.intensity for k in dp.klines]
             lint, hint = min(intlist), max(intlist)
@@ -214,12 +226,16 @@ class DifPlotter:
             iax.add_patch(dis)
         
             if ishow:
-                iax.text(centre[0],centre[1], 
-                        str(d.idx),
-                        {'color': 'red', 'fontsize': 8},
-                        horizontalalignment='center',
-                        verticalalignment='bottom' if mode == 1 else 'center')
-           
+                labels.append(iax.text(centre[0], centre[1],
+                                       str(d.idx),
+                                       {'color': 'red', 'fontsize': 8},
+                                       horizontalalignment='center',
+                                       verticalalignment='bottom' if mode == 1 else 'center',
+                                       clip_on=in_table))
+
+        if in_table:
+            _hide_cut_labels(iax, labels)
+
         if self.cShow:
             self.plotControls(emc,iax)
 
@@ -728,6 +744,24 @@ def _getGridDims(n, nCol = 3):
         ncols = 3
         
     return nrows, ncols
+
+
+def _hide_cut_labels(ax, labels):
+    '''
+    Hide the labels that don't fit inside *ax*'s frame. Cut off at the frame, a label such as
+    "4 4 0" would read as another one, "4 0".
+    '''
+    try:
+        renderer = ax.figure.canvas.get_renderer()
+    except AttributeError:
+        return  # this backend can't measure text; the labels stay clipped instead
+    ax.apply_aspect()  # the frame's final size, as drawn
+    frame = ax.get_window_extent(renderer)
+    for label in labels:
+        box = label.get_window_extent(renderer)
+        if (box.x0 < frame.x0 or box.x1 > frame.x1 or
+                box.y0 < frame.y0 or box.y1 > frame.y1):
+            label.set_visible(False)
 
 
 def _getGridPos(i, nCols = 3):
