@@ -1,61 +1,59 @@
+# This file is part of pyEMAPS.
+#
+# pyEMAPS is free software: you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation, either version 3
+# of the License, or (at your option) any later version.
+#
+# pyEMAPS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with pyEMAPS.
+# If not, see <https://www.gnu.org/licenses/>.
+#
+# Author: EMLab Solutions, Inc. Questions and comments: support@emlabsoftware.com
+
+"""Large-angle CBED (LACBED) images for Silicon.
+
+This sample runs a dynamic diffraction simulation in LACBED mode, which gives one image per
+diffracted beam, and displays the images. It also saves them in a raw image file.
+
+Run it with:
+
+    python si_lacbed.py
 """
-This file is part of pyemaps
-___________________________
-
-pyemaps is free software. You can redistribute it and/or modify 
-it under the terms of the GNU General Public License as published 
-by the Free Software Foundation, either version 3 of the License, 
-or (at your option) any later version.
-
-pyemaps is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
-
-Contact support@emlabsoftware.com for any questions and comments.
-___________________________
-
-Author:     EMLab Solutions, Inc.
-Date:       May 25, 2023  
+from pyemaps import TY_LACBED, Crystal, showBloch
 
 
-This sample code generates large-angle CBED (LACBED) images for
-Silicon, one image per diffracted beam, and displays them.
+def generate_lacbed_images(name='Silicon', save=False, show=False):
+    """Generate LACBED images, one per diffracted beam.
 
+    :param name: the name of a built-in crystal.
+    :param save: also save the images in a raw image file.
+    :param show: display the images.
+    :return: the images as a BImgList, or None if the simulation failed.
+    """
+    crystal = Crystal.from_builtin(name)
 
-"""
-
-from pyemaps import showBloch
-
-
-def generate_lacbed_images(name = 'Silicon', bSave = False, bShow=False):
-
-    from pyemaps import Crystal as cryst
-
-    cr = cryst.from_builtin(name)
-    
     try:
-        imgs = cr.generateBloch( disk_size = 0.5,
-                            sampling = 10,
-                            nType = 1, 
-                            sample_thickness=(1000,1000,100),
-                            bSave=bSave)
+        images = crystal.generateBloch(disk_size=0.5,
+                                       sampling=10,
+                                       nType=TY_LACBED,
+                                       sample_thickness=(1000, 1000, 100),
+                                       bSave=save)
     except Exception as e:
-        print(f'Failed to obtain large angle CBED images: {e}')
-        return
-       
-    imgs.sort()
-    if bShow: 
-        showBloch(imgs,bClose=True)
-    return imgs
+        print(f'Failed to generate LACBED images: {e}')
+        return None
+
+    images.sort()
+    if show:
+        showBloch(images, bClose=True)
+    return images
+
 
 def main():
-    generate_lacbed_images(bSave=True, bShow=True)
+    generate_lacbed_images(save=True, show=True)
 
 
-if __name__== '__main__':
+if __name__ == '__main__':
     main()
-        

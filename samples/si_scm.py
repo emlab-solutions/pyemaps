@@ -1,160 +1,118 @@
-'''
-This file is part of pyemaps
-___________________________
+# This file is part of pyEMAPS.
+#
+# pyEMAPS is free software: you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation, either version 3
+# of the License, or (at your option) any later version.
+#
+# pyEMAPS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with pyEMAPS.
+# If not, see <https://www.gnu.org/licenses/>.
+#
+# Author: EMLab Solutions, Inc. Questions and comments: support@emlabsoftware.com
 
-pyemaps is free software. You can redistribute it and/or modify 
-it under the terms of the GNU General Public License as published 
-by the Free Software Foundation, either version 3 of the License, 
-or (at your option) any later version.
+"""Scattering matrices of a dynamic diffraction (Bloch) session for Silicon.
 
-pyemaps is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+A Bloch session calculates the scattering matrix, its eigenvalues and the diffracted beams at
+each sampling point of the incident beam. This sample starts a session and prints them at the
+central sampling point and at a randomly chosen one, then the beams calculated in the session.
 
-You should have received a copy of the GNU General Public License
-along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
+Run it with:
 
-Contact support@emlabsoftware.com for any questions and comments.
-___________________________
+    python si_scm.py
+"""
+import random
 
-Author:     EMLab Solutions, Inc.
-Date:       October 19th, 2022    
+from pyemaps import EMC, SIMC, BlochError, Crystal
+
+NAME = 'Silicon'
+
+# Microscope and simulation controls, and the diffracted beam (disk) size, for the session.
+CONTROLS = EMC(cl=200, tilt=(0.0, 0.0), simc=SIMC(gmax=2.0, excitation=(1.0, 2.0)))
+DISK_SIZE = 0.25
 
 
-This sample code demonstrates how to get the scattering matrix, its
-eigenvalues and the diffracted beams at sampling points of a dynamic
-diffraction (Bloch) session.
-'''
-
-c_name = 'Silicon'
-
-def runSCMTests():
-
-    from pyemaps import Crystal as cr
-    from pyemaps import BlochError, EMC, SIMC
-    import random
-    
-    si = cr.from_builtin(c_name)
-    
-    print(si)
-    # -----generate scattering matrix on this crystal instance----- 
-    #      controls set as follows. 
-
-    #      For a list beams coordinates 
-    #      to generate more scattering matrix, run si.getIBDetails()
-    
-    ec =EMC(cl=200,
-            tilt=(0.0, 0.0),
-            simc = SIMC(gmax=2.0, excitation=(1.0,2.0))
-            )
-    ds = 0.25
-    ib_coords = (0, 0)
-    lscm = []
-    ncb, cbs = 0, None
+def print_scattering_matrix(crystal, point):
+    """Print the scattering matrix, eigenvalues and diffracted beams at a sampling point."""
     try:
-        
-        ns, s = si.beginBloch(em_controls = ec, 
-                        dbsize = ds)
+        ndim, matrix, eigenvalues, beams = crystal.getSCMatrix(ib_coords=point)
+    except BlochError as e:
+        print(f'Failed to get the scattering matrix at {point}: {e.message}')
+        return
 
-    except Exception as e:
-        print(f'Failed to generate scattering matrix {e}')
-    else:
-        
-        print(f'----Sampling points in this dynamic diffraction session---:')
-        print(f'Number of sampling points: {ns}')
-        print(f'{s}')
+    print(f'\n---- Scattering matrix at sampling point {point}, size {ndim}x{ndim} ----')
+    print(matrix)
+    print(f'\n---- Eigenvalues at {point} ----')
+    print(eigenvalues)
+    print(f'\n---- Diffracted beams at {point} ----')
+    print(beams)
 
-        # get the scattering matrix and associated eigen values now
-        try:
-            ndim, si_scm, si_ev, si_beams = si.getSCMatrix(ib_coords = ib_coords)
-        except BlochError as e:
-            print(f'Failed to generate scattering matrix {e.message}')
-        except Exception as e:
-            print(f'Failed to generate scattering matrix {e}')
-        else:
-            print(f'\n----Scattering matrix at sampling point {ib_coords}----:')
-            print(f'Size of the scattering matrix: {ndim}x{ndim}')
-            print(f' \n{si_scm}')
 
-            print(f'\n----Eigen values at: {ib_coords}----')
-            print(si_ev)
+def print_scattering_matrices():
+    """Run a Bloch session and print its results at two sampling points."""
+    crystal = Crystal.from_builtin(NAME)
+    print(crystal)
 
-            print(f'\n----Diffracted beams at: {ib_coords}----')
-            print(si_beams)
-
-            print(f'\n----More details associated with scattering matrix calculation') 
-            si.getIBDetails()
-            
-            # select a random sampling point from s and calculate scattering matrix
-            randnum = random.randrange(ns)
-            
-            ib_coords = s[randnum]
-            try:
-                nd, si_scm, si_ev, si_beams = si.getSCMatrix(ib_coords = ib_coords)
-                lscm.append(dict(ib=ib_coords, ndim=nd, scm=si_scm, ev=si_ev, beams=si_beams))
-            except Exception:
-                print(f'Error obtaining scattering matrix at random sampling points {ib_coords}')
-            else:
-                print(f'\n----Scattering matrix at a randomly selected sampling point {ib_coords}----:')
-                print(f'Size of the scattering matrix: {nd}x{nd}')
-                print(f'{si_scm}')
-                print(f'\n----Eigen values at: {ib_coords}----')
-                print(si_ev)
-                print(f'\n----Diffracted beams at: {ib_coords}----')
-                print(si_beams)
-
-        # show a list of calculated beams for current bloch session
-        ncb, cbs = si.getCalculatedBeams(bPrint=True)
-    # cleanup 
-    si.endBloch()
-    return (dict(ncb=ncb, cbs=cbs), lscm)
-
-def runSCMFullTests():
-
-    from pyemaps import Crystal as cr
-    from pyemaps import BlochError, EMC, SIMC
-    
-    si = cr.from_builtin(c_name)
-    
-    # -----generate scattering matrix on this crystal instance----- 
-    #      controls set as follows. 
-
-    #      For a list beams coordinates 
-    #      to generate more scattering matrix, run si.getIBDetails()
-    
-    ec =EMC(cl=200,
-            tilt=(0.0, 0.0),
-            simc = SIMC(gmax=2.0, excitation=(1.0,2.0))
-            )
-    ds = 0.25
-    
-    lscm = []
-    ns, ncb, cbs, nib, isblist = 0, 0, None, 0, None
     try:
-        
-        ns, s = si.beginBloch(em_controls = ec, 
-                        dbsize = ds)
-        nib, isblist = si.getIBDetails(bPrint=False)
-        
+        npoints, points = crystal.beginBloch(em_controls=CONTROLS, dbsize=DISK_SIZE)
     except Exception as e:
-        print(f'Failed to generate scattering matrix {e}')
-    else:
-        # get the scattering matrix and associated eigen values now
-        try:
-            for i in range(ns):
-                ndim, si_scm, si_ev, si_beams = si.getSCMatrix(ib_coords = s[i])
-                lscm.append(dict(ib=s[i], ndim=ndim, scm=si_scm, ev=si_ev, beams=si_beams))
-        except BlochError as e:
-            print(f'Failed to generate scattering matrix {e.message}')
-        except Exception as e:
-            print(f'Failed to generate scattering matrix {e}')
-        
-        # show a list of calculated beams for current bloch session
-        ncb, cbs = si.getCalculatedBeams(bPrint=False)
-    # cleanup 
-    si.endBloch()
-    return (dict(ncb=ncb, cbs=cbs), dict(nscm=ns, lscm=lscm), dict(nib=nib, libt=isblist))
+        print(f'Failed to start the Bloch session: {e}')
+        return
 
-if __name__ == "__main__":
-    runSCMTests() #only sampling and print out two of the results
+    try:
+        print(f'\n---- {npoints} sampling points in this session ----')
+        print(points)
+
+        print_scattering_matrix(crystal, (0, 0))
+
+        print('\n---- More details of the scattering matrix calculation ----')
+        crystal.getIBDetails()
+
+        print_scattering_matrix(crystal, random.choice(points))
+
+        print('\n---- Beams calculated in this session ----')
+        crystal.getCalculatedBeams(bPrint=True)
+    finally:
+        crystal.endBloch()
+
+
+def all_scattering_matrices():
+    """Run a Bloch session and return its results at every sampling point.
+
+    :return: three dictionaries:
+
+        1. the beams calculated in the session: ``ncb``, their number, and ``cbs``, the beams.
+        2. the scattering matrices: ``nscm``, the number of sampling points, and ``lscm``, a
+           list with one dictionary per sampling point: ``ib``, the point; ``ndim``, the
+           matrix size; ``scm``, the matrix; ``ev``, its eigenvalues; ``beams``, the
+           diffracted beams.
+        3. the incident beam details: ``nib``, their number, and ``libt``, the details.
+    """
+    crystal = Crystal.from_builtin(NAME)
+
+    npoints, points = crystal.beginBloch(em_controls=CONTROLS, dbsize=DISK_SIZE)
+    try:
+        nib, ib_details = crystal.getIBDetails(bPrint=False)
+
+        matrices = []
+        for point in points:
+            ndim, matrix, eigenvalues, beams = crystal.getSCMatrix(ib_coords=point)
+            matrices.append(dict(ib=point, ndim=ndim, scm=matrix, ev=eigenvalues, beams=beams))
+
+        ncb, calculated_beams = crystal.getCalculatedBeams(bPrint=False)
+    finally:
+        crystal.endBloch()
+
+    return (dict(ncb=ncb, cbs=calculated_beams),
+            dict(nscm=npoints, lscm=matrices),
+            dict(nib=nib, libt=ib_details))
+
+
+def main():
+    print_scattering_matrices()
+
+
+if __name__ == '__main__':
+    main()

@@ -1,138 +1,115 @@
-'''
-This file is part of pyemaps
-___________________________
+# This file is part of pyEMAPS.
+#
+# pyEMAPS is free software: you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation, either version 3
+# of the License, or (at your option) any later version.
+#
+# pyEMAPS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with pyEMAPS.
+# If not, see <https://www.gnu.org/licenses/>.
+#
+# Author: EMLab Solutions, Inc. Questions and comments: support@emlabsoftware.com
 
-pyemaps is free software. You can redistribute it and/or modify 
-it under the terms of the GNU General Public License as published 
-by the Free Software Foundation, either version 3 of the License, 
-or (at your option) any later version.
+"""Kinematic diffraction patterns for Silicon, varying one microscope control at a time.
 
-pyemaps is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+For each microscope control (tilt, zone axis, deflection, high voltage and camera length),
+this sample generates six diffraction patterns, each with a different value of that control,
+and displays them. The patterns are generated in parallel processes.
 
-You should have received a copy of the GNU General Public License
-along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
+Run it with:
 
-Contact support@emlabsoftware.com for any questions and comments.
-___________________________
-
-Author:     EMLab Solutions, Inc.
-Date:       May 11, 2022    
-
-
-This sample code generates kinematic diffraction patterns for Silicon
-while varying one microscope control at a time (tilt, zone axis,
-deflection, high voltage or camera length), in parallel processes, and
-displays them.
-'''
+    python si_dif.py
+"""
+import concurrent.futures
 import sys
 
-try:
-    from pyemaps import DEF_CBED_DSIZE, DEF_MODE
-except ImportError as e:
-    print(f'pyEMAPS importing error: {e}')
-    sys.exit(1)
+from pyemaps import (DEF_CBED_DSIZE, DEF_MODE, EMC, SIMC, Crystal, DPError, DPList, EMCError,
+                     showDif)
 
-from pyemaps import EMC, DPError, EMCError
+# The microscope controls this sample varies, by their EMC attribute names:
+# tilt, zone axis, deflection, high voltage and camera length.
+CONTROLS = ('tilt', 'zone', 'defl', 'vt', 'cl')
 
-MAX_PROCWORKERS = 4
-em_keys = ['tilt', 'zone', 'defl', 'vt', 'cl']
+MAX_WORKERS = 4    # number of parallel processes
 
-def generate_difs(name = 'Silicon', mode = DEF_MODE, ckey = 'tilt', sim_rand=False):
-    '''
-    Generates kinematic diffraction patterns with pyEMAPS' dif module,
-    one for each of six values of the microscope control named by ckey.
 
-    : name: crystal name from the built-in database
-    : mode: diffraction mode, 1 for normal and 2 for CBED
-    : ckey: name of the microscope control to vary: 'tilt', 'zone',
-    :       'defl', 'vt' or 'cl'
-    : sim_rand: if True, use one set of randomized simulation controls
-    :           (SIMC) for all the patterns instead of the defaults
-'''
-    from pyemaps import DPList, SIMC
-    import concurrent.futures
-    from pyemaps import Crystal as cryst
+def make_controls(control, random_sim=False):
+    """Return six microscope controls (EMC), each with a different value of `control`.
 
-    cr = cryst.from_builtin(name)
+    With `random_sim=True`, all six also share one set of randomized simulation controls
+    (SIMC) instead of the defaults.
+    """
+    sim = SIMC.from_random() if random_sim else None
 
-    if mode == 2:
-        dsize = DEF_CBED_DSIZE
-    else:
-        dsize = None
-    
-    fs=[]
-    # create an empty diffraction pattern list
-    difs = DPList(name, mode = mode)
-
-    emclist =[] 
-
-    if sim_rand:
-        sc = SIMC._from_random()
-
-    for i in range(-3,3): 
+    emc_list = []
+    for i in range(-3, 3):
         emc = EMC()
-        if ckey == 'tilt':
-            emc.tilt = (i*0.5, 0.0)
-        
-        if ckey == 'zone':
-            emc.zone= (0, i, 1)
+        if control == 'tilt':
+            emc.tilt = (i * 0.5, 0.0)
+        elif control == 'zone':
+            emc.zone = (0, i, 1)
+        elif control == 'defl':
+            emc.defl = (i * 0.5, 0.0)
+        elif control == 'vt':
+            emc.vt = 200 + i * 10
+        elif control == 'cl':
+            emc.cl = 1000 + i * 50
 
-        if ckey == 'defl':
-            emc.defl= (i*0.5, 0.0)
+        if sim is not None:
+            emc.simc = sim
+        emc_list.append(emc)
 
-        if ckey == 'vt':
-            emc.vt= 200 + i*10
+    return emc_list
 
-        if ckey == 'cl':
-            emc.cl= 1000 + i*50
 
-        if sim_rand:
-            emc.simc = sc
+def generate_patterns(control='tilt', mode=DEF_MODE, name='Silicon', random_sim=False):
+    """Generate kinematic diffraction patterns, one per value of a microscope control.
 
-        emclist.append(emc)
+    :param control: the microscope control to vary, one of CONTROLS.
+    :param mode: the diffraction mode: 1 for normal, 2 for CBED.
+    :param name: the name of a built-in crystal.
+    :param random_sim: use randomized simulation controls instead of the defaults.
+    :return: the patterns as a DPList, sorted by their microscope controls.
+    """
+    crystal = Crystal.from_builtin(name)
+    disk_size = DEF_CBED_DSIZE if mode == 2 else None
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
+    patterns = DPList(name, mode=mode)
+    with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        futures = [executor.submit(crystal.generateDP, mode=mode, dsize=disk_size,
+                                   em_controls=emc)
+                   for emc in make_controls(control, random_sim)]
 
-        for ec in emclist:
-            fs.append(e.submit(cr.generateDP, mode=mode,  dsize=dsize, em_controls = ec))
-
-        for f in concurrent.futures.as_completed(fs):
+        for future in concurrent.futures.as_completed(futures):
             try:
-                emc, diffP = f.result()
-                difs.add(emc, diffP)
-                
+                emc, pattern = future.result()
             except (DPError, EMCError) as e:
-                print(f'{f} generated an exception: {e.message}')
-                sys.exit(1)
+                sys.exit(f'Failed to generate a diffraction pattern: {e.message}')
             except Exception as e:
-                print('failed to generate diffraction patterns with ' + str(e))
-                sys.exit(1)
+                sys.exit(f'Failed to generate a diffraction pattern: {e}')
+            patterns.add(emc, pattern)
 
-    # sort the diffraction pattern list by controls
-    difs.sort()       
+    patterns.sort()
+    return patterns
 
-    return difs
 
 def main():
-    
-    from pyemaps import showDif
-    
-    for k in em_keys:
-        dpl = generate_difs(ckey=k, mode=2)
-        showDif(dpl, 
-                layout='table' if k == 'tilt' or k == 'zone' else 'individual', 
-                kShow=False, 
-                iShow=False, 
-                bSave=(k=='zone'),
-                bClose=True
-                )
+    # CBED patterns, without Kikuchi lines or Miller indices. The tilt and zone axis series
+    # are shown as tables, and the zone axis table is also saved as an image.
+    for control in CONTROLS:
+        patterns = generate_patterns(control, mode=2)
+        layout = 'table' if control in ('tilt', 'zone') else 'individual'
+        showDif(patterns, layout=layout, kShow=False, iShow=False,
+                bSave=(control == 'zone'), bClose=True)
 
-    for k in em_keys:
-        dpl = generate_difs(ckey=k, sim_rand=True)
-        showDif(dpl, bClose=True)
+    # Normal-mode patterns with randomized simulation controls.
+    for control in CONTROLS:
+        patterns = generate_patterns(control, random_sim=True)
+        showDif(patterns, bClose=True)
+
 
 if __name__ == '__main__':
     main()

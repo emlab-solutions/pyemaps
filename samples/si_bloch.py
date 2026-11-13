@@ -1,116 +1,111 @@
+# This file is part of pyEMAPS.
+#
+# pyEMAPS is free software: you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation, either version 3
+# of the License, or (at your option) any later version.
+#
+# pyEMAPS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with pyEMAPS.
+# If not, see <https://www.gnu.org/licenses/>.
+#
+# Author: EMLab Solutions, Inc. Questions and comments: support@emlabsoftware.com
+
+"""Dynamic (Bloch wave) CBED patterns for Silicon over a tilt series and a zone axis series.
+
+For each of the two microscope controls, tilt and zone axis, this sample generates six
+dynamic diffraction patterns, each with a different value of that control, and displays them.
+The patterns are generated in parallel processes.
+
+Run it with:
+
+    python si_bloch.py
 """
-This file is part of pyemaps
-___________________________
-
-pyemaps is free software. You can redistribute it and/or modify 
-it under the terms of the GNU General Public License as published 
-by the Free Software Foundation, either version 3 of the License, 
-or (at your option) any later version.
-
-pyemaps is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
-
-Contact support@emlabsoftware.com for any questions and comments.
-___________________________
-
-Author:     EMLab Solutions, Inc.
-Date:       July 07, 2022  
-
-This sample code generates dynamic (Bloch wave) CBED patterns for
-Silicon over a series of tilts and a series of zone axes, in parallel
-processes, and displays them.
-
-"""
-
+import concurrent.futures
 import sys
-from pyemaps import EMC, DEF_CBED_DSIZE
 
-MAX_PROCWORKERS = 4
-em_keys = ['tilt', 'zone']
+from pyemaps import DEF_CBED_DSIZE, EMC, SIMC, BImgList, Crystal, showBloch
 
-def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt', sim_rand=False):
-    '''
-    Generates dynamic diffraction patterns with pyEMAPS' bloch module,
-    one for each of six values of the microscope control named by ckey.
+# The microscope controls this sample varies: tilt and zone axis.
+CONTROLS = ('tilt', 'zone')
 
-    : name: crystal name from the built-in database
-    : dsize: diffracted beam (disk) size
-    : ckey: name of the microscope control to vary: 'tilt' or 'zone'
-    : sim_rand: if True, use one set of randomized simulation controls
-    :           (SIMC) for all the patterns instead of the defaults
-'''
-    import concurrent.futures
-    from pyemaps import Crystal as cryst
-    from pyemaps import BImgList, SIMC
+MAX_WORKERS = 4    # number of parallel processes
 
-    cr = cryst.from_builtin(name)
-    
-    fs=[]
-   
-    emclist =[] 
 
-    if sim_rand:
-        sc = SIMC._from_random()
-    else:
-        sc = SIMC()
+def make_controls(control, random_sim=False):
+    """Return six microscope controls (EMC), each with a different value of `control`.
 
-    for i in range(-3,3): 
-        emc = EMC(cl=200, simc=sc)
-        if ckey == 'tilt':
-            emc.tilt = (i*0.5, 0.0)
+    All six use a camera length of 200 and share one set of simulation controls (SIMC):
+    randomized with `random_sim=True`, the defaults otherwise.
+    """
+    sim = SIMC.from_random() if random_sim else SIMC()
 
-        if ckey == 'zone':
+    emc_list = []
+    for i in range(-3, 3):
+        emc = EMC(cl=200, simc=sim)
+        if control == 'tilt':
+            emc.tilt = (i * 0.5, 0.0)
+        elif control == 'zone':
             emc.zone = (0, i, 1)
+        emc_list.append(emc)
 
-        emclist.append(emc)
+    return emc_list
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
 
-        for ec in emclist:
-            fs.append(e.submit(cr.generateBloch, 
-                               disk_size=dsize, 
-                               sampling = 20, 
-                               sample_thickness=(1750,1750,100),
-                               em_controls = ec))
-        
-        bimgs = BImgList(name) 
-        for f in concurrent.futures.as_completed(fs):
+def generate_bloch_images(control='tilt', name='Silicon', disk_size=DEF_CBED_DSIZE,
+                          random_sim=False):
+    """Generate dynamic diffraction images, one per value of a microscope control.
+
+    :param control: the microscope control to vary: 'tilt' or 'zone'.
+    :param name: the name of a built-in crystal.
+    :param disk_size: the diffracted beam (disk) size.
+    :param random_sim: use randomized simulation controls instead of the defaults.
+    :return: the images as a BImgList sorted by their microscope controls, or None if a
+        simulation failed.
+    """
+    crystal = Crystal.from_builtin(name)
+
+    images = BImgList(name)
+    with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        futures = [executor.submit(crystal.generateBloch,
+                                   disk_size=disk_size,
+                                   sampling=20,
+                                   sample_thickness=(1750, 1750, 100),
+                                   em_controls=emc)
+                   for emc in make_controls(control, random_sim)]
+
+        for future in concurrent.futures.as_completed(futures):
             try:
-                imgs = f.result()
-
+                result = future.result()
             except Exception as e:
-                print(f'Unable to obtain bloch image(s): {e}') 
+                print(f'Unable to generate a Bloch image: {e}')
                 return None
-            else: 
-                emc, img = imgs[0]
-                bimgs.add(emc, img)
-   
-        # sorting the images by their associated controls
-        bimgs.sort()   
-        return bimgs
 
-from pyemaps import showBloch
+            # Each simulation has one sample thickness, so it returns one image.
+            emc, image = result[0]
+            images.add(emc, image)
+
+    images.sort()
+    return images
+
 
 def main():
-    for k in em_keys:
-        imgs = generate_bloch_images(ckey=k)
-        if imgs is not None:
-            showBloch(imgs, layout='table', bSave=True, bClose=True)
-        else:
+    # The tilt and zone axis series, as tables, also saved as images.
+    for control in CONTROLS:
+        images = generate_bloch_images(control)
+        if images is None:
             sys.exit(1)
+        showBloch(images, layout='table', bSave=True, bClose=True)
 
-    for k in em_keys:
-        imgs = generate_bloch_images(ckey=k, sim_rand=True)
-        if imgs is not None:
-            showBloch(imgs, bClose=True)
-        else:
+    # The same series with randomized simulation controls, one image at a time.
+    for control in CONTROLS:
+        images = generate_bloch_images(control, random_sim=True)
+        if images is None:
             sys.exit(1)
+        showBloch(images, bClose=True)
+
 
 if __name__ == '__main__':
     main()
-        

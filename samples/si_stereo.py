@@ -1,121 +1,84 @@
+# This file is part of pyEMAPS.
+#
+# pyEMAPS is free software: you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation, either version 3
+# of the License, or (at your option) any later version.
+#
+# pyEMAPS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with pyEMAPS.
+# If not, see <https://www.gnu.org/licenses/>.
+#
+# Author: EMLab Solutions, Inc. Questions and comments: support@emlabsoftware.com
 
+"""Stereodiagrams for Silicon over a tilt series and a zone axis series.
+
+For each of the two microscope controls, tilt and zone axis, this sample generates six
+stereodiagrams, each with a different value of that control, and displays them with their
+Miller indices. The stereodiagrams are generated in parallel processes.
+
+Run it with:
+
+    python si_stereo.py
 """
-This file is part of pyemaps
-___________________________
-
-pyemaps is free software. You can redistribute it and/or modify 
-it under the terms of the GNU General Public License as published 
-by the Free Software Foundation, either version 3 of the License, 
-or (at your option) any later version.
-
-pyemaps is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
-
-Contact support@emlabsoftware.com for any questions and comments.
-___________________________
-
-Author:     EMLab Solutions, Inc.
-Date:       September 26th, 2022
-
-This sample code generates stereodiagrams for Silicon over a series of
-tilts and a series of zone axes, in parallel processes, and displays
-them with their Miller indices.
-"""
-
-import sys
 import concurrent.futures
-from pyemaps import EMC
+import sys
 
-MAX_PROCWORKERS = 4
+from pyemaps import EMC, Crystal, showStereo
 
-def getStereo(cn, emc, ckey='tilt'):
-    from pyemaps import Crystal as cr
-    
-    if cn is None:
-        return None
-    
-    cc = cr.from_builtin(cn)
-    
-    if ckey is None:
-        stereo = cc.generateStereo()
-        return cn, emc, stereo
+# The microscope controls this sample varies: tilt and zone axis.
+CONTROLS = ('tilt', 'zone')
 
-    if ckey == 'tilt':
-        stereo = cc.generateStereo(tilt = emc.tilt) 
-        return cn, emc, stereo
-    elif (ckey == 'zone'): 
-        stereo = cc.generateStereo(zone = emc.zone)
-        return cn, emc, stereo
+MAX_WORKERS = 4    # number of parallel processes
+
+
+def stereodiagram(name, emc, control):
+    """Return `emc` and the stereodiagram of crystal `name` at the `control` value in `emc`.
+
+    This runs in a worker process, so it loads the crystal itself.
+    """
+    crystal = Crystal.from_builtin(name)
+    if control == 'tilt':
+        return emc, crystal.generateStereo(tilt=emc.tilt)
+    return emc, crystal.generateStereo(zone=emc.zone)
+
+
+def generate_stereodiagrams(control='tilt', name='Silicon'):
+    """Generate stereodiagrams, one per value of a microscope control.
+
+    :param control: the microscope control to vary: 'tilt' or 'zone'.
+    :param name: the name of a built-in crystal.
+    :return: a list of (EMC, stereodiagram) pairs, sorted by their microscope controls.
+    """
+    if control == 'tilt':
+        emc_list = [EMC(tilt=(i * 0.5, 0.0)) for i in range(-3, 3)]
     else:
-        return None
+        emc_list = [EMC(zone=(i, -i, 1)) for i in range(-3, 3)]
 
+    stereo_list = []
+    with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        futures = [executor.submit(stereodiagram, name, emc, control) for emc in emc_list]
 
-def generate_stereo(name = 'Silicon', ckey = 'tilt'):
-    '''
-    Generates stereodiagrams with pyEMAPS' stereo module, one for each
-    of six values of the microscope control named by ckey.
-
-    : name: crystal name from the built-in database
-    : ckey: name of the microscope control to vary: 'tilt' or 'zone'
-
-    '''
-    
-    emclist = []
-    for i in range(-3,3): 
-        
-        if ckey == 'tilt':
-            emclist.append(EMC(tilt=(i*0.5, 0.0)))
-  
-        if ckey == 'zone':
-            emclist.append(EMC(zone=(i,-i,1)))
-
-    
-    fs = []
-    slist=[]
-    with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
-        
-        for ec in emclist:
-            fs.append(e.submit(getStereo, cn = name, emc = ec, ckey = ckey))
-
-        for f in concurrent.futures.as_completed(fs):
+        for future in concurrent.futures.as_completed(futures):
             try:
-                _, emc, stereo = f.result()               
+                stereo_list.append(future.result())
             except Exception as e:
-                print('failed to generate stereodiagram with ' + str(e))
-                sys.exit(1)
-            else:
-                slist.append((emc, stereo))  
-                    
-    #  sorting the list by controls
-    slist.sort(key=lambda x: x[0])
+                sys.exit(f'Failed to generate a stereodiagram: {e}')
 
-    return slist
+    stereo_list.sort(key=lambda pair: pair[0])
+    return stereo_list
 
 
 def main():
-    from pyemaps import showStereo
+    # The tilt series as a table.
+    showStereo(generate_stereodiagrams('tilt'), name='Silicon', layout='table',
+               iShow=True, zLimit=1, bClose=True)
 
-    # display in table format
-    stereoList = generate_stereo(ckey='tilt')
-    showStereo(stereoList, 
-               name='Silicon', 
-               layout='table',
-               iShow=True,
-               bClose=True, 
-               zLimit = 1)
-
-    # display each stereodiagram in its own window
-    stereoList = generate_stereo(ckey='zone')
-    showStereo(stereoList, 
-               name='Silicon',
-               iShow=True,
-               bClose=True, 
-               zLimit = 1)
+    # The zone axis series, one stereodiagram at a time.
+    showStereo(generate_stereodiagrams('zone'), name='Silicon',
+               iShow=True, zLimit=1, bClose=True)
 
 
 if __name__ == '__main__':

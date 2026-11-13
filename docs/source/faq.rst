@@ -67,14 +67,13 @@ parallel processes with Python's ``concurrent.futures``:
 
 .. code-block:: python
 
-  with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
-
-        for ec in emclist:
-            fs.append(e.submit(cr.generateBloch,
-                               disk_size=dsize,
-                               sampling = 20,
-                               sample_thickness=(1750,1750,100),
-                               em_controls = ec))
+    with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        futures = [executor.submit(crystal.generateBloch,
+                                   disk_size=disk_size,
+                                   sampling=20,
+                                   sample_thickness=(1750, 1750, 100),
+                                   em_controls=emc)
+                   for emc in make_controls(control, random_sim)]
 
 This is an excerpt from the *si_bloch.py* sample, which has the complete script. ``pyemaps -cp``
 copies the samples into a *pyemaps_samples* folder; see :doc:`examples`.

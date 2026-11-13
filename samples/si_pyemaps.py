@@ -1,81 +1,61 @@
+# This file is part of pyEMAPS.
+#
+# pyEMAPS is free software: you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation, either version 3
+# of the License, or (at your option) any later version.
+#
+# pyEMAPS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with pyEMAPS.
+# If not, see <https://www.gnu.org/licenses/>.
+#
+# Author: EMLab Solutions, Inc. Questions and comments: support@emlabsoftware.com
+
+"""A first look at pyEMAPS with Silicon: the sample that ``pyemaps -s`` runs.
+
+It loads Silicon from the built-in crystals, generates and displays its kinematic diffraction
+pattern in normal and CBED modes, then generates and displays its dynamic (Bloch wave)
+diffraction pattern, all with the default microscope controls.
+
+See https://emlab-solutions.github.io/pyemaps/ for the pyEMAPS documentation.
 """
-This file is part of pyemaps
-___________________________
-
-pyemaps is free software. You can redistribute it and/or modify 
-it under the terms of the GNU General Public License as published 
-by the Free Software Foundation, either version 3 of the License, 
-or (at your option) any later version.
-
-pyemaps is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
-
-Contact support@emlabsoftware.com for any questions and comments.
-___________________________
-
-An example of using pyemaps crystal and diffraction modules to 
-1) create a crystal from built-in data for Silicon 
-2) generate kinematical diffraction patterns
-3) display the diffraction pattern using pyemaps's built-in plot function 
-
-See https://emlab-solutions.github.io/pyemaps/ for pyEMAPS usage.
-
-The pyemaps -s command runs this sample.
-
-Author:     EMLab Solutions, Inc.
-Date:       May 07, 2022    
-
-"""
+from pyemaps import Crystal, DPList, showBloch, showDif
 
 
-def run_si_sample():
-    #import Crystal class from pyemaps as cryst
-    from pyemaps import Crystal as cr
-    from pyemaps import showDif, showBloch
-    from pyemaps import DPList
-    # create a crystal class instance and load it with builtin silicon data
-    c_name = 'Silicon'
-    si = cr.from_builtin(c_name)
+def run_sample(name='Silicon'):
+    """Generate and display a crystal's kinematic and dynamic diffraction patterns."""
+    crystal = Crystal.from_builtin(name)
 
-    # generate diffraction on the crystal instance with all default controls
-    # parameters, default controls returned as the first output ignored
-    
-    dpl = DPList(c_name)
+    # Kinematic diffraction in normal mode. generateDP also returns the microscope
+    # controls it used, which DPList keeps with the pattern.
+    patterns = DPList(name)
+    emc, pattern = crystal.generateDP()
+    patterns.add(emc, pattern)
 
-    emc, si_dp = si.generateDP()
-    dpl.add(emc, si_dp) 
-    
-    #plot and show the diffraction pattern using pyemaps built-in plot function
-    showDif(dpl, bClose=True)
+    showDif(patterns, bClose=True)                  # everything
+    showDif(patterns, kShow=False, bClose=True)     # without Kikuchi lines
 
-    #hide Kikuchi lines
-    showDif(dpl, kShow=False, bClose=True) 
+    # Kinematic diffraction in CBED mode (mode 2).
+    patterns = DPList(name, mode=2)
+    emc, pattern = crystal.generateDP(mode=2)
+    patterns.add(emc, pattern)
 
-    #plot the following two DP in CBED mode (mode = 2)
-    dpl = DPList(c_name, mode = 2)
+    # Without Kikuchi lines or Miller indices, then without Miller indices only.
+    showDif(patterns, kShow=False, iShow=False, bClose=True)
+    showDif(patterns, iShow=False, bClose=True)
 
-    emc, si_dp = si.generateDP(mode = 2)
-    dpl.add(emc, si_dp) 
-
-    #hide both Kikuchi lines and Miller indices
-    showDif(dpl, kShow=False, iShow=False, bClose=True) 
-
-    #hide Miller Indices
-    showDif(dpl, iShow=False, bClose=True)
-
-    #Generate dynamic diffraction patterns using pyemaps' bloch module
-    
+    # Dynamic diffraction.
     try:
-      bloch_imgs_list = si.generateBloch(sampling = 20) 
-      
+        images = crystal.generateBloch(sampling=20)
     except Exception as e:
-      print(f'Error: {e}')
+        print(f'Failed to generate the dynamic diffraction pattern: {e}')
+        return
 
-    else:        
-      showBloch(bloch_imgs_list, bClose=True) #grey color map
-      showBloch(bloch_imgs_list, bColor=True, bClose=True) #with predefined color map
+    showBloch(images, bClose=True)                  # grey scale
+    showBloch(images, bColor=True, bClose=True)     # with a color map
+
+
+if __name__ == '__main__':
+    run_sample()

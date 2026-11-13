@@ -1,58 +1,69 @@
-'''
-This file is part of pyemaps
-___________________________
+# This file is part of pyEMAPS.
+#
+# pyEMAPS is free software: you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation, either version 3
+# of the License, or (at your option) any later version.
+#
+# pyEMAPS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with pyEMAPS.
+# If not, see <https://www.gnu.org/licenses/>.
+#
+# Author: EMLab Solutions, Inc. Questions and comments: support@emlabsoftware.com
 
-pyemaps is free software. You can redistribute it and/or modify 
-it under the terms of the GNU General Public License as published 
-by the Free Software Foundation, either version 3 of the License, 
-or (at your option) any later version.
+"""Crystal structure factors for Silicon.
 
-pyemaps is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+This sample calculates Silicon's structure factors of every type, at 100 kV and for
+reflections with sin(θ)/λ up to 1.0 1/Å, in both output formats, and prints them.
 
-You should have received a copy of the GNU General Public License
-along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
+Run it with:
 
-Contact support@emlabsoftware.com for any questions and comments.
-___________________________
+    python si_csf.py
+"""
+from pyemaps import Crystal
 
-Author:     EMLab Solutions, Inc.
-Date:       May 24, 2022    
+# Structure factor types (the sftype argument of generateCSF).
+SF_TYPES = {
+    1: 'X-ray structure factors',
+    2: 'electron structure factors, in volts',
+    3: 'electron structure factors, in 1/Å²',
+    4: 'electron absorption structure factors, in 1/Å²',
+}
+
+# Output formats (the aptype argument of generateCSF).
+AP_TYPES = {
+    1: 'amplitude and phase',
+    0: 'real and imaginary parts',
+}
 
 
-This sample code is to demonstrate how to generate crystal structure 
-factors. 
-'''
-c_name = 'Silicon'
+def generate_structure_factors(name='Silicon', verbose=True):
+    """Calculate a crystal's structure factors of every type, in both output formats.
 
-def runCSFTests(bPrint=True):
-    from pyemaps import Crystal as cr
-    si = cr.from_builtin(c_name)
-    if bPrint:
-        print(si)
-    # structure factors at 100 kV, for reflections with sin(theta)/wavelength <= 1.0
-    v = 100
-    sm = 1.0
+    :param name: the name of a built-in crystal.
+    :param verbose: print the crystal and each set of structure factors.
+    :return: a dictionary of the structure factors, keyed by (sftype, aptype).
+    """
+    crystal = Crystal.from_builtin(name)
+    if verbose:
+        print(crystal)
 
-    sfl = [1,2,3,4] # structure factor type list
-    # 1 -----X-ray Structure Factors
-    # 2 -----Electron Structure Factors in kV
-    # 3 -----Electron Structure Factor in 1/Å
-    # 4 -----Electron Absorption Structure Factor in 1/Å^2
+    results = {}
+    for sftype in SF_TYPES:
+        for aptype in AP_TYPES:
+            sfs = crystal.generateCSF(kv=100, smax=1.0, sftype=sftype, aptype=aptype)
+            results[(sftype, aptype)] = sfs
+            if verbose:
+                crystal.printCSF(sfs)
 
-    ampl = [1, 0] # structure factor format
-    # 1 -----amplitude and phase
-    # 0 -----real and imaginary
+    return results
 
-    for i in sfl:
-        for j in ampl:
-            
-            sfs = si.generateCSF(kv = v, smax = sm, sftype = i, aptype = j)
-            if bPrint:
-                si.printCSF(sfs)
-    return sfs
-    
-if __name__ == "__main__":
-    runCSFTests()
+
+def main():
+    generate_structure_factors()
+
+
+if __name__ == '__main__':
+    main()
