@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
 
-Contact supprort@emlabsoftware.com for any questions and comments.
+Contact support@emlabsoftware.com for any questions and comments.
 ___________________________
 
 An example of using pyemaps crystal and diffraction modules to 
@@ -23,7 +23,9 @@ An example of using pyemaps crystal and diffraction modules to
 2) generate kinematical diffraction patterns
 3) display the diffraction pattern using pyemaps's built-in plot function 
 
-See https://emlab-solutions.github.io/pyemaps/ for pemaps usage
+See https://emlab-solutions.github.io/pyemaps/ for pyEMAPS usage.
+
+The pyemaps -s command runs this sample.
 
 Author:     EMLab Solutions, Inc.
 Date:       May 07, 2022    
@@ -36,7 +38,6 @@ def run_si_sample():
     from pyemaps import Crystal as cr
     from pyemaps import showDif, showBloch
     from pyemaps import DPList
-    from pyemaps import BImgList
     # create a crystal class instance and load it with builtin silicon data
     c_name = 'Silicon'
     si = cr.from_builtin(c_name)
@@ -61,7 +62,7 @@ def run_si_sample():
     emc, si_dp = si.generateDP(mode = 2)
     dpl.add(emc, si_dp) 
 
-    #hide both Kukuchi line and Miller Indices
+    #hide both Kikuchi lines and Miller indices
     showDif(dpl, kShow=False, iShow=False, bClose=True) 
 
     #hide Miller Indices

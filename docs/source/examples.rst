@@ -19,8 +19,9 @@ them with ``python``:
       .. grid-item-card:: si_dif.py
          :img-top: _static/images/dif_table.png
 
-         Kinematic diffraction patterns for Silicon over a series of tilts and zone axes,
-         rendered with matplotlib.
+         Kinematic diffraction patterns for Silicon, varying one microscope control at a
+         time: tilt, zone axis, deflection, high voltage or camera length.
+         Rendered with matplotlib.
 
          Guide: :doc:`user_guide/kinematic`
 
@@ -34,7 +35,8 @@ them with ``python``:
       .. grid-item-card:: si_stereo.py
          :img-top: _static/images/stereo_table.png
 
-         Indexed stereodiagrams for a tilt series and a zone axis.
+         Indexed stereodiagrams for Silicon over a series of tilts and a series of zone
+         axes.
 
          Guide: :doc:`user_guide/stereo`
 
@@ -69,5 +71,7 @@ More samples
   :bdg-info:`Licensed`
 * *adf.py*: annular bright and dark field images and a masked image from an experimental
   image. It needs *adftest900.im3*, available from
-  `Zenodo <https://zenodo.org/records/14028793/files/adftest900.im3?download=1>`_.
-  :bdg-info:`Licensed`
+  `Zenodo <https://zenodo.org/records/14028793/files/adftest900.im3?download=1>`_; save it
+  in the *pyemaps_samples* folder. :bdg-info:`Licensed`
+* *dm_diff.py*: draws kinematic diffraction patterns in DigitalMicrograph; run it inside DM.
+  See :doc:`user_guide/third_party`.

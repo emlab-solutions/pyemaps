@@ -18,7 +18,7 @@
 .. You should have received a copy of the GNU General Public License
 .. along with pyEMAPS.  If not, see `<https://www.gnu.org/licenses/>`_.
 
-.. Contact supprort@emlabsoftware.com for any questions and comments.
+.. Contact support@emlabsoftware.com for any questions and comments.
 
 .. ----
 
@@ -26,19 +26,23 @@
 .. Author:     EMLab Solutions, Inc.
 .. Date:       May 27, 2023  
 
-This sample code is to demostrate basic usage of pyemaps' stem4d
-module to obtain annular dark and bright field image from 
-an experimental diffraction image input.
+This sample code demonstrates pyEMAPS' stem4d module: it generates
+annular bright and dark field images, and a masked image, from an
+experimental 4D-STEM image.
 
-This script is only available in with a license activation. 
+It needs the image adftest900.im3, available from Zenodo:
+https://zenodo.org/records/14028793/files/adftest900.im3?download=1
+Save it in the same folder as this script.
 
-Contact: support@emlabsoftware.com for license information.
+This sample needs an activated pyEMAPS license; see the License page of
+the pyEMAPS documentation. Contact support@emlabsoftware.com for license
+information.
 
 """
 
 import os
 from pathlib import Path
-from pyemaps import StackImage, EM_INT, E_RAW
+from pyemaps import StackImage, EM_INT
 
 current_file = Path(os.path.abspath(__file__))
 samples_path = current_file.parent.absolute()
@@ -46,11 +50,11 @@ samples_path = current_file.parent.absolute()
 def getDFFn():
     '''
     Imports sample experimental diffraction pattern image
-    with pyEMAPS preprietory 8-bytes header of integer data
-    type. 
+    with pyEMAPS' 8-byte small header and integer data
+    type.
 
-    To use your own image file, modify this call to retrieve 
-    the file and specify the image format and data type in 
+    To use your own image file, modify this call to retrieve
+    the file and specifythe image format and data type in 
     StackImage object creation. See document on StackImage class.
 
     '''
@@ -59,10 +63,10 @@ def getDFFn():
 def getMaskFn():
     '''
     Imports sample experimental diffraction pattern image
-    with pyEMAPS preprietory 8-bytes header of integer data
-    type.  
+    with pyEMAPS' 8-byte small header and integer data
+    type.
 
-    To use your own image file, modify this call to retrieve 
+    To use your own image file, modify this call to retrieve
     the file.
 
     '''
@@ -78,7 +82,7 @@ def test_adf():
 
     img = StackImage(adfn, 
                     #  nformat = E_SH,    <-------- use E_RAW or E_NPY for raw or numpy array image format, 
-                    #                               default to pyEMAPS proprietory format E_SH
+                    #                               default to pyEMAPS' small-header format E_SH
                     #  noffset = 8,       <-------- image head size or offset to image data, default 8
                     #  dim,               <-------- image dimensions in 3 integer tuple.
                     ndtype = EM_INT,     #<-------- image data type, default to float type EM_FLOAT.

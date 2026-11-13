@@ -15,21 +15,24 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
 
-Contact supprort@emlabsoftware.com for any questions and comments.
+Contact support@emlabsoftware.com for any questions and comments.
 ___________________________
 
 Author:     EMLab Solutions, Inc.
 Date:       May 25, 2023  
 
 
-This sample code is to demostrate using pyemaps to generate and render
-dynamic diffraction patterns. 
+This sample code generates large-angle CBED (LACBED) images for
+Silicon, one image per diffracted beam, and displays them.
 
 
 """
 
+from pyemaps import showBloch
+
+
 def generate_lacbed_images(name = 'Silicon', bSave = False, bShow=False):
-    
+
     from pyemaps import Crystal as cryst
 
     cr = cryst.from_builtin(name)
@@ -41,7 +44,7 @@ def generate_lacbed_images(name = 'Silicon', bSave = False, bShow=False):
                             sample_thickness=(1000,1000,100),
                             bSave=bSave)
     except Exception as e:
-        print(f'Faild to obtain large angle CBED images: {e}') 
+        print(f'Failed to obtain large angle CBED images: {e}')
         return
        
     imgs.sort()
@@ -52,8 +55,7 @@ def generate_lacbed_images(name = 'Silicon', bSave = False, bShow=False):
 def main():
     generate_lacbed_images(bSave=True, bShow=True)
 
-from pyemaps import showBloch
 
-if __name__ == '__main__':
+if __name__== '__main__':
     main()
         

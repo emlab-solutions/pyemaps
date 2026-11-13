@@ -15,21 +15,19 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
 
-Contact supprort@emlabsoftware.com for any questions and comments.
+Contact support@emlabsoftware.com for any questions and comments.
 ___________________________
 
 Author:     EMLab Solutions, Inc.
 Date:       April 02, 2023  
 
-This sample code is to demostrate using pyemaps' dpgen and 4dstem 
-modules named _stem4d_ to search and index experimental diffraction patterns images. 
-This script is for demonstration and only support crystal with 
-space group 225. 
+This sample code demonstrates pyEMAPS' dpgen and stem4d modules: it
+generates a diffraction pattern database for Aluminium, then searches it
+to index the experimental diffraction pattern image al.img.
 
-The full feature with complete crystal system support is available in
-pyemaps full package and for purchase. Contact:
-    support@emlabsoftware.com 
-for price information.
+This sample needs an activated pyEMAPS license; see the License page of
+the pyEMAPS documentation. Contact support@emlabsoftware.com for license
+information.
 
 """
 import os
@@ -65,7 +63,7 @@ def test_dp_indexing(cname = 'Aluminium'):
     ret, dbfn = cryst.generateDPDB(emc=EMC(zone=(0,0,1)), res = res, xa = xa0)
 
     if ret != 0:
-        print(f'failed to generate a diffraction patterns databaes')
+        print('failed to generate a diffraction pattern database')
         return -1
 
     xifn = getDPImageFn()
@@ -85,7 +83,7 @@ def test_dp_indexing(cname = 'Aluminium'):
         print(f'Error indexing image {e.message}')
         return
 
-    # display diffractiom pattern in the database that best match the image pattern
+    # display the diffraction pattern in the database that best matches the image
     StackImage.showMatchedDBDP()
 
 if __name__ == '__main__':

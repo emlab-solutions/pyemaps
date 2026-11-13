@@ -15,17 +15,19 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
 
-Contact supprort@emlabsoftware.com for any questions and comments.
+Contact support@emlabsoftware.com for any questions and comments.
 ___________________________
 
 Author:     EMLab Solutions, Inc.
 Date:       July 07, 2022  
 
-This sample code is to demostrate using pyemaps to generate and render
-dynamic diffraction patterns.   
+This sample code generates dynamic (Bloch wave) CBED patterns for
+Silicon over a series of tilts and a series of zone axes, in parallel
+processes, and displays them.
 
 """
 
+import sys
 from pyemaps import EMC, DEF_CBED_DSIZE
 
 MAX_PROCWORKERS = 4
@@ -33,14 +35,15 @@ em_keys = ['tilt', 'zone']
 
 def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt', sim_rand=False):
     '''
-    This routine demonstrate how to use pyemaps bloch module to generate dynamic diffraction paterns
-    : name: crystal name from builtin database
-    : dsize: diffracted beams size
-    : ckey: emcontrol key name
-    : sim_rand: randomized simulation control which is added to EMControl class, these controls
-    :           are not changed much (default values if not set). But if changes are needed, then they 
-    :           are also set from within EMControl class
-    '''
+    Generates dynamic diffraction patterns with pyEMAPS' bloch module,
+    one for each of six values of the microscope control named by ckey.
+
+    : name: crystal name from the built-in database
+    : dsize: diffracted beam (disk) size
+    : ckey: name of the microscope control to vary: 'tilt' or 'zone'
+    : sim_rand: if True, use one set of randomized simulation controls
+    :           (SIMC) for all the patterns instead of the defaults
+'''
     import concurrent.futures
     from pyemaps import Crystal as cryst
     from pyemaps import BImgList, SIMC
@@ -57,17 +60,13 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
         sc = SIMC()
 
     for i in range(-3,3): 
-        emc=EMC(cl=200)
+        emc = EMC(cl=200, simc=sc)
         if ckey == 'tilt':
-           emc.tilt=(i*0.5, 0.0)
-        
+            emc.tilt = (i*0.5, 0.0)
+
         if ckey == 'zone':
-            emc.zone=(0, i, 1)
+            emc.zone = (0, i, 1)
 
-        if sim_rand:
-            emc.simc = sc
-
-        emc(simc=sc)
         emclist.append(emc)
 
     with concurrent.futures.ProcessPoolExecutor(max_workers=MAX_PROCWORKERS) as e:
@@ -82,8 +81,8 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
         bimgs = BImgList(name) 
         for f in concurrent.futures.as_completed(fs):
             try:
-              imgs = f.result()
-              
+                imgs = f.result()
+
             except Exception as e:
                 print(f'Unable to obtain bloch image(s): {e}') 
                 return None
@@ -98,23 +97,20 @@ def generate_bloch_images(name = 'Silicon', dsize = DEF_CBED_DSIZE, ckey = 'tilt
 from pyemaps import showBloch
 
 def main():
-    em_keys = ['tilt', 'zone']
-    
     for k in em_keys:
         imgs = generate_bloch_images(ckey=k)
         if imgs is not None:
             showBloch(imgs, layout='table', bSave=True, bClose=True)
         else:
-            exit(1)
+            sys.exit(1)
 
     for k in em_keys:
         imgs = generate_bloch_images(ckey=k, sim_rand=True)
         if imgs is not None:
             showBloch(imgs, bClose=True)
         else:
-            exit(1)
+            sys.exit(1)
 
 if __name__ == '__main__':
-    
     main()
         

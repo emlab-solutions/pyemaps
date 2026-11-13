@@ -16,22 +16,24 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
 
-Contact supprort@emlabsoftware.com for any questions and comments.
+Contact support@emlabsoftware.com for any questions and comments.
 ___________________________
 
-```
-
 Author:     EMLab Solutions, Inc.
-Date:       September 26th, 2022    
+Date:       September 26th, 2022
+
+This sample code generates stereodiagrams for Silicon over a series of
+tilts and a series of zone axes, in parallel processes, and displays
+them with their Miller indices.
 """
 
+import sys
 import concurrent.futures
-from re import S
-from pyemaps import EMC, DPError,EMCError
+from pyemaps import EMC
 
 MAX_PROCWORKERS = 4
 
-def getStereo(cn, emc = EMC(), ckey='tilt'):
+def getStereo(cn, emc, ckey='tilt'):
     from pyemaps import Crystal as cr
     
     if cn is None:
@@ -55,12 +57,12 @@ def getStereo(cn, emc = EMC(), ckey='tilt'):
 
 def generate_stereo(name = 'Silicon', ckey = 'tilt'):
     '''
-    This routine demonstrate how to use pyemaps stereo module 
-    to generate stereodiagram
-    
-    : name: crystal name from builtin database
-    : ckey: emcontrol key name to change
-    
+    Generates stereodiagrams with pyEMAPS' stereo module, one for each
+    of six values of the microscope control named by ckey.
+
+    : name: crystal name from the built-in database
+    : ckey: name of the microscope control to vary: 'tilt' or 'zone'
+
     '''
     
     emclist = []
@@ -85,7 +87,7 @@ def generate_stereo(name = 'Silicon', ckey = 'tilt'):
                 _, emc, stereo = f.result()               
             except Exception as e:
                 print('failed to generate stereodiagram with ' + str(e))
-                exit(1)
+                sys.exit(1)
             else:
                 slist.append((emc, stereo))  
                     
@@ -93,6 +95,8 @@ def generate_stereo(name = 'Silicon', ckey = 'tilt'):
     slist.sort(key=lambda x: x[0])
 
     return slist
+
+
 def main():
     from pyemaps import showStereo
 
@@ -105,12 +109,14 @@ def main():
                bClose=True, 
                zLimit = 1)
 
-    # display in individual syereodiagram
+    # display each stereodiagram in its own window
     stereoList = generate_stereo(ckey='zone')
     showStereo(stereoList, 
                name='Silicon',
                iShow=True,
                bClose=True, 
-               zLimit = 1)     
+               zLimit = 1)
+
+
 if __name__ == '__main__':
-      main()
+    main()

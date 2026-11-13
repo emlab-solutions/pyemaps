@@ -16,24 +16,20 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
 
-Contact supprort@emlabsoftware.com for any questions and comments.
+Contact support@emlabsoftware.com for any questions and comments.
 ___________________________
 
 Author:     EMLab Solutions, Inc.
 Date:       April 02, 2023  
 
-This sample code is to demostrate basic usage of pyemaps' dpgen - 
-diffraction pattern (DP) generator module used as database
-for stem4d module to search and index experimental diffraction 
-patterns images. 
+This sample code demonstrates pyEMAPS' dpgen module, which generates
+a database of diffraction patterns (DP) for Aluminium. The stem4d
+module searches such a database to index experimental diffraction
+pattern images.
 
-This script is for demonstration and only support crystal with 
-space group 225. 
-
-The complete crystal system support is available in pyemaps 
-full package and for purchase. Contact:
-    support@emlabsoftware.com 
-for price information.
+This sample needs an activated pyEMAPS license; see the License page of
+the pyEMAPS documentation. Contact support@emlabsoftware.com for license
+information.
 
 """
 def al_dpdb():

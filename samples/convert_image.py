@@ -18,7 +18,7 @@
 .. You should have received a copy of the GNU General Public License
 .. along with pyEMAPS.  If not, see `<https://www.gnu.org/licenses/>`_.
 
-.. Contact supprort@emlabsoftware.com for any questions and comments.
+.. Contact support@emlabsoftware.com for any questions and comments.
 
 .. ----
 
@@ -26,12 +26,12 @@
 .. Author:     EMLab Solutions, Inc.
 .. Date:       Oct 31, 2024  
 
-This sample code is to demostrate pyEMAPS helper tool to convert
-a raw image to a pyEMAPS propietory small header image format.
+This sample code demonstrates the pyEMAPS helper that converts a raw
+image into pyEMAPS' small-header image format.
 
-This script is only available in with a license activation. 
-
-Contact: support@emlabsoftware.com for license information.
+This sample needs an activated pyEMAPS license; see the License page of
+the pyEMAPS documentation. Contact support@emlabsoftware.com for license
+information.
 
 """
 
@@ -47,7 +47,7 @@ def getRawImageFn():
     retrieves sample experimental diffraction pattern image
     in raw image format of dimension (256, 256, 1), 4-bytes 
     real image data type and offset of 0, to be converted to
-    pyEMAPS proprietory image format.  
+    pyEMAPS' small-header image format.
 
     To use your own image file, modify this call to retrieve 
     the file.
@@ -62,7 +62,7 @@ def test_conversion():
     small header image file.
 
     If the input raw image file name does not contain directory,
-    this method will search the file in pyEMAPS data diretcory
+    this method will search the file in pyEMAPS data directory
     set by the environment variable PYEMAPS_DATA or current 
     working directory in that order. 
     
@@ -72,7 +72,7 @@ def test_conversion():
     the input directory is writable.
     
     The result pyEMAPS image file with small header will be saved 
-    in a folder name `sh_converted` in the dierctory that
+    in a folder named `sh_converted` in the directory that
     contains the original raw image file.
 
     '''

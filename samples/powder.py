@@ -15,14 +15,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
 
-Contact supprort@emlabsoftware.com for any questions and comments.
+Contact support@emlabsoftware.com for any questions and comments.
 ___________________________
 
 Author:     EMLab Solutions, Inc.
 Date:       May 31, 2022    
 
 
-This sample code is to demonstrate how to generate powder diffraction.
+This sample code generates electron powder diffraction profiles for
+Silicon and Diamond (with absorption) and plots them side by side.
 '''
 
 def runPowderTests(bPrint=True):

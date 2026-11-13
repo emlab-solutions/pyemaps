@@ -15,15 +15,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
 
-Contact supprort@emlabsoftware.com for any questions and comments.
+Contact support@emlabsoftware.com for any questions and comments.
 ___________________________
 
 Author:     EMLab Solutions, Inc.
 Date:       October 21, 2022    
 
 
-This sample code is to demonstrate how to generate .xyz crystal 
-construction data that can be visualized by Jmol and cloudEMAPS 2.0. 
+This sample code demonstrates how to build a crystal supercell with
+pyEMAPS' mxtal module and save it as an .xyz file, which viewers such
+as Jmol can display.
 '''
 def test_mxtal(bPrint=True, bSave=True):
     
@@ -33,9 +34,9 @@ def test_mxtal(bPrint=True, bSave=True):
     mx=None
     try:
         si = cr.from_builtin('Silicon')
-        if si and bPrint:
-            print(f'crytsal data to generate mxtal: {si}')
-            mx = si.generateMxtal(bound=0.1)
+        if bPrint:
+            print(f'crystal data to generate mxtal: {si}')
+        mx = si.generateMxtal(bound=0.1)
     except (CrystalClassError, MxtalError) as e:
         print(f'error: generating crystal structure data: {e.message}')
     except Exception as e:

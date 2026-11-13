@@ -1,3 +1,33 @@
+'''
+This file is part of pyemaps
+___________________________
+
+pyemaps is free software. You can redistribute it and/or modify
+it under the terms of the GNU General Public License as published
+by the Free Software Foundation, either version 3 of the License,
+or (at your option) any later version.
+
+pyemaps is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
+
+Contact support@emlabsoftware.com for any questions and comments.
+___________________________
+
+Author:     EMLab Solutions, Inc.
+
+This sample code runs inside DigitalMicrograph (DM). It draws pyEMAPS
+kinematic diffraction patterns for Silicon as DM image annotations, and
+saves dynamic diffraction images for ErbiumPyrogermanate in a raw image
+file that DM can import.
+
+pyEMAPS must be installed in DM's Python environment, and that Python
+must be a version pyEMAPS supports.
+'''
 import numpy as np
 import DigitalMicrograph as DM
 
@@ -14,34 +44,7 @@ DIFF_MODE = ('Normal', 'CBED')
 #------Diffraction modes-------
 #       1 - normal
 #       2 - CBED
-def addline( x1, y1, x2, y2): 
-    '''
-    reserved for later use
-    '''
-    xx1, yy1, xx2, yy2 = x1*2, y1*2, x2*2, y2*2
-    dmline = DM.NewLineAnnotation(xx1, yy1, xx2, yy2)
-    
-    dmline.SetResizable(False)
-    dmline.SetMovable(False)
-    dmline.SetDeletable(False)
-    dmline.SetForegroundColor(0,1,0)
-    dmline.SetBackgroundColor(0.2,0.2,0.5)
-    
-    return dmline
 
-
-def adddisk( x1, y1, r, indx): 
-    '''
-    reserved for later use
-    '''
-    xx1, yy1, rr = x1*2, y1*2, r*2
-    dmdisk = DM.NewOvalAnnotation()
-    dmdisk.SetCircle(xx1-r,yx1-r, xx1+rr,yy1+r)
-    dmdisk.SetLabel(indx)
-
-    return dmdisk
-
-    
 def SetCommonProp(comp):
     '''
     Setting common attributes of the line and circle annotation components
@@ -56,7 +59,7 @@ def show_diffract(dp, md=1, name = 'Diamond'):
     # YMAX
     shape = (2*XMAX*mult,2*YMAX*mult)
 
-    #A new image from numpy array and initilize it to black background
+    #A new image from numpy array, initialized to a white background
     dif_raw = np.ones((shape), dtype = np.float32)
     dif_raw[:,:] = 255.0
 
@@ -203,22 +206,16 @@ def run_si_dm_bloch():
     #-----------content of the crystal data-----------------------------------
     print(ep)
     
-    #-----------generate diffraction pattern in CBED mode--------------------- 
+    #-----------generate dynamic diffraction images--------------------------
+    #           bSave=True saves them in a raw image file, and pyEMAPS
+    #           prints where. Import that file in DM to view the images.
     emc = EMC(tilt=(-0.2, 0.5), zone=(1,-1,2))
-    
+
     try:
-        _ = ep.generateBloch()
+        ep.generateBloch(em_controls=emc, bSave=True)
 
     except Exception as e:
-        print(f'Error running dynamic diffraction simuation for {name}')
-    #-----------Plot the pattern in DM----------------------------------------
-    import os
-    imgpath = os.environ.get('PYEMAPS_DATA')
-    imgf = os.path.join(imgpath, 'bloch')
-
-    print(f'Generate image file is located at: {imgf}')
-    #-----------content of the crystal data-----------------------------------
-    # show_diffract(si_dp, name = name)
+        print(f'Error running dynamic diffraction simulation for {name}: {e}')
 
 if __name__ == '__main__':
     run_si_dm_sample()

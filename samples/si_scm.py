@@ -15,14 +15,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
 
-Contact supprort@emlabsoftware.com for any questions and comments.
+Contact support@emlabsoftware.com for any questions and comments.
 ___________________________
 
 Author:     EMLab Solutions, Inc.
 Date:       October 19th, 2022    
 
 
-This sample code is to demonstrate how to generated scattering matrix
+This sample code demonstrates how to get the scattering matrix, its
+eigenvalues and the diffracted beams at sampling points of a dynamic
+diffraction (Bloch) session.
 '''
 
 c_name = 'Silicon'
@@ -40,7 +42,7 @@ def runSCMTests():
     #      controls set as follows. 
 
     #      For a list beams coordinates 
-    #      to generate more scattering matrix, run cr.printIBDetails()
+    #      to generate more scattering matrix, run si.getIBDetails()
     
     ec =EMC(cl=200,
             tilt=(0.0, 0.0),
@@ -49,6 +51,7 @@ def runSCMTests():
     ds = 0.25
     ib_coords = (0, 0)
     lscm = []
+    ncb, cbs = 0, None
     try:
         
         ns, s = si.beginBloch(em_controls = ec, 
@@ -84,7 +87,7 @@ def runSCMTests():
             si.getIBDetails()
             
             # select a random sampling point from s and calculate scattering matrix
-            randnum = random.randrange(0, ns-1)
+            randnum = random.randrange(ns)
             
             ib_coords = s[randnum]
             try:
@@ -118,7 +121,7 @@ def runSCMFullTests():
     #      controls set as follows. 
 
     #      For a list beams coordinates 
-    #      to generate more scattering matrix, run cr.printIBDetails()
+    #      to generate more scattering matrix, run si.getIBDetails()
     
     ec =EMC(cl=200,
             tilt=(0.0, 0.0),
@@ -127,6 +130,7 @@ def runSCMFullTests():
     ds = 0.25
     
     lscm = []
+    ns, ncb, cbs, nib, isblist = 0, 0, None, 0, None
     try:
         
         ns, s = si.beginBloch(em_controls = ec, 

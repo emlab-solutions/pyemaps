@@ -15,7 +15,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
 
-Contact supprort@emlabsoftware.com for any questions and comments.
+Contact support@emlabsoftware.com for any questions and comments.
 ___________________________
 
 Author:     EMLab Solutions, Inc.
@@ -32,14 +32,13 @@ def runCSFTests(bPrint=True):
     si = cr.from_builtin(c_name)
     if bPrint:
         print(si)
-    # generate diffraction on the crystal instance with all default controls
-    # parameters, default controls returned as the first output ignored
+    # structure factors at 100 kV, for reflections with sin(theta)/wavelength <= 1.0
     v = 100
     sm = 1.0
 
     sfl = [1,2,3,4] # structure factor type list
     # 1 -----X-ray Structure Factors
-    # 2 -----Electron Strcture Factors in kV
+    # 2 -----Electron Structure Factors in kV
     # 3 -----Electron Structure Factor in 1/Å
     # 4 -----Electron Absorption Structure Factor in 1/Å^2
 

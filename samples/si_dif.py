@@ -15,38 +15,43 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
 
-Contact supprort@emlabsoftware.com for any questions and comments.
+Contact support@emlabsoftware.com for any questions and comments.
 ___________________________
 
 Author:     EMLab Solutions, Inc.
 Date:       May 11, 2022    
 
 
-This sample code is to render kinematic diffraction patterns generated
-by pyemaps by changing zone axis
+This sample code generates kinematic diffraction patterns for Silicon
+while varying one microscope control at a time (tilt, zone axis,
+deflection, high voltage or camera length), in parallel processes, and
+displays them.
 '''
+import sys
+
 try:
     from pyemaps import DEF_CBED_DSIZE, DEF_MODE
 except ImportError as e:
     print(f'pyEMAPS importing error: {e}')
-    exit(1)
+    sys.exit(1)
 
-from pyemaps import EMC, DPError,EMCError
+from pyemaps import EMC, DPError, EMCError
 
 MAX_PROCWORKERS = 4
 em_keys = ['tilt', 'zone', 'defl', 'vt', 'cl']
 
 def generate_difs(name = 'Silicon', mode = DEF_MODE, ckey = 'tilt', sim_rand=False):
     '''
-    This routine demonstrate how to use pyemaps dif module to generate kinematic diffraction paterns
-    
-    : name: crystal name from builtin database
-    : dsize: diffracted beams size
-    : ckey: emcontrol key name
-    : sim_rand: randomized simulation control which is added to EMControl class, these controls
-    :           are not changed much (default values if not set). But if changes are needed, then they 
-    :           are also set from within EMControl class
-    '''
+    Generates kinematic diffraction patterns with pyEMAPS' dif module,
+    one for each of six values of the microscope control named by ckey.
+
+    : name: crystal name from the built-in database
+    : mode: diffraction mode, 1 for normal and 2 for CBED
+    : ckey: name of the microscope control to vary: 'tilt', 'zone',
+    :       'defl', 'vt' or 'cl'
+    : sim_rand: if True, use one set of randomized simulation controls
+    :           (SIMC) for all the patterns instead of the defaults
+'''
     from pyemaps import DPList, SIMC
     import concurrent.futures
     from pyemaps import Crystal as cryst
@@ -101,12 +106,12 @@ def generate_difs(name = 'Silicon', mode = DEF_MODE, ckey = 'tilt', sim_rand=Fal
                 
             except (DPError, EMCError) as e:
                 print(f'{f} generated an exception: {e.message}')
-                exit(1)
+                sys.exit(1)
             except Exception as e:
-                print('failed to generate diffraction patterns with  ' + str(e))
-                exit(1)
+                print('failed to generate diffraction patterns with ' + str(e))
+                sys.exit(1)
 
-    # sort the diffraction patern list by controls
+    # sort the diffraction pattern list by controls
     difs.sort()       
 
     return difs
@@ -130,5 +135,4 @@ def main():
         showDif(dpl, bClose=True)
 
 if __name__ == '__main__':
-    
-   main()
+    main()
