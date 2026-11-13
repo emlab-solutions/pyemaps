@@ -467,6 +467,10 @@ class SIMControl:
 
         return '\n'.join(lines)
 
+    def _repr_pretty_(self, p, cycle):
+        """In IPython and Jupyter, show the controls as ``print`` does."""
+        p.text(str(self))
+
     def plot_format(self):
         """
         Format the controls that aren't at their defaults, for the captions of the built-in
@@ -992,6 +996,10 @@ class EMControl:
         lines.append(str(self._simc))
 
         return '\n'.join(lines)
+
+    def _repr_pretty_(self, p, cycle):
+        """In IPython and Jupyter, show the controls as ``print`` does."""
+        p.text(str(self))
 
     
     def _check_def(self, k) -> bool:
