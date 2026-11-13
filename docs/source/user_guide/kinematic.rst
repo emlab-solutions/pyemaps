@@ -55,8 +55,8 @@ It runs the simulations in parallel processes, then shows the patterns as a tabl
     MAX_WORKERS = 4    # number of parallel processes
 
 
-    def generate_patterns(name='Silicon', mode=2):
-        """Generate diffraction patterns at each zone axis in ZONES, in parallel."""
+    def generate_kinematic_patterns(name='Silicon', mode=2):
+        """Generate kinematic diffraction patterns at each zone axis in ZONES, in parallel."""
         crystal = Crystal.from_builtin(name)
 
         patterns = DPList(name, mode=mode)
@@ -77,5 +77,5 @@ It runs the simulations in parallel processes, then shows the patterns as a tabl
 
 
     if __name__ == '__main__':
-        patterns = generate_patterns(mode=2)    # 2: CBED mode
+        patterns = generate_kinematic_patterns(mode=2)    # 2: CBED mode
         showDif(patterns, cShow=True, iShow=True, layout='table', bSave=True)

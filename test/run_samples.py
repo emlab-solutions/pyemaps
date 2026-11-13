@@ -19,9 +19,9 @@ def compare_samples_baseline(feature):
                 bdata = pickle.load(f)
         
     if feature == "diff":
-       from pyemaps.samples.si_dif import generate_patterns, CONTROLS
+       from pyemaps.samples.si_dif import generate_kinematic_patterns, CONTROLS
        for k in CONTROLS:
-              dpl = generate_patterns(k, mode=2)
+              dpl = generate_kinematic_patterns(k, mode=2)
               if not (k, dpl) in bdata:
                 print(f'--------Baseline match FAILED  for kinematic diffraction sample test for control: {k}.')
                 return
@@ -229,10 +229,10 @@ def gen_samples_baseline(feature):
     dl=[]
     try:
         if feature == "diff":
-            from pyemaps.samples.si_dif import generate_patterns, CONTROLS
+            from pyemaps.samples.si_dif import generate_kinematic_patterns, CONTROLS
             
             for k in CONTROLS:
-                dpl = generate_patterns(k, mode=2)
+                dpl = generate_kinematic_patterns(k, mode=2)
                 dl.append((k, dpl))
                 
         if feature == 'bloch':

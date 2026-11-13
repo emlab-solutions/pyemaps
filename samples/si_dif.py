@@ -65,7 +65,8 @@ def make_controls(control, random_sim=False):
     return emc_list
 
 
-def generate_patterns(control='tilt', mode=DEF_MODE, name='Silicon', random_sim=False):
+def generate_kinematic_patterns(control='tilt', mode=DEF_MODE, name='Silicon',
+                                random_sim=False):
     """Generate kinematic diffraction patterns, one per value of a microscope control.
 
     :param control: the microscope control to vary, one of CONTROLS.
@@ -100,14 +101,14 @@ def main():
     # CBED patterns, without Kikuchi lines or Miller indices. The tilt and zone axis series
     # are shown as tables, and the zone axis table is also saved as an image.
     for control in CONTROLS:
-        patterns = generate_patterns(control, mode=2)
+        patterns = generate_kinematic_patterns(control, mode=2)
         layout = 'table' if control in ('tilt', 'zone') else 'individual'
         showDif(patterns, layout=layout, kShow=False, iShow=False,
                 bSave=(control == 'zone'), bClose=True)
 
     # Normal-mode patterns with randomized simulation controls.
     for control in CONTROLS:
-        patterns = generate_patterns(control, random_sim=True)
+        patterns = generate_kinematic_patterns(control, random_sim=True)
         showDif(patterns, bClose=True)
 
 
