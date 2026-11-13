@@ -19,9 +19,9 @@ def compare_samples_baseline(feature):
                 bdata = pickle.load(f)
         
     if feature == "diff":
-       from pyemaps.samples.si_dif import generate_difs, em_keys
-       for k in em_keys:
-              dpl = generate_difs(ckey=k, mode=2)
+       from pyemaps.samples.si_dif import generate_kinematic_patterns, CONTROLS
+       for k in CONTROLS:
+              dpl = generate_kinematic_patterns(k, mode=2)
               if not (k, dpl) in bdata:
                 print(f'--------Baseline match FAILED  for kinematic diffraction sample test for control: {k}.')
                 return
@@ -29,10 +29,10 @@ def compare_samples_baseline(feature):
 
        
     if feature == 'bloch':
-       from pyemaps.samples.si_bloch import generate_bloch_images, em_keys
+       from pyemaps.samples.si_bloch import generate_bloch_images, CONTROLS
     
-       for k in em_keys:
-            imgs = generate_bloch_images(ckey=k)
+       for k in CONTROLS:
+            imgs = generate_bloch_images(k)
             if not (k, imgs) in bdata:
                 print(f'--------Baseline match FAILED  for dynamic diffraction sample test for control: {k}.')
                 return
@@ -47,33 +47,33 @@ def compare_samples_baseline(feature):
         print(f'++++++Baseline match SUCCEEDED for LACBED sample test.')
 
     if feature == 'stereo':
-        from pyemaps.samples.si_stereo import generate_stereo
-        stereo = generate_stereo(ckey='tilt')
+        from pyemaps.samples.si_stereo import generate_stereodiagrams
+        stereo = generate_stereodiagrams('tilt')
         if stereo != bdata:
              print(f'--------Baseline match FAILED for Stereogram sample test.')
              return
         print(f'++++++Baseline match SUCCEEDED for Stereogram sample test.')
 
     if feature == 'csf':
-        from pyemaps.samples.si_csf import runCSFTests
-        csf = runCSFTests(bPrint=False)
+        from pyemaps.samples.si_csf import generate_structure_factors
+        csf = generate_structure_factors(verbose=False)[(4, 0)]
         if csf != bdata:
              print(f'--------Baseline match FAILED for Crystal Structure Factor sample test.')
              return
         print(f'++++++Baseline match SUCCEEDED for Crystal Structure Factor sample test.')
 
     if feature == 'mxtal':
-        from pyemaps.samples.si_constructor import test_mxtal
-        mx = test_mxtal(bPrint=False, bSave=False)
+        from pyemaps.samples.si_constructor import build_supercell
+        mx = build_supercell(verbose=False, save=False)
         if mx != bdata:
              print(f'--------Baseline match FAILED for Crystal Structure Calculation sample test.')
              return
         print(f'++++++Baseline match SUCCEEDED for Crystal Structure Calculation sample test.')
     
     if feature == 'scm':
-        from pyemaps.samples.si_scm import runSCMFullTests
+        from pyemaps.samples.si_scm import all_scattering_matrices
         SCM_TOLERANCE= 1.0e-04
-        scm = runSCMFullTests()
+        scm = all_scattering_matrices()
 
         if not scm[0]['ncb'] == bdata[0]['ncb'] or \
            scm[0]['cbs'].shape != bdata[0]['cbs'].shape or \
@@ -195,9 +195,9 @@ def compare_samples_baseline(feature):
         print(f'++++++Baseline match SUCCEEDED for Scattering matrix sample test.')   
 
     if feature == 'powder':
-        from pyemaps.samples.powder import runPowderTests
+        from pyemaps.samples.powder import generate_powder_profiles
         
-        dl = runPowderTests(bPrint=False)
+        dl = generate_powder_profiles(verbose=False)
         sil, dil = dl
         bsil, bdil = bdata
         if not np.allclose(sil, bsil) or not np.allclose(dil, bdil):
@@ -207,10 +207,10 @@ def compare_samples_baseline(feature):
         print(f'++++++Baseline match SUCCEEDED for Powder diffraction sample test.')   
 
     # if feature == 'dpgen':    TODO later
-    #     from pyemaps.samples.al_dpgen import al_dpdb
+    #     from pyemaps.samples.al_dpgen import generate_database
     #     import filecmp
 
-    #     fn = al_dpdb()
+    #     fn = generate_database()
         
     #     if not filecmp.cmp(fn, baseline_data_filename):
     #          print(f'Baseline match FAILED for diffraction patterns database sample test.')
@@ -229,17 +229,17 @@ def gen_samples_baseline(feature):
     dl=[]
     try:
         if feature == "diff":
-            from pyemaps.samples.si_dif import generate_difs, em_keys
+            from pyemaps.samples.si_dif import generate_kinematic_patterns, CONTROLS
             
-            for k in em_keys:
-                dpl = generate_difs(ckey=k, mode=2)
+            for k in CONTROLS:
+                dpl = generate_kinematic_patterns(k, mode=2)
                 dl.append((k, dpl))
                 
         if feature == 'bloch':
-            from pyemaps.samples.si_bloch import generate_bloch_images, em_keys
+            from pyemaps.samples.si_bloch import generate_bloch_images, CONTROLS
             
-            for k in em_keys:
-                imgs = generate_bloch_images(ckey=k)
+            for k in CONTROLS:
+                imgs = generate_bloch_images(k)
                 dl.append((k, imgs))
 
         if feature == 'lacbed':
@@ -248,28 +248,28 @@ def gen_samples_baseline(feature):
             dl=imgs
 
         if feature == 'stereo':
-            from pyemaps.samples.si_stereo import generate_stereo
-            dl = generate_stereo(ckey='tilt')
+            from pyemaps.samples.si_stereo import generate_stereodiagrams
+            dl = generate_stereodiagrams('tilt')
 
         if feature == 'csf':
-            from pyemaps.samples.si_csf import runCSFTests
-            dl = runCSFTests(bPrint=False)
+            from pyemaps.samples.si_csf import generate_structure_factors
+            dl = generate_structure_factors(verbose=False)[(4, 0)]
 
         if feature == 'mxtal':
-            from pyemaps.samples.si_constructor import test_mxtal
-            dl = test_mxtal(bPrint=False, bSave=False)
+            from pyemaps.samples.si_constructor import build_supercell
+            dl = build_supercell(verbose=False, save=False)
         
         if feature == 'scm':
-            from pyemaps.samples.si_scm import runSCMFullTests
-            dl = runSCMFullTests()
+            from pyemaps.samples.si_scm import all_scattering_matrices
+            dl = all_scattering_matrices()
 
         if feature == 'powder':
-            from pyemaps.samples.powder import runPowderTests
-            dl = runPowderTests(bPrint=False)
+            from pyemaps.samples.powder import generate_powder_profiles
+            dl = generate_powder_profiles(verbose=False)
 
         # if feature == 'dpgen':  -----TODO, later
-        #     from pyemaps.samples.al_dpgen import al_dpdb
-        #     fn = al_dpdb()
+        #     from pyemaps.samples.al_dpgen import generate_database
+        #     fn = generate_database()
         #     if fn is None:
         #         print(f'++++++Failed to generate diffraction database.+++++')
         #         return
@@ -300,30 +300,30 @@ def run_sample_gui(feature = "diff"):
         # image per diffracted beam, and the individual layout saves only the last
         # one, so use the table layout to save all the beams in one image.
         from pyemaps.samples.si_lacbed import generate_lacbed_images
-        imgs = generate_lacbed_images(bSave=True)
+        imgs = generate_lacbed_images(save=True)
         if imgs:
             showBloch(imgs, layout='table', bSave=True, bClose=True)
 
     if feature == 'stereo':
         # Like si_stereo.main(), but also save the stereodiagrams as PNGs.
         from pyemaps import showStereo
-        from pyemaps.samples.si_stereo import generate_stereo
-        showStereo(generate_stereo(ckey='tilt'), name='Silicon', layout='table',
+        from pyemaps.samples.si_stereo import generate_stereodiagrams
+        showStereo(generate_stereodiagrams('tilt'), name='Silicon', layout='table',
                    iShow=True, bSave=True, bClose=True, zLimit=1)
-        showStereo(generate_stereo(ckey='zone'), name='Silicon',
+        showStereo(generate_stereodiagrams('zone'), name='Silicon',
                    iShow=True, bSave=True, bClose=True, zLimit=1)
 
     if feature == 'csf':
         import pyemaps.samples.si_csf as csf
-        csf.runCSFTests()
+        csf.main()
 
     if feature == 'mxtal':
         import pyemaps.samples.si_constructor as mxtal
-        mxtal.test_mxtal()
+        mxtal.main()
     
     if feature == 'scm':
         import pyemaps.samples.si_scm as scm 
-        scm.runSCMTests()
+        scm.main()
 
     if feature == 'powder':
         # plot2Powder has no save option. It draws in this process, so save the

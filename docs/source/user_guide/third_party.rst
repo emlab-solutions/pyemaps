@@ -12,148 +12,97 @@ Kinematic diffraction patterns
 
 .. code-block:: python
     
-    from pyemaps import Crystal as cr
-    
-    si = cr.from_builtin('Silicon')
+    from pyemaps import Crystal
 
-    _, dp = si.generateDP()
+    silicon = Crystal.from_builtin('Silicon')
+    _, pattern = silicon.generateDP()
 
-    dp.klines   # Kikuchi lines list
-    dp.nklines  # number of Kikuchi lines, same as len(dp.klines)
-    dp.disks    # diffracted beams list
-    dp.ndisks   # number of diffracted beams, same as len(dp.disks)
-    dp.hlines   # HOLZ lines list
-    dp.nhlines  # number of HOLZ lines, same as len(dp.hlines)
+    pattern.klines     # the Kikuchi lines
+    pattern.nklines    # the number of Kikuchi lines, same as len(pattern.klines)
+    pattern.disks      # the diffracted beams
+    pattern.ndisks     # the number of diffracted beams, same as len(pattern.disks)
+    pattern.hlines     # the HOLZ lines
+    pattern.nhlines    # the number of HOLZ lines, same as len(pattern.hlines)
 
-*dp.klines* and *dp.hlines* are lists of :py:class:`~pyemaps.kdiffs.Line` objects, and
-*dp.disks* is a list of :py:class:`~pyemaps.kdiffs.Disk` objects. A line unpacks to its end
+*pattern.klines* and *pattern.hlines* are lists of :py:class:`~pyemaps.kdiffs.Line` objects,
+and *pattern.disks* is a list of:py:class:`~pyemaps.kdiffs.Disk` objects. A line unpacks to its end
 points and intensity, ``x1, y1, x2, y2, intensity``, and a disk to its center, radius and Miller
 indices, ``x, y, r, h, k, l``, ready for plotting in other tools.
 
-The function below draws a kinematic diffraction pattern in DigitalMicrograph (DM). It's from the
-*dm_diff.py* sample, which has the complete script: it imports ``numpy as np`` and
-``DigitalMicrograph as DM``, and defines *mult*, *DIFF_MODE* and *SetCommonProp*, which the
-function uses. ``pyemaps -cp`` copies the samples into a *pyemaps_samples* folder.
+The functions below draw a kinematic diffraction pattern in DigitalMicrograph (DM). They're
+from the *dm_diff.py* sample, which has the complete script: it imports ``numpy as np`` and
+``DigitalMicrograph as DM``, and defines the constants and the small helpers *to_image*, *lock*
+and *line_color* that these functions use. ``pyemaps -cp`` copies the samples into a
+*pyemaps_samples* folder.
 
 .. code-block:: python
 
-    def show_diffract(dp, md=1, name = 'Diamond'):
-        from pyemaps import XMAX, YMAX
-        import DigitalMicrograph as DM
+    def draw_lines(display, lines, colors, background=None):
+        """Draw Kikuchi or HOLZ lines, each colored by its intensity."""
+        for x1, y1, x2, y2, intensity in lines:
+            line = display.AddNewComponent(LINE, *to_image(x1, y1), *to_image(x2, y2))
+            lock(line)
+            line.SetForegroundColor(*line_color(intensity, colors))
+            if background is not None:
+                line.SetBackgroundColor(*background)
 
-        shape = (2*XMAX*mult,2*YMAX*mult)
 
-        #A new image from numpy array, initialized to a white background
-        dif_raw = np.ones((shape), dtype = np.float32)
-        dif_raw[:,:] = 255.0
+    def draw_disks(display, disks, mode):
+        """Draw the diffracted beams as disks, each labeled with its Miller indices."""
+        for x, y, r, h, k, l in disks:
+            cx, cy = to_image(x, y)
+            radius = r * SCALE
 
-        #DM create the image
-        dm_dif_img = DM.CreateImage(dif_raw)
-        dif_img = dm_dif_img.ShowImage()
-        dif_img_disp = dm_dif_img.GetImageDisplay(0)
-        
-        #validate diffraction mode
-        if md <1 or md > 2:
-            print(f'diffraction mode provided {md} not supported')
+            disk = display.AddNewComponent(OVAL, cx - radius, cy - radius, cx + radius, cy + radius)
+            lock(disk)
+            disk.SetForegroundColor(0.0, 0.0, 1.0)     # blue
+            disk.SetBackgroundColor(0.5, 0.5, 0.75)    # light blue
+            disk.SetFillMode(1 if mode == NORMAL else 2)
+
+            # The label goes above the disk in normal mode, and on its center in CBED mode.
+            # Measure the label's size with a throwaway annotation first.
+            text = f'{h} {k} {l}'
+            top, left, bottom, right = DM.NewTextAnnotation(0, 0, text, 10).GetRect()
+            width, height = right - left, bottom - top
+
+            label_left = cx - width / 2
+            label_top = cy - radius - height if mode == NORMAL else cy - height / 2
+            label = DM.NewTextAnnotation(label_left, label_top, text, 10)
+            display.AddChildAtEnd(label)
+            lock(label)
+            label.SetForegroundColor(0.9, 0.0, 0.0)    # red
+            label.SetBackgroundColor(1.0, 1.0, 0.5)    # light yellow
+
+
+    def show_pattern(pattern, mode=NORMAL, name='Diamond'):
+        """Draw a kinematic diffraction pattern in a new DM image.
+
+        :param pattern: a kinematic diffraction pattern from Crystal.generateDP.
+        :param mode: the pattern's diffraction mode, NORMAL or CBED.
+        :param name: the crystal name, for the image title.
+        :return: 0 on success, 1 for an unsupported mode.
+        """
+        if mode not in MODE_NAMES:
+            print(f'Diffraction mode {mode} is not supported')
             return 1
-        
-        #set image title
-        img_title = str(f'Kinematic Diffraction Simulation:  {name} in {DIFF_MODE[md-1]} Mode')
-        dm_dif_img.SetName(img_title)
 
-        #plotting Kikuchi and HOLZ lines and spots as DM components
-        num_klines = dp.nklines
-        
-        if num_klines > 0:
-            klines = dp.klines
-            for kl in klines:        
-                x1,y1,x2,y2, inten = kl #inten: intensity
-                
-                xx1, yy1, = (x1+ XMAX)*mult,(y1 + YMAX)*mult 
-                xx2, yy2  = (x2 + XMAX)*mult,(y2 + YMAX)*mult
-                
-                kline = dif_img_disp.AddNewComponent(2, xx1, yy1, xx2, yy2)
-                
-                SetCommonProp(kline)
-                
-                if inten/5 > 0.8:
-                    kline.SetForegroundColor(0.3, 0.3, 0.3) # dark grey
-                elif inten/5 > 0.6:
-                    kline.SetForegroundColor(0.6, 0.6, 0.6)
-                elif inten/5 > 0.4:
-                    kline.SetForegroundColor(0.8, 0.8, 0.8)
-                else:
-                    kline.SetForegroundColor(0.9, 0.9, 0.9) # light grey
-                kline.SetBackgroundColor(0.2,0.2,0.5)# dark blue
+        # A new DM image with a white background.
+        shape = (2 * XMAX * SCALE, 2 * YMAX * SCALE)
+        image = DM.CreateImage(np.full(shape, 255.0, dtype=np.float32))
+        image.ShowImage()
+        image.SetName(f'Kinematic Diffraction Simulation: {name} in {MODE_NAMES[mode]} Mode')
 
-        num_disks = dp.ndisks
-        
-        if num_disks > 0:
-            disks = dp.disks
-            for d in disks:
-                x1, y1, r, i1, i2, i3 = d
-                xx, yy, rr = (x1 + XMAX)*mult, (y1 + YMAX)*mult, r*mult
-                            
-                idx = '{:d} {:d} {:d}'.format(i1,i2,i3)
-                
-                disk = dif_img_disp.AddNewComponent(6, xx-rr, yy-rr, xx+rr, yy+rr)
-                
-                SetCommonProp(disk)
-                disk.SetForegroundColor(0.0,0.0,1.0) # blue
-                disk.SetBackgroundColor(0.5,0.5,0.75)# dark blue
-                if md == 1:
-                    disk.SetFillMode(1)
-                else:
-                    disk.SetFillMode(2)
-            
-                # a bit tricky to figure out the index location, has to use
-                # the proxy component indxannot0 first. 
-                indxannot0 = DM.NewTextAnnotation(0, 0, idx, 10)
-                
-                t, l, b, r = indxannot0.GetRect()
-                w = r-l
-                h = b-t
-                
-                nl = xx - ( w / 2)
-                # nr = xx + ( w / 2)
-                nt = yy -rr - h if md ==1 else yy - (h / 2)
-                # nb = yy + rr + h if md == 1 else yy + (h / 2)
-                
-                indxannot = DM.NewTextAnnotation(nl, nt, idx, 10)
-                
-                dif_img_disp.AddChildAtEnd(indxannot)
-                SetCommonProp(indxannot)
-                indxannot.SetForegroundColor(0.9,0,0) #light red
-                indxannot.SetBackgroundColor(1,1,0.5)
-                
-        if md == 2:
-            num_hlines = dp.nhlines
-            
-            if num_hlines > 0 :
-            
-                hlines = dp.hlines
-                for hl in hlines:
-                
-                    x1, y1, x2, y2, inten = hl
-                    xx1, yy1 = (x1 + XMAX)*mult, (y1 + YMAX)*mult 
-                    xx2, yy2 = (x2 + XMAX)*mult, (y2 + YMAX)*mult
-                    
-                    hline = dif_img_disp.AddNewComponent(2, xx1, yy1, xx2, yy2)
-                    SetCommonProp(hline)
-                    
-                    if inten/5 > 0.8:
-                        hline.SetForegroundColor(0.1,0.7,0.3)
-                    elif inten/5 > 0.6:
-                        hline.SetForegroundColor(0.1,0.7,0.6)
-                    elif inten/5 > 0.4:
-                        hline.SetForegroundColor(0.1,0.7,0.8)
-                    else:
-                        hline.SetForegroundColor(0.1,0.7,0.9)
-                    
-        del dm_dif_img
-        return 0        
+        display = image.GetImageDisplay(0)
+        draw_lines(display, pattern.klines, KIKUCHI_COLORS, background=(0.2, 0.2, 0.5))
+        draw_disks(display, pattern.disks, mode)
+        if mode == CBED:
+            draw_lines(display, pattern.hlines, HOLZ_COLORS)
 
-where *dp* is a kinematic diffraction pattern from *generateDP*.
+        # Release the Python reference to the image; DM keeps showing it.
+        del image
+        return 0
+
+where *pattern* is a kinematic diffraction pattern from *generateDP*.
 
 .. note::
 

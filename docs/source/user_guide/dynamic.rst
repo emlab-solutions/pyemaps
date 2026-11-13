@@ -6,26 +6,20 @@ the Bloch simulation.
 
 .. code-block:: python
 
-    from pyemaps import Crystal as cr        # Crystal class
-    from pyemaps import showBloch            # Builtin visualization helper function
+    from pyemaps import Crystal, showBloch
 
     if __name__ == '__main__':
-        # create a crystal class object and load it with builtin silicon data
-        c_name = 'Silicon'
-        si = cr.from_builtin(c_name)
+        silicon = Crystal.from_builtin('Silicon')
 
-        # Generate dynamic diffraction patterns using pyEMAPS' bloch module
-        # with all other default parameters except sampling
+        # A Bloch simulation with the default controls, except for the sampling.
         try:
-            bloch_imgs_list = si.generateBloch(sampling = 20)
-
+            images = silicon.generateBloch(sampling=20)
         except Exception as e:
-            print(f'Error: {e}')
-
+            print(f'The Bloch simulation failed: {e}')
         else:
-            showBloch(bloch_imgs_list)               # grey color map
-            showBloch(bloch_imgs_list, bColor=True)  # with predefined color map
-   
+            showBloch(images)                 # grey scale
+            showBloch(images, bColor=True)    # with a color map
+
 :py:meth:`~pyemaps.crystals.Crystal.generateBloch` runs a Bloch wave simulation, here with 20
 sampling points along the disk radius instead of the default 8. For all its controls and
 parameters, see :py:meth:`~pyemaps.crystals.Crystal.generateBloch`.
@@ -68,38 +62,28 @@ table:
 
 .. code-block:: python
 
-    from pyemaps import EMC
+    from pyemaps import EMC, SIMC, Crystal, showBloch
 
-    def generate_bloch_images(name = 'Silicon'):
-        
-        from pyemaps import Crystal as cryst
-        from pyemaps import SIMC
 
-        cr = cryst.from_builtin(name)
-        
-        vt = 100
-        sth = (500, 1750, 250)
-        simc = SIMC(excitation=(0.3,1.0), bmin=0.1)
-    
+    def generate_bloch_images(name='Silicon'):
+        """Generate Bloch images at six sample thicknesses, or return None on failure."""
+        crystal = Crystal.from_builtin(name)
+
+        emc = EMC(zone=(1, 1, 1), vt=100, cl=1000,
+                  simc=SIMC(excitation=(0.3, 1.0), bmin=0.1))
         try:
-            bimgs = cr.generateBloch(sampling = 40,
-                                    em_controls = EMC(zone=(1,1,1),
-                                    vt=vt,
-                                    cl=1000,
-                                    simc=simc),
-                                    sample_thickness = sth
-                                    )
+            images = crystal.generateBloch(sampling=40,
+                                           em_controls=emc,
+                                           sample_thickness=(500, 1750, 250))    # Å
         except Exception as e:
-            print(f'Generated an exception: {e}')
+            print(f'The Bloch simulation failed: {e}')
             return None
 
-        bimgs.sort()
-        return bimgs 
+        images.sort()
+        return images
+
 
     if __name__ == '__main__':
-        
-        from pyemaps import showBloch
-
-        imgs = generate_bloch_images()
-        if imgs is not None:
-            showBloch(imgs, cShow=True, layout='table', bSave = True)
+        images = generate_bloch_images()
+        if images is not None:
+            showBloch(images, cShow=True, layout='table', bSave=True)

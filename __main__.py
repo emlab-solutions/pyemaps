@@ -94,7 +94,7 @@ def main():
     """
     
     try:
-        from .samples.si_pyemaps import run_si_sample
+        from .samples.si_pyemaps import run_sample
         
         from emaps import PKG_TYPE, TYPE_FREE, TYPE_FULL, TYPE_UIUC
         
@@ -186,7 +186,7 @@ The token is obtained from EMLab Solutions, Inc. by writing to support@emlabsoft
             exit(0)
         
         if args.sample:
-            run_si_sample()
+            run_sample()
             exit(0)
         
         if args.license is not None and PKG_TYPE != TYPE_FREE:

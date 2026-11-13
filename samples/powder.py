@@ -1,52 +1,55 @@
-'''
-This file is part of pyemaps
-___________________________
+# This file is part of pyEMAPS.
+#
+# pyEMAPS is free software: you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation, either version 3
+# of the License, or (at your option) any later version.
+#
+# pyEMAPS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with pyEMAPS.
+# If not, see <https://www.gnu.org/licenses/>.
+#
+# Author: EMLab Solutions, Inc. Questions and comments: support@emlabsoftware.com
 
-pyemaps is free software. You can redistribute it and/or modify 
-it under the terms of the GNU General Public License as published 
-by the Free Software Foundation, either version 3 of the License, 
-or (at your option) any later version.
+"""Electron powder diffraction for Silicon and Diamond.
 
-pyemaps is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+This sample generates the powder diffraction profiles of Silicon, and of Diamond with
+absorption, and plots them side by side.
 
-You should have received a copy of the GNU General Public License
-along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
+Run it with:
 
-Contact supprort@emlabsoftware.com for any questions and comments.
-___________________________
-
-Author:     EMLab Solutions, Inc.
-Date:       May 31, 2022    
+    python powder.py
+"""
+from pyemaps import Crystal, plot2Powder
 
 
-This sample code is to demonstrate how to generate powder diffraction.
-'''
+def generate_powder_profiles(verbose=True):
+    """Generate the powder diffraction profiles of Silicon and Diamond.
 
-def runPowderTests(bPrint=True):
-    from pyemaps import Crystal as cryst
+    :param verbose: print the two crystals.
+    :return: the Silicon profile and the Diamond profile (with absorption).
+    """
+    silicon = Crystal.from_builtin('Silicon')
+    if verbose:
+        print(silicon)
+    silicon_profile = silicon.generatePowder()
 
-    si = cryst.from_builtin('Silicon')
-    if bPrint:
-        print(si)
-    psi = si.generatePowder() 
+    diamond = Crystal.from_builtin('Diamond')
+    if verbose:
+        print(diamond)
+    diamond_profile = diamond.generatePowder(absp=1)
 
-    di = cryst.from_builtin('Diamond')
-    if bPrint:
-        print(di)
-    pdi = di.generatePowder(absp = 1)
+    return silicon_profile, diamond_profile
 
-    return (psi, pdi)
 
 def main():
-    
-    from pyemaps import plot2Powder
-    psi, pdi = runPowderTests()
-    
-    plot2Powder(psi, pdi, titles=('Silicon', 'Diamond'),
-                ylabels=('Intensity', 'Intensity /w Absorption'))
+    silicon_profile, diamond_profile = generate_powder_profiles()
+    plot2Powder(silicon_profile, diamond_profile,
+                titles=('Silicon', 'Diamond'),
+                ylabels=('Intensity', 'Intensity with absorption'))
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     main()
