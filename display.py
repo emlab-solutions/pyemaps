@@ -447,7 +447,8 @@ class DifPlotter:
             x.axis("off")
             x.set_aspect('equal')
 
-        self.fig.suptitle(self.name, va='top', fontsize=24)
+        # the same size as the powder plot's title, in proportion to the labels (6 to 10)
+        self.fig.suptitle(self.name, va='top', fontsize=14)
 
     def __call__(self, pipe, type, name, bSave, n1, n2, cShow, bClose, layout):
         import sys
