@@ -7,6 +7,7 @@ or use them in class.
 | Notebook | Sample | Topic |
 |---|---|---|
 | [si_dif.ipynb](si_dif.ipynb) | `si_dif.py` | Kinematic diffraction of Silicon: spot and CBED patterns, zone axis, tilt and camera length |
+| [si_bloch.ipynb](si_bloch.ipynb) | `si_bloch.py` | Dynamic (Bloch wave) diffraction of Silicon: CBED images, sampling, sample thickness, tilt and zone axis |
 
 GitHub shows each notebook with its results, so you can read it without installing anything.
 
