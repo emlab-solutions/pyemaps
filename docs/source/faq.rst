@@ -45,8 +45,11 @@ packages. With Anaconda, in the Anaconda Prompt:
     pip install pyemaps jupyter
     jupyter notebook
 
-Then create a notebook and run pyEMAPS in it. To install a particular version, use
-``pip install pyemaps==X.Y.Z``.
+Then create a notebook and run pyEMAPS in it. pyEMAPS draws its plots in the notebook. To
+install a particular version, use ``pip install pyemaps==X.Y.Z``.
+
+The `notebooks folder <https://github.com/emlab-solutions/pyemaps/tree/main/notebooks>`_ on
+GitHub has notebooks that walk through the samples step by step.
 
 If you start Jupyter from another environment instead, register this one as a kernel first, and
 choose the *pyemaps* kernel in your notebook:
