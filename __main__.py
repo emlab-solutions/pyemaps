@@ -80,10 +80,14 @@ def copy_examples(what):
             copied += 1
             print(f'Copied {file_name} to {destination}')
 
-        print(f'Copied {copied} files into {dest_dir}.')
-        if skipped:
-            print(f'Skipped {len(skipped)} that already exist there: {", ".join(skipped)}. '
-                  'To get fresh copies, rename or delete them and copy again.')
+        print(f'Copied {copied} file{"" if copied == 1 else "s"} into {dest_dir}.')
+        if len(skipped) == 1:
+            print(f'Skipped {skipped[0]}, which already exists there. To get a fresh copy, '
+                  'rename or delete it and copy again.')
+        elif skipped:
+            print(f'Skipped {len(skipped)} files that already exist there: '
+                  f'{", ".join(skipped)}. To get fresh copies, rename or delete them and copy '
+                  'again.')
 
         if n == 'samples':
             print(f'Run a sample with: python {os.path.join(dest_sub, "<sample>.py")}')
