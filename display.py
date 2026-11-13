@@ -26,8 +26,28 @@
 """
 
 import matplotlib, sys, os
+
+
+def _in_notebook():
+    """
+    Return True when running in a Jupyter notebook (an IPython kernel). There, the plots are
+    drawn in the notebook: matplotlib keeps Jupyter's inline backend, and the show functions
+    draw in this process instead of opening a plot window in another one.
+    """
+    ipython = sys.modules.get('IPython')    # a kernel has always imported IPython
+    if ipython is None:
+        return False
+    try:
+        shell = ipython.get_ipython()
+    except Exception:
+        return False
+    return shell is not None and 'IPKernelApp' in shell.config
+
+
 hasDisplay = True
-if 'linux' in sys.platform and "DISPLAY" not in os.environ:
+if _in_notebook():
+    pass    # keep the notebook's backend
+elif 'linux' in sys.platform and "DISPLAY" not in os.environ:
     hasDisplay = False
     matplotlib.use('Agg')
 elif 'win32' in sys.platform:
@@ -104,6 +124,10 @@ def _isWin():
 # seconds a window with bClose=True stays up after its last image
 CLOSE_DELAY = 3
 
+# dots per inch for sizing figures in a notebook: an individual plot is 6 inches wide, and a
+# table 10 inches (3.3 per column)
+NOTEBOOK_DPI = 150
+
 class DifPlotter:
     # '''
     # diffraction data plotter that receives data from the pipe and
@@ -118,11 +142,11 @@ class DifPlotter:
         self.bSave = False
         self.layout = 'individual'
     
-    def savePlot(self):
+    def savePlot(self, suffix=''):
         if self.save:
             save_type = _get_feature(self.type)
-            save_to = compose_ofn(None, self.name, ty=save_type)
-            plt.savefig(save_to + '.png')
+            save_to = compose_ofn(None, self.name, ty=save_type) + suffix
+            self.fig.savefig(save_to + '.png')
             print(f'image saved to: {save_to}.png')
    
     def terminate(self):
@@ -330,25 +354,30 @@ class DifPlotter:
             elif command == ():
                 self.savePlot()
             else:
-                self.difData = command
-                
-                if self.type == 1: #diffraction plot type
-                    self.plotKDif()
-            
-                elif self.type == 2: #bloch type plot
-                    self.plotDDif()
-
-                elif self.type == 3: #stereo type plot
-                    self.plotStereo()
-
-                else:
-                    raise ValueError("No data to plot")
-                
-                self.fig.canvas.draw_idle()  
+                self.draw(command)
+                self.fig.canvas.draw_idle()
 
                 plt.pause(1.0)
 
         return True
+
+    def draw(self, data):
+        '''
+        Draw one plot's data: a pattern, image or stereodiagram, as the show functions send it.
+        '''
+        self.difData = data
+
+        if self.type == 1: #diffraction plot type
+            self.plotKDif()
+
+        elif self.type == 2: #bloch type plot
+            self.plotDDif()
+
+        elif self.type == 3: #stereo type plot
+            self.plotStereo()
+
+        else:
+            raise ValueError("No data to plot")
 
     def showImage(self):
         if _isLinux() and not hasDisplay:
@@ -368,57 +397,71 @@ class DifPlotter:
             pass
 
 
-    def __call__(self, pipe, type, name, bSave, n1, n2, cShow, bClose, layout):
-        import sys
-        
-        self.pipe = pipe
+    def setup(self, type, name, bSave, n1, n2, cShow, bClose, layout, dpi, fit_rows=False):
+        '''
+        Create the figure: one plot, or an n1 x n2 table of plots, sized for *dpi*. A table's
+        figure is square, unless *fit_rows* sizes its height to its rows.
+        '''
+        if type not in (TY_DIF, TY_BLOCH, TY_STEREO):
+            raise ValueError("Unsupported data type")
+
+        self.type = type
         self.name = name
         self.save = bSave
         self.layout = layout
         self.cShow = cShow
         self.bClose = bClose
-        
-        if sys.platform == 'win32':
-            curr_dpi = _find_dpi()
-        else:
-            curr_dpi = 96
-            
+
         if layout == 'table':
             display_size = DISPLAY_MULTIPLE_SIZE * n2
         else:
             display_size = DISPLAY_ONE_SIZE
 
+        height = display_size
+        if layout == 'table' and fit_rows:
+            # each row as tall as a column is wide, plus room for the title
+            height = DISPLAY_MULTIPLE_SIZE * n1 + 100
+
         self.fig, self.axes = plt.subplots(nrows=n1,
                                            ncols=n2,
-                                           figsize=(display_size/curr_dpi,
-                                                    display_size/curr_dpi), 
+                                           figsize=(display_size/dpi,
+                                                    height/dpi),
                                            squeeze=False) #setting image size in pixels
         for x in self.axes.ravel():
             x.axis("off")
             x.set_aspect('equal')
-            
+
+        self.fig.suptitle(self.name, va='top', fontsize=24)
+
+    def __call__(self, pipe, type, name, bSave, n1, n2, cShow, bClose, layout):
+        import sys
+
+        self.pipe = pipe
+
+        if sys.platform == 'win32':
+            curr_dpi = _find_dpi()
+        else:
+            curr_dpi = 96
+
+        self.setup(type, name, bSave, n1, n2, cShow, bClose, layout, curr_dpi)
+
         if hasDisplay:
             self.position_fig(20, 20)
-        
+
         if type == 1:
             pyemaps_title = 'PYEMAPS - Kinematic Diffraction' 
 
         elif type == 2:
             pyemaps_title = 'PYEMAPS - Dynamic Diffraction'
 
-        elif type == 3:
-            pyemaps_title = 'PYEMAPS -Stereodiagram'
         else:
-            raise ValueError("Unsupported data type")
-        
-        self.type = type
+            pyemaps_title = 'PYEMAPS -Stereodiagram'
+
         if hasDisplay:
             # canvas.set_window_title was removed in matplotlib 3.6
             if self.fig.canvas.manager is not None:
                 self.fig.canvas.manager.set_window_title(pyemaps_title)
 
-        self.fig.suptitle(self.name, va='top', fontsize=24)
-        
         timer = self.fig.canvas.new_timer(interval=1500)
         timer.add_callback(self.call_back)
         timer.start()
@@ -461,6 +504,29 @@ class NBPlot:
         else:
             send(data)
 
+
+def _show_inline(type, name, items, bSave, cShow, layout):
+    '''
+    Draw plots in this process, for a Jupyter notebook, where each figure appears in the
+    notebook. The 'table' layout makes one figure; 'individual' makes one figure per item.
+    With *bSave*, each figure is saved, numbered when there are several.
+
+    The drawing scales the patterns it's given, so it draws copies: the caller's data must not
+    change (the plot window process gets copies through its pipe).
+    '''
+    import copy
+
+    groups = [items] if layout == 'table' else [[item] for item in items]
+    for k, group in enumerate(groups):
+        n1, n2 = _getGridDims(len(group), 3) if layout == 'table' else (1, 1)
+        plotter = DifPlotter()
+        plotter.setup(type, name, bSave, n1, n2, cShow, False, layout, NOTEBOOK_DPI,
+                      fit_rows=True)
+        for data in group:
+            plotter.draw(copy.deepcopy(data))
+        plotter.savePlot(suffix=f'-{k + 1}' if len(groups) > 1 else '')
+        plt.show()
+
 def showDif(dpl=None, 
             cShow=True,
             kShow=True, 
@@ -492,6 +558,10 @@ def showDif(dpl=None,
     :raise ~pyemaps.errors.DPListError: if *dpl* isn't a :py:class:`DPList <pyemaps.kdiffs.Diffraction>`.
 
     If *dpl* has no patterns, it prints a message and plots nothing.
+
+    In a Jupyter notebook, the plots are drawn in the notebook instead of a plot window: one
+    figure per pattern with the ``'individual'`` layout, or one figure for the ``'table'`` layout.
+    *bClose* doesn't apply there, and *bSave* saves every figure, numbered when there are several.
     """
     from pyemaps import DPList, DPListError
 
@@ -507,6 +577,11 @@ def showDif(dpl=None,
     if _isLinux() and not hasDisplay: bSave = True 
     #always save to file on linux as it may just the commandline
     n = len(dpl.diffList)
+
+    if _in_notebook():
+        items = [(i, c, dp, mode, kShow, iShow) for i, (c, dp) in enumerate(dpl.diffList)]
+        _show_inline(TY_DIF, name, items, bSave, cShow, layout)
+        return
 
     pl = NBPlot(TY_DIF, n, name, bSave, cShow, bClose, layout)
     for i, cdp in enumerate(dpl.diffList):
@@ -545,6 +620,10 @@ def showBloch(bimgs,
     :type bClose: bool, optional
     :raise ~pyemaps.errors.BlochListError: if *bimgs* is empty or isn't a
         :py:class:`BImgList <pyemaps.ddiffs.BlochImgs>`.
+
+    In a Jupyter notebook, the plots are drawn in the notebook instead of a plot window: one
+    figure per image with the ``'individual'`` layout, or one figure for the ``'table'`` layout.
+    *bClose* doesn't apply there, and *bSave* saves every figure, numbered when there are several.
     """
     from pyemaps import BImgList
 
@@ -557,6 +636,12 @@ def showBloch(bimgs,
     #always save to file on linux as it may just the commandline
 
     n = len(bimgs.blochList)
+
+    if _in_notebook():
+        items = [(i, c, img, bColor) for i, (c, img) in enumerate(bimgs.blochList)]
+        _show_inline(TY_BLOCH, name, items, bSave, cShow, layout)
+        return
+
     pl = NBPlot(TY_BLOCH, n, name, bSave, cShow, bClose, layout)
 
     for i, cimg in enumerate(bimgs.blochList):
@@ -603,11 +688,21 @@ def showStereo(slist, name,
     :param bClose: close the plot window 3 seconds after the last plot. By default, you close it
         yourself.
     :type bClose: bool, optional
+
+    In a Jupyter notebook, the plots are drawn in the notebook instead of a plot window: one
+    figure per stereodiagram with the ``'individual'`` layout, or one figure for the ``'table'``
+    layout. *bClose* doesn't apply there, and *bSave* saves every figure, numbered when there are
+    several.
     """
     if _isLinux() and not hasDisplay: bSave = True 
     #always save to file on linux as it may just the commandline
     
     n = len(slist)
+
+    if _in_notebook():
+        items = [(i, c, s, iShow, zLimit) for i, (c, s) in enumerate(slist)]
+        _show_inline(TY_STEREO, name, items, bSave, cShow, layout)
+        return
     
     pl = NBPlot(TY_STEREO, n, name, bSave, cShow, bClose, layout)
     for i, ss in enumerate(slist):  
@@ -765,7 +860,8 @@ def plot2Powder(pw1, pw2, bClose=True, titles=('', ''), ylabels=('Intensity', 'I
     :param pw2: the lower profile, in the same form.
     :type pw2: numpy.ndarray
     :param bClose: close the plot after about 3 seconds. Otherwise the plot doesn't block, and
-        stays open until the program ends.
+        stays open until the program ends. In a Jupyter notebook, the plot is drawn in the
+        notebook, and *bClose* doesn't apply.
     :type bClose: bool, optional
     :param titles: the titles of the upper and lower plots. Defaults to no titles.
     :type titles: tuple of str, optional
@@ -799,6 +895,10 @@ def plot2Powder(pw1, pw2, bClose=True, titles=('', ''), ylabels=('Intensity', 'I
 
     fig.suptitle("Electron Powder Diffraction", fontsize=14, fontweight='bold')
     plt.subplots_adjust(hspace = 0.4)
+
+    if _in_notebook():
+        plt.show()
+        return
 
     plt.show(block=False)
     if bClose:
