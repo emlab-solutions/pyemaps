@@ -467,9 +467,9 @@ class SIMControl:
 
         return '\n'.join(lines)
 
-    def _repr_pretty_(self, p, cycle):
-        """In IPython and Jupyter, show the controls as ``print`` does."""
-        p.text(str(self))
+    def __repr__(self):
+        """Show the controls as ``print`` does: in the console, in Jupyter and in lists."""
+        return str(self)
 
     def plot_format(self):
         """
@@ -997,9 +997,9 @@ class EMControl:
 
         return '\n'.join(lines)
 
-    def _repr_pretty_(self, p, cycle):
-        """In IPython and Jupyter, show the controls as ``print`` does."""
-        p.text(str(self))
+    def __repr__(self):
+        """Show the controls as ``print`` does: in the console, in Jupyter and in lists."""
+        return str(self)
 
     
     def _check_def(self, k) -> bool:
