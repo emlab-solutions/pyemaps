@@ -155,8 +155,56 @@ def doc_dec_simc(k):
     return doc_str
 
 
-def _print_default(sdecs, dv):
-     return sdecs + ' [default=' + str(dv) + ']: '
+# Printing the controls: one aligned line per control, with its unit. A control that differs
+# from its default also shows the default.
+LABEL_WIDTH = 26
+
+
+def _num(v):
+    """A number as short text, without single-precision noise: 0.30000001192092896 is 0.3."""
+    return f'{v:.6g}'
+
+
+def _pair(v):
+    return f'({_num(v[0])}, {_num(v[1])})'
+
+
+def _indices(v):
+    return ' '.join(_num(i) for i in v)
+
+
+def _line(label, value, default=None):
+    """One printed control; *default* is the default's text, shown if it differs from *value*."""
+    s = f'  {label:<{LABEL_WIDTH}}{value}'
+    if default is not None and default != value:
+        s += f'   (default {default})'
+    return s
+
+
+# key: (label, format)
+SIMC_PRINT = {
+    'excitation': ('Excitation error range', lambda v: f'{_num(v[0])} to {_num(v[1])}'),
+    'gmax': ('Max. reciprocal vector', lambda v: f'{_num(v)} 1/Å'),
+    'bmin': ('Beta perturbation cutoff', _num),
+    'intensity': ('Intensity cutoff, scale', lambda v: f'{_num(v[0])}, {_num(v[1])}'),
+    'gctl': ('Max. g-list index', _num),
+    'zctl': ('Max. zone axis index', _num),
+    'omega': ('Diagonalization cutoff', _num),
+    'sampling': ('Sampling points', _num),
+    'sth': ('Sample thickness', lambda v: f'{_num(v)} Å'),
+}
+
+EMC_PRINT = {
+    'zone': ('Zone axis', lambda v: f'[{_indices(v)}]'),
+    'tilt': ('Tilt (x, y)', lambda v: f'{_pair(v)} degrees'),
+    'defl': ('Shift (x, y)', _pair),
+    'cl': ('Camera length', lambda v: f'{_num(v)} mm'),
+    'vt': ('High voltage', lambda v: f'{_num(v)} kV'),
+    'pix_size': ('Detector pixel size', lambda v: f'{_num(v)} µm'),
+    'det_size': ('Detector size', lambda v: f'{_num(v)} pixels'),
+    'aperture': ('Objective aperture', _num),
+}
+
 
 class SIMControl:
     """
@@ -397,16 +445,6 @@ class SIMControl:
         
         return True
     
-    def _str_prop(self, k) -> str:
-        '''internal - out formatted string for k attributes'''
-
-        if k not in SIMC_DESC or not hasattr(self, k):
-            return EMCError('internal error!')
-        
-        v = getattr(self, k)
-        
-        return _print_default(SIMC_DESC[k], DEF_SIMC[k]) + str(v)
-    
     def _check_def(self, k) -> bool:
         '''internal - checking if the attribute k is at default value'''
         if k not in SIMC_DESC or not hasattr(self, k):
@@ -419,13 +457,15 @@ class SIMControl:
         return v == DEF_SIMC[k]
         
     def __str__(self) -> str:
+        """
+        Return the controls as readable text, one per line, showing the default of any that
+        differ from it.
+        """
+        lines = ['Simulation controls']
+        for k, (label, fmt) in SIMC_PRINT.items():
+            lines.append(_line(label, fmt(getattr(self, k)), fmt(DEF_SIMC[k])))
 
-       simulation = ['Simulation Controls:']
-
-       for k in DEF_SIMC:       
-            simulation.append(self._str_prop(k))
-
-       return "\n\t".join(simulation)
+        return '\n'.join(lines)
 
     def plot_format(self):
         """
@@ -926,58 +966,32 @@ class EMControl:
         
         return True
 
-    def _str_prop(self, k) -> str:
-        '''internal'''
-        if k not in DEF_EMC or not hasattr(self, k):
-            return EMCError('internal error!')
-            
-        v = getattr(self, k)
-        defv = DEF_EMC[k]['defval']
-        defdesc = DEF_EMC[k]['desc']
-
-        if k == 'mode':
-            cstr=[]
-            ds_def = DEF_EMC['dsize']['defval'] 
-            ds_desc = _print_default(DEF_EMC['dsize']['desc'], ds_def)
-            if v == defv:
-                cstr.append(defdesc + ' (default=Normal): Normal ')
-                cstr.append(ds_desc + ' Undefined, not used')
-            elif v == defv + 1:
-                cstr.append(defdesc + ': CBED')
-                try:
-                    ds = self._dsize
-                except AttributeError as e:
-                    raise Exception from e
-                else:
-                    if ds <= 0: 
-                        cstr.append(ds_desc + str(ds) + ' ERROR!')
-                    else:
-                        cstr.append(ds_desc + str(ds))
-            else:
-                cstr.append('Mode: Unknown (Error!)')
-                cstr.append('Diffraction beam size: Undefined')
-            return '\n'.join(cstr)
-
-        if k == 'dsize':
-            return '' # do nothing, already taken care of
-
-        sdef = _print_default(defdesc, defv)
-        return sdef + str(v)
-        
     def __str__(self):
         """
-        Return the controls as readable text, marking those at their defaults.
+        Return the controls as readable text, one per line, showing the default of any that
+        differ from it. The simulation controls follow.
         """
-
-        cstr = ['Electron Microscope Controls:',]
-
+        lines = ['Electron microscope controls']
         for k in DEF_EMC:
-            if k != 'dsize' and k !='simc':
-                cstr.append(self._str_prop(k))
-            
-        cstr.append(str(self._simc))
+            if k in ('dsize', 'simc'):
+                continue
+            v = getattr(self, k)
+            if k == 'mode':
+                # The disk size applies only in CBED mode.
+                modes = {1: 'Normal', 2: f'CBED, disk size {_num(self._dsize)}'}
+                lines.append(_line('Mode', modes.get(v, f'Unknown ({v})'), modes[DEF_MODE]))
+            elif k == 'xaxis':
+                # (0, 0, 0) lets the simulation choose; it records the axis it chose.
+                chosen = any(v)
+                lines.append(_line('Horizontal axis', f'({_indices(v)})' +
+                                   ('' if chosen else ', chosen by pyEMAPS')))
+            else:
+                label, fmt = EMC_PRINT[k]
+                lines.append(_line(label, fmt(v), fmt(DEF_EMC[k]['defval'])))
 
-        return '\n'.join(cstr)
+        lines.append(str(self._simc))
+
+        return '\n'.join(lines)
 
     
     def _check_def(self, k) -> bool:
