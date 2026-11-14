@@ -22,7 +22,7 @@ diffraction patterns are generated. For details, see
 
 Then load the experimental image and index it against the database. *indexImage* loads the
 database itself. *al.img* is a sample experimental image that ships with pyEMAPS:
-``pyemaps -cp`` copies it, with the sample scripts, into a *pyemaps_samples* folder in the
+``pyemaps -cp samples`` copies it, with the sample scripts, into a *pyemaps_samples* folder in the
 current directory (see :doc:`../examples`). Run the example from that folder.
 
 .. code-block:: python

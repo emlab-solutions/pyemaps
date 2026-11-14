@@ -1,15 +1,21 @@
 Examples
 ========
 
-pyEMAPS ships with sample scripts for each feature. ``pyemaps -cp`` copies them into a
+pyEMAPS ships with sample scripts for each feature. ``pyemaps -cp samples`` copies them into a
 *pyemaps_samples* folder in the current directory, after asking you to confirm. Then run any of
 them with ``python``:
 
 .. code-block:: console
 
-   pyemaps -cp
+   pyemaps -cp samples
    cd pyemaps_samples
    python si_dif.py
+
+pyEMAPS also ships with Jupyter notebooks that walk through the samples step by step.
+``pyemaps -cp notebooks`` copies them into a *pyemaps_notebooks* folder, and ``pyemaps -cp``
+copies both. Files already in those folders aren't overwritten, so copying again keeps your
+changes. To read them with their results, without running anything, see the
+`notebooks folder <https://github.com/emlab-solutions/pyemaps/tree/main/notebooks>`_ on GitHub.
 
 .. container:: pe-gallery
 

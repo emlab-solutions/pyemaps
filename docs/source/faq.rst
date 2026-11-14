@@ -45,8 +45,13 @@ packages. With Anaconda, in the Anaconda Prompt:
     pip install pyemaps jupyter
     jupyter notebook
 
-Then create a notebook and run pyEMAPS in it. To install a particular version, use
-``pip install pyemaps==X.Y.Z``.
+Then create a notebook and run pyEMAPS in it. pyEMAPS draws its plots in the notebook. To
+install a particular version, use ``pip install pyemaps==X.Y.Z``.
+
+pyEMAPS comes with notebooks that walk through the samples step by step.
+``pyemaps -cp notebooks`` copies them into a *pyemaps_notebooks* folder, ready to run; the
+`notebooks folder <https://github.com/emlab-solutions/pyemaps/tree/main/notebooks>`_ on GitHub
+shows them with their results.
 
 If you start Jupyter from another environment instead, register this one as a kernel first, and
 choose the *pyemaps* kernel in your notebook:
@@ -75,7 +80,7 @@ parallel processes with Python's ``concurrent.futures``:
                                    em_controls=emc)
                    for emc in make_controls(control, random_sim)]
 
-This is an excerpt from the *si_bloch.py* sample, which has the complete script. ``pyemaps -cp``
-copies the samples into a *pyemaps_samples* folder; see :doc:`examples`.
+This is an excerpt from the *si_bloch.py* sample, which has the complete script. ``pyemaps -cp
+samples`` copies the samples into a *pyemaps_samples* folder; see :doc:`examples`.
 
 We keep working on pyEMAPS' performance, and welcome suggestions at support@emlabsoftware.com.

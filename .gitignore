@@ -142,6 +142,7 @@ __version__.py
 
 # pyemaps samples code dir
 *pyemaps_samples*/
+*pyemaps_notebooks*/
 
 #pyemaps local build/debug
 .libs/
