@@ -27,6 +27,7 @@ SUITES = [
     ('samples', 'run_samples.py', r'Baseline match SUCCEEDED', 8),
     ('features', 'run_features.py', r'Baseline comparison SUCCEEDED \+\+\+', 8),
     ('unittests', 'run_unittests.py', r'Unit tests SUCCEEDED', 1),
+    ('switching', 'run_crystal_switch.py', r'Crystal switching checks SUCCEEDED', 1),
 ]
 FAILURE = re.compile(r'FAILED|There are failures|does not compare with baseline|'
                      r'Failed to load|test failed|Traceback', re.IGNORECASE)
