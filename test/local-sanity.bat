@@ -13,7 +13,7 @@ echo Script started at %startTime%
 call pyemaps -c
 call pyemaps -v
 
-echo y | call pyemaps -cp
+echo y | call pyemaps -cp samples
 
 python .\test\run_samples.py -gr all
 echo Done with samples sanity tests 

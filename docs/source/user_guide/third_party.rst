@@ -32,7 +32,7 @@ indices, ``x, y, r, h, k, l``, ready for plotting in other tools.
 The functions below draw a kinematic diffraction pattern in DigitalMicrograph (DM). They're
 from the *dm_diff.py* sample, which has the complete script: it imports ``numpy as np`` and
 ``DigitalMicrograph as DM``, and defines the constants and the small helpers *to_image*, *lock*
-and *line_color* that these functions use. ``pyemaps -cp`` copies the samples into a
+and *line_color* that these functions use. ``pyemaps -cp samples`` copies the samples into a
 *pyemaps_samples* folder.
 
 .. code-block:: python

@@ -90,8 +90,11 @@ if __name__ == '__main__':
 Keep the `if __name__ == '__main__':` line in scripts. The `show` functions draw in a separate
 process, which on Windows runs your script again. Jupyter notebooks don't need it.
 
-`pyemaps --copysamples` copies the sample scripts into the current folder. The
-[documentation](https://emlab-solutions.github.io/pyemaps/) has a user guide, an examples
+`pyemaps -cp` copies the sample scripts into a `pyemaps_samples` folder and the Jupyter
+notebooks into `pyemaps_notebooks`; `pyemaps -cp samples` or `pyemaps -cp notebooks` copies just
+one set.
+
+The [documentation](https://emlab-solutions.github.io/pyemaps/) has a user guide, an examples
 gallery and the full API reference.
 
 ## Licensing

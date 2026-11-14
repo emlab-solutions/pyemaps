@@ -82,10 +82,11 @@ def add_powder(target):
         :type t2max: float, optional
         :param smax: largest sin(θ)/λ, in 1/Å.
         :type smax: float, optional
-        :param eta: mixing coefficient between the Gaussian and Lorentzian parts of the pseudo-Voigt
-            peak shape.
+        :param eta: mixing coefficient of the pseudo-Voigt peak shape, from 0 to 1:
+            ``eta * Lorentzian + (1 - eta) * Gaussian``. 1 is purely Lorentzian, 0 purely
+            Gaussian.
         :type eta: float, optional
-        :param gamma: peak half width at half maximum.
+        :param gamma: peak full width at half maximum, in radians.
         :type gamma: float, optional
         :param absp: 1 to include absorption structure factors, 0 (the default) not to.
         :type absp: int, optional
