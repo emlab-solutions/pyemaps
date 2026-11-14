@@ -8,6 +8,9 @@ or use them in class.
 |---|---|---|
 | [si_dif.ipynb](si_dif.ipynb) | `si_dif.py` | Kinematic diffraction of Silicon: spot and CBED patterns, zone axis, tilt and camera length |
 | [si_bloch.ipynb](si_bloch.ipynb) | `si_bloch.py` | Dynamic (Bloch wave) diffraction of Silicon: CBED images, sampling, sample thickness, tilt and zone axis |
+| [si_lacbed.ipynb](si_lacbed.ipynb) | `si_lacbed.py` | Large-angle CBED (LACBED) of Silicon: one image per beam, the Bragg lines, sample thickness and zone axis |
+| [si_scm.ipynb](si_scm.ipynb) | `si_scm.py` | Inside a Bloch wave calculation: the scattering matrix, absorption, the Bloch waves behind the thickness fringes, and Bethe potentials |
+| [si_csf.ipynb](si_csf.ipynb) | `si_csf.py` | Silicon's structure factors: X-ray and electron, forbidden reflections, the Mott-Bethe formula, high voltage and absorption |
 | [si_stereo.ipynb](si_stereo.ipynb) | `si_stereo.py` | Stereographic projections of Silicon: poles, the projection's geometry, zone axis and tilt |
 | [si_constructor.ipynb](si_constructor.ipynb) | `si_constructor.py` | Building a Silicon supercell: bonds, density, the [110] dumbbells, and saving an .xyz file |
 | [powder.ipynb](powder.ipynb) | `powder.py` | Electron powder diffraction of Silicon and Diamond: indexing the peaks, peak shape, high voltage and absorption |
