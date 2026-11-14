@@ -1,6 +1,44 @@
 Release Notes
 =============
 
+Version 2.2.0 Stable
+--------------------
+
+11-14-2026
+~~~~~~~~~~
+
+New
+~~~
+
+- Jupyter notebooks, one for each sample, that walk through pyEMAPS step by step, with the physics behind each step: kinematic and dynamic diffraction, large-angle CBED, the scattering matrix, structure factors, stereographic projections, supercells, powder diffraction, and 4D-STEM indexing and virtual detectors. ``pyemaps -cp notebooks`` copies them into a *pyemaps_notebooks* folder. On GitHub, the `notebooks folder <https://github.com/emlab-solutions/pyemaps/tree/main/notebooks>`_ shows them with their results.
+- In a Jupyter notebook, pyEMAPS draws its plots in the notebook, instead of in a separate window.
+- ``pyemaps -cp`` takes ``samples`` or ``notebooks`` to copy only the sample scripts or only the notebooks; with neither, it copies both. It no longer overwrites files already there.
+- Printing an :py:class:`~pyemaps.emcontrols.EMControl` or :py:class:`~pyemaps.emcontrols.SIMControl`, or showing one at the Python prompt, gives an aligned list of the controls, with the default value next to each control that was changed.
+
+Changes
+~~~~~~~
+
+- Powder profiles from :py:meth:`~pyemaps.crystals.Crystal.generatePowder` put each peak at its scattering angle 2θ. Before, every peak was at θ, half its angle. This comes from emaps 2.0.1, so powder results change.
+- A crystal simulated after another crystal now gives its own results. Before, a :py:class:`~pyemaps.crystals.Crystal` used after another one could reuse the other crystal's data, and deleting it could crash the current one.
+- The built-in ``Germanium`` crystal declared the wrong origin for its space group, giving 16 atoms per cell instead of 8. Results for Germanium change.
+- The sample scripts are rewritten for readability, and their functions have new names. Code that imports them from ``pyemaps.samples`` needs the new names.
+- :py:meth:`~pyemaps.crystals.Crystal.printCSF` prints the right units: volts for electron structure factors, and 1/Angstrom^2 for the other electron types; the high voltage is in kV.
+
+Improvements
+~~~~~~~~~~~~
+
+- From emaps 2.0.1:
+
+  - :py:meth:`~pyemaps.stackimg.StackImage.loadImage` reads 16-bit 4D-STEM images correctly. Before, it returned wrong values for them, and loading a single pattern could crash Python.
+  - A one-character mask file name in :py:meth:`~pyemaps.stackimg.StackImage.generateMaskedImage` no longer crashes Python.
+
+- :py:func:`~pyemaps.display.showDif` with ``layout='table'`` frames each pattern, and hides indices cut off at its edge.
+- Fixed samples: *si_constructor.py* always builds the supercell, *dm_diff.py* saves the images it reports, and *si_scm.py* always closes its session.
+- :py:meth:`~pyemaps.crystals.Crystal.generatePowder` documents *gamma* as the peaks' full width at half maximum.
+- The README, Get Started, User Guide and Help pages are corrected throughout, checked against the code.
+- pyEMAPS files on PyPI now come with provenance attestations, which link each file to the GitHub workflow and commit that built it.
+- Requires ``emaps >= 2.0.1``.
+
 Version 2.1.0 Stable
 --------------------
 
