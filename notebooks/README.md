@@ -8,6 +8,9 @@ or use them in class.
 |---|---|---|
 | [si_dif.ipynb](si_dif.ipynb) | `si_dif.py` | Kinematic diffraction of Silicon: spot and CBED patterns, zone axis, tilt and camera length |
 | [si_bloch.ipynb](si_bloch.ipynb) | `si_bloch.py` | Dynamic (Bloch wave) diffraction of Silicon: CBED images, sampling, sample thickness, tilt and zone axis |
+| [si_stereo.ipynb](si_stereo.ipynb) | `si_stereo.py` | Stereographic projections of Silicon: poles, the projection's geometry, zone axis and tilt |
+| [si_constructor.ipynb](si_constructor.ipynb) | `si_constructor.py` | Building a Silicon supercell: bonds, density, the [110] dumbbells, and saving an .xyz file |
+| [powder.ipynb](powder.ipynb) | `powder.py` | Electron powder diffraction of Silicon and Diamond: indexing the peaks, peak shape, high voltage and absorption |
 | [al_ediom.ipynb](al_ediom.ipynb) | `al_dpgen.py`, `al_ediom.py` | Indexing an experimental Aluminium diffraction pattern against a simulated database, and checking the result. Licensed |
 | [adf.ipynb](adf.ipynb) | `adf.py`, `convert_image.py` | 4D-STEM virtual detectors: bright field, dark field, annular dark field and masked images. Licensed; downloads a 472 MB test scan |
 
