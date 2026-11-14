@@ -24,6 +24,21 @@
 .. Date Created:       May 07, 2022  
 
 '''
+import weakref
+
+# The simulation backend holds one crystal at a time for the whole process. This records which
+# Crystal is in it, as a weak reference, so that loading another crystal can mark the previous
+# one as unloaded: otherwise the previous one would skip its next load and simulate with the
+# other crystal's data. A crystal's _loaded flag is therefore True only while its data is in
+# the backend.
+_in_backend = {'crystal': None}
+
+
+def _crystal_in_backend():
+    ref = _in_backend['crystal']
+    return ref() if ref is not None else None
+
+
 def add_dif(target):
     import numpy as np
     from numpy import asfortranarray as farray
@@ -38,9 +53,10 @@ def add_dif(target):
         Load the crystal's data into the simulation backend.
 
         The data stays in the backend's memory until :py:meth:`~pyemaps.crystals.Crystal.unload` is called or another crystal
-        is loaded. The backend holds one crystal at a time for the whole process, so running
-        simulations for different crystals concurrently in one process gives wrong results; use
-        separate processes instead.
+        is loaded. The backend holds one crystal at a time for the whole process: using one
+        crystal after another is fine, since each loads itself again when it's used next, but
+        running simulations for different crystals concurrently in one process gives wrong
+        results; use separate processes instead.
 
         :param cty: 0 for simulations, 1 for the crystal constructor (:py:meth:`~pyemaps.crystals.Crystal.generateMxtal`).
         :type cty: int, optional
@@ -70,20 +86,32 @@ def add_dif(target):
         
         diff_spg = self._spg.prepare()
 
+        # This crystal's data replaces whichever crystal is in the backend now.
+        previous = _crystal_in_backend()
+        if previous is not None and previous is not self:
+            previous._loaded = False
+        _in_backend['crystal'] = None
+
         ret = dif.loadcrystal(diff_cell, diff_atoms, atn, diff_spg, ndw=self._dw, cty=cty)
-        
+
         if ret != 0:
-            self.unload() #remove any memory from backend module
+            dif.crystaldelete() #remove any memory from backend module
+            self._loaded = False
             raise CrystalClassError('Failed to load crystal')
 
         self._loaded = True
         self._ltype = cty
+        _in_backend['crystal'] = weakref.ref(self)
 
     def unload(self):
         """
-        Remove the crystal's data from the simulation backend's memory.
+        Remove the crystal's data from the simulation backend's memory. It does nothing if
+        another crystal has been loaded since, so the other crystal's data stays.
         """
-        dif.crystaldelete()
+        if self.loaded():
+            dif.crystaldelete()
+            if _crystal_in_backend() is self:
+                _in_backend['crystal'] = None
         self._loaded = False
 
     def generateDP(self, mode = None, dsize = None, em_controls = None):
