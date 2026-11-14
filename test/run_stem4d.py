@@ -12,7 +12,7 @@ What it checks:
   through StackImage(nformat=E_NPY) and read back from the backend pixel for pixel;
   invalid images raise XDPImageError (pyemaps#89). Small-header (.im3) files with several
   stacks, 16-bit integer and float32, read back pixel for pixel, every stack, both one stack
-  at a time and with all stacks loaded. emaps 2.0.1 and earlier read 16-bit pixels as
+  at a time and with all stacks loaded. emaps 2.0.0 and earlier read 16-bit pixels as
   32-bit, and crash loading one stack; fixed in the next emaps release.
 - dpgen: generating the Aluminium diffraction pattern database succeeds.
 - indexing: al.img indexed from its file and from numpy (float32, float64, Fortran
