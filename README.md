@@ -70,6 +70,14 @@ pyemaps --sample
 shows the pattern. If the installation fails, see the
 [FAQ](https://emlab-solutions.github.io/pyemaps/faq.html).
 
+To read experimental images from microscope and detector files, such as Gatan `.dm4`, Merlin
+`.mib`, TIFF or Velox `.emd`, also install [RosettaSciIO](https://hyperspy.org/rosettasciio/)
+(GPL-3.0-or-later) with the `io` extra:
+
+```
+pip install "pyemaps[io]"
+```
+
 ## Quick start
 
 Load Silicon from the built-in crystal library, generate its kinematical diffraction pattern with

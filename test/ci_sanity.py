@@ -12,6 +12,8 @@ output is saved to sanity-logs/<suite>.log.
 The performance test isn't run: its timings depend on the machine, so it means
 nothing on a shared CI runner. Run it locally (performance/run_perf_test.py -r all).
 The stem4d checks (run_stem4d.py) need an activated license, so they aren't run here.
+The image reading checks (run_expimage.py) need RosettaSciIO, which CI installs with
+pyemaps[io]; they need no license.
 '''
 import os
 import re
@@ -28,6 +30,7 @@ SUITES = [
     ('features', 'run_features.py', r'Baseline comparison SUCCEEDED \+\+\+', 8),
     ('unittests', 'run_unittests.py', r'Unit tests SUCCEEDED', 1),
     ('switching', 'run_crystal_switch.py', r'Crystal switching checks SUCCEEDED', 1),
+    ('images', 'run_expimage.py', r'Image reading checks SUCCEEDED', 1),
 ]
 FAILURE = re.compile(r'FAILED|There are failures|does not compare with baseline|'
                      r'Failed to load|test failed|Traceback', re.IGNORECASE)

@@ -43,8 +43,9 @@ jobs:
           python -m pip install --upgrade pip build setuptools wheel
           python build_pyemaps -v 0.0.0.dev0
           if ($LASTEXITCODE -ne 0) { exit 1 }
-          # pip pulls emaps (the newest on PyPI that satisfies setup.py) plus numpy and matplotlib
-          python -m pip install dist\pyemaps-0.0.0.dev0-py3-none-any.whl
+          # pip pulls emaps (the newest on PyPI that satisfies setup.py) plus numpy and matplotlib,
+          # and with [io] RosettaSciIO, for the image reading checks (run_expimage.py)
+          python -m pip install "dist\pyemaps-0.0.0.dev0-py3-none-any.whl[io]"
 
       - name: Check the installation
         # From outside the checkout, so the installed package is imported

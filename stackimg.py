@@ -39,6 +39,7 @@ from . import (E_INT, EM_INT,
                E_SH,
                E_RAW,
                E_NPY,
+               E_RSCIIO,
                # imageloading mode
                EL_ONE, #STEM4D image loading only one particular stack
                EL_MORE #STEM4D image loading all stacks
@@ -64,6 +65,40 @@ def _getDateTimeString():
     # Format the date-time string (up to seconds); no characters that Windows file names reject
     return current_time.strftime("%Y%m%d_%H%M%S")
 
+
+def _remove_quietly(path):
+    import os
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+
+
+def _check_stem4d_size(img):
+    '''
+    Check that patterns read from a file suit the 4D-STEM features, and say what to change
+    if they don't: binning for large patterns, a scan region for too many.
+    '''
+    import math
+    rows, cols = img.pattern_shape
+    big, small = max(rows, cols), min(rows, cols)
+    if big > MAX_IMAGESIZE:
+        b = math.ceil(big / MAX_IMAGESIZE)
+        hint = (f' Read it with binning={b} or more.' if small // b >= MIN_IMAGESIZE else
+                ' Binning can\'t bring both sides into that range.')
+        raise XDPImageError(f'The patterns in {img.source} are {cols} x {rows} pixels; the 4D-STEM '
+                            f'features take {MIN_IMAGESIZE} to {MAX_IMAGESIZE} per side.{hint}')
+    if small < MIN_IMAGESIZE:
+        raise XDPImageError(f'The patterns in {img.source} are {cols} x {rows} pixels; the 4D-STEM '
+                            f'features take {MIN_IMAGESIZE} to {MAX_IMAGESIZE} per side.')
+    if img.npatterns > MAX_IMAGESTACK:
+        shape = ' x '.join(str(n) for n in img.scan_shape)
+        hint = ('scan_roi=(row, column, rows, columns)' if len(img.scan_shape) == 2 else
+                'scan_roi=(first, count)')
+        raise XDPImageError(f'{img.source} has {img.npatterns} patterns (scan {shape}); the 4D-STEM '
+                            f'features take up to {MAX_IMAGESTACK}. Read part of the scan with '
+                            f'{hint}.')
+
 class StackImage():
     """
     An experimental diffraction image, or a stack of them, for 4D-STEM analysis with the
@@ -87,6 +122,10 @@ class StackImage():
 
     The image is read into the backend by :py:meth:`~pyemaps.stackimg.StackImage.loadImage`,
     or by the analysis methods, which load it themselves.
+
+    To analyse a file from a microscope or detector, such as a Gatan ``.dm4``, a Merlin
+    ``.mib``, a TIFF or a Velox ``.emd``, create the image with
+    :py:meth:`~pyemaps.stackimg.StackImage.from_file`.
 
     Images are 100 to 512 pixels per side (``MIN_IMAGESIZE``, ``MAX_IMAGESIZE``), with 1 to
     5000 stacks (``MIN_IMAGESTACK``, ``MAX_IMAGESTACK``).
@@ -117,6 +156,8 @@ class StackImage():
         """
         self._data = None                       # current image data
         self._npdata = None                     # numpy input image (E_NPY)
+        self._source = None                     # file read by from_file
+        self._scan_shape = None                 # its scan shape
         setattr(self, 'nformat', nformat)       # image file type
         setattr(self, 'fname', imgfn)           # image file name
         setattr(self, 'noffset', noffset)       # image header offset to image data
@@ -186,6 +227,23 @@ class StackImage():
         """
         return self._data
 
+    @property
+    def source(self):
+        """
+        The file the image was read from by :py:meth:`~pyemaps.stackimg.StackImage.from_file`,
+        or ``None``.
+        """
+        return self._source
+
+    @property
+    def scan_shape(self):
+        """
+        The scan shape of an image read by :py:meth:`~pyemaps.stackimg.StackImage.from_file`:
+        ``()`` for one pattern, ``(n,)`` for a series, ``(rows, columns)`` for a 2-D scan.
+        ``None`` for other images.
+        """
+        return self._scan_shape
+
     @fname.setter
     def fname(self, fn):
         if self._nformat != E_NPY:
@@ -253,6 +311,82 @@ class StackImage():
         free = getattr(stem4d, 'freeStem4d', None)
         if callable(free):
             free()
+
+    @classmethod
+    def from_file(cls, path, reader=None, signal=None, binning=1, scan_roi=None):
+        """
+        Create an image from a microscope or detector file, in any format that
+        :py:func:`~pyemaps.expimage.read_image` reads: Gatan DigitalMicrograph (``.dm3``,
+        ``.dm4``), Quantum Detectors Merlin (``.mib``), TIFF, Velox and NCEM EMD, TIA (``.ser``,
+        ``.emi``), MRC, TopSpin (``.app5``), Dectris Arina (``.h5``), HyperSpy (``.hspy``,
+        ``.zspy``) and pyEMAPS' own ``.im3``. Most formats need RosettaSciIO:
+        ``pip install "pyemaps[io]"``.
+
+        A single pattern is analysed as a numpy image (``E_NPY``). A stack, such as a 4D-STEM
+        scan, is copied to a temporary small-header file, removed when the image is deleted;
+        :py:attr:`~pyemaps.stackimg.StackImage.scan_shape` keeps the scan's shape, so
+        :py:meth:`~pyemaps.stackimg.StackImage.generateBDF` and
+        :py:meth:`~pyemaps.stackimg.StackImage.generateMaskedImage` know the scan width.
+
+        The 4D-STEM features take patterns of 100 to 512 pixels per side and up to 5000
+        patterns. Larger patterns need *binning*, and larger scans a *scan_roi*; pyEMAPS doesn't
+        reduce them for you.
+
+        :param path: the file.
+        :type path: str or os.PathLike
+        :param reader: the reader to use, for an extension several readers share. See
+            :py:func:`~pyemaps.expimage.read_image`.
+        :type reader: str, optional
+        :param signal: which dataset in the file to read, when it has several.
+        :type signal: int, optional
+        :param binning: average *binning* x *binning* pixel blocks into one. Scale the camera
+            constant and pattern center for :py:meth:`~pyemaps.stackimg.StackImage.indexImage`
+            by ``1 / binning`` too.
+        :type binning: int, optional
+        :param scan_roi: the part of the scan to read: ``(row, column, rows, columns)``, or
+            ``(first, count)`` for a series.
+        :type scan_roi: tuple of int, optional
+        :return: the image, ready for the analysis methods.
+        :rtype: StackImage
+        :raise FileNotFoundError: if the file doesn't exist.
+        :raise ImportError: if a package needed to read the file isn't installed.
+        :raise ~pyemaps.errors.XDPImageError: if the file can't be read, or its patterns are the
+            wrong size or too many; the message suggests the *binning* or *scan_roi* to use.
+        """
+        import os
+        import tempfile
+        import weakref
+        from .expimage import read_image, write_im3
+
+        try:
+            img = read_image(path, reader=reader, signal=signal, binning=binning,
+                             scan_roi=scan_roi)
+        except ValueError as e:
+            raise XDPImageError(str(e)) from e
+        _check_stem4d_size(img)
+
+        if img.npatterns == 1:
+            si = cls(None, nformat=E_NPY)
+            si.data = img.data[0]
+        else:
+            fd, tmp = tempfile.mkstemp(prefix='pyemaps_', suffix='.im3')
+            os.close(fd)
+            try:
+                write_im3(tmp, img.data)
+            except Exception:
+                _remove_quietly(tmp)
+                raise
+            si = cls(tmp)
+            weakref.finalize(si, _remove_quietly, tmp)
+        si._source = img.source
+        si._scan_shape = img.scan_shape
+        return si
+
+    def _scan_width(self, ncol):
+        '''The scan width: *ncol* if given, else the width of a 2-D scan read from a file.'''
+        if not ncol and self._scan_shape is not None and len(self._scan_shape) == 2:
+            return self._scan_shape[1]
+        return ncol
 
     def loadImage(self, rmode= EL_ONE, stack = 1):
         """
@@ -805,7 +939,8 @@ class StackImage():
             field image.
         :type rads: tuple of float, optional
         :param scol: number of scan positions per row: the width of the output image. The number of
-            stacks must be a multiple of it.
+            stacks must be a multiple of it. For a 2-D scan read by
+            :py:meth:`~pyemaps.stackimg.StackImage.from_file`, it defaults to the scan's width.
         :type scol: int or float
         :param bShow: display the image.
         :type bShow: bool, optional
@@ -818,6 +953,7 @@ class StackImage():
 
             The image must have more than one stack. All stacks are loaded.
         """
+        scol = self._scan_width(scol)
         if not isinstance(scol, (int, float)) or scol <= 0:
             print(f'The size of the output image along column direction must be numeral and positive')
             return -1, None
@@ -871,7 +1007,8 @@ class StackImage():
             :py:meth:`~pyemaps.stackimg.StackImage.convertImage`.
         :type maskfn: str
         :param scancol: number of scan positions per row: the width of the output image. The number
-            of stacks must be a multiple of it.
+            of stacks must be a multiple of it. For a 2-D scan read by
+            :py:meth:`~pyemaps.stackimg.StackImage.from_file`, it defaults to the scan's width.
         :type scancol: int or float
         :param bShow: display the image.
         :type bShow: bool, optional
@@ -880,6 +1017,7 @@ class StackImage():
             is negative and *data* is ``None``.
         :rtype: tuple
         """
+        scancol = self._scan_width(scancol)
         if not isinstance(scancol, (int, float)) or scancol <= 0:
             print(f'The scancol input must be numeral and positive')
             return -1, None
@@ -918,18 +1056,25 @@ class StackImage():
                 dim = (MIN_IMAGESIZE,
                         MIN_IMAGESIZE,
                         MIN_IMAGESTACK),
-                noffset = 8):
+                noffset = 8,
+                binning = 1,
+                scan_roi = None,
+                reader = None,
+                signal = None):
         """
-        Convert a raw image file, or a numpy image, to pyEMAPS' small-header format (``.im3``).
+        Convert a raw image file, a numpy image, or a microscope or detector file to pyEMAPS'
+        small-header format (``.im3``).
 
         The stem4d module needs auxiliary images, such as the masks for
         :py:meth:`~pyemaps.stackimg.StackImage.generateMaskedImage`, in this format. See the sample
         ``convert_image.py``.
 
-        :param imgfn: path of the raw image file, or with ``nformat=E_NPY``, the image as a 2-D
+        :param imgfn: path of the image file, or with ``nformat=E_NPY``, the image as a 2-D
             numpy array.
         :type imgfn: str or numpy.ndarray
-        :param nformat: the input format: ``E_RAW`` (the default) or ``E_NPY``.
+        :param nformat: the input format: ``E_RAW`` (the default), ``E_NPY``, or ``E_RSCIIO`` for
+            any format :py:func:`~pyemaps.expimage.read_image` reads, such as TIFF, ``.dm4`` or
+            ``.mib``. ``E_RSCIIO`` converts every pattern of a stack, and needs no license.
         :type nformat: int, optional
         :param ndtype: the pixel data type of a raw file. Defaults to ``E_FLOAT``. See
             :py:attr:`~pyemaps.stackimg.StackImage.ndtype`.
@@ -939,12 +1084,24 @@ class StackImage():
         :type dim: tuple of int, optional
         :param noffset: where the pixel data starts in a raw file, in bytes. Defaults to 8.
         :type noffset: int, optional
+        :param binning: with ``E_RSCIIO``, average *binning* x *binning* pixel blocks into one.
+        :type binning: int, optional
+        :param scan_roi: with ``E_RSCIIO``, the part of the scan to convert:
+            ``(row, column, rows, columns)``, or ``(first, count)`` for a series.
+        :type scan_roi: tuple of int, optional
+        :param reader: with ``E_RSCIIO``, the reader to use; see
+            :py:func:`~pyemaps.expimage.read_image`.
+        :type reader: str, optional
+        :param signal: with ``E_RSCIIO``, which dataset in the file to convert.
+        :type signal: int, optional
         :return: the path of the converted file.
         :rtype: str
-        :raise ValueError: if *nformat* isn't ``E_RAW`` or ``E_NPY``, the file name is invalid, or
-            the numpy image isn't a numpy array.
+        :raise ValueError: if *nformat* isn't ``E_RAW``, ``E_NPY`` or ``E_RSCIIO``, the file name
+            is invalid, or the numpy image isn't a numpy array.
         :raise FileNotFoundError: if the file isn't found.
-        :raise ~pyemaps.errors.XDPImageError: if the image can't be loaded or saved.
+        :raise ImportError: with ``E_RSCIIO``, if a package needed to read the file isn't installed.
+        :raise ~pyemaps.errors.XDPImageError: if the image can't be loaded or saved, or with
+            ``E_RSCIIO``, if its patterns are the wrong size for the 4D-STEM features.
 
         A file name without a folder is looked for in the folder set by the ``PYEMAPS_DATA``
         environment variable, or else in the current working directory.
@@ -956,8 +1113,9 @@ class StackImage():
         """
         import os
 
-        if nformat != E_RAW and nformat != E_NPY:
-            raise ValueError('pyEmaps only converts raw and numpy images to its proprietory format.')
+        if nformat != E_RAW and nformat != E_NPY and nformat != E_RSCIIO:
+            raise ValueError('pyEMAPS converts raw, numpy and RosettaSciIO images to its '
+                             'small-header format.')
 
         oExt = '.im3'
 
@@ -994,13 +1152,34 @@ class StackImage():
                 raise ValueError('Input file name error!')
 
             source = f'image file {imgFile}'
-            img = StackImage(imgFile,
-                            nformat=nformat,
-                            ndtype = ndtype,
-                            dim = dim,
-                            noffset = noffset)
+            if nformat != E_RSCIIO:
+                img = StackImage(imgFile,
+                                nformat=nformat,
+                                ndtype = ndtype,
+                                dim = dim,
+                                noffset = noffset)
 
         odir = os.path.join(idir, 'sh_converted')
+
+        if nformat == E_RSCIIO:
+            # read and write in Python: every pattern, no backend, no license
+            from .expimage import read_image, write_im3
+            try:
+                rimg = read_image(imgFile, reader=reader, signal=signal, binning=binning,
+                                  scan_roi=scan_roi)
+            except ValueError as e:
+                raise XDPImageError(str(e)) from e
+            _check_stem4d_size(rimg)
+            os.makedirs(odir, exist_ok=True)
+            oImageFn = os.path.join(odir, f"{iname}{oExt}")
+            try:
+                write_im3(oImageFn, rimg.data)
+            except OSError as e:
+                raise XDPImageError(f'Error saving the {source} as {oImageFn}: {e}') from e
+            print(f"The {source} ({rimg.npatterns} pattern(s) of {rimg.pattern_shape[1]} x "
+                  f"{rimg.pattern_shape[0]}) was converted to pyEMAPS image format and saved as "
+                  f"{oImageFn}")
+            return oImageFn
 
         os.makedirs(odir, exist_ok=True)
         oImageFn = os.path.join(odir, f"{iname}{oExt}")

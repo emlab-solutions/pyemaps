@@ -66,6 +66,17 @@ install_requires = [
             'matplotlib >= 3.8.4'
             ]
 
+# pip install "pyemaps[io]": RosettaSciIO, to read microscope and detector files
+# (pyemaps.read_image, StackImage.from_file). The readers for diffraction data, without
+# blockfile, whose scikit-image adds about 180 MB. On Python 3.15, h5py (EMD, HSPY, Arina,
+# TopSpin) and numcodecs (ZSPY) had no Windows wheels yet, so those readers wait for them.
+extras_require = {
+    'io': [
+        'rosettasciio[tiff,image,hdf5,mrcz,zspy,arina,app5] >= 0.15; python_version < "3.15"',
+        'rosettasciio[tiff,image,mrcz] >= 0.15; python_version >= "3.15"',
+    ],
+}
+
 def get_samples(sdn = 'samples'):
     '''
     input: sdn = sample directory name under pyemaps
@@ -178,6 +189,7 @@ setup(name                              ="pyemaps",
                                            'pyemaps.xtal',
                                            'pyemaps.emcontrols',
                                            'pyemaps.stackimg',
+                                           'pyemaps.expimage',
                                            'pyemaps.CifFile.CifFile_module',
                                            'pyemaps.CifFile.yapps3_compiled_rt',
                                            'pyemaps.CifFile.YappsStarParser_1_1',
@@ -209,6 +221,7 @@ setup(name                              ="pyemaps",
                                             'Changelog': 'https://emlab-solutions.github.io/pyemaps/rn.html',
                                             },
       install_requires                  = get_install_requires(),
+      extras_require                    = extras_require,
       cmdclass                          = {'install_data': install_data_in_package},
 
       data_files                        = [('pyemaps', 

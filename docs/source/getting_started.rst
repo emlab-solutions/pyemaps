@@ -32,6 +32,16 @@ pip also installs NumPy (2.0 or later), matplotlib (3.8.4 or later) and *emaps*,
 simulation backend built for your Python version. On Python 3.7, pip installs pyEMAPS 1.1.x.
 If the installation fails, see :doc:`faq`.
 
+To read experimental images from microscope and detector files (Gatan ``.dm4``, Merlin ``.mib``,
+TIFF, Velox ``.emd`` and more), install the ``io`` extra too, which adds `RosettaSciIO
+<https://hyperspy.org/rosettasciio/>`_:
+
+.. code-block:: console
+
+   pip install "pyemaps[io]"
+
+See :doc:`user_guide/indexing`.
+
 Check the installation
 ----------------------
 

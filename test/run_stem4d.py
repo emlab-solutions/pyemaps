@@ -19,6 +19,10 @@ What it checks:
   order) gives the same result lines, and those match baseline/stem4d/al_index.txt
   (pyemaps#87).
 - license: on a full build, importing pyemaps.stem4d succeeds.
+- files from microscopes (needs RosettaSciIO, pip install "pyemaps[io]"): al.img saved as a
+  TIFF and opened with StackImage.from_file indexes like the file; a 4D-STEM scan gives the
+  same bright field image from .im3, .npy (scan width from the file) and TIFF; and a TIFF
+  mask converted by convertImage(E_RSCIIO) gives the same masked image as an .im3 mask.
 
 Each case runs in its own process, so a crash in the native code fails that case instead
 of the whole run. indexImage always shows its plots; the indexing cases draw them off screen,
@@ -69,6 +73,13 @@ SH_CASES = {
 SH_DIMS = (128, 120, 3)          # width, height, stacks
 SH_TYPES = {'int16': 11, 'float32': 12}   # header data type: 10 + E_INT or E_FLOAT, multi-stack
 INDEX_MODES = ['file', 'npy32', 'npy64', 'npyF']
+try:
+    import rsciio  # noqa: F401
+    HAVE_RSCIIO = True
+    INDEX_MODES.append('tif')
+except ImportError:
+    HAVE_RSCIIO = False
+SCAN = (6, 5)                    # scan rows, columns for the files check
 
 
 def make_image(shape, dtype, layout):
@@ -188,6 +199,12 @@ def case_index(mode, dbfn, npyfile):
 
     if mode == 'file':
         si = StackImage(str(ALIMG))
+    elif mode == 'tif':
+        sys.path.insert(0, str(HERE))
+        import rsc_fixtures
+        tif = os.path.join(os.path.dirname(npyfile), 'al.tif')
+        rsc_fixtures.write(tif, np.load(npyfile))
+        si = StackImage.from_file(tif)
     else:
         arr = np.load(npyfile)
         if mode == 'npy64':
@@ -204,6 +221,51 @@ def case_index(mode, dbfn, npyfile):
         # Save the loaded pixels for the numpy runs.
         ncol, nrow, _ = si.dim
         np.save(npyfile, np.array(si.data, dtype=np.float32).reshape(nrow, ncol))
+
+
+def case_files(tmp):
+    '''Bright field and masked images from a scan in three formats, and a converted mask.'''
+    import numpy as np
+    from pyemaps import StackImage, E_RSCIIO, write_im3
+    sys.path.insert(0, str(HERE))
+    import rsc_fixtures
+
+    rows, cols = 120, 128
+    yy, xx = np.mgrid[:rows, :cols]
+    disk = ((yy - 60) ** 2 + (xx - 64) ** 2 < 15 ** 2)
+    rng = np.random.default_rng(11)
+    scan = (rng.random(SCAN + (rows, cols)) * 200 + disk * 3000).astype(np.int16)
+    scan[2, 3] //= 4                                   # one darker position, to see in the image
+    flat = scan.reshape(-1, rows, cols)
+    im3 = os.path.join(tmp, 'scan.im3')
+    write_im3(im3, flat)
+    npy = os.path.join(tmp, 'scan.npy')
+    rsc_fixtures.write(npy, scan, nav=2)
+    tif = os.path.join(tmp, 'scan.tif')
+    rsc_fixtures.write(tif, flat, nav=1)
+
+    bdf = dict(center=(64.0, 60.0), rads=(0.0, 12.0))
+    _, ref = StackImage(im3).generateBDF(scol=SCAN[1], **bdf)
+    ref = np.array(ref)
+    _, from_npy = StackImage.from_file(npy).generateBDF(**bdf)        # scol from the scan
+    _, from_tif = StackImage.from_file(tif).generateBDF(scol=SCAN[1], **bdf)
+    bad = [n for n, a in (('npy', from_npy), ('tif', from_tif)) if not np.array_equal(np.array(a), ref)]
+
+    mask = disk.astype(np.float32)
+    mask_im3 = os.path.join(tmp, 'mask.im3')
+    write_im3(mask_im3, mask)
+    mask_tif = os.path.join(tmp, 'mask.tif')
+    rsc_fixtures.write(mask_tif, mask)
+    converted = StackImage.convertImage(mask_tif, nformat=E_RSCIIO)
+    _, m1 = StackImage(im3).generateMaskedImage(mask_im3, scancol=SCAN[1])
+    _, m2 = StackImage(im3).generateMaskedImage(converted, scancol=SCAN[1])
+    if m1 is None or not np.array_equal(np.array(m1), np.array(m2)):
+        bad.append('mask')
+    if bad:
+        print(f'RESULT FAIL differs from the .im3 results: {bad}')
+    else:
+        print(f'RESULT PASS bright field from .im3, .npy and TIFF identical ({ref.size} pixels, '
+              f'sum {ref.sum():.6g}); TIFF mask converted, masked image identical')
 
 
 # ------------------------------------------------------------------ parent
@@ -308,6 +370,18 @@ def run_indexing():
     return results, ref
 
 
+def check_files():
+    if not HAVE_RSCIIO:
+        return [('files from microscopes', True,
+                 'skipped: RosettaSciIO not installed (pip install "pyemaps[io]")')]
+    import tempfile
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        code, out, err = run_child('files', tmp)
+    line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
+    ok = code == 0 and line is not None and line.startswith('RESULT PASS')
+    return [('files from microscopes', ok, line[7:] if line else child_failure(code, err))]
+
+
 def summary_line(lines, key):
     return next((l.strip() for l in lines if key in l), '')
 
@@ -332,6 +406,7 @@ def main():
         results += check_loading()
         index_results, ref = run_indexing()
         results += index_results
+        results += check_files()
     else:
         ref = None
 
@@ -380,5 +455,7 @@ if __name__ == '__main__':
             case_sh(*rest)
         elif kind == 'index':
             case_index(*rest)
+        elif kind == 'files':
+            case_files(*rest)
         sys.exit(0)
     sys.exit(main())
