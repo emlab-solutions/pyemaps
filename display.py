@@ -259,23 +259,30 @@ class DifPlotter:
         iax.clear()
         iax.set_axis_off()
 
-# image intensity check: 
-# if intensity is below threshold, 
+# image intensity check:
+# if intensity is below threshold,
 # don't display the image
         imax = img.max()
         if imax < 1.0e-10:
-            ishape = np.shape(img)
-            img = np.zeros(ishape)
-            wmsg = "No intensity detected at: \n\n" + emc.plot_format()
-            iax.text(ishape[0]/2,ishape[1]/2, 
-                        wmsg,
-                        {'color': 'white', 'fontsize': 10},
-                        horizontalalignment='center',
-                        verticalalignment='center')
+            img = np.zeros(np.shape(img))
 
-        iax.imshow(img, 
+        iax.imshow(img,
                 #    norm=colors.LogNorm(vmin=imin, vmax=imax),  --- logrithmatic image normalization, not used now
                    cmap=clrMap)
+
+        if imax < 1.0e-10:
+            # the caption shows the controls; without one, the message lists them, one per line
+            wmsg = "No intensity detected"
+            if not self.cShow:
+                wmsg += " at:\n\n" + emc.plot_format().replace(';', '\n')
+            msg = iax.text(0.5, 0.5, wmsg,
+                           {'color': 'white', 'fontsize': 10},
+                           horizontalalignment='center',
+                           verticalalignment='center',
+                           multialignment='center',
+                           transform=iax.transAxes,
+                           clip_on=True)
+            _fit_text(iax, msg)
         if self.cShow:
             self.plotControls(emc,iax)
 
@@ -763,6 +770,25 @@ def _hide_cut_labels(ax, labels):
         if (box.x0 < frame.x0 or box.x1 > frame.x1 or
                 box.y0 < frame.y0 or box.y1 > frame.y1):
             label.set_visible(False)
+
+
+def _fit_text(ax, text, fill=0.9, min_size=4.0):
+    '''
+    Shrink *text*'s font until the text fits in *fill* of *ax*'s frame, but not below
+    *min_size* points. A table's panels are much narrower than a single plot.
+    '''
+    try:
+        renderer = ax.figure.canvas.get_renderer()
+    except AttributeError:
+        return  # this backend can't measure text; the text stays clipped to the frame instead
+    ax.apply_aspect()  # the frame's final size, as drawn
+    frame = ax.get_window_extent(renderer)
+    box = text.get_window_extent(renderer)
+    if box.width <= 0 or box.height <= 0:
+        return
+    scale = min(fill * frame.width / box.width, fill * frame.height / box.height)
+    if scale < 1.0:
+        text.set_fontsize(max(min_size, text.get_fontsize() * scale))
 
 
 def _getGridPos(i, nCols = 3):
