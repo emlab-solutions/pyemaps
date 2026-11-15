@@ -1,6 +1,7 @@
 
 from pyemaps import showBloch
 import os
+import sys
 from pathlib import Path
 import pickle
 from sanity_base import *
@@ -75,7 +76,7 @@ def gen_feature_baseline(feature=feat_list[0]):
         
         print(f'------------------Generating baseline for feature: {feature}----------------')
         if fc != 0:
-            print(f'There are failures in generating feature baseline: {fcases}')
+            report_failure(f'There are failures in generating feature baseline: {fcases}')
         else:
             print(f'++++++ Feature - {feature} baseline generation and update SUCCEEDED ++++++')
 
@@ -92,18 +93,18 @@ def compare_feature_baseline(feature=feat_list[0]):
         headmsg = 'feature - ' + feature + "for " + 'built-in' if t==TY_BUILTIN else 'CIF' + ' Crystals'
         print(f'------------------Running and comparing baseline for {headmsg} ----------------')
         if fc != 0:
-            print(f'Failures - {fc}: \n{fcases}')
+            report_failure(f'Failures - {fc}: \n{fcases}')
         else:
             print(f'++++++ Current run SUCCEEDED +++++++')
 
         if bdata is None:
-            print(f'Failed to load basline for feature: {feature}')
+            report_failure(f'Failed to load basline for feature: {feature}')
 
         basline_Compare_failure_cases=[]
         basline_Compare_failure_count = 0
 
         if len(res) != len(bdata):
-            print(f'Current result does not compare with baseline.')
+            report_failure(f'Current result does not compare with baseline.')
             return
 
         for r in res:
@@ -115,7 +116,7 @@ def compare_feature_baseline(feature=feat_list[0]):
             print(f"------- Time in comparing {feature} baseline for {r[0]}: {toc - tic:0.4f}")
         
         if basline_Compare_failure_count != 0:
-            print(f'There are failures in comparing with baseline: {basline_Compare_failure_cases}')
+            report_failure(f'There are failures in comparing with baseline: {basline_Compare_failure_cases}')
         else:
             print(f'++++++ Baseline comparison SUCCEEDED +++++++')
 
@@ -131,7 +132,7 @@ def run_feature_gui(feature=feat_list[0]):
         headmsg = 'feature - ' + feature + "for " + 'built-in' if t==TY_BUILTIN else 'CIF' + ' Crystals'
         print(f'------------------Running GUI test for {headmsg} ----------------')
         if fc != 0:
-            print(f'Failures - {fc}: \n{fcases}')
+            report_failure(f'Failures - {fc}: \n{fcases}')
         else:
             print(f'++++++ Current run SUCCEEDED +++++++')
 
@@ -233,6 +234,8 @@ if __name__ == '__main__':
 
             if bgui:
                 run_feature_gui(ff)
+
+    sys.exit(exit_status())
 
     # bline = True
     # f = feat_list[0]
