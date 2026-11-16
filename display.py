@@ -115,6 +115,31 @@ CLOSE_DELAY = 3
 # table 10 inches (3.3 per column)
 NOTEBOOK_DPI = 150
 
+# the controls written under each plot, in points: the font size, the gap between the plot's
+# frame and the caption, and the caption's lines (plot_format gives at most two: the
+# controls, then the simulation controls)
+CAPTION_FONTSIZE = 6
+CAPTION_OFFSET = 3
+CAPTION_LINES = 2
+
+
+def _caption_hspace(fig, nrows):
+    '''
+    The subplot spacing (hspace, a fraction of a plot's height) that leaves room between the
+    rows of a table of *nrows* for the captions under each plot.
+    '''
+    default = matplotlib.rcParams['figure.subplot.hspace']
+    if nrows < 2:
+        return default
+    pars = fig.subplotpars
+    available = fig.get_figheight() * 72 * (pars.top - pars.bottom)   # points
+    gap = CAPTION_OFFSET + CAPTION_LINES * CAPTION_FONTSIZE * 1.2 + 3  # caption, plus a margin
+    rows_height = available - (nrows - 1) * gap
+    if rows_height <= 0:
+        return default
+    # matplotlib makes each gap hspace times the average plot height, rows_height / nrows
+    return max(default, gap * nrows / rows_height)
+
 class DifPlotter:
     # '''
     # diffraction data plotter that receives data from the pipe and
@@ -275,28 +300,15 @@ class DifPlotter:
 
 
     def plotControls(self, emc, ax):
-        controls_text = emc.plot_format()
-
-        # finding control text plot or coordinates:
-        x0= x1 = 0.0
-        y0= 0.0
-
-        x0, x1 = ax.get_xlim()
-        y0, y1 = ax.get_ylim()
-
-        width = x1-x0
-        height = (y1-y0)/8
-
-        textrec = patches.Rectangle((x0, y0-height), 
-                                        width, height,
-                                        linewidth=0.0,
-                                        fill = False)
-        ax.add_patch(textrec)
-
-        ax.text(x0 + 0.5*width, y0 - 0.5*height, controls_text,
-                {'color': 'grey', 'fontsize': 6},
-                ha='center',
-                va='center')
+        '''
+        Write the controls that aren't at their defaults under the plot: centred, a fixed
+        distance below its frame, so a table can leave room for them (see _caption_hspace).
+        '''
+        ax.annotate(emc.plot_format(),
+                    xy=(0.5, 0.0), xycoords='axes fraction',
+                    xytext=(0, -CAPTION_OFFSET), textcoords='offset points',
+                    color='grey', fontsize=CAPTION_FONTSIZE,
+                    ha='center', va='top')
                 
 
     def plotStereo(self):
@@ -440,6 +452,10 @@ class DifPlotter:
         for x in self.axes.ravel():
             x.axis("off")
             x.set_aspect('equal')
+
+        if layout == 'table' and cShow:
+            # each row needs room for the captions under it
+            self.fig.subplots_adjust(hspace=_caption_hspace(self.fig, n1))
 
         # the same size as the powder plot's title, in proportion to the labels (6 to 10)
         self.fig.suptitle(self.name, va='top', fontsize=14)
