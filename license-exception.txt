@@ -1,0 +1,32 @@
+GPLv3 Linking Exception for Compiled Backend
+
+Copyright (C) 2021-2026 EMLab Solutions, Inc.
+
+The Python frontend package pyEMAPS is licensed under the GNU General Public
+License, version 3 or (at your option) any later version.
+
+Additional Permission under GNU GPL version 3, Section 7
+
+As a special exception, the copyright holders of pyEMAPS grant permission to
+combine or link this Python frontend with emaps, the simulation engine of
+EMLab Solutions, Inc. that pyEMAPS runs on, including its compiled Fortran, C,
+and C++ extension modules, notwithstanding that the backend modules may be
+distributed under separate proprietary or commercial licenses.
+
+You may convey such a combined work, subject to compliance with the GNU GPL
+applicable to pyEMAPS and the applicable license terms governing emaps.
+
+This exception does not, by itself, require the proprietary backend modules to
+be licensed under the GNU GPL solely because they are combined with the
+frontend under this permission.
+
+This exception applies only to code for which the licensors granting this
+exception have the necessary copyright rights. It does not grant additional
+permissions for third-party software or waive obligations under third-party
+licenses.
+
+The GNU GPL continues to apply to pyEMAPS, except as expressly permitted by
+this exception.
+
+This exception constitutes an additional permission under Section 7 of GNU GPL
+version 3.

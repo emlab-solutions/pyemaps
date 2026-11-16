@@ -1,13 +1,17 @@
 pyEMAPS - transmission electron diffraction simulations in Python
 Copyright (c) 2021-2026 EMLab Solutions, Inc. All rights reserved.
 
-Free Base Features License (GNU General Public License v3.0)
-------------------------------------------------------------
+GNU General Public License v3.0, with a Linking Exception for emaps
+-------------------------------------------------------------------
 
 pyEMAPS is free software: you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
 Foundation, either version 3 of the License, or (at your option) any later
 version. This applies to personal and commercial use.
+
+As an additional permission under Section 7 of GNU GPL version 3, the copyright
+holders of pyEMAPS permit combining or linking it with emaps, its separately
+licensed simulation engine. The exception is in the license-exception.txt file.
 
 pyEMAPS is distributed for electron diffraction and microscopy research, but
 WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -18,14 +22,18 @@ You should have received a copy of the GNU General Public License along with
 pyEMAPS, in the COPYING file. If not, see <https://www.gnu.org/licenses/>.
 
 
-Commercial License for Extended Features
-----------------------------------------
+The emaps Engine and Its Licensed 4D-STEM Features
+--------------------------------------------------
 
-NOTE: The extended features of pyEMAPS require a separate license for use in
-commercial or production environments. These features are not covered by the
-GNU General Public License above.
+pyEMAPS runs on emaps, the compiled simulation engine that pip installs with it.
+emaps is not covered by the GNU General Public License: it is proprietary
+software of EMLab Solutions, Inc., free only when it is used with pyEMAPS. Its
+license.txt and COPYING files are installed with it.
 
-To buy a license for the extended features:
+NOTE: The 4D-STEM features of emaps require a separate license for use in
+commercial or production environments.
+
+To buy a license for the 4D-STEM features:
 
 1. Write to support@emlabsoftware.com with the license you need.
 2. We create your order, and you receive a 19-character license activation
@@ -42,7 +50,7 @@ For the details, including the 7-day trial license, see License Activation in
 the documentation:
 <https://emlab-solutions.github.io/pyemaps/user_guide/configuration.html#license-activation>
 
-Usage of extended features without a valid license may be subject to legal
+Usage of the 4D-STEM features without a valid license may be subject to legal
 action.
 
 Additional copyright notices and license terms applicable to portions of pyEMAPS
