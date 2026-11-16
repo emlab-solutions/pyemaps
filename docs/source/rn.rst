@@ -1,6 +1,24 @@
 Release Notes
 =============
 
+Version 2.2.1 Stable
+--------------------
+
+11-16-2026
+~~~~~~~~~~
+
+Changes
+~~~~~~~
+
+- pyEMAPS stays under the GNU General Public License v3.0 or later, now with a linking exception that permits combining it with emaps, the separately licensed simulation engine it runs on. The exception is in the *license-exception.txt* file, installed with pyEMAPS, and on the :doc:`license` page. Each source file's license notice is now a short SPDX header that points to it.
+- The commercial license covers the 4D-STEM features of emaps. pyEMAPS' own code is all under the GPL with the exception. How to buy and activate a license is unchanged.
+
+Improvements
+~~~~~~~~~~~~
+
+- :py:func:`~pyemaps.display.showDif` and :py:func:`~pyemaps.display.showBloch` with ``layout='table'`` leave room for each pattern's caption, which no longer runs into the panel below it.
+- :py:func:`~pyemaps.display.showBloch`'s "No intensity detected" message for a dark image fits its panel. Before, only fragments of it showed in a LACBED table.
+
 Version 2.2.0 Stable
 --------------------
 
