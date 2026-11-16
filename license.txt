@@ -9,13 +9,9 @@ terms of the GNU General Public License as published by the Free Software
 Foundation, either version 3 of the License, or (at your option) any later
 version. This applies to personal and commercial use.
 
-Additional permission under GNU GPL version 3 section 7
-
-If you modify this Program, or any covered work, by linking or combining it with
-emaps, the simulation engine of EMLab Solutions, Inc. that pyEMAPS runs on (or a
-modified version of emaps), containing parts covered by the terms of the emaps
-license, the licensors of this Program grant you additional permission to convey
-the resulting work.
+As an additional permission under Section 7 of GNU GPL version 3, the copyright
+holders of pyEMAPS permit combining or linking it with emaps, its separately
+licensed simulation engine. The exception is in the license-exception.txt file.
 
 pyEMAPS is distributed for electron diffraction and microscopy research, but
 WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or

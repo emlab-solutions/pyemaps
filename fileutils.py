@@ -1,43 +1,22 @@
+# This file is part of pyEMAPS.
+# Copyright (C) 2021-2026 EMLab Solutions, Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Additional permission under GPLv3 Section 7:
+# See license-exception.txt for the exception permitting
+# combination with the separately licensed backend, emaps.
 
 """
-.. This file is part of pyEMAPS
-
 Fileutils is a helper module in assisting pyemaps file i/o functions.
 Its methods include reading crystal data files and writing simulation 
 output files. 
 
 It also detects pyemaps data home environment variables and directs
 file i/o accoridng to the rule set in :ref:`Environment Variables <Environment Variables>`.
- 
-.. ----
-
-.. pyEMAPS is free software. You can redistribute it and/or modify 
-.. it under the terms of the GNU General Public License as published 
-.. by the Free Software Foundation, either version 3 of the License, 
-.. or (at your option) any later version..
-
-.. pyEMAPS is distributed in the hope that it will be useful,
-.. but WITHOUT ANY WARRANTY; without even the implied warranty of
-.. MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-.. GNU General Public License for more details.
-
-.. You should have received a copy of the GNU General Public License
-.. along with pyEMAPS.  If not, see `<https://www.gnu.org/licenses/>`_.
-
-.. Additional permission under GNU GPL version 3 section 7
-
-.. If you modify this Program, or any covered work, by linking or combining it with emaps,
-.. the simulation engine of EMLab Solutions, Inc. that pyEMAPS runs on (or a modified
-.. version of emaps), containing parts covered by the terms of the emaps license, the
-.. licensors of this Program grant you additional permission to convey the resulting work.
-
-.. Contact supprort@emlabsoftware.com for any questions and comments.
-
-.. ----
 
 .. Author:     EMLab Solutions, Inc.
 .. Date:       September 26th, 2022    
-
 """
 
 
