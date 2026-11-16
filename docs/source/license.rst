@@ -2,12 +2,19 @@
 Licenses for pyEMAPS
 ====================
 
-Free Base Features License (GNU General Public License v3.0)
-------------------------------------------------------------
+GNU General Public License v3.0, with a Linking Exception for emaps
+-------------------------------------------------------------------
 
 **pyEMAPS** is free software: you can redistribute it and/or modify it under the terms of the
 GNU General Public License as published by the Free Software Foundation, either version 3 of the
 License, or (at your option) any later version. This applies to personal and commercial use.
+
+**Additional permission under GNU GPL version 3 section 7**
+
+If you modify this Program, or any covered work, by linking or combining it with emaps, the
+simulation engine of EMLab Solutions, Inc. that pyEMAPS runs on (or a modified version of
+emaps), containing parts covered by the terms of the emaps license, the licensors of this Program
+grant you additional permission to convey the resulting work.
 
 **pyEMAPS** is distributed for electron diffraction and microscopy research, but WITHOUT ANY
 WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
@@ -16,13 +23,17 @@ PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with **pyEMAPS**, in
 its COPYING file. If not, see `<https://www.gnu.org/licenses/>`_.
 
-Commercial License for Extended Features
-----------------------------------------
+The emaps Engine and Its Licensed 4D-STEM Features
+--------------------------------------------------
 
-**NOTE:** The extended features of pyEMAPS require a separate license for use in commercial or
-production environments. These features are not covered by the GNU General Public License above.
+*emaps*, the compiled simulation engine that pip installs with pyEMAPS, is not covered by the GNU
+General Public License: it's proprietary software of EMLab Solutions, Inc., free only when it's
+used with pyEMAPS. Its *license.txt* and *COPYING* files are installed with it.
 
-To buy a license for the extended features:
+**NOTE:** The 4D-STEM features of emaps require a separate license for use in commercial or
+production environments.
+
+To buy a license for the 4D-STEM features:
 
 1. Write to support@emlabsoftware.com with the license you need.
 2. We create your order, and you receive a 19-character license activation token, in the form
@@ -41,14 +52,7 @@ To buy a license for the extended features:
 
 See :ref:`License Activation` for the details, including the 7-day trial license.
 
-Usage of extended features without a valid license may be subject to legal action.
-
-The emaps Backend
------------------
-
-*emaps*, the compiled simulation backend that pip installs with pyEMAPS, is proprietary software
-of EMLab Solutions, Inc. It's free only when it's used with pyEMAPS. Its *license.txt* and
-*COPYING* files are installed with it.
+Usage of the 4D-STEM features without a valid license may be subject to legal action.
 
 Additional copyright notices and license terms applicable to portions of pyEMAPS are set forth
 in the `COPYING <https://github.com/emlab-solutions/pyemaps/blob/main/COPYING>`_ file.
