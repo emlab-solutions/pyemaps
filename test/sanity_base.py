@@ -1,25 +1,13 @@
+# This file is part of pyEMAPS.
+# Copyright (C) 2021-2026 EMLab Solutions, Inc.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Additional permission under GPLv3 Section 7:
+# See license-exception.txt for the exception permitting
+# combination with the separately licensed backend, emaps.
+
 """
-This file is part of pyemaps
-___________________________
-
-pyemaps is free software. You can redistribute it and/or modify 
-it under the terms of the GNU General Public License as published 
-by the Free Software Foundation, either version 3 of the License, 
-or (at your option) any later version.
-
-pyemaps is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with pyemaps.  If not, see <https://www.gnu.org/licenses/>.
-
-Contact supprort@emlabsoftware.com for any questions and comments.
-___________________________
-
-```
-
 Author:     EMLab Solutions, Inc.
 Date:       Jan. 5th, 2025    
 """
@@ -55,6 +43,32 @@ BL_NONE = 3
 
 TY_BUILTIN=1
 TY_CIF=2
+
+_failures = []
+
+
+def report_failure(msg):
+    '''
+    Print a failure message and remember it, so that the script exits with status 1.
+    '''
+    print(msg)
+    _failures.append(msg)
+
+
+def failure_count():
+    '''
+    The number of failures reported so far.
+    '''
+    return len(_failures)
+
+
+def exit_status():
+    '''
+    1 if any failure was reported, else 0: the script's exit status.
+    '''
+    return 1 if _failures else 0
+
+
 def get_cifdata_dir():
 
     current_path = Path(os.path.abspath(__file__))

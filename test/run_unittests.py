@@ -17,22 +17,24 @@ def compare_unittest_baseline(feature):
         sys.exit(1)
 
     dl = None
-    if f == "diff":
+    if feature == "diff":
         from unittests.kdif.sanity_doc import run_kdiffraction
         dl = run_kdiffraction(bShow=False, bSave=False, bPrint=False)
 
-    if f == 'bloch':
+    if feature == 'bloch':
         from unittests.bloch.si_bloch_docs import generate_bloch_images
         dl = generate_bloch_images(bSave=False)
 
-    if f == 'lacbed':
+    if feature == 'lacbed':
         from unittests.bloch.si_lacbed_docs import generate_lacbed_images
         dl = generate_lacbed_images(bSave=False)
 
-    if dl is not None and not (dl == bdata):
-        print(f'++++++ Baseline comparison FAILED for {feature} unit test +++++++')
+    if dl is None:
+        report_failure(f'++++++ Baseline comparison FAILED for {feature} unit test: no results +++++++')
+    elif not (dl == bdata):
+        report_failure(f'++++++ Baseline comparison FAILED for {feature} unit test +++++++')
     else:
-        print(f'++++++ Baseline comparison SUCCEEDED for {feature} unit test +++++++')  
+        print(f'++++++ Baseline comparison SUCCEEDED for {feature} unit test +++++++')
 
 def run_unittest_gui(feature = "diff"):
     if feature == "diff":
@@ -56,9 +58,9 @@ def run_unittest_aux():
         licence_test.main()
         type_test.main()
     except Exception as e:
-        print(f'+++++ Auxillary unit tests FAILED: {e} +++++')
-    
-    print(f'+++++ Auxillary unit tests SUCCEDED +++++\n')
+        report_failure(f'+++++ Auxillary unit tests FAILED: {e} +++++')
+    else:
+        print(f'+++++ Auxillary unit tests SUCCEEDED +++++\n')
 
     
 def gen_unittest_baseline(f):
@@ -81,6 +83,10 @@ def gen_unittest_baseline(f):
     if f == 'lacbed':
         from unittests.bloch.si_lacbed_docs import generate_lacbed_images
         dl = generate_lacbed_images(bSave=False)
+
+    if dl is None:
+        report_failure(f'------ Unit test baseline generation FAILED for {f}: no results; baseline unchanged')
+        return
 
     with open(baseline_data_filename, "wb") as bf:
         pickle.dump(dl, bf)
@@ -160,7 +166,12 @@ if __name__ == '__main__':
                 if bgui:
                     run_unittest_gui(ff)
         except Exception as e:
-            print(f'+++++ Unit tests FAILED: {e} +++++')
+            report_failure(f'+++++ Unit tests FAILED: {e} +++++')
         else:
-            print(f'+++++ Unit tests SUCCEEDED +++++\n')
+            if failure_count() == 0:
+                print(f'+++++ Unit tests SUCCEEDED +++++\n')
+            else:
+                print(f'+++++ Unit tests FAILED: {failure_count()} failure(s) +++++\n')
+
+    sys.exit(exit_status())
     

@@ -99,9 +99,12 @@ gallery and the full API reference.
 
 ## Licensing
 
-The base features are free software under the
-[GNU General Public License v3.0](https://emlab-solutions.github.io/pyemaps/license.html), for
-personal and commercial use. The extended 4D-STEM features need a license:
+pyEMAPS is free software under the
+[GNU General Public License v3.0 or later](https://emlab-solutions.github.io/pyemaps/license.html),
+for personal and commercial use, with a linking exception
+([license-exception.txt](https://github.com/emlab-solutions/pyemaps/blob/main/license-exception.txt))
+that allows its use with emaps, the proprietary simulation engine it runs on. emaps' 4D-STEM
+features need a license:
 
 - `pyemaps --license trial` activates a 7-day trial license. It needs an internet connection.
 - `pyemaps --license <token>` activates a trial or production license with a license activation

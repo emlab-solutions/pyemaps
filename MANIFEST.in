@@ -8,6 +8,7 @@ include __config__.py
 include README.md
 include COPYING
 include license.txt
+include license-exception.txt
 
 include cdata/*.xtl
 include samples/*.py
