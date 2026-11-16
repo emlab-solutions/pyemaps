@@ -39,6 +39,9 @@ The extended 4D-STEM features need a license:
 - Annular bright and dark field images
 - Masked images
 
+Reading experimental patterns from TIFF files, single images or multi-page 4D-STEM stacks, is
+free and needs no other package.
+
 ## Requirements
 
 - 64-bit Windows

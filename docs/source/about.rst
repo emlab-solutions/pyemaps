@@ -44,6 +44,9 @@ The extended 4D-STEM features, which need :ref:`License Activation`:
 * Annular bright and dark field images
 * Masked images
 
+Reading experimental patterns from TIFF files, single images or multi-page 4D-STEM stacks, is
+free and needs no other package. See :ref:`Images from TIFF files`.
+
 In development
 --------------
 

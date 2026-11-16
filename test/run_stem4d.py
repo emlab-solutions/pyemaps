@@ -19,6 +19,10 @@ What it checks:
   order) gives the same result lines, and those match baseline/stem4d/al_index.txt
   (pyemaps#87).
 - license: on a full build, importing pyemaps.stem4d succeeds.
+- TIFF files (tiffdata/, written by tifffile): al.tif opened with StackImage.from_file indexes
+  like al.img; a 6 x 5 scan gives the same bright field image from its .im3 and its TIFF (scan
+  width from the file); and a TIFF mask converted by convertImage(E_FILE) gives the same
+  masked image as an .im3 mask.
 
 Each case runs in its own process, so a crash in the native code fails that case instead
 of the whole run. indexImage always shows its plots; the indexing cases draw them off screen,
@@ -68,7 +72,8 @@ SH_CASES = {
 }
 SH_DIMS = (128, 120, 3)          # width, height, stacks
 SH_TYPES = {'int16': 11, 'float32': 12}   # header data type: 10 + E_INT or E_FLOAT, multi-stack
-INDEX_MODES = ['file', 'npy32', 'npy64', 'npyF']
+INDEX_MODES = ['file', 'npy32', 'npy64', 'npyF', 'tif']
+TIFFDATA = HERE / 'tiffdata'
 
 
 def make_image(shape, dtype, layout):
@@ -188,6 +193,8 @@ def case_index(mode, dbfn, npyfile):
 
     if mode == 'file':
         si = StackImage(str(ALIMG))
+    elif mode == 'tif':
+        si = StackImage.from_file(TIFFDATA / 'al.tif')
     else:
         arr = np.load(npyfile)
         if mode == 'npy64':
@@ -207,6 +214,40 @@ def case_index(mode, dbfn, npyfile):
 
 
 # ------------------------------------------------------------------ parent
+
+def case_files(tmp):
+    '''Bright field and masked images from a TIFF scan and its .im3, and a converted mask.'''
+    import numpy as np
+    from pyemaps import StackImage, E_FILE, write_im3
+
+    expected = np.load(TIFFDATA / 'expected.npz')
+    flat = expected['stem4d_scan']                           # 30 patterns: a 6 x 5 scan
+    im3 = os.path.join(tmp, 'scan.im3')
+    write_im3(im3, flat)
+    tif = str(TIFFDATA / 'stem4d_scan.tif')
+
+    bdf = dict(center=(64.0, 60.0), rads=(0.0, 12.0))
+    _, ref = StackImage(im3).generateBDF(scol=5, **bdf)
+    ref = np.array(ref)
+    _, from_tif = StackImage.from_file(tif).generateBDF(**bdf)       # scol from the file
+    bad = [] if np.array_equal(np.array(from_tif), ref) else ['bright field']
+
+    mask_im3 = os.path.join(tmp, 'mask.im3')
+    write_im3(mask_im3, expected['stem4d_mask'][0])
+    mask_tif = os.path.join(tmp, 'mask.tif')
+    with open(TIFFDATA / 'stem4d_mask.tif', 'rb') as src, open(mask_tif, 'wb') as dst:
+        dst.write(src.read())
+    converted = StackImage.convertImage(mask_tif, nformat=E_FILE)
+    _, m1 = StackImage(im3).generateMaskedImage(mask_im3, scancol=5)
+    _, m2 = StackImage(im3).generateMaskedImage(converted, scancol=5)
+    if m1 is None or not np.array_equal(np.array(m1), np.array(m2)):
+        bad.append('mask')
+    if bad:
+        print(f'RESULT FAIL differs from the .im3 results: {bad}')
+    else:
+        print(f'RESULT PASS bright field from .im3 and TIFF identical ({ref.size} pixels, '
+              f'sum {ref.sum():.6g}); TIFF mask converted, masked image identical')
+
 
 def run_child(*args):
     p = subprocess.run([sys.executable, str(Path(__file__).resolve()), '--case', *args],
@@ -308,6 +349,15 @@ def run_indexing():
     return results, ref
 
 
+def check_files():
+    import tempfile
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        code, out, err = run_child('files', tmp)
+    line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
+    ok = code == 0 and line is not None and line.startswith('RESULT PASS')
+    return [('TIFF files', ok, line[7:] if line else child_failure(code, err))]
+
+
 def summary_line(lines, key):
     return next((l.strip() for l in lines if key in l), '')
 
@@ -332,6 +382,7 @@ def main():
         results += check_loading()
         index_results, ref = run_indexing()
         results += index_results
+        results += check_files()
     else:
         ref = None
 
@@ -380,5 +431,7 @@ if __name__ == '__main__':
             case_sh(*rest)
         elif kind == 'index':
             case_index(*rest)
+        elif kind == 'files':
+            case_files(*rest)
         sys.exit(0)
     sys.exit(main())
