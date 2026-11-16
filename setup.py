@@ -49,7 +49,7 @@ class install_data_in_package(_install_data):
 
 
 install_requires = [
-            'emaps >= 2.0.1',
+            'emaps >= 2.1.0',
             'numpy >= 2.0',
             'matplotlib >= 3.8.4'
             ]

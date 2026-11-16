@@ -1,6 +1,28 @@
 Release Notes
 =============
 
+Version 2.3.0 Stable
+--------------------
+
+11-16-2026
+~~~~~~~~~~
+
+Changes
+~~~~~~~
+
+- Bloch and LACBED images are centred: the pattern's centre is at the image's centre. Before, every image from :py:meth:`~pyemaps.crystals.Crystal.generateBloch`, in both modes, and from :py:meth:`~pyemaps.crystals.Crystal.getBlochImages` was 2 rows too high, so images saved with earlier versions are offset by 2 rows from new ones. This comes from emaps 2.1.0.
+- emaps 2.1.0 states its own license terms, in the *license.txt* file installed with it. emaps is free to use with pyEMAPS, including versions of pyEMAPS you have modified, and may be redistributed unmodified together with pyEMAPS. Its *COPYING* file lists the third-party software it includes, with their notices and license terms.
+
+Improvements
+~~~~~~~~~~~~
+
+- From emaps 2.1.0:
+
+  - The license checks of the 4D-STEM features use LicenseSpring C++ SDK 7.51.3, which comes with OpenSSL 3.5.7 and curl 8.21.0.
+  - Third-party numerical routines in the 4D-STEM indexing are replaced by EMLab's own implementations. Results are unchanged.
+
+- Requires ``emaps >= 2.1.0``.
+
 Version 2.2.1 Stable
 --------------------
 
