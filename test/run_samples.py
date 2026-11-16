@@ -23,7 +23,7 @@ def compare_samples_baseline(feature):
        for k in CONTROLS:
               dpl = generate_kinematic_patterns(k, mode=2)
               if not (k, dpl) in bdata:
-                print(f'--------Baseline match FAILED  for kinematic diffraction sample test for control: {k}.')
+                report_failure(f'--------Baseline match FAILED  for kinematic diffraction sample test for control: {k}.')
                 return
        print(f'++++++Baseline match SUCCEEDED for kinematic diffraction sample test.')
 
@@ -34,7 +34,7 @@ def compare_samples_baseline(feature):
        for k in CONTROLS:
             imgs = generate_bloch_images(k)
             if not (k, imgs) in bdata:
-                print(f'--------Baseline match FAILED  for dynamic diffraction sample test for control: {k}.')
+                report_failure(f'--------Baseline match FAILED  for dynamic diffraction sample test for control: {k}.')
                 return
        print(f'++++++Baseline match SUCCEEDED for dynamic diffraction sample test.')
 
@@ -42,7 +42,7 @@ def compare_samples_baseline(feature):
         from pyemaps.samples.si_lacbed import generate_lacbed_images
         imgs = generate_lacbed_images()
         if imgs != bdata:
-            print(f'--------Baseline match FAILED  for LACBED sample test.')
+            report_failure(f'--------Baseline match FAILED  for LACBED sample test.')
             return
         print(f'++++++Baseline match SUCCEEDED for LACBED sample test.')
 
@@ -50,7 +50,7 @@ def compare_samples_baseline(feature):
         from pyemaps.samples.si_stereo import generate_stereodiagrams
         stereo = generate_stereodiagrams('tilt')
         if stereo != bdata:
-             print(f'--------Baseline match FAILED for Stereogram sample test.')
+             report_failure(f'--------Baseline match FAILED for Stereogram sample test.')
              return
         print(f'++++++Baseline match SUCCEEDED for Stereogram sample test.')
 
@@ -58,7 +58,7 @@ def compare_samples_baseline(feature):
         from pyemaps.samples.si_csf import generate_structure_factors
         csf = generate_structure_factors(verbose=False)[(4, 0)]
         if csf != bdata:
-             print(f'--------Baseline match FAILED for Crystal Structure Factor sample test.')
+             report_failure(f'--------Baseline match FAILED for Crystal Structure Factor sample test.')
              return
         print(f'++++++Baseline match SUCCEEDED for Crystal Structure Factor sample test.')
 
@@ -66,7 +66,7 @@ def compare_samples_baseline(feature):
         from pyemaps.samples.si_constructor import build_supercell
         mx = build_supercell(verbose=False, save=False)
         if mx != bdata:
-             print(f'--------Baseline match FAILED for Crystal Structure Calculation sample test.')
+             report_failure(f'--------Baseline match FAILED for Crystal Structure Calculation sample test.')
              return
         print(f'++++++Baseline match SUCCEEDED for Crystal Structure Calculation sample test.')
     
@@ -74,17 +74,18 @@ def compare_samples_baseline(feature):
         from pyemaps.samples.si_scm import all_scattering_matrices
         SCM_TOLERANCE= 1.0e-04
         scm = all_scattering_matrices()
+        failures_before = failure_count()
 
         if not scm[0]['ncb'] == bdata[0]['ncb'] or \
            scm[0]['cbs'].shape != bdata[0]['cbs'].shape or \
            not np.array_equal(np.sort(scm[0]['cbs'], axis=0), np.sort(bdata[0]['cbs'], axis=0)):
-            print(f'--------Baseline match FAILED for Scattering matrix sample test: number of incident beams not matching')
+            report_failure(f'--------Baseline match FAILED for Scattering matrix sample test: number of incident beams not matching')
             return
         
         nscm = scm[1]['nscm']
         bnscm = bdata[1]['nscm']
         if nscm != bnscm:
-            print(f'--------Baseline match FAILED for Scattering matrix sample test: number of scattering matrices not matching: {nscm} != {bnscm}')
+            report_failure(f'--------Baseline match FAILED for Scattering matrix sample test: number of scattering matrices not matching: {nscm} != {bnscm}')
             return
         
         for s in scm[1]['lscm']:
@@ -98,19 +99,19 @@ def compare_samples_baseline(feature):
                     bFound = True
 
                 if ndim != bndim:
-                    print(f'----Baseline match FAILED for Scattering matrix sample test: scattering matrix dimensions differ')
+                    report_failure(f'----Baseline match FAILED for Scattering matrix sample test: scattering matrix dimensions differ')
                     return 
                 
                 if ev.shape != bev.shape or not np.allclose(np.sort(ev, axis=0), np.sort(bev, axis=0), atol=SCM_TOLERANCE):  
-                    print(f'----Baseline match FAILED for Scattering matrix sample test: Eigen values at {ib} does not match: {ev} != {bev}')
+                    report_failure(f'----Baseline match FAILED for Scattering matrix sample test: Eigen values at {ib} does not match: {ev} != {bev}')
                     return 
 
                 if beams.shape != bbeams.shape or not np.array_equal(np.sort(beams, axis=0), np.sort(bbeams, axis=0)):   
-                    print(f'----Baseline match FAILED for Scattering matrix sample test: Beams at {ib} does not match: {beams} != {bbeams}')
+                    report_failure(f'----Baseline match FAILED for Scattering matrix sample test: Beams at {ib} does not match: {beams} != {bbeams}')
                     return
                 
                 if sm.shape != bsm.shape:  
-                    print(f'----Baseline match FAILED for Scattering matrix shape differ at {ib}')
+                    report_failure(f'----Baseline match FAILED for Scattering matrix shape differ at {ib}')
                     return 
                     
                 # norm_sm = sm / np.linalg.norm(sm, axis=0)
@@ -167,13 +168,13 @@ def compare_samples_baseline(feature):
                 break  
 
             if not bFound:
-                print(f'----Baseline match FAILED for Scattering matrix sample test: Incident Beams at {ib} not found in baseline')  
+                report_failure(f'----Baseline match FAILED for Scattering matrix sample test: Incident Beams at {ib} not found in baseline')  
         
         nib = scm[2]['nib']
         bnib = bdata[2]['nib']
 
         if nib != bnib:
-            print(f'--------Baseline match FAILED for Scattering matrix sample test: number of incident beams not matching: {nib} != {bnib}')
+            report_failure(f'--------Baseline match FAILED for Scattering matrix sample test: number of incident beams not matching: {nib} != {bnib}')
             return
         
         for ibt in scm[2]['libt']:
@@ -185,14 +186,16 @@ def compare_samples_baseline(feature):
                     bFound = True
 
                 if not np.allclose(ibt['tilt'], bibt['tilt'], atol=SCM_TOLERANCE):  
-                    print(f'----Baseline match FAILED for Scattering matrix sample test: Incident Beams at {ib} tilt does not match: {ibt} != {bibt}')
+                    report_failure(f'----Baseline match FAILED for Scattering matrix sample test: Incident Beams at {ibt["ib"]} tilt does not match: {ibt} != {bibt}')
                     return
                 break
 
             if not bFound:
-                print(f'----Baseline match FAILED for Scattering matrix sample test: Incident Beams at {ib} not found in baseline')
-              
-        print(f'++++++Baseline match SUCCEEDED for Scattering matrix sample test.')   
+                report_failure(f'----Baseline match FAILED for Scattering matrix sample test: Incident Beams at {ibt["ib"]} not found in baseline')
+
+        # the missing-beam checks above report every missing beam instead of returning
+        if failure_count() == failures_before:
+            print(f'++++++Baseline match SUCCEEDED for Scattering matrix sample test.')
 
     if feature == 'powder':
         from pyemaps.samples.powder import generate_powder_profiles
@@ -201,7 +204,7 @@ def compare_samples_baseline(feature):
         sil, dil = dl
         bsil, bdil = bdata
         if not np.allclose(sil, bsil) or not np.allclose(dil, bdil):
-             print(f'--------Baseline match FAILED for Powder diffraction sample test.')
+             report_failure(f'--------Baseline match FAILED for Powder diffraction sample test.')
              return
         
         print(f'++++++Baseline match SUCCEEDED for Powder diffraction sample test.')   
@@ -281,7 +284,7 @@ def gen_samples_baseline(feature):
             pickle.dump(dl, f)
             
     except Exception as e:
-        print(f"------Generating baseline results for {feature} FAILED.")
+        report_failure(f"------Generating baseline results for {feature} FAILED.")
         return
 
     print(f"++++++Generating baseline results for {feature} SUCCEEDED.")
@@ -417,4 +420,5 @@ if __name__ == '__main__':
 
             if bgui:
                 run_sample_gui(ff)
-    
+
+    sys.exit(exit_status())

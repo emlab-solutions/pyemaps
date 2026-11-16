@@ -4,9 +4,10 @@ with the stored baselines) and fail if any of them fails.
 
     python test/ci_sanity.py          # from the pyemaps folder, with pyemaps installed
 
-The suites report a baseline mismatch by printing, not by their exit code, so this
-script checks their output too. A suite passes when it exits 0, prints none of the
-failure messages, and prints the expected number of success lines. Each suite's
+The suites print each baseline mismatch and exit with status 1 if there was one. This
+script checks their output too, so a check that stops running is caught as well. A suite
+passes when it exits 0, prints none of the failure messages, and prints the expected
+number of success lines. Each suite's
 output is saved to sanity-logs/<suite>.log.
 
 The performance test isn't run: its timings depend on the machine, so it means

@@ -43,6 +43,32 @@ BL_NONE = 3
 
 TY_BUILTIN=1
 TY_CIF=2
+
+_failures = []
+
+
+def report_failure(msg):
+    '''
+    Print a failure message and remember it, so that the script exits with status 1.
+    '''
+    print(msg)
+    _failures.append(msg)
+
+
+def failure_count():
+    '''
+    The number of failures reported so far.
+    '''
+    return len(_failures)
+
+
+def exit_status():
+    '''
+    1 if any failure was reported, else 0: the script's exit status.
+    '''
+    return 1 if _failures else 0
+
+
 def get_cifdata_dir():
 
     current_path = Path(os.path.abspath(__file__))
