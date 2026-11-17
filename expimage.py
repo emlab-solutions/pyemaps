@@ -15,13 +15,17 @@ Read experimental diffraction patterns from image files.
 - TIFF files (``.tif``, ``.tiff``): single images and multi-page stacks such as 4D-STEM scans;
 - Gatan DigitalMicrograph files (``.dm3``, ``.dm4``): single images, stacks and 4D-STEM
   datacubes, with their calibration and the microscope settings DigitalMicrograph recorded;
+- MRC files (``.mrc``, ``.mrcs``, ``.st``): images and stacks, such as 3D electron diffraction
+  tilt series;
+- Quantum Detectors Merlin files (``.mib``): 4D-STEM frames from Medipix3 detectors;
+- PNG, BMP and JPEG pictures (8 or 16-bit grayscale), and NumPy arrays (``.npy``);
 - EMD files (``.emd``): Thermo Fisher Velox images and image series, with the microscope
   settings Velox records, and Berkeley EMD files, including py4DSTEM's 4D-STEM datacubes,
   with their calibration. EMD files need the h5py package: ``pip install "pyemaps[emd]"``;
 - pyEMAPS' own small-header files (``.im3``, ``.img``).
 
-It returns the patterns as numpy arrays, with the scan shape. pyEMAPS reads TIFF,
-DigitalMicrograph and small-header files itself, with no other package. Reading files needs no license; analysing
+It returns the patterns as numpy arrays, with the scan shape. pyEMAPS reads all of these
+itself, except EMD, with no other package. Reading files needs no license; analysing
 them with the 4D-STEM features does (see
 :py:meth:`StackImage.from_file <pyemaps.stackimg.StackImage.from_file>`).
 
@@ -33,7 +37,7 @@ import os
 
 import numpy as np
 
-from . import dmreader, emdreader, tiffreader
+from . import dmreader, emdreader, mibreader, mrcreader, picreader, tiffreader
 
 # pyEMAPS small-header files: an 8-byte header of four little-endian shorts (width, height,
 # number of patterns, data type), then the patterns, row by row. Data types above 10 are
@@ -42,7 +46,10 @@ SH_TYPES = {1: np.int16, 2: np.float32, 4: np.float64}
 SH_STACK = 10
 
 READERS = (('TIFF', ['tif', 'tiff']), ('DM', ['dm3', 'dm4']), ('EMD', ['emd']),
-           ('pyEMAPS', ['im3', 'img']))
+           ('MRC', ['mrc', 'mrcs', 'st']), ('MIB', ['mib']), ('PICTURE', ['png', 'bmp', 'jpg', 'jpeg']),
+           ('NPY', ['npy']), ('pyEMAPS', ['im3', 'img']))
+OPENERS = {'DM': dmreader.DMFile, 'EMD': emdreader.EmdFile, 'MRC': mrcreader.MRCFile,
+           'MIB': mibreader.MIBFile, 'PICTURE': picreader.PictureFile, 'NPY': picreader.NpyFile}
 
 
 class ExperimentalImage:
@@ -87,7 +94,10 @@ class ExperimentalImage:
 
     @property
     def reader(self):
-        '''The reader that read the file: ``TIFF``, ``DM``, ``EMD`` or ``pyEMAPS``.'''
+        '''
+        The reader that read the file: ``TIFF``, ``DM``, ``EMD``, ``MRC``, ``MIB``,
+        ``PICTURE``, ``NPY`` or ``pyEMAPS``.
+        '''
         return self._reader
 
     @property
@@ -95,8 +105,8 @@ class ExperimentalImage:
         '''
         The pattern axes, rows then columns: dictionaries with the ``name``, ``size``,
         ``scale`` (per pixel, after binning), ``offset`` and ``units``. DigitalMicrograph and
-        EMD files record the calibration; for TIFF and small-header files, the scale is the
-        binning and the units are empty.
+        EMD files record the calibration, and MRC files a pixel size in Å; for the other
+        formats, the scale is the binning and the units are empty.
         '''
         return self._axes
 
@@ -110,7 +120,11 @@ class ExperimentalImage:
         and the full metadata of the first frame under ``velox``. For Berkeley EMD files:
         the ``format``, the ``dataset`` and its ``attributes``, and the ``scan_axes``. For
         DigitalMicrograph files: ``high_voltage_kV`` and ``camera_length_mm`` when recorded,
-        ``scan_axes``, the image's ``name``, and its tags under ``tags``.
+        ``scan_axes``, the image's ``name``, and its tags under ``tags``. For MRC files: the
+        ``mode``, ``labels`` and extended header type. For Merlin files: the ``pixel_type``,
+        ``exposure_s``, the first frame's ``header`` fields, and the settings of the ``.hdr``
+        file next to it under ``hdr``. For pictures: the ``format``, ``mode`` and whether it
+        is ``lossy`` (JPEG).
         '''
         return self._metadata
 
@@ -142,8 +156,8 @@ def read_image(path, reader=None, binning=1, scan_roi=None, scan_shape=None, dat
     :param path: the file. TIFF, DigitalMicrograph and EMD (HDF5) files are recognised by their
         content, whatever their extension; ``.im3`` and ``.img`` files by their header.
     :type path: str or os.PathLike
-    :param reader: ``'TIFF'``, ``'DM'``, ``'EMD'`` or ``'pyEMAPS'``, to use that reader whatever
-        the file's extension. See :py:func:`image_readers`.
+    :param reader: the reader to use whatever the file's extension, such as ``'TIFF'`` or
+        ``'MRC'``. See :py:func:`image_readers`.
     :type reader: str, optional
     :param binning: average square blocks of *binning* x *binning* pixels into one. Pixels left
         over at the right and bottom edges are dropped. The camera constant and pattern center
@@ -155,7 +169,7 @@ def read_image(path, reader=None, binning=1, scan_roi=None, scan_shape=None, dat
         are read from a TIFF file.
     :type scan_roi: tuple of int, optional
     :param scan_shape: the scan shape, ``(rows, columns)``, for a stack whose file doesn't
-        record it, such as an ImageJ stack. The patterns must fill it exactly. By default, the
+        record it, such as an ImageJ stack or a Merlin file. The patterns must fill it exactly. By default, the
         shape the file recorded, or else a series of patterns.
     :type scan_shape: tuple of int, optional
     :param dataset: for a DigitalMicrograph or EMD file with several images, the one to read:
@@ -179,8 +193,8 @@ def read_image(path, reader=None, binning=1, scan_roi=None, scan_shape=None, dat
 
     name = _choose_reader(path, reader)
     if dataset is not None and name not in ('EMD', 'DM'):
-        raise ValueError(f'dataset is for DigitalMicrograph and EMD files; {path} is read by '
-                         f'the {name} reader')
+        raise ValueError(f'dataset is for files with several images, such as DigitalMicrograph '
+                         f'and EMD files; {path} is read by the {name} reader')
     calibration = None
     if name == 'TIFF':
         with tiffreader.TiffFile(path) as tif:
@@ -188,9 +202,8 @@ def read_image(path, reader=None, binning=1, scan_roi=None, scan_shape=None, dat
             pages, nav = _roi_pages(nav, scan_roi)
             stack = tif.read(pages)
             metadata = tif.metadata
-    elif name in ('EMD', 'DM'):
-        opener = emdreader.EmdFile if name == 'EMD' else dmreader.DMFile
-        with opener(path) as f:
+    elif name in OPENERS:
+        with OPENERS[name](path) as f:
             ds = f.choose(dataset)
             nav = _scan_shape(scan_shape, ds.npatterns, ds.nav_shape, path)
             pages, nav = _roi_pages(nav, scan_roi)
@@ -262,9 +275,18 @@ def _choose_reader(path, reader):
         return 'TIFF'
     if dmreader.is_dm(path):
         return 'DM'
+    if mibreader.is_mib(path):
+        return 'MIB'
     if emdreader.is_hdf5(path):
         return 'EMD'
+    if picreader.picture_kind(path):
+        return 'PICTURE'
+    if picreader.is_npy(path):
+        return 'NPY'
     ext = os.path.splitext(path)[1][1:].lower()
+    if mrcreader.is_mrc(path) or (ext in ('mrc', 'mrcs', 'st') and
+                                  mrcreader._byte_order(_head(path, 1024)) is not None):
+        return 'MRC'
     if ext in ('dm3', 'dm4'):
         raise ValueError(f'{path} is not a DigitalMicrograph file: it doesn\'t start with a DM3 or '
                          'DM4 header (DM5 files, which are HDF5, aren\'t supported yet)')
@@ -277,8 +299,18 @@ def _choose_reader(path, reader):
     if ext in ('im3', 'img'):
         raise ValueError(f'{path} is not a pyEMAPS small-header file: its header and size '
                          'don\'t match')
-    raise ValueError(f'Can\'t read {path}: pyEMAPS reads TIFF, DigitalMicrograph (.dm3, .dm4) '
-                     'and EMD files, and its own small-header files (.im3, .img)')
+    raise ValueError(f'Can\'t read {path}: pyEMAPS reads TIFF, DigitalMicrograph (.dm3, .dm4), '
+                     'EMD, MRC, Merlin (.mib), PNG, BMP, JPEG and NumPy (.npy) files, and its own '
+                     'small-header files (.im3, .img)')
+
+
+def _head(path, n):
+    try:
+        with open(path, 'rb') as f:
+            head = f.read(n)
+    except OSError:
+        return b''
+    return head if len(head) == n else b'\0' * n
 
 
 def _sh_layout(path):

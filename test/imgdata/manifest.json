@@ -1,0 +1,272 @@
+{
+ "files": {
+  "bad_mib_raw.mib": {
+   "error": [
+    "raw (R64)"
+   ]
+  },
+  "bad_mrc_complex.mrc": {
+   "error": [
+    "complex"
+   ]
+  },
+  "bad_npy_1d.npy": {
+   "error": [
+    "1-D array"
+   ]
+  },
+  "bad_pic_bilevel.png": {
+   "error": [
+    "black-and-white"
+   ]
+  },
+  "bad_pic_colour.png": {
+   "error": [
+    "colour picture"
+   ]
+  },
+  "mib_quad.mib": {
+   "axes": [],
+   "meta": {
+    "chips": 4,
+    "pixel_type": "U16"
+   },
+   "scan_shape": [
+    2
+   ]
+  },
+  "mib_quad_real.mib": {
+   "axes": [],
+   "meta": {
+    "pixel_type": "U16"
+   },
+   "scan_shape": [
+    4
+   ]
+  },
+  "mib_u08.mib": {
+   "axes": [],
+   "meta": {
+    "pixel_type": "U08"
+   },
+   "scan_shape": [
+    6
+   ]
+  },
+  "mib_u16.mib": {
+   "axes": [],
+   "meta": {
+    "pixel_type": "U16"
+   },
+   "scan_shape": [
+    6
+   ]
+  },
+  "mib_u32.mib": {
+   "axes": [],
+   "meta": {
+    "pixel_type": "U32"
+   },
+   "scan_shape": [
+    6
+   ]
+  },
+  "mrc_bigendian.mrc": {
+   "axes": [],
+   "meta": {},
+   "scan_shape": [
+    2
+   ]
+  },
+  "mrc_extheader.mrcs": {
+   "axes": [],
+   "meta": {
+    "extended_header_bytes": 1024
+   },
+   "scan_shape": [
+    4
+   ]
+  },
+  "mrc_float16.mrc": {
+   "axes": [
+    {
+     "name": "rows",
+     "scale": 1.5,
+     "units": "Å"
+    },
+    {
+     "name": "columns",
+     "scale": 1.5,
+     "units": "Å"
+    }
+   ],
+   "meta": {
+    "mode": 12
+   },
+   "scan_shape": [
+    3
+   ]
+  },
+  "mrc_float32.mrc": {
+   "axes": [
+    {
+     "name": "rows",
+     "scale": 1.5,
+     "units": "Å"
+    },
+    {
+     "name": "columns",
+     "scale": 1.5,
+     "units": "Å"
+    }
+   ],
+   "meta": {
+    "mode": 2
+   },
+   "scan_shape": [
+    3
+   ]
+  },
+  "mrc_int16.mrc": {
+   "axes": [
+    {
+     "name": "rows",
+     "scale": 1.5,
+     "units": "Å"
+    },
+    {
+     "name": "columns",
+     "scale": 1.5,
+     "units": "Å"
+    }
+   ],
+   "meta": {
+    "mode": 1
+   },
+   "scan_shape": [
+    3
+   ]
+  },
+  "mrc_int8.mrc": {
+   "axes": [
+    {
+     "name": "rows",
+     "scale": 1.5,
+     "units": "Å"
+    },
+    {
+     "name": "columns",
+     "scale": 1.5,
+     "units": "Å"
+    }
+   ],
+   "meta": {
+    "mode": 0
+   },
+   "scan_shape": [
+    3
+   ]
+  },
+  "mrc_single.mrc": {
+   "axes": [],
+   "meta": {},
+   "scan_shape": []
+  },
+  "mrc_uint16.mrc": {
+   "axes": [
+    {
+     "name": "rows",
+     "scale": 1.5,
+     "units": "Å"
+    },
+    {
+     "name": "columns",
+     "scale": 1.5,
+     "units": "Å"
+    }
+   ],
+   "meta": {
+    "mode": 6
+   },
+   "scan_shape": [
+    3
+   ]
+  },
+  "mrc_volume.mrc": {
+   "axes": [],
+   "meta": {
+    "volume": true
+   },
+   "scan_shape": [
+    2
+   ]
+  },
+  "npy_scan.npy": {
+   "axes": [],
+   "meta": {
+    "format": "NumPy"
+   },
+   "scan_shape": [
+    2,
+    3
+   ]
+  },
+  "npy_series.npy": {
+   "axes": [],
+   "meta": {
+    "format": "NumPy"
+   },
+   "scan_shape": [
+    5
+   ]
+  },
+  "npy_single.npy": {
+   "axes": [],
+   "meta": {
+    "format": "NumPy"
+   },
+   "scan_shape": []
+  },
+  "pic_gray16.png": {
+   "axes": [],
+   "meta": {
+    "format": "PNG"
+   },
+   "scan_shape": []
+  },
+  "pic_gray8.bmp": {
+   "axes": [],
+   "meta": {
+    "format": "BMP"
+   },
+   "scan_shape": []
+  },
+  "pic_gray8.jpg": {
+   "axes": [],
+   "meta": {
+    "format": "JPEG",
+    "lossy": true
+   },
+   "scan_shape": []
+  },
+  "pic_gray8.png": {
+   "axes": [],
+   "meta": {
+    "format": "PNG",
+    "lossy": false
+   },
+   "scan_shape": []
+  },
+  "pic_gray_as_rgb.png": {
+   "axes": [],
+   "meta": {},
+   "scan_shape": []
+  },
+  "pic_gray_palette.png": {
+   "axes": [],
+   "meta": {},
+   "scan_shape": []
+  }
+ },
+ "mrcfile": "1.5.4"
+}
