@@ -110,6 +110,37 @@ in your own code:
    plt.imshow(img.data[0], cmap='gray')
    plt.show()
 
+Images from DigitalMicrograph files
+-----------------------------------
+
+pyEMAPS reads Gatan DigitalMicrograph files (``.dm3``, ``.dm4``) itself, with no other package:
+the files that microscopes with Gatan cameras save, on JEOL, Thermo Fisher and other
+instruments. It reads single patterns, stacks and 4D-STEM datacubes, in 8 to 32-bit integers
+or 32 and 64-bit floats.
+
+- A stack that DigitalMicrograph recorded as a 4D-STEM scan gets its scan shape from Gatan's
+  scan tags, so the imaging methods know the scan width.
+- :py:attr:`axes <pyemaps.expimage.ExperimentalImage.axes>` gives each pattern axis'
+  calibration, such as 1/nm per pixel, and
+  :py:attr:`metadata <pyemaps.expimage.ExperimentalImage.metadata>` the high voltage
+  (``high_voltage_kV``) and camera length (``camera_length_mm``) DigitalMicrograph recorded,
+  with all its tags under ``tags``.
+- Thumbnails are skipped. Spectrum images (with an energy axis), colour and complex images
+  aren't diffraction patterns, and are refused with a message saying so.
+- A file can hold several images; pyEMAPS reads the one with the most patterns. Choose another
+  with *dataset*, its number or its name.
+- DM5 files, which are HDF5 underneath, aren't supported yet.
+
+.. code-block:: python
+
+   from pyemaps import StackImage, read_image
+
+   scan = StackImage.from_file('scan.dm4', scan_roi=(0, 0, 20, 20))
+   ret, bf = scan.generateBDF(center=(285.0, 268.0), rads=(0.0, 30.0))   # scan width 20
+
+   img = read_image('pattern.dm3')
+   print(img.axes[0], img.metadata['high_voltage_kV'])
+
 Images from EMD files
 ---------------------
 

@@ -1,0 +1,241 @@
+{
+ "files": {
+  "bad_rgb.dm3": {
+   "error": [
+    "no 2-D image",
+    "RGB"
+   ]
+  },
+  "bad_spectrum_image.dm4": {
+   "error": [
+    "no 2-D image",
+    "spectrum image"
+   ]
+  },
+  "cube_qfirst.dm4": {
+   "axes": [
+    {
+     "name": "rows",
+     "scale": 0.03,
+     "units": "1/nm"
+    },
+    {
+     "name": "columns",
+     "scale": 0.03,
+     "units": "1/nm"
+    }
+   ],
+   "meta": {},
+   "scan_shape": [
+    3,
+    2
+   ]
+  },
+  "cube_qlast.dm4": {
+   "axes": [],
+   "meta": {},
+   "scan_shape": [
+    3,
+    2
+   ]
+  },
+  "dm4_al_crop.dm4": {
+   "axes": [
+    {
+     "name": "rows",
+     "scale": 0.05839194729924202,
+     "units": "1/nm"
+    }
+   ],
+   "meta": {
+    "camera_length_mm": 195.0,
+    "high_voltage_kV": 300.0,
+    "microscope": "TitanX"
+   },
+   "scan_shape": [
+    2,
+    2
+   ]
+  },
+  "single_bigendian.dm3": {
+   "axes": [],
+   "meta": {},
+   "scan_shape": []
+  },
+  "single_float32.dm4": {
+   "axes": [
+    {
+     "name": "rows",
+     "scale": 0.02,
+     "units": "1/nm"
+    },
+    {
+     "name": "columns",
+     "scale": 0.02,
+     "units": "1/nm"
+    }
+   ],
+   "meta": {
+    "camera_length_mm": 160.0,
+    "high_voltage_kV": 200.0,
+    "microscope": "JEM-ARM200F"
+   },
+   "scan_shape": []
+  },
+  "single_float64.dm3": {
+   "axes": [
+    {
+     "name": "rows",
+     "scale": 0.02,
+     "units": "1/nm"
+    },
+    {
+     "name": "columns",
+     "scale": 0.02,
+     "units": "1/nm"
+    }
+   ],
+   "meta": {
+    "camera_length_mm": 160.0,
+    "high_voltage_kV": 200.0,
+    "microscope": "JEM-ARM200F"
+   },
+   "scan_shape": []
+  },
+  "single_int16.dm3": {
+   "axes": [
+    {
+     "name": "rows",
+     "scale": 0.02,
+     "units": "1/nm"
+    },
+    {
+     "name": "columns",
+     "scale": 0.02,
+     "units": "1/nm"
+    }
+   ],
+   "meta": {
+    "camera_length_mm": 160.0,
+    "high_voltage_kV": 200.0,
+    "microscope": "JEM-ARM200F"
+   },
+   "scan_shape": []
+  },
+  "single_int32.dm4": {
+   "axes": [
+    {
+     "name": "rows",
+     "scale": 0.02,
+     "units": "1/nm"
+    },
+    {
+     "name": "columns",
+     "scale": 0.02,
+     "units": "1/nm"
+    }
+   ],
+   "meta": {
+    "camera_length_mm": 160.0,
+    "high_voltage_kV": 200.0,
+    "microscope": "JEM-ARM200F"
+   },
+   "scan_shape": []
+  },
+  "single_int8.dm4": {
+   "axes": [
+    {
+     "name": "rows",
+     "scale": 0.02,
+     "units": "1/nm"
+    },
+    {
+     "name": "columns",
+     "scale": 0.02,
+     "units": "1/nm"
+    }
+   ],
+   "meta": {
+    "camera_length_mm": 160.0,
+    "high_voltage_kV": 200.0,
+    "microscope": "JEM-ARM200F"
+   },
+   "scan_shape": []
+  },
+  "single_uint16.dm4": {
+   "axes": [
+    {
+     "name": "rows",
+     "scale": 0.02,
+     "units": "1/nm"
+    },
+    {
+     "name": "columns",
+     "scale": 0.02,
+     "units": "1/nm"
+    }
+   ],
+   "meta": {
+    "camera_length_mm": 160.0,
+    "high_voltage_kV": 200.0,
+    "microscope": "JEM-ARM200F"
+   },
+   "scan_shape": []
+  },
+  "single_uint32.dm3": {
+   "axes": [
+    {
+     "name": "rows",
+     "scale": 0.02,
+     "units": "1/nm"
+    },
+    {
+     "name": "columns",
+     "scale": 0.02,
+     "units": "1/nm"
+    }
+   ],
+   "meta": {
+    "camera_length_mm": 160.0,
+    "high_voltage_kV": 200.0,
+    "microscope": "JEM-ARM200F"
+   },
+   "scan_shape": []
+  },
+  "single_uint8.dm3": {
+   "axes": [
+    {
+     "name": "rows",
+     "scale": 0.02,
+     "units": "1/nm"
+    },
+    {
+     "name": "columns",
+     "scale": 0.02,
+     "units": "1/nm"
+    }
+   ],
+   "meta": {
+    "camera_length_mm": 160.0,
+    "high_voltage_kV": 200.0,
+    "microscope": "JEM-ARM200F"
+   },
+   "scan_shape": []
+  },
+  "stack_4dstem.dm4": {
+   "axes": [],
+   "meta": {},
+   "scan_shape": [
+    3,
+    4
+   ]
+  },
+  "stack_series.dm3": {
+   "axes": [],
+   "meta": {},
+   "scan_shape": [
+    5
+   ]
+  }
+ }
+}

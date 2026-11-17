@@ -18,6 +18,11 @@ What it checks:
 - pyEMAPS' small-header files (.im3, .img) and samples/al.img read back exactly.
 - binning, scan_roi (only those pages are read), scan_shape, and the files are closed after
   reading.
+- DigitalMicrograph files in dmdata/ (see dmdata/make_fixtures.py): DM3 and DM4, 8 data
+  types, big-endian, stacks with Gatan's 4D-STEM scan tags, datacubes with the pattern axes
+  first or last, a crop of a real 4D-STEM file (CC BY 4.0) with its microscope settings;
+  thumbnails skipped; spectrum images, RGB, truncated and fake files refused; image choice,
+  scan_roi and closed files.
 - EMD files in emddata/ (see emddata/make_fixtures.py): Velox series with their settings, a
   real Velox image (CC BY 4.0) whose orientation matches Velox's thumbnail, Berkeley EMD 1.0
   and 0.2, py4DSTEM datacubes with calibration; dataset choice, scan_roi, binning, refused
@@ -248,12 +253,104 @@ def c_alimg():
     assert np.array_equal(read_image(DATA / 'al.tif').data[0], ref), 'al.tif differs from al.img'
 
 
-@check('image_readers lists TIFF, EMD and pyEMAPS')
+@check('image_readers lists TIFF, DM, EMD and pyEMAPS')
 def c_readers():
     from pyemaps import image_readers
     names = dict(image_readers())
-    assert names == {'TIFF': ['tif', 'tiff'], 'EMD': ['emd'], 'pyEMAPS': ['im3', 'img']}, names
+    assert names == {'TIFF': ['tif', 'tiff'], 'DM': ['dm3', 'dm4'], 'EMD': ['emd'],
+                     'pyEMAPS': ['im3', 'img']}, names
     return str(names)
+
+
+# ------------------------------------------------------------------ DigitalMicrograph files
+
+DM = HERE / 'dmdata'
+DM_MANIFEST = json.loads((DM / 'manifest.json').read_text(encoding='utf-8'))['files']
+DM_EXPECTED = np.load(DM / 'expected.npz')
+DM_GOOD = sorted(n for n, m in DM_MANIFEST.items() if 'error' not in m)
+DM_BAD = sorted(n for n, m in DM_MANIFEST.items() if 'error' in m)
+
+
+@check(f'{len(DM_GOOD)} DigitalMicrograph files (DM3, DM4) read exactly, with scan shape, '
+       'calibration and settings')
+def c_dm_good():
+    from pyemaps import read_image
+    problems, notes = [], []
+    for name in DM_GOOD:
+        m, want = DM_MANIFEST[name], DM_EXPECTED[name]
+        try:
+            img = read_image(DM / name)
+            conv = as_read_image(want)
+            if img.data.dtype != conv.dtype or not np.array_equal(img.data, conv):
+                problems.append(f'{name}: pixels differ ({img.data.shape} {img.data.dtype})')
+            if list(img.scan_shape) != m['scan_shape'] or img.reader != 'DM':
+                problems.append(f'{name}: scan {img.scan_shape}, reader {img.reader}')
+            for k, ax in enumerate(m['axes']):
+                for key, v in ax.items():
+                    got = img.axes[k][key]
+                    same = np.isclose(got, v, rtol=1e-6) if isinstance(v, float) else got == v
+                    if not same:
+                        problems.append(f'{name}: axis {k} {key} {got!r}, expected {v!r}')
+            for key, v in m['meta'].items():
+                got = img.metadata.get(key)
+                same = np.isclose(got, v) if isinstance(v, float) and got is not None else got == v
+                if not same:
+                    problems.append(f'{name}: metadata {key} {got!r}, expected {v!r}')
+            notes.append(f'{name} {img.scan_shape}')
+        except Exception as e:
+            problems.append(f'{name}: {type(e).__name__}: {e}')
+    assert not problems, '; '.join(problems)
+    return ', '.join(notes[-4:])
+
+
+@check(f'{len(DM_BAD)} DigitalMicrograph files with no grayscale image, a truncated one and a '
+       'fake .dm4 raise ValueError saying why')
+def c_dm_bad(tmp):
+    from pyemaps import read_image
+    problems = []
+    for name in DM_BAD:
+        words = DM_MANIFEST[name]['error']
+        try:
+            read_image(DM / name)
+            problems.append(f'{name}: not refused')
+        except ValueError as e:
+            if not all(w in str(e) for w in words):
+                problems.append(f'{name}: message lacks {words}: {e}')
+    src = (DM / 'stack_4dstem.dm4').read_bytes()
+    cut = os.path.join(tmp, 'cut.dm4')
+    Path(cut).write_bytes(src[:len(src) // 3])
+    try:
+        read_image(cut)
+        problems.append('truncated: not refused')
+    except ValueError as e:
+        if 'truncated' not in str(e):
+            problems.append(f'truncated: {e}')
+    fake = os.path.join(tmp, 'fake.dm4')
+    Path(fake).write_bytes(b'not a DigitalMicrograph file')
+    raises(ValueError, lambda: read_image(fake), 'not a DigitalMicrograph file')
+    assert not problems, '; '.join(problems)
+
+
+@check('DigitalMicrograph options: image choice, scan_roi on a stack and a datacube, closed files')
+def c_dm_options(tmp):
+    from pyemaps import read_image
+    fn = DM / 'stack_series.dm3'
+    assert read_image(fn).npatterns == 5, 'default: the series, not the overview'
+    ov = read_image(fn, dataset='overview')
+    assert np.array_equal(ov.data, as_read_image(DM_EXPECTED['stack_series.dm3:overview']))
+    assert ov.axes[0]['units'] == 'nm' and ov.axes[0]['scale'] == 0.5, ov.axes
+    raises(ValueError, lambda: read_image(fn, dataset='nothere'), 'No image')
+    stack = DM_EXPECTED['stack_4dstem.dm4']                      # 3 x 4 scan, row by row
+    img = read_image(DM / 'stack_4dstem.dm4', scan_roi=(1, 2, 2, 2))
+    assert img.scan_shape == (2, 2) and np.array_equal(img.data, as_read_image(stack[[6, 7, 10, 11]]))
+    cube = DM_EXPECTED['cube_qlast.dm4']                         # 3 x 2 scan
+    img = read_image(DM / 'cube_qlast.dm4', scan_roi=(1, 0, 2, 1))
+    assert img.scan_shape == (2, 1) and np.array_equal(img.data, cube[[2, 4]])
+    copy = os.path.join(tmp, 'closed.dm4')
+    shutil.copy(DM / 'stack_4dstem.dm4', copy)
+    read_image(copy, scan_roi=(0, 0, 1, 2))
+    os.remove(copy)
+    return 'overview by name; scan_roi (2, 2) from (3, 4); datacube with pattern axes last'
 
 
 # ------------------------------------------------------------------ EMD files (need h5py)
@@ -356,7 +453,7 @@ def c_emd_options():
     assert img.scan_shape == (2, 2) and np.array_equal(img.data, cube[[5, 6, 9, 10]])
     img = read_image(emd_file('emd1_datacube'), binning=2)
     assert img.data.shape == (12, 18, 20) and np.isclose(img.axes[0]['scale'], 0.1462)
-    raises(ValueError, lambda: read_image(DATA / 'al.tif', dataset=0), 'dataset is for EMD')
+    raises(ValueError, lambda: read_image(DATA / 'al.tif', dataset=0), 'dataset is for')
     return 'dataset by name and number; scan_roi (2, 2) from (3, 4); binning scales calibration'
 
 
@@ -477,6 +574,9 @@ def main():
         c_im3(tmp)
         c_alimg()
         c_readers()
+        c_dm_good()
+        c_dm_bad(tmp)
+        c_dm_options(tmp)
         if have_h5py():
             c_emd_good()
             c_emd_bad()
