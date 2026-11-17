@@ -10,11 +10,18 @@
 '''
 Read experimental diffraction patterns from image files.
 
-:py:func:`read_image` reads TIFF files (``.tif``, ``.tiff``), single images and multi-page
-stacks such as 4D-STEM scans, and pyEMAPS' own small-header files (``.im3``, ``.img``). It
-returns the patterns as numpy arrays, with the scan shape. pyEMAPS reads these formats itself,
-with no other package. Reading files needs no license; analysing them with the 4D-STEM
-features does (see :py:meth:`StackImage.from_file <pyemaps.stackimg.StackImage.from_file>`).
+:py:func:`read_image` reads:
+
+- TIFF files (``.tif``, ``.tiff``): single images and multi-page stacks such as 4D-STEM scans;
+- EMD files (``.emd``): Thermo Fisher Velox images and image series, with the microscope
+  settings Velox records, and Berkeley EMD files, including py4DSTEM's 4D-STEM datacubes,
+  with their calibration. EMD files need the h5py package: ``pip install "pyemaps[emd]"``;
+- pyEMAPS' own small-header files (``.im3``, ``.img``).
+
+It returns the patterns as numpy arrays, with the scan shape. pyEMAPS reads TIFF and
+small-header files itself, with no other package. Reading files needs no license; analysing
+them with the 4D-STEM features does (see
+:py:meth:`StackImage.from_file <pyemaps.stackimg.StackImage.from_file>`).
 
 TIFF files can be 8 to 64-bit integers or 16 to 64-bit floats, uncompressed or compressed with
 LZW, Deflate (zip) or PackBits, including BigTIFF and ImageJ stacks. Large stacks read fastest
@@ -24,7 +31,7 @@ import os
 
 import numpy as np
 
-from . import tiffreader
+from . import emdreader, tiffreader
 
 # pyEMAPS small-header files: an 8-byte header of four little-endian shorts (width, height,
 # number of patterns, data type), then the patterns, row by row. Data types above 10 are
@@ -32,7 +39,7 @@ from . import tiffreader
 SH_TYPES = {1: np.int16, 2: np.float32, 4: np.float64}
 SH_STACK = 10
 
-READERS = (('TIFF', ['tif', 'tiff']), ('pyEMAPS', ['im3', 'img']))
+READERS = (('TIFF', ['tif', 'tiff']), ('EMD', ['emd']), ('pyEMAPS', ['im3', 'img']))
 
 
 class ExperimentalImage:
@@ -77,15 +84,16 @@ class ExperimentalImage:
 
     @property
     def reader(self):
-        '''The reader that read the file: ``TIFF`` or ``pyEMAPS``.'''
+        '''The reader that read the file: ``TIFF``, ``EMD`` or ``pyEMAPS``.'''
         return self._reader
 
     @property
     def axes(self):
         '''
         The pattern axes, rows then columns: dictionaries with the ``name``, ``size``,
-        ``scale`` (per pixel: the binning, as the files hold no diffraction calibration),
-        ``offset`` and ``units``.
+        ``scale`` (per pixel, after binning), ``offset`` and ``units``. EMD files record the
+        calibration; for TIFF and small-header files, the scale is the binning and the units
+        are empty.
         '''
         return self._axes
 
@@ -94,7 +102,10 @@ class ExperimentalImage:
         '''
         The file's descriptive metadata. For TIFF files: the first image's descriptive tags
         by name (``ImageDescription``, ``Software``, ``DateTime`` …), the ``compression``,
-        and ``imagej`` or ``shaped`` with the settings ImageJ or tifffile recorded.
+        and ``imagej`` or ``shaped`` with the settings ImageJ or tifffile recorded. For Velox
+        files: ``high_voltage_kV``, ``camera_length_m``, ``detector`` and ``instrument``,
+        and the full metadata of the first frame under ``velox``. For Berkeley EMD files:
+        the ``format``, the ``dataset`` and its ``attributes``, and the ``scan_axes``.
         '''
         return self._metadata
 
@@ -119,15 +130,15 @@ def image_readers():
     return [(name, list(exts)) for name, exts in READERS]
 
 
-def read_image(path, reader=None, binning=1, scan_roi=None, scan_shape=None):
+def read_image(path, reader=None, binning=1, scan_roi=None, scan_shape=None, dataset=None):
     '''
     Read experimental diffraction patterns from a file.
 
-    :param path: the file. TIFF files are recognised by their content, whatever their
-        extension; ``.im3`` and ``.img`` files by their header.
+    :param path: the file. TIFF and EMD (HDF5) files are recognised by their content, whatever
+        their extension; ``.im3`` and ``.img`` files by their header.
     :type path: str or os.PathLike
-    :param reader: ``'TIFF'`` or ``'pyEMAPS'``, to use that reader whatever the file's
-        extension. See :py:func:`image_readers`.
+    :param reader: ``'TIFF'``, ``'EMD'`` or ``'pyEMAPS'``, to use that reader whatever the
+        file's extension. See :py:func:`image_readers`.
     :type reader: str, optional
     :param binning: average square blocks of *binning* x *binning* pixels into one. Pixels left
         over at the right and bottom edges are dropped. The camera constant and pattern center
@@ -140,11 +151,17 @@ def read_image(path, reader=None, binning=1, scan_roi=None, scan_shape=None):
     :type scan_roi: tuple of int, optional
     :param scan_shape: the scan shape, ``(rows, columns)``, for a stack whose file doesn't
         record it, such as an ImageJ stack. The patterns must fill it exactly. By default, the
-        shape tifffile recorded, or else a series of patterns.
+        shape the file recorded, or else a series of patterns.
     :type scan_shape: tuple of int, optional
+    :param dataset: for an EMD file with several images, the one to read: its number,
+        counting from 0, or its name in the file. By default, the one with the most patterns,
+        such as the 4D-STEM scan rather than an overview image.
+    :type dataset: int or str, optional
     :return: the patterns.
     :rtype: ExperimentalImage
     :raise FileNotFoundError: if the file doesn't exist.
+    :raise ImportError: for an EMD file, if h5py isn't installed. The message says how to
+        install it.
     :raise ValueError: if the file isn't one these readers read, holds no grayscale image
         (an RGB image, for example), uses a compression they can't decode, or an option is
         invalid. The message says which.
@@ -156,12 +173,22 @@ def read_image(path, reader=None, binning=1, scan_roi=None, scan_shape=None):
         raise ValueError(f'binning must be a positive integer, not {binning!r}')
 
     name = _choose_reader(path, reader)
+    if dataset is not None and name != 'EMD':
+        raise ValueError(f'dataset is for EMD files; {path} is read by the {name} reader')
+    calibration = None
     if name == 'TIFF':
         with tiffreader.TiffFile(path) as tif:
             nav = _scan_shape(scan_shape, tif.npages, tif.scan_shape, path)
             pages, nav = _roi_pages(nav, scan_roi)
             stack = tif.read(pages)
             metadata = tif.metadata
+    elif name == 'EMD':
+        with emdreader.EmdFile(path) as emd:
+            ds = emd.choose(dataset)
+            nav = _scan_shape(scan_shape, ds.npatterns, ds.nav_shape, path)
+            pages, nav = _roi_pages(nav, scan_roi)
+            stack = ds.read(pages)
+            metadata, calibration = ds.metadata, ds.axes
     else:
         data = _read_small_header(path)
         stack = data.reshape(-1, *data.shape[-2:])
@@ -180,8 +207,12 @@ def read_image(path, reader=None, binning=1, scan_roi=None, scan_shape=None):
         stack = stack[:, :rows * binning, :cols * binning].reshape(
             -1, rows, binning, cols, binning).mean(axis=(2, 4), dtype=np.float64).astype(np.float32)
 
-    axes = [{'name': axis, 'size': size, 'scale': float(binning), 'offset': 0.0, 'units': ''}
-            for axis, size in (('rows', rows), ('columns', cols))]
+    axes = []
+    for k, (axis, size) in enumerate((('rows', rows), ('columns', cols))):
+        c = calibration[k] if calibration else {}
+        axes.append({'name': c.get('name', axis), 'size': size,
+                     'scale': float(c.get('scale', 1.0)) * binning,
+                     'offset': float(c.get('offset', 0.0)), 'units': c.get('units', '')})
     return ExperimentalImage(np.ascontiguousarray(stack), nav, name, axes, metadata, path)
 
 
@@ -222,7 +253,11 @@ def _choose_reader(path, reader):
                          + ', '.join(n for n, _ in READERS))
     if tiffreader.is_tiff(path):
         return 'TIFF'
+    if emdreader.is_hdf5(path):
+        return 'EMD'
     ext = os.path.splitext(path)[1][1:].lower()
+    if ext == 'emd':
+        raise ValueError(f'{path} is not an EMD file: it doesn\'t start with an HDF5 header')
     if ext in ('tif', 'tiff'):
         raise ValueError(f'{path} is not a TIFF file: it doesn\'t start with a TIFF header')
     if _sh_layout(path) is not None:
@@ -230,8 +265,8 @@ def _choose_reader(path, reader):
     if ext in ('im3', 'img'):
         raise ValueError(f'{path} is not a pyEMAPS small-header file: its header and size '
                          'don\'t match')
-    raise ValueError(f'Can\'t read {path}: pyEMAPS reads TIFF files and its own small-header '
-                     'files (.im3, .img)')
+    raise ValueError(f'Can\'t read {path}: pyEMAPS reads TIFF files, EMD files and its own '
+                     'small-header files (.im3, .img)')
 
 
 def _sh_layout(path):
