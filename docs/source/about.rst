@@ -44,9 +44,10 @@ The extended 4D-STEM features, which need :ref:`License Activation`:
 * Annular bright and dark field images
 * Masked images
 
-Reading experimental patterns is free: TIFF files, single images or multi-page 4D-STEM stacks,
-with no other package, and EMD files from Thermo Fisher Velox or in the Berkeley EMD format,
-including py4DSTEM's 4D-STEM datacubes. See :ref:`Images from TIFF files` and
+Reading experimental patterns is free: TIFF and Gatan DigitalMicrograph (``.dm3``, ``.dm4``)
+files, single images, stacks and 4D-STEM scans, with no other package, and EMD files from
+Thermo Fisher Velox or in the Berkeley EMD format, including py4DSTEM's 4D-STEM datacubes. See
+:ref:`Images from TIFF files`, :ref:`Images from DigitalMicrograph files` and
 :ref:`Images from EMD files`.
 
 In development
