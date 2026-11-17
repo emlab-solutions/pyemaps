@@ -37,7 +37,7 @@ Run the commands in the rest of this guide from the `pyemaps` folder, in that en
 <pre>
 pyemaps
 ├─ cdata          built-in crystal data (.xtl files)
-├─ CifFile        the CIF reader (PyCifRW)
+├─ cifreader.py   the CIF reader
 ├─ diffract       the simulation methods added to Crystal
 ├─ docs           the documentation (Sphinx). Document your changes!
 ├─ samples        the sample scripts that ship with pyEMAPS

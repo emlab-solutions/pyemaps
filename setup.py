@@ -14,11 +14,8 @@ Date Created:       May 07, 2022
 import os
 from pathlib import Path
 
-# pyemaps is pure Python. The bundled PyCifRW's optional C scanner
-# (pyemaps.CifFile.StarScan, sources in CifFile/src/lib) is not built:
-# pyemaps reads CIF files with ReadCif's default pure-Python scanner, and
-# PyCifRW falls back to it when StarScan is absent. That makes the wheel
-# py3-none-any, one wheel for every Python version.
+# pyemaps is pure Python, so the wheel is py3-none-any: one wheel for every
+# Python version. It reads CIF files with its own reader (cifreader.py).
 from setuptools import setup
 try:
     from setuptools.command.install_data import install_data as _install_data
@@ -181,24 +178,14 @@ setup(name                              ="pyemaps",
                                            'pyemaps.mrcreader',
                                            'pyemaps.mibreader',
                                            'pyemaps.picreader',
-                                           'pyemaps.CifFile.CifFile_module',
-                                           'pyemaps.CifFile.yapps3_compiled_rt',
-                                           'pyemaps.CifFile.YappsStarParser_1_1',
-                                           'pyemaps.CifFile.YappsStarParser_1_0',
-                                           'pyemaps.CifFile.YappsStarParser_STAR2',
-                                           'pyemaps.CifFile.YappsStarParser_2_0',
-                                           'pyemaps.CifFile.StarFile',
-                                           'pyemaps.CifFile.TypeContentsParser'],
+                                           'pyemaps.cifreader'],
 
       packages                         = ['pyemaps.diffract', 
                                            'pyemaps.scattering', 
                                            'pyemaps.spg',
-                                           'pyemaps.CifFile',
-                                           'pyemaps.CifFile.drel'
                                            ],
       
       package_dir                       = {'pyemaps':'',
-                                           'pyemaps.CifFile':'CifFile/src'
                                             },
       entry_points                      = {
                                             'console_scripts': [
