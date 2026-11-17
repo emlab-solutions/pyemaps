@@ -109,8 +109,8 @@ class StackImage():
     The image is read into the backend by :py:meth:`~pyemaps.stackimg.StackImage.loadImage`,
     or by the analysis methods, which load it themselves.
 
-    To analyse a TIFF file, such as a 4D-STEM scan saved as a multi-page TIFF, create the image
-    with :py:meth:`~pyemaps.stackimg.StackImage.from_file`.
+    To analyse a TIFF or EMD file, such as a 4D-STEM scan, create the image with
+    :py:meth:`~pyemaps.stackimg.StackImage.from_file`.
 
     Images are 100 to 512 pixels per side (``MIN_IMAGESIZE``, ``MAX_IMAGESIZE``), with 1 to
     5000 stacks (``MIN_IMAGESTACK``, ``MAX_IMAGESTACK``).
@@ -298,11 +298,14 @@ class StackImage():
             free()
 
     @classmethod
-    def from_file(cls, path, binning=1, scan_roi=None, scan_shape=None, reader=None):
+    def from_file(cls, path, binning=1, scan_roi=None, scan_shape=None, reader=None,
+                  dataset=None):
         """
         Create an image from an image file in any format that
         :py:func:`~pyemaps.expimage.read_image` reads: TIFF (``.tif``, ``.tiff``), a single
-        pattern or a multi-page stack such as a 4D-STEM scan, and pyEMAPS' own ``.im3``.
+        pattern or a multi-page stack such as a 4D-STEM scan; EMD (``.emd``) from Thermo Fisher
+        Velox or in the Berkeley EMD format, such as py4DSTEM's 4D-STEM datacubes (these need
+        ``pip install "pyemaps[emd]"``); and pyEMAPS' own ``.im3``.
 
         A single pattern is analysed as a numpy image (``E_NPY``). A stack, such as a 4D-STEM
         scan, is copied to a temporary small-header file, removed when the image is deleted;
@@ -326,12 +329,16 @@ class StackImage():
         :param scan_shape: the scan shape, ``(rows, columns)``, for a stack whose file doesn't
             record it, such as an ImageJ stack. See :py:func:`~pyemaps.expimage.read_image`.
         :type scan_shape: tuple of int, optional
-        :param reader: ``'TIFF'`` or ``'pyEMAPS'``, to use that reader whatever the file's
-            extension.
+        :param reader: ``'TIFF'``, ``'EMD'`` or ``'pyEMAPS'``, to use that reader whatever the
+            file's extension.
         :type reader: str, optional
+        :param dataset: for an EMD file with several images, the one to read; see
+            :py:func:`~pyemaps.expimage.read_image`.
+        :type dataset: int or str, optional
         :return: the image, ready for the analysis methods.
         :rtype: StackImage
         :raise FileNotFoundError: if the file doesn't exist.
+        :raise ImportError: for an EMD file, if h5py isn't installed.
         :raise ~pyemaps.errors.XDPImageError: if the file can't be read, or its patterns are the
             wrong size or too many; the message suggests the *binning* or *scan_roi* to use.
         """
@@ -342,7 +349,7 @@ class StackImage():
 
         try:
             img = read_image(path, reader=reader, binning=binning, scan_roi=scan_roi,
-                             scan_shape=scan_shape)
+                             scan_shape=scan_shape, dataset=dataset)
         except ValueError as e:
             raise XDPImageError(str(e)) from e
         _check_stem4d_size(img)
@@ -1042,10 +1049,11 @@ class StackImage():
                 binning = 1,
                 scan_roi = None,
                 scan_shape = None,
-                reader = None):
+                reader = None,
+                dataset = None):
         """
-        Convert a raw image file, a numpy image, or a TIFF file to pyEMAPS' small-header format
-        (``.im3``).
+        Convert a raw image file, a numpy image, or a TIFF or EMD file to pyEMAPS' small-header
+        format (``.im3``).
 
         The stem4d module needs auxiliary images, such as the masks for
         :py:meth:`~pyemaps.stackimg.StackImage.generateMaskedImage`, in this format. See the sample
@@ -1055,7 +1063,7 @@ class StackImage():
             numpy array.
         :type imgfn: str or numpy.ndarray
         :param nformat: the input format: ``E_RAW`` (the default), ``E_NPY``, or ``E_FILE`` for
-            any format :py:func:`~pyemaps.expimage.read_image` reads, such as TIFF. ``E_FILE``
+            any format :py:func:`~pyemaps.expimage.read_image` reads, such as TIFF or EMD. ``E_FILE``
             converts every pattern of a stack, and needs no license.
         :type nformat: int, optional
         :param ndtype: the pixel data type of a raw file. Defaults to ``E_FLOAT``. See
@@ -1077,6 +1085,8 @@ class StackImage():
         :param reader: with ``E_FILE``, the reader to use; see
             :py:func:`~pyemaps.expimage.read_image`.
         :type reader: str, optional
+        :param dataset: with ``E_FILE``, for an EMD file with several images, the one to convert.
+        :type dataset: int or str, optional
         :return: the path of the converted file.
         :rtype: str
         :raise ValueError: if *nformat* isn't ``E_RAW``, ``E_NPY`` or ``E_FILE``, the file name
@@ -1097,8 +1107,8 @@ class StackImage():
         import os
 
         if nformat != E_RAW and nformat != E_NPY and nformat != E_FILE:
-            raise ValueError('pyEMAPS converts raw, numpy and TIFF images to its small-header '
-                             'format.')
+            raise ValueError('pyEMAPS converts raw and numpy images, and image files read_image '
+                             'reads, to its small-header format.')
 
         oExt = '.im3'
 
@@ -1149,7 +1159,7 @@ class StackImage():
             from .expimage import read_image, write_im3
             try:
                 rimg = read_image(imgFile, reader=reader, binning=binning, scan_roi=scan_roi,
-                                  scan_shape=scan_shape)
+                                  scan_shape=scan_shape, dataset=dataset)
             except ValueError as e:
                 raise XDPImageError(str(e)) from e
             _check_stem4d_size(rimg)

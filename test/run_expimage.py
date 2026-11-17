@@ -4,7 +4,8 @@ StackImage.from_file).
 
     python run_expimage.py        # any arguments (such as ci_sanity's "-bc all") are ignored
 
-Needs no license and no other package, so it runs in CI. Exits 1 if any check fails.
+Needs no license, so it runs in CI. The EMD checks need h5py (pip install "pyemaps[emd]");
+without it they're skipped and reported. Exits 1 if any check fails.
 
 What it checks:
 - Every TIFF in tiffdata/ that tifffile wrote (see tiffdata/make_fixtures.py) reads exactly
@@ -17,6 +18,10 @@ What it checks:
 - pyEMAPS' small-header files (.im3, .img) and samples/al.img read back exactly.
 - binning, scan_roi (only those pages are read), scan_shape, and the files are closed after
   reading.
+- EMD files in emddata/ (see emddata/make_fixtures.py): Velox series with their settings, a
+  real Velox image (CC BY 4.0) whose orientation matches Velox's thumbnail, Berkeley EMD 1.0
+  and 0.2, py4DSTEM datacubes with calibration; dataset choice, scan_roi, binning, refused
+  files, closed files, and the message when h5py is missing.
 - StackImage.from_file and convertImage(E_FILE), on full builds: single patterns, stacks
   through a temporary .im3 (byte-exact, removed afterwards), the scan width, and the size
   checks that ask for binning or scan_roi.
@@ -243,12 +248,157 @@ def c_alimg():
     assert np.array_equal(read_image(DATA / 'al.tif').data[0], ref), 'al.tif differs from al.img'
 
 
-@check('image_readers lists TIFF and pyEMAPS')
+@check('image_readers lists TIFF, EMD and pyEMAPS')
 def c_readers():
     from pyemaps import image_readers
     names = dict(image_readers())
-    assert names == {'TIFF': ['tif', 'tiff'], 'pyEMAPS': ['im3', 'img']}, names
+    assert names == {'TIFF': ['tif', 'tiff'], 'EMD': ['emd'], 'pyEMAPS': ['im3', 'img']}, names
     return str(names)
+
+
+# ------------------------------------------------------------------ EMD files (need h5py)
+
+EMD = HERE / 'emddata'
+EMD_MANIFEST = json.loads((EMD / 'manifest.json').read_text(encoding='utf-8'))['files']
+EMD_EXPECTED = np.load(EMD / 'expected.npz')
+EMD_GOOD = sorted(n for n, m in EMD_MANIFEST.items() if 'error' not in m)
+EMD_BAD = sorted(n for n, m in EMD_MANIFEST.items() if 'error' in m)
+
+
+def emd_file(name):
+    m = EMD_MANIFEST[name]
+    return EMD / f'{name}.{"h5" if name == "plain_hdf5" else "emd"}'
+
+
+@check(f'{len(EMD_GOOD)} EMD files (Velox, Berkeley EMD 1.0 and 0.2, py4DSTEM) read exactly, '
+       'with calibration and settings')
+def c_emd_good():
+    from pyemaps import read_image
+    problems, notes = [], []
+    for name in EMD_GOOD:
+        m, want = EMD_MANIFEST[name], EMD_EXPECTED[name]
+        try:
+            img = read_image(emd_file(name))
+            conv = as_read_image(want)
+            if img.data.dtype != conv.dtype or not np.array_equal(img.data, conv):
+                problems.append(f'{name}: pixels differ ({img.data.shape} {img.data.dtype})')
+            if list(img.scan_shape) != m['scan_shape'] or img.reader != 'EMD':
+                problems.append(f'{name}: scan {img.scan_shape}, reader {img.reader}')
+            for k, ax in enumerate(m['axes']):
+                got = img.axes[k]
+                for key, v in ax.items():
+                    same = np.isclose(got[key], v, rtol=1e-6) if isinstance(v, float) else got[key] == v
+                    if not same:
+                        problems.append(f'{name}: axis {k} {key} {got[key]!r}, expected {v!r}')
+            for key, v in m['meta'].items():
+                got = img.metadata.get(key)
+                same = np.isclose(got, v) if isinstance(v, float) and got is not None else got == v
+                if not same:
+                    problems.append(f'{name}: metadata {key} {got!r}, expected {v!r}')
+            notes.append(f'{name} {img.scan_shape}')
+        except Exception as e:
+            problems.append(f'{name}: {type(e).__name__}: {e}')
+    assert not problems, '; '.join(problems)
+    return ', '.join(notes)
+
+
+@check(f'{len(EMD_BAD)} EMD/HDF5 files that must be refused raise ValueError saying why')
+def c_emd_bad():
+    from pyemaps import read_image
+    problems = []
+    for name in EMD_BAD:
+        words = EMD_MANIFEST[name]['error']
+        try:
+            read_image(emd_file(name))
+            problems.append(f'{name}: not refused')
+        except ValueError as e:
+            if not all(w in str(e) for w in words):
+                problems.append(f'{name}: message lacks {words}: {e}')
+    assert not problems, '; '.join(problems)
+
+
+@check('Velox stores rows first: the real DF-S image matches Velox\'s own thumbnail')
+def c_emd_velox_orientation():
+    import io
+    import h5py
+    from PIL import Image
+    from pyemaps import read_image
+    img = read_image(emd_file('velox_iliad_dfs')).data[0].astype(float)
+    with h5py.File(emd_file('velox_iliad_dfs'), 'r') as f:
+        raw = f['Thumbnail.jpg'][()]
+    thumb = np.asarray(Image.open(io.BytesIO(raw.tobytes())).convert('L'), dtype=float)
+
+    def corr(a):
+        a = (a - a.min()) / (np.ptp(a) or 1) * 255
+        small = np.asarray(Image.fromarray(a.astype(np.uint8)).resize(thumb.shape[::-1]), float)
+        return np.corrcoef(small.ravel(), thumb.ravel())[0, 1]
+    as_read, transposed = corr(img), corr(img.T)
+    assert as_read > 0.95 and transposed < 0.5, (as_read, transposed)
+    return f'correlation {as_read:.3f} as read, {transposed:.3f} transposed'
+
+
+@check('EMD options: dataset choice, scan_roi on a datacube and a Velox series, binning, errors')
+def c_emd_options():
+    from pyemaps import read_image
+    series, overview = EMD_EXPECTED['velox_series'], EMD_EXPECTED['velox_series_overview']
+    fn = emd_file('velox_series')
+    assert read_image(fn).npatterns == 3, 'default: the series, not the overview'
+    ov = read_image(fn, dataset='ffeeddccbbaa99887766554433221100')
+    assert np.array_equal(ov.data, overview.astype(np.int16) if overview.max() <= 32767
+                          else overview.astype(np.float32)) and ov.metadata['detector'] == 'HAADF'
+    assert read_image(fn, dataset=0).pattern_shape in ((37, 41), (64, 48))
+    raises(ValueError, lambda: read_image(fn, dataset='nothere'), 'No image dataset')
+    raises(ValueError, lambda: read_image(fn, dataset=7), 'dataset must be 0 to 1')
+    img = read_image(fn, scan_roi=(1, 2))
+    assert np.array_equal(img.data, series[1:3]) and img.scan_shape == (2,)
+    cube = EMD_EXPECTED['emd1_datacube']                       # 3 x 4 scan, row by row
+    img = read_image(emd_file('emd1_datacube'), scan_roi=(1, 1, 2, 2))
+    assert img.scan_shape == (2, 2) and np.array_equal(img.data, cube[[5, 6, 9, 10]])
+    img = read_image(emd_file('emd1_datacube'), binning=2)
+    assert img.data.shape == (12, 18, 20) and np.isclose(img.axes[0]['scale'], 0.1462)
+    raises(ValueError, lambda: read_image(DATA / 'al.tif', dataset=0), 'dataset is for EMD')
+    return 'dataset by name and number; scan_roi (2, 2) from (3, 4); binning scales calibration'
+
+
+@check('EMD files are closed after reading (can be deleted on Windows)')
+def c_emd_closed(tmp):
+    from pyemaps import read_image
+    for name in ('velox_series', 'emd1_datacube'):
+        fn = os.path.join(tmp, f'{name}.emd')
+        shutil.copy(emd_file(name), fn)
+        read_image(fn, scan_roi=(0, 1) if name == 'velox_series' else None)
+        os.remove(fn)
+
+
+MISSING_H5PY = """
+import sys
+sys.modules['h5py'] = None
+from pyemaps import read_image
+try:
+    read_image({path!r})
+except ImportError as e:
+    print('IMPORTERROR', e)
+"""
+
+
+@check('without h5py, reading an EMD file says how to install it; TIFF still works')
+def c_emd_missing():
+    import subprocess
+    code = MISSING_H5PY.format(path=str(emd_file('emd1_datacube')))
+    code += f"\nprint('TIFF', read_image({str(DATA / 'al.tif')!r}).pattern_shape)\n"
+    p = subprocess.run([sys.executable, '-c', code], capture_output=True, text=True)
+    line = next((l for l in p.stdout.splitlines() if l.startswith('IMPORTERROR')), '')
+    assert 'pyemaps[emd]' in line, line or p.stderr.strip().splitlines()[-1:]
+    assert 'TIFF (200, 200)' in p.stdout, p.stdout + p.stderr
+    return line[12:]
+
+
+def have_h5py():
+    try:
+        import h5py  # noqa: F401
+        return True
+    except ImportError:
+        return False
 
 
 # ------------------------------------------------------------------ StackImage (full builds)
@@ -327,6 +477,16 @@ def main():
         c_im3(tmp)
         c_alimg()
         c_readers()
+        if have_h5py():
+            c_emd_good()
+            c_emd_bad()
+            c_emd_velox_orientation()
+            c_emd_options()
+            c_emd_closed(tmp)
+            c_emd_missing()
+        else:
+            RESULTS.append(('EMD checks', None, 'skipped: h5py not installed '
+                            '(pip install "pyemaps[emd]"; no Windows wheels for Python 3.15 yet)'))
         if stackimage() is not None:
             c_from_single()
             c_from_scan(tmp)

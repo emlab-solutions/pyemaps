@@ -110,6 +110,42 @@ in your own code:
    plt.imshow(img.data[0], cmap='gray')
    plt.show()
 
+Images from EMD files
+---------------------
+
+pyEMAPS also reads EMD files (``.emd``), which need the h5py package. Install it with
+pyEMAPS' ``emd`` extra:
+
+.. code-block:: console
+
+   pip install "pyemaps[emd]"
+
+On Python 3.15, h5py has no Windows release yet, so EMD files can't be read there for now;
+TIFF files can.
+
+Two unrelated layouts share the ``.emd`` extension, and pyEMAPS reads both:
+
+- **Thermo Fisher Velox** files: the images and image series Velox saves, such as diffraction
+  patterns. :py:attr:`metadata <pyemaps.expimage.ExperimentalImage.metadata>` gives the high
+  voltage (``high_voltage_kV``), the camera length (``camera_length_m``) and the ``detector``
+  Velox recorded, and :py:attr:`axes <pyemaps.expimage.ExperimentalImage.axes>` the pixel
+  size. Spectra in the same file, such as EDS and EELS, aren't images and are skipped.
+- **Berkeley EMD** files (versions 0.x and 1.0), including the 4D-STEM datacubes of py4DSTEM:
+  the scan shape and the calibration of each axis come from the file.
+
+A file can hold several images, such as a 4D-STEM scan and an overview image. pyEMAPS reads
+the one with the most patterns; choose another with *dataset*, its number or its name:
+
+.. code-block:: python
+
+   from pyemaps import StackImage, read_image
+
+   series = StackImage.from_file('diffraction.emd')
+   img = read_image('diffraction.emd')
+   print(img.metadata['high_voltage_kV'], img.metadata['camera_length_m'])
+
+   overview = read_image('scan.emd', dataset=1)
+
 .. note::
 
    Diffraction pattern indexing supports crystals of any crystal system, with these limits:

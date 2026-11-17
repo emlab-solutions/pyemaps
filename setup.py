@@ -54,6 +54,13 @@ install_requires = [
             'matplotlib >= 3.8.4'
             ]
 
+# pip install "pyemaps[emd]": h5py (BSD), to read EMD files (Thermo Fisher Velox and Berkeley
+# EMD) with pyemaps.read_image and StackImage.from_file. h5py has no Windows wheels for
+# Python 3.15 yet, so the extra installs nothing there, and reading EMD files says so.
+extras_require = {
+    'emd': ['h5py >= 3.10; python_version < "3.15"'],
+}
+
 def get_samples(sdn = 'samples'):
     '''
     input: sdn = sample directory name under pyemaps
@@ -168,6 +175,7 @@ setup(name                              ="pyemaps",
                                            'pyemaps.stackimg',
                                            'pyemaps.expimage',
                                            'pyemaps.tiffreader',
+                                           'pyemaps.emdreader',
                                            'pyemaps.CifFile.CifFile_module',
                                            'pyemaps.CifFile.yapps3_compiled_rt',
                                            'pyemaps.CifFile.YappsStarParser_1_1',
@@ -199,6 +207,7 @@ setup(name                              ="pyemaps",
                                             'Changelog': 'https://emlab-solutions.github.io/pyemaps/rn.html',
                                             },
       install_requires                  = get_install_requires(),
+      extras_require                    = extras_require,
       cmdclass                          = {'install_data': install_data_in_package},
 
       data_files                        = [('pyemaps', 

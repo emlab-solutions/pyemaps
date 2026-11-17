@@ -32,6 +32,15 @@ pip also installs NumPy (2.0 or later), matplotlib (3.8.4 or later) and *emaps*,
 simulation backend built for your Python version. On Python 3.7, pip installs pyEMAPS 1.1.x.
 If the installation fails, see :doc:`faq`.
 
+To read EMD files (``.emd``) from Thermo Fisher Velox or in the Berkeley EMD format, install the
+``emd`` extra too, which adds the h5py package (Python 3.12 to 3.14 for now):
+
+.. code-block:: console
+
+   pip install "pyemaps[emd]"
+
+See :doc:`user_guide/indexing`.
+
 Check the installation
 ----------------------
 

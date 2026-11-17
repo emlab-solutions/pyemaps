@@ -1,0 +1,141 @@
+{
+ "files": {
+  "emd02_image": {
+   "axes": [
+    {
+     "name": "k_y",
+     "scale": 0.02,
+     "units": "nm^-1"
+    },
+    {
+     "name": "k_x",
+     "scale": 0.02,
+     "units": "nm^-1"
+    }
+   ],
+   "dtype": "<u2",
+   "meta": {
+    "format": "EMD 0.2"
+   },
+   "scan_shape": []
+  },
+  "emd1_datacube": {
+   "axes": [
+    {
+     "name": "Q_x",
+     "offset": -1.5,
+     "scale": 0.0731,
+     "units": "nm^-1"
+    },
+    {
+     "name": "Q_y",
+     "offset": -2.0,
+     "scale": 0.0731,
+     "units": "nm^-1"
+    }
+   ],
+   "dtype": "<f4",
+   "meta": {
+    "format": "EMD 1.0"
+   },
+   "scan_shape": [
+    3,
+    4
+   ]
+  },
+  "emd1_spectrum": {
+   "error": [
+    "no 2-D image",
+    "spectrum"
+   ]
+  },
+  "emd1_stack": {
+   "axes": [
+    {
+     "name": "y",
+     "scale": 0.5,
+     "units": "nm^-1"
+    },
+    {
+     "name": "x",
+     "scale": 0.5,
+     "units": "nm^-1"
+    }
+   ],
+   "dtype": "<u2",
+   "meta": {
+    "format": "EMD 1.0"
+   },
+   "scan_shape": [
+    5
+   ]
+  },
+  "plain_hdf5": {
+   "error": [
+    "neither a Velox nor a Berkeley EMD"
+   ]
+  },
+  "py4dstem_datacube": {
+   "axes": [
+    {
+     "name": "Q_x",
+     "scale": 0.1,
+     "units": "nm^-1"
+    },
+    {
+     "name": "Q_y",
+     "scale": 0.1,
+     "units": "nm^-1"
+    }
+   ],
+   "dtype": "<f4",
+   "meta": {},
+   "scan_shape": [
+    2,
+    2
+   ]
+  },
+  "velox_iliad_dfs": {
+   "axes": [],
+   "dtype": "<u2",
+   "meta": {
+    "detector": "DF-S",
+    "format": "Velox",
+    "high_voltage_kV": 300.0
+   },
+   "scan_shape": []
+  },
+  "velox_series": {
+   "axes": [
+    {
+     "name": "rows",
+     "scale": 25000000.0,
+     "units": "1/m"
+    },
+    {
+     "name": "columns",
+     "scale": 25000000.0,
+     "units": "1/m"
+    }
+   ],
+   "dtype": "<i2",
+   "meta": {
+    "camera_length_m": 0.38,
+    "detector": "BM-Ceta",
+    "format": "Velox",
+    "high_voltage_kV": 200.0,
+    "instrument": "FEI Company Talos"
+   },
+   "scan_shape": [
+    3
+   ]
+  },
+  "velox_spectra_only": {
+   "error": [
+    "no 2-D image",
+    "SpectrumImage"
+   ]
+  }
+ },
+ "h5py": "3.16.0"
+}
