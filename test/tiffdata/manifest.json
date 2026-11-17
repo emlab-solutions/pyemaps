@@ -1,0 +1,311 @@
+{
+ "files": {
+  "al": {
+   "dtype": "<f4",
+   "scan_shape": [],
+   "writer": "tifffile {\"photometric\": \"minisblack\"}"
+  },
+  "bad_bilevel": {
+   "error": [
+    "black-and-white"
+   ]
+  },
+  "bad_complex": {
+   "error": [
+    "sample format"
+   ]
+  },
+  "bad_jpeg": {
+   "error": [
+    "JPEG"
+   ]
+  },
+  "bad_mixed_sizes": {
+   "error": [
+    "same size"
+   ]
+  },
+  "bad_palette": {
+   "error": [
+    "palette"
+   ]
+  },
+  "bad_rgb": {
+   "error": [
+    "RGB"
+   ]
+  },
+  "bad_zstd": {
+   "error": [
+    "Zstandard"
+   ]
+  },
+  "bigtiff_be": {
+   "dtype": "<i2",
+   "scan_shape": [
+    2
+   ],
+   "writer": "tifffile {\"bigtiff\": \"True\", \"byteorder\": \">\", \"photometric\": \"minisblack\"}"
+  },
+  "bigtiff_stack": {
+   "dtype": "<f4",
+   "scan_shape": [
+    3
+   ],
+   "writer": "tifffile {\"bigtiff\": \"True\", \"compression\": \"zlib\", \"predictor\": \"3\", \"photometric\": \"minisblack\"}"
+  },
+  "deflate_f8_fpred": {
+   "dtype": "<f8",
+   "scan_shape": [],
+   "writer": "tifffile {\"compression\": \"zlib\", \"predictor\": \"3\", \"photometric\": \"minisblack\"}"
+  },
+  "deflate_i2": {
+   "dtype": "<i2",
+   "scan_shape": [],
+   "writer": "tifffile {\"compression\": \"zlib\", \"photometric\": \"minisblack\"}"
+  },
+  "deflate_i2_pred": {
+   "dtype": "<i2",
+   "scan_shape": [],
+   "writer": "tifffile {\"compression\": \"zlib\", \"predictor\": \"True\", \"rowsperstrip\": \"6\", \"photometric\": \"minisblack\"}"
+  },
+  "deflate_u2_pred_be": {
+   "dtype": "<u2",
+   "scan_shape": [],
+   "writer": "tifffile {\"compression\": \"zlib\", \"predictor\": \"True\", \"byteorder\": \">\", \"photometric\": \"minisblack\"}"
+  },
+  "dtype_f2_be": {
+   "dtype": "<f2",
+   "scan_shape": [],
+   "writer": "tifffile {\"byteorder\": \">\", \"photometric\": \"minisblack\"}"
+  },
+  "dtype_f2_le": {
+   "dtype": "<f2",
+   "scan_shape": [],
+   "writer": "tifffile {\"photometric\": \"minisblack\"}"
+  },
+  "dtype_f4_be": {
+   "dtype": "<f4",
+   "scan_shape": [],
+   "writer": "tifffile {\"byteorder\": \">\", \"photometric\": \"minisblack\"}"
+  },
+  "dtype_f4_le": {
+   "dtype": "<f4",
+   "scan_shape": [],
+   "writer": "tifffile {\"photometric\": \"minisblack\"}"
+  },
+  "dtype_f8_be": {
+   "dtype": "<f8",
+   "scan_shape": [],
+   "writer": "tifffile {\"byteorder\": \">\", \"photometric\": \"minisblack\"}"
+  },
+  "dtype_f8_le": {
+   "dtype": "<f8",
+   "scan_shape": [],
+   "writer": "tifffile {\"photometric\": \"minisblack\"}"
+  },
+  "dtype_i1_be": {
+   "dtype": "|i1",
+   "scan_shape": [],
+   "writer": "tifffile {\"byteorder\": \">\", \"photometric\": \"minisblack\"}"
+  },
+  "dtype_i1_le": {
+   "dtype": "|i1",
+   "scan_shape": [],
+   "writer": "tifffile {\"photometric\": \"minisblack\"}"
+  },
+  "dtype_i2_be": {
+   "dtype": "<i2",
+   "scan_shape": [],
+   "writer": "tifffile {\"byteorder\": \">\", \"photometric\": \"minisblack\"}"
+  },
+  "dtype_i2_le": {
+   "dtype": "<i2",
+   "scan_shape": [],
+   "writer": "tifffile {\"photometric\": \"minisblack\"}"
+  },
+  "dtype_i4_be": {
+   "dtype": "<i4",
+   "scan_shape": [],
+   "writer": "tifffile {\"byteorder\": \">\", \"photometric\": \"minisblack\"}"
+  },
+  "dtype_i4_le": {
+   "dtype": "<i4",
+   "scan_shape": [],
+   "writer": "tifffile {\"photometric\": \"minisblack\"}"
+  },
+  "dtype_i8_be": {
+   "dtype": "<i8",
+   "scan_shape": [],
+   "writer": "tifffile {\"byteorder\": \">\", \"photometric\": \"minisblack\"}"
+  },
+  "dtype_i8_le": {
+   "dtype": "<i8",
+   "scan_shape": [],
+   "writer": "tifffile {\"photometric\": \"minisblack\"}"
+  },
+  "dtype_u1_be": {
+   "dtype": "|u1",
+   "scan_shape": [],
+   "writer": "tifffile {\"byteorder\": \">\", \"photometric\": \"minisblack\"}"
+  },
+  "dtype_u1_le": {
+   "dtype": "|u1",
+   "scan_shape": [],
+   "writer": "tifffile {\"photometric\": \"minisblack\"}"
+  },
+  "dtype_u2_be": {
+   "dtype": "<u2",
+   "scan_shape": [],
+   "writer": "tifffile {\"byteorder\": \">\", \"photometric\": \"minisblack\"}"
+  },
+  "dtype_u2_le": {
+   "dtype": "<u2",
+   "scan_shape": [],
+   "writer": "tifffile {\"photometric\": \"minisblack\"}"
+  },
+  "dtype_u4_be": {
+   "dtype": "<u4",
+   "scan_shape": [],
+   "writer": "tifffile {\"byteorder\": \">\", \"photometric\": \"minisblack\"}"
+  },
+  "dtype_u4_le": {
+   "dtype": "<u4",
+   "scan_shape": [],
+   "writer": "tifffile {\"photometric\": \"minisblack\"}"
+  },
+  "dtype_u8_be": {
+   "dtype": "<u8",
+   "scan_shape": [],
+   "writer": "tifffile {\"byteorder\": \">\", \"photometric\": \"minisblack\"}"
+  },
+  "dtype_u8_le": {
+   "dtype": "<u8",
+   "scan_shape": [],
+   "writer": "tifffile {\"photometric\": \"minisblack\"}"
+  },
+  "imagej_contiguous": {
+   "dtype": "<i2",
+   "scan_shape": [
+    4
+   ],
+   "writer": "hand-written: ImageJ layout for stacks over 4 GB"
+  },
+  "lzw_f4_fpred": {
+   "dtype": "<f4",
+   "scan_shape": [],
+   "writer": "tifffile {\"compression\": \"lzw\", \"predictor\": \"3\", \"photometric\": \"minisblack\"}"
+  },
+  "lzw_f4_fpred_be": {
+   "dtype": "<f4",
+   "scan_shape": [],
+   "writer": "tifffile {\"compression\": \"lzw\", \"predictor\": \"3\", \"byteorder\": \">\", \"photometric\": \"minisblack\"}"
+  },
+  "lzw_i4_pred_be": {
+   "dtype": "<i4",
+   "scan_shape": [],
+   "writer": "tifffile {\"compression\": \"lzw\", \"predictor\": \"True\", \"byteorder\": \">\", \"photometric\": \"minisblack\"}"
+  },
+  "lzw_u1_large": {
+   "dtype": "|u1",
+   "scan_shape": [],
+   "writer": "tifffile {\"compression\": \"lzw\", \"photometric\": \"minisblack\"}"
+  },
+  "lzw_u2": {
+   "dtype": "<u2",
+   "scan_shape": [],
+   "writer": "tifffile {\"compression\": \"lzw\", \"photometric\": \"minisblack\"}"
+  },
+  "lzw_u2_pred": {
+   "dtype": "<u2",
+   "scan_shape": [],
+   "writer": "tifffile {\"compression\": \"lzw\", \"predictor\": \"True\", \"photometric\": \"minisblack\"}"
+  },
+  "packbits_i2": {
+   "dtype": "<i2",
+   "scan_shape": [],
+   "writer": "tifffile {\"compression\": \"packbits\", \"rowsperstrip\": \"8\", \"photometric\": \"minisblack\"}"
+  },
+  "packbits_u1": {
+   "dtype": "|u1",
+   "scan_shape": [],
+   "writer": "tifffile {\"compression\": \"packbits\", \"photometric\": \"minisblack\"}"
+  },
+  "stack_i2": {
+   "dtype": "<i2",
+   "scan_shape": [
+    6
+   ],
+   "writer": "tifffile {\"photometric\": \"minisblack\"}"
+  },
+  "stack_imagej": {
+   "dtype": "<u2",
+   "scan_shape": [
+    5
+   ],
+   "writer": "tifffile {\"imagej\": \"True\", \"photometric\": \"minisblack\"}"
+  },
+  "stack_scan_2x3": {
+   "dtype": "<u2",
+   "scan_shape": [
+    2,
+    3
+   ],
+   "writer": "tifffile {\"photometric\": \"minisblack\"}"
+  },
+  "stack_scan_2x3_lzw": {
+   "dtype": "<f4",
+   "scan_shape": [
+    2,
+    3
+   ],
+   "writer": "tifffile {\"compression\": \"lzw\", \"predictor\": \"3\", \"photometric\": \"minisblack\"}"
+  },
+  "stack_thumbnail": {
+   "dtype": "<u2",
+   "scan_shape": [
+    4
+   ],
+   "writer": "tifffile, thumbnail page"
+  },
+  "stem4d_mask": {
+   "dtype": "<f4",
+   "scan_shape": [],
+   "writer": "tifffile {\"compression\": \"zlib\", \"predictor\": \"3\", \"photometric\": \"minisblack\"}"
+  },
+  "stem4d_scan": {
+   "dtype": "<i2",
+   "scan_shape": [
+    6,
+    5
+   ],
+   "writer": "tifffile {\"compression\": \"zlib\", \"predictor\": \"True\", \"photometric\": \"minisblack\"}"
+  },
+  "strips_f4_be": {
+   "dtype": "<f4",
+   "scan_shape": [],
+   "writer": "tifffile {\"rowsperstrip\": \"5\", \"byteorder\": \">\", \"photometric\": \"minisblack\"}"
+  },
+  "strips_i2": {
+   "dtype": "<i2",
+   "scan_shape": [],
+   "writer": "tifffile {\"rowsperstrip\": \"5\", \"photometric\": \"minisblack\"}"
+  },
+  "tiles_f4_lzw_fpred_be": {
+   "dtype": "<f4",
+   "scan_shape": [],
+   "writer": "tifffile {\"tile\": \"(16, 16)\", \"compression\": \"lzw\", \"predictor\": \"3\", \"byteorder\": \">\", \"photometric\": \"minisblack\"}"
+  },
+  "tiles_i2_deflate_pred": {
+   "dtype": "<i2",
+   "scan_shape": [],
+   "writer": "tifffile {\"tile\": \"(16, 16)\", \"compression\": \"zlib\", \"predictor\": \"True\", \"photometric\": \"minisblack\"}"
+  },
+  "tiles_u2": {
+   "dtype": "<u2",
+   "scan_shape": [],
+   "writer": "tifffile {\"tile\": \"(16, 16)\", \"photometric\": \"minisblack\"}"
+  }
+ },
+ "tifffile": "2026.11.12"
+}

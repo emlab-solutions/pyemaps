@@ -167,6 +167,9 @@ except ImportError as e:
 #--------------Pyemaps Display Functions-------------------------------------
 from .display import showDif, showBloch, showStereo, plot2Powder
 
+#--------------Experimental images from image files (TIFF, .im3)--------------------
+from .expimage import read_image, write_im3, image_readers, ExperimentalImage
+
 if PKG_TYPE != TYPE_FREE:
     #------------------Diffraction Database Generator - paid package only---------------------------
     try:
@@ -203,6 +206,7 @@ if PKG_TYPE != TYPE_FREE:
         E_SH = 0
         E_RAW = 1
         E_NPY = 2
+        E_FILE = 3      # any format read_image reads, such as TIFF (convertImage)
 
         # --------image loading mode -------
         #  allowing users to handle memory needs depending on size of the images

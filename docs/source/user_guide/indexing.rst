@@ -45,11 +45,77 @@ pattern that best matches the image. For all the parameters, see
 :py:obj:`StackImage.indexImage <pyemaps.stackimg.StackImage.indexImage>`. The *al_ediom.py*
 sample runs this whole example.
 
+Images from TIFF files
+----------------------
+
+pyEMAPS reads experimental patterns from TIFF files (``.tif``, ``.tiff``) itself, with no
+other package: a single pattern, or a multi-page stack such as a 4D-STEM scan, one pattern per
+page. Most microscope and detector software can save TIFF, and so can ImageJ and Fiji.
+
+- Pixels: 8 to 64-bit integers, or 16 to 64-bit floating point, in either byte order.
+- Compression: none, LZW, Deflate (zip) or PackBits. Large stacks read fastest uncompressed or
+  with Deflate; LZW is decoded in Python, at a few MB per second.
+- BigTIFF files, and ImageJ stacks over 4 GB.
+- Colour, palette and black-and-white images, and other compressions such as JPEG, are refused
+  with a message that says what the file holds.
+
+:py:meth:`StackImage.from_file <pyemaps.stackimg.StackImage.from_file>` creates an image from
+a TIFF file, ready for indexing or for bright and dark field imaging:
+
+.. code-block:: python
+
+   from pyemaps import StackImage
+
+   pattern = StackImage.from_file('pattern.tif')
+   pattern.indexImage(db_file, cc=29.0, img_center=(256.0, 256.0))
+
+   scan = StackImage.from_file('scan.tif', scan_shape=(64, 64))
+   ret, bf = scan.generateBDF(center=(128.0, 128.0), rads=(0.0, 20.0))   # scan width 64
+
+A multi-page TIFF holds the patterns one after another, in scan order. When tifffile wrote the
+file, it recorded the scan's shape, and pyEMAPS uses it. Otherwise, as for ImageJ stacks, give
+it with *scan_shape*, or give the scan width to the imaging methods (*scol*, *scancol*).
+
+The 4D-STEM features take patterns of 100 to 512 pixels per side and up to 5000 patterns.
+pyEMAPS doesn't shrink larger data for you; it says what to ask for:
+
+- *binning* averages square blocks of pixels: ``binning=2`` turns 1024 x 1024 patterns into
+  512 x 512. Divide the camera constant *cc* and the pattern center *img_center* you give
+  *indexImage* by the same factor.
+- *scan_roi* reads part of a scan, and only that part of the file: ``scan_roi=(row, column,
+  rows, columns)`` for a 2-D scan, ``(first, count)`` for a series of patterns.
+
+.. code-block:: python
+
+   scan = StackImage.from_file('big_scan.tif', scan_shape=(256, 256), binning=2,
+                               scan_roi=(0, 0, 64, 64))
+
+To keep a converted copy, for repeated use or as a mask for
+:py:meth:`generateMaskedImage <pyemaps.stackimg.StackImage.generateMaskedImage>`,
+:py:meth:`convertImage <pyemaps.stackimg.StackImage.convertImage>` with ``nformat=E_FILE``
+writes pyEMAPS' ``.im3`` format.
+
+Reading needs no license. :py:func:`pyemaps.read_image <pyemaps.expimage.read_image>` returns
+the patterns as numpy arrays, with the scan shape and the file's metadata, to look at or to use
+in your own code:
+
+.. code-block:: python
+
+   import matplotlib.pyplot as plt
+   from pyemaps import read_image
+
+   img = read_image('scan.tif')
+   print(img)              # patterns, size, scan shape and reader
+   print(img.metadata)     # the TIFF's description, software, compression ...
+   plt.imshow(img.data[0], cmap='gray')
+   plt.show()
+
 .. note::
 
    Diffraction pattern indexing supports crystals of any crystal system, with these limits:
 
-   1. Experimental images must be 100 to 512 pixels in each dimension.
+   1. Experimental images must be 100 to 512 pixels in each dimension. Read larger ones with
+      *binning*, as above.
    2. The database resolution (*res* in *generateDPDB*) can be 100 to 500 sampling points.
 
    We appreciate any comments and suggestions to improve this feature. Contact us at
