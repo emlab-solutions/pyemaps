@@ -231,6 +231,43 @@ def c_single_atom():
     return 'one atom written without loop_'
 
 
+def c_real_cod():
+    '''Real COD structures: every atom's displacement values, by its own label.'''
+    import re
+    from pyemaps.cifreader import read_cif
+    num = re.compile(r'[-+]?(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?')
+
+    def value(v):
+        m = num.search(v)
+        return float(m.group(0)) if m else 0.0
+
+    def col(b, key):
+        v = b[key]
+        return v if isinstance(v, list) else [v]
+
+    folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cifcases')
+    names = sorted(f for f in os.listdir(folder) if f.endswith('.cif'))
+    assert len(names) == 3, names
+    notes = []
+    for name in names:
+        fn = os.path.join(folder, name)
+        b = read_cif(fn)[0]
+        labels = col(b, '_atom_site_label')
+        iso = [value(v) for v in col(b, '_atom_site_U_iso_or_equiv')]
+        expected = [[x, x, x, 0.0, 0.0, 0.0] for x in iso]
+        aniso = col(b, '_atom_site_aniso_label')
+        for r, lab in enumerate(aniso):
+            for c, k in enumerate(('11', '22', '33', '12', '13', '23')):
+                expected[labels.index(lab)][c] = value(col(b, f'_atom_site_aniso_U_{k}')[r])
+        _, data, _ = load(open(fn, encoding='utf-8').read())
+        got = [[a[f'b{k}'] for k in ('11', '22', '33', '12', '13', '23')] for a in data['atoms']]
+        assert data['dw'] == 'uij' and len(got) == len(labels), (name, data['dw'], len(got))
+        wrong = [labels[i] for i in range(len(labels)) if got[i] != expected[i]]
+        assert not wrong, f'{name}: wrong displacement parameters for {wrong[:5]}'
+        notes.append(f'{name[:-4]} ({len(aniso)} of {len(labels)} atoms anisotropic)')
+    return ', '.join(notes)
+
+
 def main():
     for name, fn in (('data items and special values', c_items),
                      ('case-insensitive names and reserved words', c_case),
@@ -246,7 +283,8 @@ def main():
                      ('_atom_site_Uiso_or_equiv is read (it crashed before)', c_uiso_variant),
                      ('anisotropic U matched to atoms by label', c_aniso_by_label),
                      ('anisotropic B matched to atoms by label', c_aniso_b),
-                     ('a single atom written without loop_', c_single_atom)):
+                     ('a single atom written without loop_', c_single_atom),
+                     ('real COD structures: displacement parameters by label', c_real_cod)):
         check(name, fn)
     for name, ok, msg in RESULTS:
         print(f'{"PASS" if ok else "FAIL"}  {name}: {msg}')

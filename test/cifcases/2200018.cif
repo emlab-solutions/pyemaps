@@ -1,0 +1,236 @@
+#------------------------------------------------------------------------------
+#$Date: 2025-08-19 13:43:10 +0300 (Tue, 19 Aug 2025) $
+#$Revision: 301803 $
+#$URL: file:///home/coder/svn-repositories/_RELOADED_COD/cod-reloaded/cif/2/20/00/2200018.cif $
+#------------------------------------------------------------------------------
+#
+# This file is available in the Crystallography Open Database (COD),
+# http://www.crystallography.net/. The original data for this entry
+# were provided by IUCr Journals, http://journals.iucr.org/.
+#
+# The file may be used within the scientific community so long as
+# proper attribution is given to the journal article from which the
+# data were obtained.
+#
+data_2200018
+loop_
+_publ_author_name
+'Stapleton, Clynton P. D.'
+'Tiekink, Edward R. T.'
+_publ_section_title
+;
+ <small>DL</small>-Piperidine-2-carboxylic acid
+;
+_journal_issue                   1
+_journal_name_full               'Acta Crystallographica Section E'
+_journal_page_first              o75
+_journal_page_last               o76
+_journal_paper_doi               10.1107/S1600536800020092
+_journal_volume                  57
+_journal_year                    2001
+_chemical_formula_sum            'C6 H11 N O2'
+_chemical_formula_weight         129.16
+_chemical_name_common            'dl-homoproline, dl-pipecolic acid'
+_space_group_IT_number           14
+_symmetry_cell_setting           monoclinic
+_symmetry_space_group_name_Hall  '-P 2ybc'
+_symmetry_space_group_name_H-M   'P 1 21/c 1'
+_cell_angle_alpha                90
+_cell_angle_beta                 110.39(2)
+_cell_angle_gamma                90
+_cell_formula_units_Z            4
+_cell_length_a                   11.148(3)
+_cell_length_b                   5.822(2)
+_cell_length_c                   10.813(4)
+_cell_measurement_reflns_used    14
+_cell_measurement_temperature    173.0(10)
+_cell_measurement_theta_max      12.1
+_cell_measurement_theta_min      7.4
+_cell_volume                     657.8(4)
+_computing_cell_refinement       'MSC/AFC Diffractometer Control Software'
+_computing_data_collection
+;
+MSC/AFC Diffractometer Control Software
+(Molecular Structure Corporation, 1996)
+;
+_computing_data_reduction
+'TEXSAN (Molecular Structure Corporation, 1997)'
+_computing_molecular_graphics    'ORTEPII (Johnson, 1976)'
+_computing_publication_material  TEXSAN
+_computing_structure_refinement  'SHELXL97 (Sheldrick, 1997)'
+_computing_structure_solution    'SIR92 (Altomare et al., 1994)'
+_diffrn_ambient_temperature      173.0(10)
+_diffrn_measured_fraction_theta_full .999
+_diffrn_measured_fraction_theta_max .999
+_diffrn_measurement_device_type  'Rigaku AFC-7R'
+_diffrn_measurement_method       \w-2\q
+_diffrn_radiation_monochromator  graphite
+_diffrn_radiation_source         'rotating anode'
+_diffrn_radiation_type           MoK\a
+_diffrn_radiation_wavelength     .71069
+_diffrn_reflns_av_R_equivalents  .018
+_diffrn_reflns_av_sigmaI/netI    .029
+_diffrn_reflns_limit_h_max       14
+_diffrn_reflns_limit_h_min       -14
+_diffrn_reflns_limit_k_max       0
+_diffrn_reflns_limit_k_min       -7
+_diffrn_reflns_limit_l_max       13
+_diffrn_reflns_limit_l_min       -14
+_diffrn_reflns_number            3323
+_diffrn_reflns_theta_full        27.51
+_diffrn_reflns_theta_max         27.5
+_diffrn_reflns_theta_min         3.8
+_diffrn_standards_decay_%        .7
+_diffrn_standards_interval_count 400
+_diffrn_standards_number         3
+_exptl_absorpt_coefficient_mu    .10
+_exptl_absorpt_correction_type   none
+_exptl_crystal_colour            colourless
+_exptl_crystal_density_diffrn    1.304
+_exptl_crystal_density_method    'not measured'
+_exptl_crystal_description       block
+_exptl_crystal_F_000             280
+_exptl_crystal_size_max          .30
+_exptl_crystal_size_mid          .20
+_exptl_crystal_size_min          .10
+_refine_diff_density_max         .24
+_refine_diff_density_min         -.19
+_refine_ls_extinction_method     none
+_refine_ls_goodness_of_fit_ref   .98
+_refine_ls_hydrogen_treatment    noref
+_refine_ls_matrix_type           full
+_refine_ls_number_parameters     83
+_refine_ls_number_reflns         1513
+_refine_ls_number_restraints     0
+_refine_ls_restrained_S_all      .98
+_refine_ls_R_factor_all          .050
+_refine_ls_R_factor_gt           .035
+_refine_ls_shift/su_max          <0.001
+_refine_ls_shift/su_mean         <0.001
+_refine_ls_structure_factor_coef Fsqd
+_refine_ls_weighting_details
+'calc w = 1/[\s^2^(Fo^2^)+(0.1000P)^2^] where P = (Fo^2^+2Fc^2^)/3'
+_refine_ls_weighting_scheme      calc
+_refine_ls_wR_factor_ref         .128
+_reflns_number_gt                1191
+_reflns_number_total             1513
+_reflns_threshold_expression     I>2\s(I)
+_cod_data_source_file            cf6001.cif
+_cod_data_source_block           I
+_cod_original_sg_symbol_H-M      'P 21/c'
+_cod_database_code               2200018
+loop_
+_symmetry_equiv_pos_as_xyz
+'x, y, z'
+'-x, y+1/2, -z+1/2'
+'-x, -y, -z'
+'x, -y-1/2, z-1/2'
+loop_
+_atom_site_label
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_U_iso_or_equiv
+_atom_site_adp_type
+_atom_site_calc_flag
+_atom_site_refinement_flags
+_atom_site_occupancy
+_atom_site_disorder_assembly
+_atom_site_disorder_group
+_atom_site_type_symbol
+O21 .09484(8) .37073(16) .30718(9) .0275(3) Uani d . 1 . . O
+O22 .18325(10) .20556(18) .50530(9) .0359(3) Uani d . 1 . . O
+N1 .13411(9) -.00698(16) .17974(9) .0175(3) Uani d . 1 . . N
+H1 .1467 .1219 .1366 .0342(13) Uiso d . 1 . . H
+H2 .0481 -.0174 .1663 .0342(13) Uiso d . 1 . . H
+C2 .20693(11) .01657(19) .32359(10) .0180(3) Uani d . 1 . . C
+H3 .1955 -.1282 .3680 .0342(13) Uiso d . 1 . . H
+C3 .34878(11) .0429(2) .34526(12) .0253(3) Uani d . 1 . . C
+H4 .3978 .0585 .4407 .0342(13) Uiso d . 1 . . H
+H5 .3624 .1835 .3004 .0342(13) Uiso d . 1 . . H
+C4 .39645(11) -.1668(3) .29050(13) .0315(3) Uani d . 1 . . C
+H6 .4874 -.1445 .3004 .0342(13) Uiso d . 1 . . H
+H7 .3905 -.3051 .3413 .0342(13) Uiso d . 1 . . H
+C5 .31718(12) -.2021(2) .14553(13) .0283(3) Uani d . 1 . . C
+H8 .3442 -.3461 .1141 .0342(13) Uiso d . 1 . . H
+H9 .3331 -.0735 .0933 .0342(13) Uiso d . 1 . . H
+C6 .17490(11) -.2146(2) .12337(11) .0227(3) Uani d . 1 . . C
+H10 .1256 -.2242 .0276 .0342(13) Uiso d . 1 . . H
+H11 .1568 -.3544 .1660 .0342(13) Uiso d . 1 . . H
+C21 .15627(11) .2162(2) .38344(11) .0204(3) Uani d . 1 . . C
+loop_
+_atom_site_aniso_label
+_atom_site_aniso_U_11
+_atom_site_aniso_U_22
+_atom_site_aniso_U_33
+_atom_site_aniso_U_12
+_atom_site_aniso_U_13
+_atom_site_aniso_U_23
+O21 .0283(4) .0240(5) .0351(5) .0079(4) .0170(4) .0049(4)
+O22 .0577(7) .0307(6) .0238(5) .0092(4) .0196(4) -.0037(4)
+N1 .0182(5) .0180(5) .0171(5) -.0004(3) .0069(4) .0001(3)
+C2 .0199(5) .0196(6) .0156(5) .0022(4) .0075(4) .0004(4)
+C3 .0181(6) .0320(7) .0251(6) .0014(5) .0067(4) -.0073(5)
+C4 .0222(6) .0398(8) .0320(7) .0099(5) .0088(5) -.0073(6)
+C5 .0279(6) .0325(7) .0287(7) .0041(5) .0151(5) -.0059(5)
+C6 .0262(6) .0214(6) .0218(6) .0001(5) .0100(5) -.0045(4)
+C21 .0217(5) .0178(6) .0254(6) -.0009(4) .0128(4) -.0021(4)
+loop_
+_atom_type_symbol
+_atom_type_description
+_atom_type_scat_dispersion_real
+_atom_type_scat_dispersion_imag
+_atom_type_scat_source
+C C .0033 .0016 'International Tables Vol C Tables 4.2.6.8 and 6.1.1.4'
+H H .0000 .0000 'International Tables Vol C Tables 4.2.6.8 and 6.1.1.4'
+N N .0061 .0033 'International Tables Vol C Tables 4.2.6.8 and 6.1.1.4'
+O O .0106 .0060 'International Tables Vol C Tables 4.2.6.8 and 6.1.1.4'
+loop_
+_geom_angle_atom_site_label_1
+_geom_angle_atom_site_label_2
+_geom_angle_atom_site_label_3
+_geom_angle
+C2 N1 C6 111.59(9)
+N1 C2 C3 109.20(9)
+N1 C2 C21 111.37(9)
+C3 C2 C21 112.00(10)
+C2 C3 C4 110.00(10)
+C5 C4 C3 110.54(10)
+C6 C5 C4 111.61(10)
+N1 C6 C5 110.22(9)
+O22 C21 O21 127.42(11)
+O22 C21 C2 114.85(10)
+O21 C21 C2 117.72(10)
+loop_
+_geom_bond_atom_site_label_1
+_geom_bond_atom_site_label_2
+_geom_bond_site_symmetry_2
+_geom_bond_distance
+_geom_bond_publ_flag
+O21 C21 . 1.2508(15) ?
+O22 C21 . 1.2468(15) ?
+N1 C2 . 1.4891(15) ?
+N1 C6 . 1.4943(15) ?
+C2 C3 . 1.5234(16) ?
+C2 C21 . 1.5309(15) ?
+C3 C4 . 1.5305(18) ?
+C4 C5 . 1.5216(18) ?
+C5 C6 . 1.5210(16) ?
+loop_
+_geom_hbond_atom_site_label_D
+_geom_hbond_atom_site_label_H
+_geom_hbond_atom_site_label_A
+_geom_hbond_site_symmetry_A
+_geom_hbond_distance_DH
+_geom_hbond_distance_HA
+_geom_hbond_distance_DA
+_geom_hbond_angle_DHA
+_geom_hbond_publ_flag
+N1 H1 O22 4_565 0.92 1.90 2.7672(17) 157 yes
+N1 H2 O21 2_545 0.92 1.83 2.7005(17) 156 yes
+loop_
+_cod_related_entry_id
+_cod_related_entry_database
+_cod_related_entry_code
+1 ChemSpider 826
+2 PubChem 6931663
