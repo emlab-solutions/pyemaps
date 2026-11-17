@@ -39,8 +39,9 @@ The extended 4D-STEM features need a license:
 - Annular bright and dark field images
 - Masked images
 
-Reading experimental patterns is free: TIFF and Gatan DigitalMicrograph (`.dm3`, `.dm4`)
-files, single images, stacks and 4D-STEM scans, with no other package, and EMD files from Thermo Fisher Velox or in the Berkeley EMD format,
+Reading experimental patterns is free: TIFF, Gatan DigitalMicrograph (`.dm3`, `.dm4`), MRC,
+Quantum Detectors Merlin (`.mib`), PNG, BMP, JPEG and NumPy files, single images, stacks and
+4D-STEM scans, with no other package, and EMD files from Thermo Fisher Velox or in the Berkeley EMD format,
 including py4DSTEM's 4D-STEM datacubes, with `pip install "pyemaps[emd]"`.
 
 ## Requirements

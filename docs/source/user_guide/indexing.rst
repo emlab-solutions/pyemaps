@@ -141,6 +141,32 @@ or 32 and 64-bit floats.
    img = read_image('pattern.dm3')
    print(img.axes[0], img.metadata['high_voltage_kV'])
 
+Images from MRC, Merlin and other files
+---------------------------------------
+
+pyEMAPS also reads these formats itself, with no other package:
+
+- **MRC** (``.mrc``, ``.mrcs``, ``.st``), the open MRC2014 standard: images and stacks from 3D
+  electron diffraction (MicroED), SerialEM, Direct Electron cameras and Thermo Fisher software.
+  Each section is a pattern. The pixel size, in Å, comes from the header when it's set.
+- **Quantum Detectors Merlin** (``.mib``): 4D-STEM frames from Medipix3 detectors, single-chip
+  or quad, in counting mode. Merlin files don't record the scan shape, so give it with
+  *scan_shape*. The settings in the ``.hdr`` file next to the ``.mib`` (counter depth, chip
+  mode …) are in :py:attr:`metadata <pyemaps.expimage.ExperimentalImage.metadata>` under
+  ``hdr``. Raw-mode (R64) files aren't supported; save in counting mode.
+- **PNG, BMP and JPEG** pictures, 8 or 16-bit grayscale. RGB pictures whose channels are all
+  equal are read as grayscale; colour pictures are refused. JPEG is lossy: fine for a quick
+  look, not for measurements.
+- **NumPy arrays** saved with ``numpy.save`` (``.npy``): 2-D for one pattern, 3-D for a series,
+  4-D for a scan (scan rows, scan columns, rows, columns).
+
+.. code-block:: python
+
+   from pyemaps import StackImage
+
+   scan = StackImage.from_file('scan.mib', scan_shape=(256, 256), scan_roi=(0, 0, 32, 32))
+   series = StackImage.from_file('tilt_series.mrc')
+
 Images from EMD files
 ---------------------
 

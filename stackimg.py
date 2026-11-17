@@ -304,7 +304,7 @@ class StackImage():
         Create an image from an image file in any format that
         :py:func:`~pyemaps.expimage.read_image` reads: TIFF (``.tif``, ``.tiff``), a single
         pattern or a multi-page stack such as a 4D-STEM scan; Gatan DigitalMicrograph (``.dm3``,
-        ``.dm4``); EMD (``.emd``) from Thermo Fisher
+        ``.dm4``); MRC; Quantum Detectors Merlin (``.mib``); PNG, BMP, JPEG and NumPy; EMD (``.emd``) from Thermo Fisher
         Velox or in the Berkeley EMD format, such as py4DSTEM's 4D-STEM datacubes (these need
         ``pip install "pyemaps[emd]"``); and pyEMAPS' own ``.im3``.
 
@@ -328,10 +328,11 @@ class StackImage():
             ``(first, count)`` for a series.
         :type scan_roi: tuple of int, optional
         :param scan_shape: the scan shape, ``(rows, columns)``, for a stack whose file doesn't
-            record it, such as an ImageJ stack. See :py:func:`~pyemaps.expimage.read_image`.
+            record it, such as an ImageJ stack or a Merlin file. See
+            :py:func:`~pyemaps.expimage.read_image`.
         :type scan_shape: tuple of int, optional
-        :param reader: ``'TIFF'``, ``'DM'``, ``'EMD'`` or ``'pyEMAPS'``, to use that reader
-            whatever the file's extension.
+        :param reader: the reader to use whatever the file's extension, such as ``'TIFF'`` or
+            ``'MRC'``; see :py:func:`~pyemaps.expimage.image_readers`.
         :type reader: str, optional
         :param dataset: for a DigitalMicrograph or EMD file with several images, the one to
             read; see :py:func:`~pyemaps.expimage.read_image`.
@@ -1053,8 +1054,8 @@ class StackImage():
                 reader = None,
                 dataset = None):
         """
-        Convert a raw image file, a numpy image, or a TIFF, DigitalMicrograph or EMD file to
-        pyEMAPS' small-header format (``.im3``).
+        Convert a raw image file, a numpy image, or any image file
+        :py:func:`~pyemaps.expimage.read_image` reads, to pyEMAPS' small-header format (``.im3``).
 
         The stem4d module needs auxiliary images, such as the masks for
         :py:meth:`~pyemaps.stackimg.StackImage.generateMaskedImage`, in this format. See the sample

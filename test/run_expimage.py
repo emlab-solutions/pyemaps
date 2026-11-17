@@ -23,6 +23,12 @@ What it checks:
   first or last, a crop of a real 4D-STEM file (CC BY 4.0) with its microscope settings;
   thumbnails skipped; spectrum images, RGB, truncated and fake files refused; image choice,
   scan_roi and closed files.
+- MRC, Merlin (.mib), picture (PNG, BMP, JPEG) and NumPy files in imgdata/ (see
+  imgdata/make_fixtures.py): MRC written by mrcfile (5 modes, big-endian, extended header,
+  volume), Merlin single and quad frames in 3 pixel types plus real frames (CC BY 4.0),
+  grayscale pictures (8/16-bit, RGB with equal channels, gray palette), 2-D/3-D/4-D arrays;
+  complex MRC, raw Merlin, colour and 1-bit pictures and 1-D arrays refused; truncated files;
+  Merlin scan_shape, .hdr settings, scan_roi and closed files.
 - EMD files in emddata/ (see emddata/make_fixtures.py): Velox series with their settings, a
   real Velox image (CC BY 4.0) whose orientation matches Velox's thumbnail, Berkeley EMD 1.0
   and 0.2, py4DSTEM datacubes with calibration; dataset choice, scan_roi, binning, refused
@@ -253,12 +259,12 @@ def c_alimg():
     assert np.array_equal(read_image(DATA / 'al.tif').data[0], ref), 'al.tif differs from al.img'
 
 
-@check('image_readers lists TIFF, DM, EMD and pyEMAPS')
+@check('image_readers lists TIFF, DM, EMD, MRC, MIB, PICTURE, NPY and pyEMAPS')
 def c_readers():
     from pyemaps import image_readers
     names = dict(image_readers())
-    assert names == {'TIFF': ['tif', 'tiff'], 'DM': ['dm3', 'dm4'], 'EMD': ['emd'],
-                     'pyEMAPS': ['im3', 'img']}, names
+    assert set(names) == {'TIFF', 'DM', 'EMD', 'MRC', 'MIB', 'PICTURE', 'NPY', 'pyEMAPS'}, names
+    assert names['MRC'] == ['mrc', 'mrcs', 'st'] and names['MIB'] == ['mib'], names
     return str(names)
 
 
@@ -351,6 +357,98 @@ def c_dm_options(tmp):
     read_image(copy, scan_roi=(0, 0, 1, 2))
     os.remove(copy)
     return 'overview by name; scan_roi (2, 2) from (3, 4); datacube with pattern axes last'
+
+
+# ------------------------------------------------------------------ MRC, Merlin, pictures, NumPy
+
+IMG = HERE / 'imgdata'
+IMG_MANIFEST = json.loads((IMG / 'manifest.json').read_text(encoding='utf-8'))['files']
+IMG_EXPECTED = np.load(IMG / 'expected.npz')
+IMG_GOOD = sorted(n for n, m in IMG_MANIFEST.items() if 'error' not in m)
+IMG_BAD = sorted(n for n, m in IMG_MANIFEST.items() if 'error' in m)
+IMG_READER = {'.mrc': 'MRC', '.mrcs': 'MRC', '.mib': 'MIB', '.png': 'PICTURE', '.bmp': 'PICTURE',
+              '.jpg': 'PICTURE', '.npy': 'NPY'}
+
+
+@check(f'{len(IMG_GOOD)} MRC, Merlin, picture and NumPy files read exactly, with scan shape, '
+       'calibration and metadata')
+def c_img_good():
+    from pyemaps import read_image
+    problems, readers = [], set()
+    for name in IMG_GOOD:
+        m, want = IMG_MANIFEST[name], IMG_EXPECTED[name]
+        try:
+            img = read_image(IMG / name)
+            conv = as_read_image(want)
+            if img.data.dtype != conv.dtype or not np.array_equal(img.data, conv):
+                problems.append(f'{name}: pixels differ ({img.data.shape} {img.data.dtype})')
+            expect_reader = IMG_READER[os.path.splitext(name)[1]]
+            if list(img.scan_shape) != m['scan_shape'] or img.reader != expect_reader:
+                problems.append(f'{name}: scan {img.scan_shape}, reader {img.reader}')
+            for k, ax in enumerate(m['axes']):
+                for key, v in ax.items():
+                    got = img.axes[k][key]
+                    same = np.isclose(got, v, rtol=1e-6) if isinstance(v, float) else got == v
+                    if not same:
+                        problems.append(f'{name}: axis {k} {key} {got!r}, expected {v!r}')
+            for key, v in m['meta'].items():
+                if img.metadata.get(key) != v:
+                    problems.append(f'{name}: metadata {key} {img.metadata.get(key)!r}, expected {v!r}')
+            readers.add(img.reader)
+        except Exception as e:
+            problems.append(f'{name}: {type(e).__name__}: {e}')
+    assert not problems, '; '.join(problems)
+    return 'readers ' + ', '.join(sorted(readers))
+
+
+@check(f'{len(IMG_BAD)} MRC, Merlin, picture and NumPy files to refuse raise ValueError saying '
+       'why; truncated MRC and Merlin files too')
+def c_img_bad(tmp):
+    from pyemaps import read_image
+    problems = []
+    for name in IMG_BAD:
+        words = IMG_MANIFEST[name]['error']
+        try:
+            read_image(IMG / name)
+            problems.append(f'{name}: not refused')
+        except ValueError as e:
+            if not all(w in str(e) for w in words):
+                problems.append(f'{name}: message lacks {words}: {e}')
+    for name in ('mrc_int16.mrc', 'mib_u16.mib'):
+        src = (IMG / name).read_bytes()
+        cut = os.path.join(tmp, 'cut_' + name)
+        Path(cut).write_bytes(src[:len(src) - 100])
+        try:
+            read_image(cut)
+            problems.append(f'truncated {name}: not refused')
+        except ValueError as e:
+            if 'truncated' not in str(e):
+                problems.append(f'truncated {name}: {e}')
+    assert not problems, '; '.join(problems)
+
+
+@check('Merlin scan_shape and scan_roi, the .hdr settings, MRC and NumPy scan_roi, closed files')
+def c_img_options(tmp):
+    from pyemaps import read_image
+    frames = IMG_EXPECTED['mib_u16.mib']                         # 6 frames
+    img = read_image(IMG / 'mib_u16.mib', scan_shape=(2, 3), scan_roi=(0, 1, 2, 2))
+    assert img.scan_shape == (2, 2) and np.array_equal(img.data, as_read_image(frames[[1, 2, 4, 5]]))
+    hdr = read_image(IMG / 'mib_quad.mib').metadata['hdr']
+    assert hdr.get('Counter Depth (number)') == '12', hdr
+    stack = IMG_EXPECTED['mrc_int16.mrc']
+    img = read_image(IMG / 'mrc_int16.mrc', scan_roi=(1, 2))
+    assert np.array_equal(img.data, stack[1:3])
+    scan = IMG_EXPECTED['npy_scan.npy']                          # 2 x 3 scan
+    img = read_image(IMG / 'npy_scan.npy', scan_roi=(0, 1, 2, 1))
+    assert img.scan_shape == (2, 1) and np.array_equal(img.data, as_read_image(scan[[1, 4]]))
+    raises(ValueError, lambda: read_image(IMG / 'mrc_int16.mrc', dataset=0), 'dataset is for')
+    for name in ('mib_u16.mib', 'mrc_int16.mrc', 'npy_scan.npy', 'pic_gray16.png'):
+        copy = os.path.join(tmp, 'closed_' + name)
+        shutil.copy(IMG / name, copy)
+        read_image(copy)
+        gc.collect()
+        os.remove(copy)
+    return 'Merlin scan (2, 2) from (2, 3); .hdr Counter Depth 12; files closed'
 
 
 # ------------------------------------------------------------------ EMD files (need h5py)
@@ -577,6 +675,9 @@ def main():
         c_dm_good()
         c_dm_bad(tmp)
         c_dm_options(tmp)
+        c_img_good()
+        c_img_bad(tmp)
+        c_img_options(tmp)
         if have_h5py():
             c_emd_good()
             c_emd_bad()
