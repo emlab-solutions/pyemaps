@@ -411,7 +411,7 @@ def loadCrystalCIFData(fn):
     The space group is matched against pyEMAPS' space group database, from the symmetry
     operators, the Hermann-Mauguin symbol or the space group number in the file.
     """
-    from .CifFile import ReadCif
+    from .cifreader import read_cif, CifSyntaxError
 
     SPG_NUMBER_CIFKEY=['_symmetry_Int_Tables_number', 
                         '_symmetry_IT_number',
@@ -428,16 +428,15 @@ def loadCrystalCIFData(fn):
         if not os.path.exists(cfn):
             raise CIFError(cfn, 'file not found')
     
-    cf = None
     try:
-        cf =  ReadCif(cfn)
-    except IOError as e:
+        blocks = read_cif(cfn)
+    except (OSError, CifSyntaxError) as e:
         raise CIFError(cfn, str(e)) from e
 
-    if len(cf.keys()) == 0:
+    if len(blocks) == 0:
         raise CIFError(cfn, 'missing required data keys')
 
-    name = cf.keys()[0]
+    name = blocks[0].name
     if not isinstance(name, str) or len(name) == 0:
         raise CIFError(cfn, 'missing required data name')
 
@@ -446,7 +445,7 @@ def loadCrystalCIFData(fn):
 
     cell = {}
     
-    c_dict = cf[name]
+    c_dict = blocks[0]
     
     if '_cell_length_a' not in c_dict or \
         '_cell_length_b' not in c_dict or \

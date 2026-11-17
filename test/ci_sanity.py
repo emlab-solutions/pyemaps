@@ -31,6 +31,7 @@ SUITES = [
     ('unittests', 'run_unittests.py', r'Unit tests SUCCEEDED', 1),
     ('switching', 'run_crystal_switch.py', r'Crystal switching checks SUCCEEDED', 1),
     ('images', 'run_expimage.py', r'Image reading checks SUCCEEDED', 1),
+    ('cif', 'run_cifreader.py', r'CIF reader checks SUCCEEDED', 1),
 ]
 FAILURE = re.compile(r'FAILED|There are failures|does not compare with baseline|'
                      r'Failed to load|test failed|Traceback', re.IGNORECASE)
