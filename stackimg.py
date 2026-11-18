@@ -976,13 +976,13 @@ class StackImage():
         ``OM_FEW_PEAKS`` or ``OM_FAILED`` in the map. Judge the indexed ones by their
         reliability index (above 5.0 means the indexing succeeded), as for *indexImage*.
 
-        The best scaling depends on the data, so try more than one on a few patterns. On
-        simulated patterns of Aluminium and Silicon, with their intensities randomly changed as
-        dynamical diffraction changes them, ``(2, 2)`` and ``(5, 5)`` found the right orientation
-        for 75 to 80% of the patterns and ``(1, 2)`` for 25 to 30%. On a real precession
-        (SPED) scan of LiNiO2, compared with an independent orientation map, all three agreed
-        for 28 to 38% of the patterns, ``(1, 2)`` the most. The reliability index depends on
-        the settings and the data, so compare it only between maps made the same way.
+        The best scaling depends on the data, so try more than one on a few patterns, and check
+        the map against patterns you can index by hand. On simulated patterns of Aluminium and
+        Silicon, with their intensities randomly changed as dynamical diffraction changes them,
+        ``(2, 2)`` and ``(5, 5)`` found the right orientation for 75 to 80% of the patterns and
+        ``(1, 2)`` for 25 to 30%. Orientation mapping hasn't yet been validated against an
+        independent map of real data. The reliability index depends on the settings and the
+        data, so compare it only between maps made the same way.
         """
         import time
         from .orientmap import (OrientationMap, _DatabaseGeometry, OM_INDEXED,

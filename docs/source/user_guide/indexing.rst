@@ -228,13 +228,13 @@ Indexing takes about a second per pattern, so a 64 x 64 scan takes over an hour.
 a large scan with *scan_roi*. Pressing Ctrl+C stops the run and returns the patterns done so far.
 
 The best *scaling_option* and *peak_threshold* depend on the data, so try a few on some patterns
-first. ``(2, 2)`` compares intensities on a logarithmic scale, and ``(5, 5)`` compares peak
-positions only. On simulated patterns of Aluminium and Silicon, with their intensities randomly
-changed as dynamical diffraction changes them, both found the right orientation for 75 to 80% of
-the patterns, against 25 to 30% for the default ``(1, 2)``. On a real precession (SPED) scan of
-LiNiO\ :sub:`2`, compared with an independent orientation map, all three agreed for 28 to 38% of
-the patterns, ``(1, 2)`` the most. The reliability index depends on the settings and the data,
-so compare it only between maps made the same way.
+first, and check the map against patterns you can index by hand. ``(2, 2)`` compares intensities
+on a logarithmic scale, and ``(5, 5)`` compares peak positions only. On simulated patterns of
+Aluminium and Silicon, with their intensities randomly changed as dynamical diffraction changes
+them, both found the right orientation for 75 to 80% of the patterns, against 25 to 30% for the
+default ``(1, 2)``. Orientation mapping hasn't yet been validated against an independent map of
+real data. The reliability index depends on the settings and the data, so compare it only
+between maps made the same way.
 
 The map holds, for each pattern:
 
