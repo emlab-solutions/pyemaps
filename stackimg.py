@@ -917,7 +917,7 @@ class StackImage():
                        img_center              = DEF_ICENTER,
                        rmin                    = DEF_RMIN,
                        search_box              = DEF_BOXSIZE,
-                       scaling_option          = (2, 2),
+                       scaling_option          = (DEF_XSCALE, DEF_TSCALE),
                        filter_threshold        = DEF_FILTER_THRESHOLD,
                        peak_threshold          = DEF_SEARCH_THRESHOLD,
                        scan_shape              = None,
@@ -944,9 +944,9 @@ class StackImage():
         :param search_box: size of the peak search box, in pixels.
         :type search_box: float, optional
         :param scaling_option: how the experimental and the database pattern intensities are
-            scaled for matching: two integers, each 0 to 5, not both 0. The default, ``(2, 2)``,
-            compares both on a logarithmic scale; ``(5, 5)`` compares peak positions only. Both
-            index far more patterns correctly than *indexImage*'s default ``(1, 2)``; see below.
+            scaled for matching: two integers, each 0 to 5, not both 0. The default is
+            *indexImage*'s, ``(1, 2)``. ``(2, 2)`` compares both on a logarithmic scale and
+            ``(5, 5)`` peak positions only; see below.
         :type scaling_option: tuple of int, optional
         :param filter_threshold: screening threshold for the database patterns, from 0.0 to
             1.0. Use 0 to search all of them.
@@ -976,12 +976,13 @@ class StackImage():
         ``OM_FEW_PEAKS`` or ``OM_FAILED`` in the map. Judge the indexed ones by their
         reliability index (above 5.0 means the indexing succeeded), as for *indexImage*.
 
-        The scaling matters. Tested on the database's own patterns of Aluminium and Silicon,
-        drawn at random rotations, with their intensities randomly changed as dynamical
-        diffraction changes them, ``(2, 2)`` and ``(5, 5)`` found the right orientation for
-        75 to 80% of the patterns, and ``(1, 2)`` for 25 to 30%; almost every pattern with a
-        reliability index above 5.0 was right. The reliability index itself depends on the
-        settings, so compare it between maps made with the same ones.
+        The best scaling depends on the data, so try more than one on a few patterns. On
+        simulated patterns of Aluminium and Silicon, with their intensities randomly changed as
+        dynamical diffraction changes them, ``(2, 2)`` and ``(5, 5)`` found the right orientation
+        for 75 to 80% of the patterns and ``(1, 2)`` for 25 to 30%. On a real precession
+        (SPED) scan of LiNiO2, compared with an independent orientation map, all three agreed
+        for 28 to 38% of the patterns, ``(1, 2)`` the most. The reliability index depends on
+        the settings and the data, so compare it only between maps made the same way.
         """
         import time
         from .orientmap import (OrientationMap, _DatabaseGeometry, OM_INDEXED,

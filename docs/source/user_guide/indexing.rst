@@ -209,8 +209,7 @@ Orientation maps
 :py:meth:`StackImage.mapOrientation <pyemaps.stackimg.StackImage.mapOrientation>` indexes every
 pattern of a scan against a database, and returns the crystal orientation at each scan point as
 an :py:class:`~pyemaps.orientmap.OrientationMap`. It takes the same parameters as
-*indexImage*, so try them on a few patterns with *indexImage* first, with the same
-*scaling_option*:
+*indexImage*, so try them on a few patterns with *indexImage* first:
 
 .. code-block:: python
 
@@ -228,13 +227,14 @@ an :py:class:`~pyemaps.orientmap.OrientationMap`. It takes the same parameters a
 Indexing takes about a second per pattern, so a 64 x 64 scan takes over an hour. Read part of
 a large scan with *scan_roi*. Pressing Ctrl+C stops the run and returns the patterns done so far.
 
-*mapOrientation* compares intensities on a logarithmic scale by default, ``scaling_option=(2,
-2)``; ``(5, 5)`` compares peak positions only. Tested on the database's own patterns of
-Aluminium and Silicon at random rotations, with their intensities randomly changed as dynamical
-diffraction changes them, both found the right orientation for 75 to 80% of the patterns,
-against 25 to 30% for ``(1, 2)``, *indexImage*'s default. A lower *peak_threshold*, such as 0.5,
-also helps. The reliability index depends on these settings, so compare it only between maps
-made with the same ones.
+The best *scaling_option* and *peak_threshold* depend on the data, so try a few on some patterns
+first. ``(2, 2)`` compares intensities on a logarithmic scale, and ``(5, 5)`` compares peak
+positions only. On simulated patterns of Aluminium and Silicon, with their intensities randomly
+changed as dynamical diffraction changes them, both found the right orientation for 75 to 80% of
+the patterns, against 25 to 30% for the default ``(1, 2)``. On a real precession (SPED) scan of
+LiNiO\ :sub:`2`, compared with an independent orientation map, all three agreed for 28 to 38% of
+the patterns, ``(1, 2)`` the most. The reliability index depends on the settings and the data,
+so compare it only between maps made the same way.
 
 The map holds, for each pattern:
 
