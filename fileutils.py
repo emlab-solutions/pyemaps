@@ -205,6 +205,16 @@ HM_RX = re.compile(HM_CORE_PATTERN, re.VERBOSE)
 def _float_eq(a,b):
     return abs(a-b) < 0.000001
 
+# isotropic U, under its standard name and a variant some programs write
+U_ISO_KEYS = ('_atom_site_U_iso_or_equiv', '_atom_site_Uiso_or_equiv')
+ANISO_KEYS = ('11', '22', '33', '12', '13', '23')
+
+
+def _as_list(v):
+    '''A CIF value as a list: a looped value already is one; a single value becomes [value].'''
+    return v if isinstance(v, list) else [v]
+
+
 def _getCIFFloats(sArr, fillval=0.0):
     '''
     input sArr: dictionary string array from CIF file
@@ -501,27 +511,27 @@ def loadCrystalCIFData(fn):
     atlabels=[]
     
     if '_atom_site_type_symbol' in c_dict:
-        atlabels = c_dict['_atom_site_type_symbol']
+        atlabels = _as_list(c_dict['_atom_site_type_symbol'])
         
     else:
-        atlabels = c_dict['_atom_site_label']
+        atlabels = _as_list(c_dict['_atom_site_label'])
         
 
     at_len = len(atlabels)
 
-    xs = c_dict['_atom_site_fract_x']
+    xs = _as_list(c_dict['_atom_site_fract_x'])
     if not xs and len(xs) != at_len:
         raise CIFError(cfn, 'invalid unit cell value for _atom_site_fract_x')
         
     xx = _getCIFFloats(xs)
 
-    ys = c_dict['_atom_site_fract_y']
+    ys = _as_list(c_dict['_atom_site_fract_y'])
     if not ys and len(ys) != at_len:
         raise CIFError(cfn, 'invalid unit cell value for _atom_site_fract_y')
         
     yy = _getCIFFloats(ys)
 
-    zs = c_dict['_atom_site_fract_z']
+    zs = _as_list(c_dict['_atom_site_fract_z'])
     if not zs and len(zs) != at_len:
         raise CIFError(cfn, 'invalid unit cell value for _atom_site_fract_z')
         
@@ -530,121 +540,56 @@ def loadCrystalCIFData(fn):
     # Occupancy data
     occ = [1.0]*at_len
     if '_atom_site_occupancy' in c_dict:
-        occ_raw = _getCIFFloats(c_dict['_atom_site_occupancy'])
+        occ_raw = _getCIFFloats(_as_list(c_dict['_atom_site_occupancy']))
         if not occ_raw or len(occ_raw) != at_len:
             raise CIFError(cfn, 'invalid unit cell value for _atom_site_occupancy')
         occ = occ_raw
 
     atoms = [dict(symb=atlabels[i], x=xx[i], y=yy[i], z=zz[i], occ=occ[i]) for i in range(at_len)]
 
+    # Displacement parameters. Each atom starts from its isotropic value in the atom site
+    # table; an anisotropic table, which often lists only some atoms (no hydrogens, for
+    # example), then replaces the values of the atoms it lists, matched by label.
+    u_iso_key = next((k for k in U_ISO_KEYS if k in c_dict), None)
+    aniso_u = [k for k in ANISO_KEYS if f'_atom_site_aniso_U_{k}' in c_dict]
+    aniso_b = [k for k in ANISO_KEYS if f'_atom_site_aniso_B_{k}' in c_dict]
+
     if '_atom_site_aniso_label' in c_dict:
-        if '_atom_site_aniso_U_11' not in c_dict and \
-            '_atom_site_aniso_U_22' not in c_dict and \
-            '_atom_site_aniso_U_33' not in c_dict and \
-            '_atom_site_aniso_U_12' not in c_dict and \
-            '_atom_site_aniso_U_13' not in c_dict and \
-            '_atom_site_aniso_U_23' not in c_dict and \
-            '_atom_site_aniso_B_11' not in c_dict and \
-            '_atom_site_aniso_B_22' not in c_dict and \
-            '_atom_site_aniso_B_33' not in c_dict and \
-            '_atom_site_aniso_B_12' not in c_dict and \
-            '_atom_site_aniso_B_13' not in c_dict and \
-            '_atom_site_aniso_B_23' not in c_dict:
+        if not aniso_u and not aniso_b:
             raise CIFError(cfn, 'missing required unit cell keys such as _atom_site_aniso_U_NN or _atom_site_aniso_B_NN')
-        
+        dw = 'uij' if aniso_u else 'bij'
+        letter, comps = ('U', aniso_u) if aniso_u else ('B', aniso_b)
+        iso_key = u_iso_key if letter == 'U' else (
+            '_atom_site_B_iso_or_equiv' if '_atom_site_B_iso_or_equiv' in c_dict else None)
+        iso = _getCIFFloats(_as_list(c_dict[iso_key])) if iso_key else [0.0] * at_len
+        if len(iso) != at_len:
+            iso = [0.0] * at_len
         for i in range(at_len):
-            atoms[i]['b11'] = 0.0
-            atoms[i]['b22'] = 0.0
-            atoms[i]['b33'] = 0.0
-            atoms[i]['b12'] = 0.0
-            atoms[i]['b13'] = 0.0
-            atoms[i]['b23'] = 0.0
+            atoms[i]['b11'] = atoms[i]['b22'] = atoms[i]['b33'] = iso[i]
+            atoms[i]['b12'] = atoms[i]['b13'] = atoms[i]['b23'] = 0.0
 
-        if '_atom_site_aniso_U_11' in c_dict:
-            dw = 'uij'
-            u11 = _getCIFFloats(c_dict['_atom_site_aniso_U_11'])
+        aniso_labels = _as_list(c_dict['_atom_site_aniso_label'])
+        site_labels = _as_list(c_dict['_atom_site_label']) if '_atom_site_label' in c_dict else None
+        values = {k: _getCIFFloats(_as_list(c_dict[f'_atom_site_aniso_{letter}_{k}']))
+                  for k in comps}
+        for r, label in enumerate(aniso_labels):
+            if site_labels is None:
+                i = r                       # no site labels to match: same order assumed
+            elif label in site_labels:
+                i = site_labels.index(label)
+            else:
+                print(f'Warning: anisotropic displacement parameters for {label}, which isn\'t '
+                      'in the atom site list, are ignored')
+                continue
+            if i >= at_len:
+                continue
+            for k in comps:
+                if r < len(values[k]):
+                    atoms[i]['b' + k] = values[k][r]
 
-            for i, uf11 in enumerate(u11):
-                atoms[i]['b11'] = uf11
-        
-        if '_atom_site_aniso_U_22' in c_dict:
-            dw = 'uij'
-            u22 = _getCIFFloats(c_dict['_atom_site_aniso_U_22'])
-
-            for i, uf22 in enumerate(u22):
-                atoms[i]['b22'] = uf22
-
-        if '_atom_site_aniso_U_33' in c_dict:
-            dw = 'uij'
-            u33 = _getCIFFloats(c_dict['_atom_site_aniso_U_33'])
-            for i, uf33 in enumerate(u33):
-                atoms[i]['b33'] = uf33
-        
-        if '_atom_site_aniso_U_12' in c_dict:
-            dw = 'uij'
-            u12 = _getCIFFloats(c_dict['_atom_site_aniso_U_12'])
-
-            for i, uf12 in enumerate(u12):
-                atoms[i]['b12'] = uf12
-    
-        if '_atom_site_aniso_U_13' in c_dict:
-            dw = 'uij'
-            u13 = _getCIFFloats(c_dict['_atom_site_aniso_U_13'])
-            for i, uf13 in enumerate(u13):
-                atoms[i]['b13'] = uf13
-
-        if '_atom_site_aniso_U_23' in c_dict:
-            dw = 'uij'
-            u23 = _getCIFFloats(c_dict['_atom_site_aniso_U_23'])
-            for i, uf23 in enumerate(u23):
-                atoms[i]['b23'] = uf23
-
-        if '_atom_site_aniso_B_11' in c_dict:
-            b11 = [0.0]*at_len
-            dw = 'bij'
-            b11 = _getCIFFloats(c_dict['_atom_site_aniso_B_11'])
-            for i, bf11 in enumerate(b11):
-                atoms[i]['b11'] = bf11
-        
-        if '_atom_site_aniso_B_22' in c_dict:
-            b22 = [0.0]*at_len
-            dw = 'bij'
-            b22 = _getCIFFloats(c_dict['_atom_site_aniso_B_22'])
-            for i, bf22 in enumerate(b22):
-                atoms[i]['b22'] = bf22
-            
-        if '_atom_site_aniso_B_33' in c_dict:
-            b33 = [0.0]*at_len
-            dw = 'bij'
-            b33 = _getCIFFloats(c_dict['_atom_site_aniso_B_33'])
-            for i, bf33 in enumerate(b33):
-                atoms[i]['b33'] = bf33
-        
-        if '_atom_site_aniso_B_12' in c_dict:
-            b12 = [0.0]*at_len
-            dw = 'bij'
-            b12 = _getCIFFloats(c_dict['_atom_site_aniso_B_12'])
-            for i, bf12 in enumerate(b12):
-                atoms[i]['b12'] = bf12
-        
-        if '_atom_site_aniso_B_13' in c_dict:
-            b13 = [0.0]*at_len
-            dw = 'bij'
-            b13 = _getCIFFloats(c_dict['_atom_site_aniso_B_13'])
-            for i, bf13 in enumerate(b13):
-                atoms[i]['b13'] = bf13
-
-        if '_atom_site_aniso_B_23' in c_dict:
-            b23 = [0.0]*at_len
-            dw = 'bij'
-            b23 = _getCIFFloats(c_dict['_atom_site_aniso_B_23'])
-            for i, bf23 in enumerate(b23):
-                atoms[i]['b23'] = bf23
-        
-    elif '_atom_site_U_iso_or_equiv' in c_dict or '_atom_site_Uiso_or_equiv' in c_dict:
-        
+    elif u_iso_key:
         dw = 'uij'
-        bxx = _getCIFFloats(c_dict['_atom_site_U_iso_or_equiv'])
+        bxx = _getCIFFloats(_as_list(c_dict[u_iso_key]))
         for i, b in enumerate(bxx):
             atoms[i]['b11'] = atoms[i]['b22'] = atoms[i]['b33'] = b
             atoms[i]['b12'] = atoms[i]['b13'] = atoms[i]['b23'] = 0.0
@@ -652,8 +597,8 @@ def loadCrystalCIFData(fn):
 
     elif '_atom_site_B_iso_or_equiv' in c_dict:
         dw = 'iso'
-    
-        d_w = _getCIFFloats(c_dict['_atom_site_B_iso_or_equiv'], 0.05)
+
+        d_w = _getCIFFloats(_as_list(c_dict['_atom_site_B_iso_or_equiv']), 0.05)
         for i, d in enumerate(d_w):
             atoms[i]['d-w'] = d
     else:
@@ -661,7 +606,7 @@ def loadCrystalCIFData(fn):
         dw = 'iso'
         for i in range(at_len):
             atoms[i]['d-w'] = 0.05
-            
+
     vatoms = []
     for at in atoms:  
         symb = at['symb']  
