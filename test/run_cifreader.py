@@ -101,12 +101,73 @@ def c_blocks():
     return 'several blocks; save frames and global_ skipped'
 
 
+CIF2 = '#\\#CIF_2.0\n'
+
+
 def c_cif2():
-    b = parse("#\\#CIF_2.0\ndata_c2\n_a 'it'\n_b '''multi\nline'''\n_c 4\n")[0]
+    b = parse(CIF2 + "data_c2\n_a 'it'\n_b '''multi\nline'''\n_c 4\n_d \"\"\"x\"\"\"\n")[0]
     assert b['_a'] == 'it' and b['_b'] == 'multi\nline' and b['_c'] == '4', b.keys()
-    refused("#\\#CIF_2.0\ndata_c2\n_a 'it's'\n", 'has no data name')   # ends at the 2nd quote
-    refused("#\\#CIF_2.0\ndata_c2\n_a [1 2]\n", 'CIF 2.0 lists')
-    return 'CIF 2.0 quoting and triple quotes; lists refused'
+    assert b['_d'] == 'x'
+    refused(CIF2 + "data_c2\n_a 'it's'\n", 'has no data name')   # ends at the 2nd quote
+    refused(CIF2 + "data_c2\n_a 'open\nnext'\n", 'never closed on its line')
+    return 'quotes end at the next quote, on their line; triple quotes span lines'
+
+
+def c_cif2_lists():
+    from pyemaps.cifreader import CifList, CifTable
+    b = parse(CIF2 + 'data_l\n'
+              "_list [1 2 [3 4] 'five six' ?]\n"
+              '_table {"a":1 \'b\':[x y] "c":{"d":.}}\n'
+              '_multiline [\n  1\n  2 # a comment\n]\n'
+              '_empty [ ]\n_empty_table {}\n'
+              '_tight [[1][2]{"k":v}]\n'
+              '_text\n;\nnot [a list]\n;\n')[0]
+    assert b['_list'] == ('1', '2', ('3', '4'), 'five six', '?'), b['_list']
+    assert isinstance(b['_list'], CifList) and isinstance(b['_list'][2], CifList)
+    assert b['_table'] == {'a': '1', 'b': ('x', 'y'), 'c': {'d': '.'}}, b['_table']
+    assert isinstance(b['_table'], CifTable) and isinstance(b['_table']['c'], CifTable)
+    assert b['_multiline'] == ('1', '2') and b['_empty'] == () and b['_empty_table'] == {}
+    assert b['_tight'] == (('1',), ('2',), {'k': 'v'}), b['_tight']
+    assert b['_text'] == '\nnot [a list]', repr(b['_text'])
+    return 'nested lists and tables, over lines, without spaces; brackets in text fields are text'
+
+
+def c_cif2_loops():
+    b = parse(CIF2 + 'data_l\nloop_\n_k\n_v\nk1 [1 2]\nk2 {"z":0}\nk3 plain\n')[0]
+    assert b['_k'] == ['k1', 'k2', 'k3'], b['_k']
+    assert b['_v'] == [('1', '2'), {'z': '0'}, 'plain'], b['_v']
+    assert isinstance(b['_v'], list) and not isinstance(b['_v'], tuple)
+    return 'lists and tables as looped values; the column is still a plain list'
+
+
+def c_cif2_errors():
+    msgs = [refused(CIF2 + 'data_e\n_a [1 2\n', 'never closed'),
+            refused(CIF2 + 'data_e\n_a {"k":1\n', 'never closed'),
+            refused(CIF2 + 'data_e\n_a {k:1}\n', 'quoted key'),
+            refused(CIF2 + 'data_e\n_a {"k" :1}\n', 'quoted key'),
+            refused(CIF2 + 'data_e\n_a {"k":}\n', 'has no value'),
+            refused(CIF2 + 'data_e\n_a ["k":1]\n', 'in a list'),
+            refused(CIF2 + 'data_e\n_a 1 ]\n', 'never started'),
+            refused(CIF2 + 'data_e\n_a x[1]\n', 'has no data name')]   # "[" ends "x"
+    return f'{len(msgs)} errors, each with its line'
+
+
+def c_cif2_crystal():
+    '''A crystal written in CIF 2.0, with lists elsewhere, reads as its CIF 1.1 twin.'''
+    body = (CELL + 'loop_\n_atom_site_label\n_atom_site_fract_x\n_atom_site_fract_y\n'
+            '_atom_site_fract_z\n_atom_site_U_iso_or_equiv\nFe 0 0 0 0.011\nO 0.5 0.5 0.5 0.022\n')
+    _, cif1, _ = load('data_twin\n' + body)
+    _, cif2, _ = load(CIF2 + 'data_twin\n' + body +
+                      '_audit_conform_dict_list [\'cif_core.dic\' "cif_ms.dic"]\n'
+                      '_extra {"note":"""a CIF 2.0 table"""}\n')
+    assert cif1 == cif2, (cif1, cif2)
+    return 'same crystal data as the CIF 1.1 file'
+
+
+def c_cif1_brackets():
+    b = parse('data_c1\n_a x[1]\n_b [1\n_c {k}\n')[0]           # CIF 1.1: brackets are text
+    assert (b['_a'], b['_b'], b['_c']) == ('x[1]', '[1', '{k}'), b.keys()
+    return 'in CIF 1.1 files, brackets are ordinary characters'
 
 
 def c_errors():
@@ -276,7 +337,12 @@ def main():
                      ('comments', c_comments),
                      ('loops', c_loop),
                      ('several data blocks, save frames, global_', c_blocks),
-                     ('CIF 2.0 files', c_cif2),
+                     ('CIF 2.0 quoting', c_cif2),
+                     ('CIF 2.0 lists and tables', c_cif2_lists),
+                     ('CIF 2.0 lists and tables in loops', c_cif2_loops),
+                     ('CIF 2.0 syntax errors', c_cif2_errors),
+                     ('a CIF 2.0 crystal file', c_cif2_crystal),
+                     ('CIF 1.1 files keep brackets as text', c_cif1_brackets),
                      ('syntax errors are refused with their line', c_errors),
                      ('file encodings', c_file),
                      ('Crystal.from_cif reads a corpus file', c_from_cif),

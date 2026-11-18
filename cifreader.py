@@ -22,12 +22,19 @@ It follows the CIF 1.1 syntax (https://www.iucr.org/resources/cif/spec/version1.
 - ``#`` starts a comment, outside values; ``data_``, ``loop_``, ``save_``, ``global_`` and
   ``stop_`` are reserved words; save frames (dictionaries) and global blocks are skipped.
 
-Files that start with the CIF 2.0 code (``#\\#CIF_2.0``) are read too, with CIF 2.0's quoting
-(a quote ends at the next matching quote) and triple-quoted strings; CIF 2.0 lists and tables
-are refused.
+Files that start with the CIF 2.0 code (``#\\#CIF_2.0``) follow CIF 2.0 (Bernstein et al.,
+J. Appl. Cryst. 49 (2016) 277-284), which changes or adds:
+
+- a single- or double-quoted value ends at the next matching quote, on the same line;
+- triple-quoted values (between three single or three double quotes), which may span lines;
+- lists, ``[value value ...]``, and tables, ``{"key":value ...}`` (quoted keys, each followed
+  directly by ``:``), whose values may be lists and tables in turn, over several lines;
+- ``[``, ``]``, ``{`` and ``}`` can't appear in unquoted values: they end them.
 
 Values are returned as strings, as written (without their delimiters): ``?`` and ``.`` are
-the strings ``'?'`` and ``'.'``. Looped values are lists of strings.
+the strings ``'?'`` and ``'.'``. Looped values are lists of strings. A CIF 2.0 list is a
+:py:class:`CifList` (a tuple) and a table a :py:class:`CifTable` (a dict), so they're never
+mistaken for looped values.
 
 :py:func:`~pyemaps.fileutils.loadCrystalCIFData` uses this module, through
 :py:meth:`Crystal.from_cif <pyemaps.crystals.Crystal.from_cif>`.
@@ -40,6 +47,14 @@ CIF2_MAGIC = '#\\#CIF_2.0'
 
 class CifSyntaxError(ValueError):
     '''A file that doesn't follow the CIF syntax, with the line number and the reason.'''
+
+
+class CifList(tuple):
+    '''A CIF 2.0 list value: its values, which are strings, lists or tables.'''
+
+
+class CifTable(dict):
+    '''A CIF 2.0 table value: its values by key; values are strings, lists or tables.'''
 
 
 class CifBlock:
@@ -113,13 +128,16 @@ def parse_cif(text, source='<string>'):
 # ------------------------------------------------------------------ tokens
 
 TAG, VALUE, WORD = 'tag', 'value', 'word'          # WORD: a reserved word
+KEY = 'key'                                         # a CIF 2.0 table key, with its ":"
+OPENERS = {'[': ']', '{': '}'}
 
 
 def _tokens(text, source):
     '''(kind, text, line number) for every token, comments and whitespace removed.'''
     text = text.replace('\r\n', '\n').replace('\r', '\n')
+    if text.startswith(CIF2_MAGIC):
+        return _tokens_cif2(text, source)
     lines = text.split('\n')
-    cif2 = lines[0].startswith(CIF2_MAGIC) if lines else False
     out = []
     n = 0
     while n < len(lines):
@@ -137,17 +155,15 @@ def _tokens(text, source):
             out.append((VALUE, '\n'.join(body), start + 1))
             rest = lines[n][1:]
             n += 1
-            _line_tokens(rest, n, source, out, cif2)
+            _line_tokens(rest, n, source, out)
             continue
-        if cif2 and ("'''" in line or '"""' in line):
-            n = _triple(lines, n, source, out)
-            continue
-        _line_tokens(line, n + 1, source, out, cif2)
+        _line_tokens(line, n + 1, source, out)
         n += 1
     return out
 
 
-def _line_tokens(line, lineno, source, out, cif2):
+def _line_tokens(line, lineno, source, out):
+    '''CIF 1.1 tokens on one line.'''
     i, size = 0, len(line)
     while i < size:
         c = line[i]
@@ -163,7 +179,7 @@ def _line_tokens(line, lineno, source, out, cif2):
                 if j < 0:
                     raise CifSyntaxError(f'{source}, line {lineno}: a quoted value ({c}) is '
                                          'never closed on its line')
-                if cif2 or j + 1 == size or line[j + 1] in ' \t':
+                if j + 1 == size or line[j + 1] in ' \t':    # CIF 1.1: quote + space ends it
                     break
                 j += 1
             out.append((VALUE, line[i + 1:j], lineno))
@@ -174,9 +190,6 @@ def _line_tokens(line, lineno, source, out, cif2):
             j += 1
         word = line[i:j]
         low = word.lower()
-        if cif2 and c in '[{':
-            raise CifSyntaxError(f'{source}, line {lineno}: CIF 2.0 lists and tables aren\'t '
-                                 'supported')
         if c == '_':
             out.append((TAG, word, lineno))
         elif low.startswith(RESERVED):
@@ -186,29 +199,79 @@ def _line_tokens(line, lineno, source, out, cif2):
         i = j
 
 
-def _triple(lines, n, source, out):
-    '''A CIF 2.0 line with a triple-quoted string, which may run over several lines.'''
-    line = lines[n]
-    for q in ("'''", '"""'):
-        k = line.find(q)
-        if k >= 0:
-            break
-    _line_tokens(line[:k], n + 1, source, out, True)
-    start = n
-    body, rest = line[k + 3:], None
-    while True:
-        e = body.find(q)
-        if e >= 0:
-            value, rest = body[:e], body[e + 3:]
-            break
-        n += 1
-        if n == len(lines):
-            raise CifSyntaxError(f'{source}, line {start + 1}: a triple-quoted value is never '
-                                 'closed')
-        body += '\n' + lines[n]
-    out.append((VALUE, value, start + 1))
-    _line_tokens(rest, n + 1, source, out, True)
-    return n + 1
+def _tokens_cif2(text, source):
+    '''CIF 2.0 tokens, from a character stream: lists, tables and quoted values may span lines.'''
+    out = []
+    i, size, line = 0, len(text), 1
+    at_line_start = True
+    while i < size:
+        c = text[i]
+        if c == '\n':
+            line += 1
+            i += 1
+            at_line_start = True
+            continue
+        if c in ' \t':
+            i += 1
+            at_line_start = False
+            continue
+        if c == ';' and at_line_start:                     # a text field
+            end = text.find('\n;', i)
+            if end < 0:
+                raise CifSyntaxError(f'{source}, line {line}: a text field (";") is never closed')
+            out.append((VALUE, text[i + 1:end], line))
+            line += text.count('\n', i, end + 1)
+            i = end + 2
+            at_line_start = False
+            continue
+        at_line_start = False
+        if c == '#':
+            j = text.find('\n', i)
+            i = size if j < 0 else j
+            continue
+        if text.startswith(("'''", '"""'), i):
+            q = text[i:i + 3]
+            end = text.find(q, i + 3)
+            if end < 0:
+                raise CifSyntaxError(f'{source}, line {line}: a triple-quoted value is never closed')
+            value, start_line = text[i + 3:end], line
+            line += text.count('\n', i, end)
+            i = end + 3
+            i = _string_token(text, i, value, start_line, out)
+            continue
+        if c in '\'"':
+            end = text.find(c, i + 1)
+            nl_at = text.find('\n', i + 1)
+            if end < 0 or (0 <= nl_at < end):
+                raise CifSyntaxError(f'{source}, line {line}: a quoted value ({c}) is never closed '
+                                     'on its line')
+            i = _string_token(text, end + 1, text[i + 1:end], line, out)
+            continue
+        if c in '[]{}':
+            out.append((c, c, line))
+            i += 1
+            continue
+        j = i
+        while j < size and text[j] not in ' \t\n[]{}':
+            j += 1
+        word = text[i:j]
+        if c == '_':
+            out.append((TAG, word, line))
+        elif word.lower().startswith(RESERVED):
+            out.append((WORD, word, line))
+        else:
+            out.append((VALUE, word, line))
+        i = j
+    return out
+
+
+def _string_token(text, i, value, line, out):
+    '''A quoted value, or a table key when ":" follows it directly. Returns the next position.'''
+    if i < len(text) and text[i] == ':':
+        out.append((KEY, value, line))
+        return i + 1
+    out.append((VALUE, value, line))
+    return i
 
 
 # ------------------------------------------------------------------ blocks
@@ -236,15 +299,53 @@ def _blocks(tokens, source):
         elif kind == WORD and low == 'loop_':
             k = _loop(tokens, k + 1, block, source)
         elif kind == TAG:
-            if k + 1 >= size or tokens[k + 1][0] != VALUE:
+            if k + 1 >= size or tokens[k + 1][0] not in (VALUE, '[', '{'):
                 raise CifSyntaxError(f'{where}: data name {word} has no value')
-            block._set(word, tokens[k + 1][1], where)
-            k += 2
+            value, k = _value(tokens, k + 1, source)
+            block._set(word, value, where)
         elif kind == WORD and low == 'stop_':
             k += 1
+        elif kind in (']', '}'):
+            raise CifSyntaxError(f'{where}: "{kind}" closes a list or table that never started')
+        elif kind == KEY:
+            raise CifSyntaxError(f'{where}: table key {word!r} outside a table')
         else:
             raise CifSyntaxError(f'{where}: value {word!r} has no data name')
     return blocks
+
+
+def _value(tokens, k, source):
+    '''One value from token k: a string, or a CIF 2.0 list or table. Returns (value, next k).'''
+    kind, word, line = tokens[k]
+    if kind == VALUE:
+        return word, k + 1
+    if kind not in OPENERS:
+        raise CifSyntaxError(f'{source}, line {line}: expected a value, not {word!r}')
+    close = OPENERS[kind]
+    items = [] if kind == '[' else {}
+    k += 1
+    while True:
+        if k >= len(tokens):
+            raise CifSyntaxError(f'{source}, line {line}: a {"list" if kind == "[" else "table"} '
+                                 f'("{kind}") is never closed')
+        t, w, l = tokens[k]
+        if t == close:
+            k += 1
+            break
+        if kind == '[':
+            if t == KEY:
+                raise CifSyntaxError(f'{source}, line {l}: table key {w!r} in a list')
+            v, k = _value(tokens, k, source)
+            items.append(v)
+        else:
+            if t != KEY:
+                raise CifSyntaxError(f'{source}, line {l}: a table entry must be a quoted key '
+                                     f'followed directly by ":", not {w!r}')
+            if k + 1 >= len(tokens) or tokens[k + 1][0] in (']', '}', KEY):
+                raise CifSyntaxError(f'{source}, line {l}: table key {w!r} has no value')
+            v, k = _value(tokens, k + 1, source)
+            items[w] = v
+    return (CifList(items) if kind == '[' else CifTable(items)), k
 
 
 def _loop(tokens, k, block, source):
@@ -257,9 +358,9 @@ def _loop(tokens, k, block, source):
     if not names:
         raise CifSyntaxError(f'{source}, line {line}: loop_ without data names')
     values = []
-    while k < size and tokens[k][0] == VALUE:
-        values.append(tokens[k][1])
-        k += 1
+    while k < size and tokens[k][0] in (VALUE, '[', '{'):
+        value, k = _value(tokens, k, source)
+        values.append(value)
     if not values or len(values) % len(names):
         raise CifSyntaxError(f'{source}, line {line}: a loop of {len(names)} data names has '
                              f'{len(values)} values, not a whole number of rows')
