@@ -1,6 +1,37 @@
 Release Notes
 =============
 
+Version 2.4.0 Stable
+--------------------
+
+11-18-2026
+~~~~~~~~~~
+
+New
+~~~
+
+- pyEMAPS reads experimental diffraction patterns from microscope and detector files itself, for 4D-STEM indexing and imaging. :py:meth:`StackImage.from_file <pyemaps.stackimg.StackImage.from_file>` creates an image from a file, and :py:func:`pyemaps.read_image <pyemaps.expimage.read_image>` returns the patterns as numpy arrays, with the scan shape, calibration and the file's metadata. Reading needs no license. The formats:
+
+  - TIFF (``.tif``, ``.tiff``), including BigTIFF and ImageJ stacks over 4 GB.
+  - Gatan DigitalMicrograph (``.dm3``, ``.dm4``), with the scan shape, calibration, high voltage and camera length DigitalMicrograph recorded.
+  - EMD (``.emd``): Thermo Fisher Velox, and Berkeley EMD including py4DSTEM datacubes. These need the h5py package: ``pip install "pyemaps[emd]"``. On Python 3.15, h5py has no Windows release yet.
+  - MRC (``.mrc``, ``.mrcs``, ``.st``), Quantum Detectors Merlin (``.mib``), PNG, BMP and JPEG pictures, and NumPy ``.npy`` arrays.
+
+  *binning* and *scan_roi* read large patterns and scans within the 4D-STEM limits, and :py:meth:`convertImage <pyemaps.stackimg.StackImage.convertImage>` with ``nformat=E_FILE`` saves a converted copy in pyEMAPS' ``.im3`` format. See :doc:`user_guide/indexing`. We'd like to hear how these work with your files: contact us at support@emlabsoftware.com.
+- CIF files in the CIF 2.0 format can be loaded with :py:meth:`~pyemaps.crystals.Crystal.from_cif`, as well as CIF 1.1.
+
+Changes
+~~~~~~~
+
+- Anisotropic displacement parameters in a CIF file go to the atoms they're listed for, by the atom labels in ``_atom_site_aniso_label``. Before, they were assigned row by row, so when the anisotropic table listed only some atoms, or listed them in a different order (as most published structures with hydrogen atoms do), atoms got other atoms' values. Atoms the table doesn't list keep their isotropic value. Results change for such CIF files.
+- CIF files that give ``_atom_site_Uiso_or_equiv`` instead of ``_atom_site_U_iso_or_equiv``, or a single atom written without a ``loop_``, now load. Before, they failed with an error.
+
+Improvements
+~~~~~~~~~~~~
+
+- pyEMAPS reads CIF files with its own reader, following the IUCr CIF 1.1 and 2.0 standards, instead of the bundled PyCifRW package. Other CIF files give the same results as before, and the pyEMAPS package is smaller.
+- Requires ``emaps >= 2.1.0``.
+
 Version 2.3.0 Stable
 --------------------
 
