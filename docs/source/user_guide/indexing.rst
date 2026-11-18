@@ -203,6 +203,53 @@ the one with the most patterns; choose another with *dataset*, its number or its
 
    overview = read_image('scan.emd', dataset=1)
 
+Orientation maps
+----------------
+
+:py:meth:`StackImage.mapOrientation <pyemaps.stackimg.StackImage.mapOrientation>` indexes every
+pattern of a scan against a database, and returns the crystal orientation at each scan point as
+an :py:class:`~pyemaps.orientmap.OrientationMap`. It takes the same parameters as
+*indexImage*, so try them on a few patterns with *indexImage* first:
+
+.. code-block:: python
+
+   from pyemaps import StackImage
+
+   scan = StackImage.from_file('scan.dm4', scan_roi=(0, 0, 20, 20))
+   omap = scan.mapOrientation(db_file, cc=29.0, sigma=3.0, img_center=(99.9, 99.9),
+                              rmin=10, search_box=10.0, scaling_option=(1, 2),
+                              filter_threshold=0.0, peak_threshold=0.8)
+   print(omap)              # how many patterns were indexed, and how many reliably
+   omap.show()              # the orientation map, coloured by beam direction, with its key
+   omap.show('rindex')      # the reliability index at each scan point
+   omap.save('scan_map.npz')
+
+Indexing takes about a second per pattern, so a 64 x 64 scan takes over an hour. Read part of
+a large scan with *scan_roi*. Pressing Ctrl+C stops the run and returns the patterns done so far.
+
+The map holds, for each pattern:
+
+- *status*: ``OM_INDEXED``, or ``OM_FEW_PEAKS`` or ``OM_FAILED`` when the pattern couldn't be
+  indexed, such as a pattern from vacuum.
+- *dp* and *rotation*: the best matching database pattern and its in-plane rotation, as
+  *indexImage* reports them; *correlation*, *rindex* (the reliability index), *npeaks* and
+  *nindexed*.
+- *orientation*: the orientation matrix U, which turns a vector's components in the crystal
+  frame into its components in the image frame: x along the image columns, y down the rows and
+  z into the image, along the beam. The crystal frame has x along a, and y in the plane of a and
+  b. :py:meth:`~pyemaps.orientmap.OrientationMap.euler_angles` gives the same orientations as
+  Bunge Euler angles, and :py:meth:`~pyemaps.orientmap.OrientationMap.beam_indices` the beam
+  direction as a zone axis [u v w].
+
+:py:meth:`~pyemaps.orientmap.OrientationMap.ipf_colors` colours each pattern by its beam
+direction within the database's orientation region: for a cubic crystal, [001] is red, [011]
+green and [111] blue. Patterns that aren't
+:py:meth:`~pyemaps.orientmap.OrientationMap.reliable`, with a reliability index below 5 or
+fewer than 3 peaks indexed, are black.
+
+A diffraction pattern from the zero-order Laue zone looks the same for an orientation and for
+the same orientation turned 180 degrees about the beam, so the map can't tell those two apart.
+
 .. note::
 
    Diffraction pattern indexing supports crystals of any crystal system, with these limits:
