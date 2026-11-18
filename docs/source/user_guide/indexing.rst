@@ -209,7 +209,8 @@ Orientation maps
 :py:meth:`StackImage.mapOrientation <pyemaps.stackimg.StackImage.mapOrientation>` indexes every
 pattern of a scan against a database, and returns the crystal orientation at each scan point as
 an :py:class:`~pyemaps.orientmap.OrientationMap`. It takes the same parameters as
-*indexImage*, so try them on a few patterns with *indexImage* first:
+*indexImage*, so try them on a few patterns with *indexImage* first, with the same
+*scaling_option*:
 
 .. code-block:: python
 
@@ -217,8 +218,8 @@ an :py:class:`~pyemaps.orientmap.OrientationMap`. It takes the same parameters a
 
    scan = StackImage.from_file('scan.dm4', scan_roi=(0, 0, 20, 20))
    omap = scan.mapOrientation(db_file, cc=29.0, sigma=3.0, img_center=(99.9, 99.9),
-                              rmin=10, search_box=10.0, scaling_option=(1, 2),
-                              filter_threshold=0.0, peak_threshold=0.8)
+                              rmin=10, search_box=10.0, filter_threshold=0.0,
+                              peak_threshold=0.5)
    print(omap)              # how many patterns were indexed, and how many reliably
    omap.show()              # the orientation map, coloured by beam direction, with its key
    omap.show('rindex')      # the reliability index at each scan point
@@ -226,6 +227,14 @@ an :py:class:`~pyemaps.orientmap.OrientationMap`. It takes the same parameters a
 
 Indexing takes about a second per pattern, so a 64 x 64 scan takes over an hour. Read part of
 a large scan with *scan_roi*. Pressing Ctrl+C stops the run and returns the patterns done so far.
+
+*mapOrientation* compares intensities on a logarithmic scale by default, ``scaling_option=(2,
+2)``; ``(5, 5)`` compares peak positions only. Tested on the database's own patterns of
+Aluminium and Silicon at random rotations, with their intensities randomly changed as dynamical
+diffraction changes them, both found the right orientation for 75 to 80% of the patterns,
+against 25 to 30% for ``(1, 2)``, *indexImage*'s default. A lower *peak_threshold*, such as 0.5,
+also helps. The reliability index depends on these settings, so compare it only between maps
+made with the same ones.
 
 The map holds, for each pattern:
 
