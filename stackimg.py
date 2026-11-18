@@ -60,6 +60,21 @@ def _remove_quietly(path):
         pass
 
 
+def _search_peaks(search_box, peak_threshold, min_snr):
+    '''
+    Run the backend peak search. *min_snr* needs an emaps that has it; with 0, the search
+    runs as in every emaps.
+    '''
+    if not min_snr:
+        return ediom.searchXPeaks(search_box, threshold=peak_threshold)
+    if min_snr < 0:
+        raise ValueError('min_snr must be 0 or more')
+    try:
+        return ediom.searchXPeaks(search_box, peak_threshold, min_snr)
+    except TypeError as e:
+        raise XDPImageError('min_snr needs a newer emaps: pip install --upgrade emaps') from e
+
+
 def _check_stem4d_size(img):
     '''
     Check that patterns read from a file suit the 4D-STEM features, and say what to change
@@ -712,9 +727,10 @@ class StackImage():
                    search_box              = DEF_BOXSIZE,
                    scaling_option          = (DEF_XSCALE, DEF_TSCALE),
                    filter_threshold        = DEF_FILTER_THRESHOLD,
-                   peak_threshold          = DEF_SEARCH_THRESHOLD,   
-                   ssel                    = 1,    
-                   bDebug                  = False
+                   peak_threshold          = DEF_SEARCH_THRESHOLD,
+                   ssel                    = 1,
+                   bDebug                  = False,
+                   min_snr                 = 0.0
               ):
         """
         Find the diffraction peaks in the experimental image and index them against a diffraction
@@ -744,13 +760,19 @@ class StackImage():
         :param filter_threshold: screening threshold for the database patterns, from 0.0 to 1.0. Use
             0 to search all of them.
         :type filter_threshold: float, optional
-        :param peak_threshold: peak threshold, from 0.0 to 1.0, used to drop noisy peaks.
+        :param peak_threshold: how closely a peak's shape must match the search kernel, from 0.0
+            to 1.0. It tests the shape only, not the brightness, so on a noisy pattern a lower value
+            also picks up background ripples; use *min_snr* to drop those.
         :type peak_threshold: float, optional
         :param ssel: the stack to index, counting from 1.
         :type ssel: int, optional
         :param bDebug: also display the intermediate images: the search mask and kernel, and the
             peaks found before indexing.
         :type bDebug: bool, optional
+        :param min_snr: drop the peaks less than *min_snr* times the noise above the local
+            background around them. The default, 0, keeps every peak. 3 to 5 suits noisy
+            experimental patterns, such as 4D-STEM scans. Needs emaps 2.2.0 or later.
+        :type min_snr: float, optional
         :return: 0 on success. -1, or the backend's error code, if the peak search or the indexing
             fails; fewer than four peaks found counts as a failure.
         :rtype: int
@@ -879,7 +901,7 @@ class StackImage():
             StackImage.displaySearchKernel(kr, kc) 
 
         # Start peaks search...
-        xpeaks = ediom.searchXPeaks(search_box, threshold=peak_threshold)
+        xpeaks = _search_peaks(search_box, peak_threshold, min_snr)
 
         if xpeaks == -1:
             print(f'Peaks search failed')
@@ -921,7 +943,8 @@ class StackImage():
                        filter_threshold        = DEF_FILTER_THRESHOLD,
                        peak_threshold          = DEF_SEARCH_THRESHOLD,
                        scan_shape              = None,
-                       progress                = True
+                       progress                = True,
+                       min_snr                 = 0.0
                        ):
         """
         Index every pattern of a scan against a diffraction pattern database, giving the
@@ -951,14 +974,20 @@ class StackImage():
         :param filter_threshold: screening threshold for the database patterns, from 0.0 to
             1.0. Use 0 to search all of them.
         :type filter_threshold: float, optional
-        :param peak_threshold: peak threshold, from 0.0 to 1.0, used to drop noisy peaks. A
-            lower value, such as 0.5, finds more of the weak peaks.
+        :param peak_threshold: how closely a peak's shape must match the search kernel, from
+            0.0 to 1.0. It tests the shape only, not the brightness: a lower value finds more of
+            the weak peaks, but on noisy patterns also background ripples, so pair it with
+            *min_snr*.
         :type peak_threshold: float, optional
         :param scan_shape: the scan's shape ``(rows, columns)``. By default, the shape
             :py:meth:`from_file` read from the file, or one row of all the patterns.
         :type scan_shape: tuple of int, optional
         :param progress: print the progress, about 20 times in a run.
         :type progress: bool, optional
+        :param min_snr: drop the peaks less than *min_snr* times the noise above the local
+            background around them, as in *indexImage*. The default, 0, keeps every peak; 3 to
+            5 suits noisy scans. Needs emaps 2.2.0 or later.
+        :type min_snr: float, optional
         :return: the orientation map.
         :rtype: :py:class:`~pyemaps.orientmap.OrientationMap`
         :raise ~pyemaps.errors.XDPImageError: if *scaling_option* or *scan_shape* is invalid,
@@ -1044,7 +1073,7 @@ class StackImage():
             ret, kc, kr = stem4d.prepareSearch(img_center[0], img_center[1], rmin)
             if ret != 0 or kc <= 0 or kr <= 0:
                 return OM_FAILED
-            n = ediom.searchXPeaks(search_box, threshold=peak_threshold)
+            n = _search_peaks(search_box, peak_threshold, min_snr)
             npeaks[k] = max(n, 0)
             if n <= 3:
                 return OM_FEW_PEAKS if n >= 0 else OM_FAILED
@@ -1076,7 +1105,8 @@ class StackImage():
 
         params = dict(cc=cc, sigma=sigma, img_center=tuple(img_center), rmin=rmin,
                       search_box=search_box, scaling_option=tuple(scaling_option),
-                      filter_threshold=filter_threshold, peak_threshold=peak_threshold)
+                      filter_threshold=filter_threshold, peak_threshold=peak_threshold,
+                      min_snr=min_snr)
         return OrientationMap(scan_shape, status, dp, fields['rotation'],
                               fields['correlation'], fields['map_peak'], fields['rindex'],
                               npeaks, nindexed, orientation, geometry.basis,
