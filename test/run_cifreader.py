@@ -230,6 +230,13 @@ def load(text):
     return name, data, buf.getvalue()
 
 
+def c_crystal_name():
+    name, _, _ = load('data_188459-ICSD\n' + CELL + 'loop_\n_atom_site_label\n'
+                      '_atom_site_fract_x\n_atom_site_fract_y\n_atom_site_fract_z\nFe 0 0 0\n')
+    assert name == '188459-icsd', name
+    return 'data_188459-ICSD -> 188459-icsd, as in earlier versions'
+
+
 def c_uiso_variant():
     _, data, _ = load('data_v\n' + CELL + 'loop_\n_atom_site_label\n_atom_site_fract_x\n'
                       '_atom_site_fract_y\n_atom_site_fract_z\n_atom_site_Uiso_or_equiv\n'
@@ -346,6 +353,7 @@ def main():
                      ('syntax errors are refused with their line', c_errors),
                      ('file encodings', c_file),
                      ('Crystal.from_cif reads a corpus file', c_from_cif),
+                     ('the crystal name is the data block name in lower case', c_crystal_name),
                      ('_atom_site_Uiso_or_equiv is read (it crashed before)', c_uiso_variant),
                      ('anisotropic U matched to atoms by label', c_aniso_by_label),
                      ('anisotropic B matched to atoms by label', c_aniso_b),

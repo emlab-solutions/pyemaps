@@ -446,7 +446,8 @@ def loadCrystalCIFData(fn):
     if len(blocks) == 0:
         raise CIFError(cfn, 'missing required data keys')
 
-    name = blocks[0].name
+    # Data block names are case-insensitive; pyEMAPS has always named the crystal in lower case
+    name = blocks[0].name.lower()
     if not isinstance(name, str) or len(name) == 0:
         raise CIFError(cfn, 'missing required data name')
 
