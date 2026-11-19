@@ -1,6 +1,34 @@
 Release Notes
 =============
 
+Version 2.5.0 Stable
+--------------------
+
+11-19-2026
+~~~~~~~~~~
+
+New
+~~~
+
+- Orientation maps of 4D-STEM scans (experimental): :py:meth:`StackImage.mapOrientation <pyemaps.stackimg.StackImage.mapOrientation>` indexes every pattern of a scan against a diffraction pattern database, as :py:meth:`~pyemaps.stackimg.StackImage.indexImage` indexes one, and returns an :py:class:`~pyemaps.orientmap.OrientationMap`. The map holds each pattern's status, reliability index and orientation, gives the beam direction as a zone axis and the orientation as Bunge Euler angles, colours the map by beam direction (inverse pole figure colours, with their key), and saves and loads it. This is a licensed feature. It finds the right orientations on simulated scans, but it hasn't yet been validated against an independent orientation map of real data, and its parameters, defaults and results may change in later releases. See :doc:`user_guide/indexing`, the *al_orientmap.py* sample and the *al_orientmap.ipynb* notebook.
+- *min_snr* in :py:meth:`~pyemaps.stackimg.StackImage.indexImage` and :py:meth:`~pyemaps.stackimg.StackImage.mapOrientation`: the peak search keeps only peaks at least *min_snr* times the noise above the background around them. The default, 0, keeps every peak, as before. 3 suits noisy patterns such as 4D-STEM scans.
+
+Changes
+~~~~~~~
+
+From emaps 2.2.0:
+
+- Diffraction patterns that aren't square index correctly. Before, indexing one could crash Python or give a wrong result.
+- Masked images (:py:meth:`~pyemaps.stackimg.StackImage.generateMaskedImage`) with a 16-bit integer mask give the right image. Before, the mask was read as floating-point numbers, and the image was wrong.
+- The detector centre and radii of bright and dark field images (:py:meth:`~pyemaps.stackimg.StackImage.generateBDF`) are used to a fraction of a pixel. Before, they were cut to whole pixels. Images with whole-pixel values are unchanged.
+- When the peak search's first pass, which finds the spot the search kernel is refined from, finds none, it is retried with a looser threshold instead of failing. Some noisy patterns that failed with "No diffraction peaks found" now index; patterns that indexed before give the same result. A peak near the image edge no longer takes the previous peak's position.
+
+Improvements
+~~~~~~~~~~~~
+
+- The documentation of the indexing parameters is corrected. *peak_threshold* tests how closely a peak's shape matches the search kernel, not its brightness; for scans, 0.6 to 0.7 with *min_snr* 3 is recommended. *sigma* works best at about half the peaks' measured full width at half maximum: 3.0 for *al.img*.
+- Requires ``emaps >= 2.2.0``.
+
 Version 2.4.0 Stable
 --------------------
 
