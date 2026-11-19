@@ -23,6 +23,11 @@ What it checks:
   like al.img; a 6 x 5 scan gives the same bright field image from its .im3 and its TIFF (scan
   width from the file); and a TIFF mask converted by convertImage(E_FILE) gives the same
   masked image as an .im3 mask.
+- orientation map: StackImage.mapOrientation on a 2 x 3 scan of four synthetic Aluminium
+  patterns at known orientations (zones [111], [112], [114], [012], made from the crystal
+  lattice, not the database), al.img and a blank pattern. The synthetic ones must come back
+  within 1 degree of their orientation, al.img with the same result as indexImage (the
+  baseline), the blank one unindexed, and nothing printed for each pattern.
 
 Each case runs in its own process, so a crash in the native code fails that case instead
 of the whole run. indexImage always shows its plots; the indexing cases draw them off screen,
@@ -74,6 +79,8 @@ SH_DIMS = (128, 120, 3)          # width, height, stacks
 SH_TYPES = {'int16': 11, 'float32': 12}   # header data type: 10 + E_INT or E_FLOAT, multi-stack
 INDEX_MODES = ['file', 'npy32', 'npy64', 'npyF', 'tif']
 TIFFDATA = HERE / 'tiffdata'
+# Synthetic orientation map patterns: zone axis and in-plane angle (degrees)
+MAP_ZONES = [((1, 1, 1), 17.0), ((1, 1, 2), 141.0), ((1, 1, 4), 233.0), ((0, 1, 2), 302.0)]
 
 
 def make_image(shape, dtype, layout):
@@ -249,6 +256,198 @@ def case_files(tmp):
               f'sum {ref.sum():.6g}); TIFF mask converted, masked image identical')
 
 
+def synth_pattern(U, recip, size=200, cc=29.0, center=(99.923, 99.919), sigma=3.0):
+    '''
+    A kinematic FCC spot pattern for orientation U (crystal frame to the image frame: column,
+    row, beam), 200 kV, with reflections near the Ewald sphere. *recip* has a*, b*, c* as rows.
+    '''
+    import numpy as np
+    h = np.arange(-8, 9)
+    H = np.array(np.meshgrid(h, h, h, indexing='ij')).reshape(3, -1).T
+    odd = (H % 2).sum(1)
+    H = H[((odd == 0) | (odd == 3)) & np.any(H != 0, axis=1)]      # FCC reflections
+    g = H @ recip @ U.T
+    gl = np.linalg.norm(g, axis=1)
+    k, sg_tol = 1 / 0.0251, 0.02
+    s = -(2 * k * g[:, 2] + gl ** 2) / (2 * k)                      # excitation error
+    keep = (gl < 1.6) & (np.abs(s) < sg_tol)
+    yy, xx = np.mgrid[0:size, 0:size].astype(float)
+    img = 3.0 * np.exp(-((xx - center[0]) ** 2 + (yy - center[1]) ** 2) / (2 * (2 * sigma) ** 2))
+    for (gx, gy, _), gg, ss in zip(g[keep], gl[keep], s[keep]):
+        amp = np.exp(-0.6 * gg ** 2) * np.exp(-(ss / (sg_tol / 2)) ** 2)
+        img += amp * np.exp(-((xx - center[0] - cc * gx) ** 2 + (yy - center[1] - cc * gy) ** 2)
+                            / (2 * sigma ** 2))
+    return (img * 1000).astype(np.float32)
+
+
+def zone_orientation(zone, angle, basis):
+    '''The orientation with the beam along *zone* [uvw], turned *angle* degrees about it.'''
+    import numpy as np
+    b = np.asarray(zone, float) @ basis
+    b /= np.linalg.norm(b)
+    x = np.cross(b, [0.3, 0.5, 0.8])
+    x /= np.linalg.norm(x)
+    y = np.cross(b, x)
+    c, s = np.cos(np.radians(angle)), np.sin(np.radians(angle))
+    return np.array([c * x + s * y, -s * x + c * y, b])
+
+
+def cubic_misorientation(U1, U2):
+    '''
+    Smallest rotation angle (degrees) between two orientations, over the cubic rotations and
+    a 180 degree turn about the beam (which a zero-order pattern can't tell apart).
+    '''
+    import itertools
+    import numpy as np
+    best = 180.0
+    for p in itertools.permutations(range(3)):
+        for sg in itertools.product([1, -1], repeat=3):
+            S = np.zeros((3, 3))
+            S[range(3), p] = sg
+            if np.linalg.det(S) < 0:
+                continue
+            for E in (np.eye(3), np.diag([-1.0, -1.0, 1.0])):
+                M = E @ U1 @ S @ U2.T
+                best = min(best, np.degrees(np.arccos(np.clip((np.trace(M) - 1) / 2, -1, 1))))
+    return best
+
+
+def case_orientmap(dbfn, tmp):
+    '''Orientation map of synthetic patterns, al.img and a blank pattern.'''
+    import numpy as np
+    from pyemaps import StackImage, write_im3, OM_INDEXED, OM_FEW_PEAKS, OM_FAILED
+    from pyemaps.orientmap import direct_basis, reciprocal_basis
+    from pyemaps.stackimg import stem4d
+
+    headless_plots()
+    if not hasattr(stem4d, 'getIndexResult'):
+        print('RESULT FAIL this emaps has no orientation mapping (getIndexResult)')
+        return
+    StackImage.loadDPDB(dbfn)
+    ret, gmx = stem4d.getDPDBMetric(9)
+    A = direct_basis(gmx)
+    B = reciprocal_basis(A)
+
+    al = StackImage(str(ALIMG))
+    al.loadImage()
+    alimg = np.array(al.data, dtype=np.float32).reshape(200, 200)
+    truth = [zone_orientation(z, a, A) for z, a in MAP_ZONES]
+    patterns = [synth_pattern(U, B) for U in truth] + [alimg, np.zeros((200, 200), np.float32)]
+    scan = os.path.join(tmp, 'map_scan.im3')
+    write_im3(scan, np.array(patterns))
+
+    sys.stdout.flush()
+    m = StackImage(scan).mapOrientation(dbfn, scan_shape=(2, 3), progress=False, **INDEX_PARAMS)
+    sys.stdout.flush()
+    print(m)
+
+    def flat(a):
+        return a.reshape((-1,) + a.shape[2:])
+
+    status, U = flat(m.status), flat(m.orientation)
+    bad = []
+    for i, (zone, angle) in enumerate(MAP_ZONES):
+        if status[i] != OM_INDEXED:
+            bad.append(f'{zone} not indexed (status {status[i]})')
+            continue
+        mis = cubic_misorientation(truth[i], U[i])
+        print(f'MAP {zone}: misorientation {mis:.3f} deg, reliability {flat(m.rindex)[i]:.2f}, '
+              f'{flat(m.nindexed)[i]} indexed')
+        if mis > 1.0 or not flat(m.reliable())[i]:
+            bad.append(f'{zone}: {mis:.2f} deg, reliability {flat(m.rindex)[i]:.2f}')
+    print(f'MAPAL {flat(m.dp)[4]} {flat(m.rotation)[4]:.3f} {flat(m.rindex)[4]:.4f} '
+          f'{flat(m.nindexed)[4]}')
+    if status[5] not in (OM_FEW_PEAKS, OM_FAILED):
+        bad.append(f'blank pattern has status {status[5]}')
+    if bad:
+        print(f'RESULT FAIL {bad}')
+    else:
+        print(f'RESULT PASS {len(MAP_ZONES)} synthetic orientations within 1 degree; '
+              f'blank pattern not indexed')
+
+
+def case_peaksnr():
+    '''
+    Peak search on a lattice of spots over a noisy background: without min_snr a low
+    threshold also picks up the noise; with it, the spots and little else.
+    '''
+    import numpy as np
+    from io import StringIO
+    from contextlib import redirect_stdout
+    from pyemaps import StackImage, E_NPY
+    from pyemaps.errors import XDPImageError
+    from pyemaps.stackimg import stem4d, ediom, _search_peaks
+
+    size, c, sigma = 200, (99.5, 100.5), 3.0
+    a = np.radians(17.0)
+    u, v = 22.0 * np.array([np.cos(a), np.sin(a)]), 22.0 * np.array([-np.sin(a), np.cos(a)])
+    spots = [c + i * u + j * v for i in range(-5, 6) for j in range(-5, 6)]
+    spots = np.array([p for p in spots if 15 < np.hypot(*(p - c)) < 90])
+    yy, xx = np.mgrid[0:size, 0:size].astype(float)
+    img = 10.0 + 200.0 * np.exp(-((xx - c[0]) ** 2 + (yy - c[1]) ** 2) / (2 * 6.0 ** 2))
+    for x, y in spots:
+        img += 20.0 * np.exp(-((xx - x) ** 2 + (yy - y) ** 2) / (2 * sigma ** 2))
+    # spatially correlated noise, like the smooth ripples of a real (median-filtered) detector
+    # background: white noise alone seldom looks like a spot, so it wouldn't test min_snr
+    noise = np.random.default_rng(7).normal(0.0, 1.0, img.shape)
+    f = np.fft.fftfreq(size)
+    kernel = np.exp(-2 * (np.pi * 2.5) ** 2 * (f[:, None] ** 2 + f[None, :] ** 2))
+    noise = np.real(np.fft.ifft2(np.fft.fft2(noise) * kernel))
+    img += noise / noise.std()
+
+    si = StackImage(None, nformat=E_NPY)
+    si.data = img.astype(np.float32)
+    with redirect_stdout(StringIO()):
+        si.loadImage()
+    edc = stem4d.cvar.edc
+    stem4d.setVerbose(0)
+
+    def search(snr):
+        edc.sigma = sigma
+        edc.set_center(*c)
+        stem4d.prepareSearch(c[0], c[1], 10.0)
+        n = _search_peaks(10.0, 0.5, snr)
+        if n is None or n <= 0:
+            return np.zeros((0, 2))
+        ret, kd = ediom.getXKDif(n + 1)
+        pk = np.array([(k[0], k[1]) for k in kd], float)
+        return pk[np.hypot(pk[:, 0] - c[0], pk[:, 1] - c[1]) > 12]
+
+    def score(pk):
+        if len(pk) == 0:
+            return 0.0, 0
+        d = np.hypot(pk[:, None, 0] - spots[None, :, 0], pk[:, None, 1] - spots[None, :, 1])
+        return np.mean(d.min(0) <= 2.0), int(np.sum(d.min(1) > 2.0))
+
+    try:
+        loose = search(0.0)
+        strict = search(5.0)
+    except XDPImageError as e:
+        print(f'RESULT FAIL {e}')
+        return
+    try:
+        _search_peaks(10.0, 0.5, -1.0)
+        neg = False
+    except ValueError:
+        neg = True
+    rec0, false0 = score(loose)
+    rec5, false5 = score(strict)
+    print(f'PEAKSNR {len(spots)} spots; min_snr 0: {len(loose)} peaks, recall {rec0:.2f}, '
+          f'{false0} false; min_snr 5: {len(strict)} peaks, recall {rec5:.2f}, {false5} false')
+    bad = []
+    if len(loose) < 2 * len(spots):
+        bad.append(f'without min_snr only {len(loose)} peaks: the noise case no longer tests it')
+    if rec5 < 0.9 or false5 > 0.1 * len(spots):
+        bad.append(f'min_snr 5: recall {rec5:.2f}, {false5} false peaks')
+    if not neg:
+        bad.append('a negative min_snr was accepted')
+    if bad:
+        print(f'RESULT FAIL {bad}')
+    else:
+        print(f'RESULT PASS min_snr 5 finds {rec5:.0%} of {len(spots)} spots with {false5} false '
+              f'peaks; without it, {len(loose)} peaks')
+
+
 def run_child(*args):
     p = subprocess.run([sys.executable, str(Path(__file__).resolve()), '--case', *args],
                        capture_output=True, text=True, cwd=HERE)
@@ -407,13 +606,15 @@ def run_indexing():
             results.append((f'index al.img ({mode})', ok, msg))
             if mode == 'file' and not ok:
                 break
-    results += check_nonsquare(dbfn, lines.get('file'))
+    ref = lines.get('file')
+    results += check_nonsquare(dbfn, ref)
+    results += check_orientmap(dbfn, ref)
+    results += check_firstpass(dbfn)
     try:
         os.remove(dbfn)
     except OSError:
         pass
 
-    ref = lines.get('file')
     for mode in INDEX_MODES[1:]:
         if mode in lines and ref is not None:
             same = sorted(lines[mode]) == sorted(ref)
@@ -485,6 +686,108 @@ def check_rowcol():
     line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
     ok = code == 0 and line is not None and line.startswith('RESULT PASS')
     return [('non-square scan images', ok, line[7:] if line else child_failure(code, err))]
+def baseline_values(lines):
+    '''Best matching pattern, rotation, reliability index and peaks indexed from result lines.'''
+    def number(key):
+        line = summary_line(lines, key)
+        return float(line.split(':')[-1].split()[0]) if line else None
+    return (number('Best matching database DP'), number('DP rotation angle'),
+            number('Reliability index'), number('Number of diffraction peaks indexed'))
+
+
+def case_firstpass(dbfn):
+    '''
+    Noisy [111] patterns whose spots are wider than the starting search kernel: no spot reaches
+    the default peak threshold with that kernel, so the search's first pass (which picks the spot
+    the kernel is refined from) finds nothing. It must retry looser, and the patterns must map.
+    '''
+    import numpy as np
+    from numpy.lib.stride_tricks import sliding_window_view
+    from pyemaps import StackImage, write_im3, OM_INDEXED
+    from pyemaps.orientmap import direct_basis, reciprocal_basis
+    from pyemaps.stackimg import stem4d
+
+    headless_plots()
+    StackImage.loadDPDB(dbfn)
+    ret, gmx = stem4d.getDPDBMetric(9)
+    A = direct_basis(gmx)
+    B = reciprocal_basis(A)
+    rng = np.random.default_rng(3)
+    truth = [zone_orientation((1, 1, 1), 17.0 + 7.0 * i, A) for i in range(12)]
+    pats = np.array([rng.poisson(synth_pattern(U, B) / 1000.0 * 200.0 + 5.0) for U in truth],
+                    dtype=np.float32)
+
+    # the starting kernel: a Gaussian whose full width at half maximum is sigma
+    sigma = INDEX_PARAMS['sigma']
+    n = 2 * int(sigma * 3 / 2) + 1
+    yy, xx = np.mgrid[0:n, 0:n] - n // 2
+    K = np.exp(-4 * np.log(2) * (xx ** 2 + yy ** 2) / sigma ** 2)
+    Kc = K - K.mean()
+    best = []
+    for p in pats:
+        w = sliding_window_view(p.astype(float), (n, n))
+        wc = w - w.mean(axis=(2, 3), keepdims=True)
+        den = np.sqrt((wc ** 2).sum(axis=(2, 3))) * np.sqrt((Kc ** 2).sum())
+        c = (wc * Kc).sum(axis=(2, 3)) / np.maximum(den, 1e-12)
+        best.append(c.max())
+    # keep the patterns where no spot reaches the threshold with the starting kernel: without
+    # the fallback their search fails outright
+    thr = INDEX_PARAMS['peak_threshold']
+    keep = [i for i in range(len(pats)) if best[i] < thr]
+    if len(keep) < 4:
+        print(f'RESULT FAIL the case no longer tests the fallback: only {len(keep)} patterns have '
+              f'no spot matching the starting kernel at {thr}')
+        return
+    pats, truth, best = pats[keep], [truth[i] for i in keep], [best[i] for i in keep]
+
+    scan = os.path.join(os.path.dirname(dbfn), f'firstpass_{os.getpid()}.im3')
+    write_im3(scan, pats)
+    try:
+        m = StackImage(scan).mapOrientation(dbfn, scan_shape=(1, len(pats)), progress=False,
+                                            **INDEX_PARAMS)
+    finally:
+        os.remove(scan)
+    errs = [cubic_misorientation(truth[i], m.orientation[0, i])
+            if m.status[0, i] == OM_INDEXED else 180.0 for i in range(len(pats))]
+    if max(errs) > 1.0:
+        print(f'RESULT FAIL errors {np.round(errs, 2).tolist()} deg (best starting-kernel '
+              f'match {max(best):.2f})')
+    else:
+        print(f'RESULT PASS {len(pats)} noisy [111] patterns within 1 degree at peak_threshold '
+              f'{thr}, though no spot matches the starting kernel above {max(best):.2f}')
+
+
+def check_firstpass(dbfn):
+    code, out, err = run_child('firstpass', dbfn)
+    line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
+    ok = code == 0 and line is not None and line.startswith('RESULT PASS')
+    return [('peak search first-pass fallback', ok, line[7:] if line else child_failure(code, err))]
+
+
+def check_orientmap(dbfn, ref):
+    '''The orientation map case; al.img in the map must match the indexImage result.'''
+    import tempfile
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        code, out, err = run_child('orientmap', dbfn, tmp)
+    line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
+    ok = code == 0 and line is not None and line.startswith('RESULT PASS')
+    results = [('orientation map', ok, line[7:] if line else child_failure(code, err))]
+    al = next((l.split()[1:] for l in out.splitlines() if l.startswith('MAPAL')), None)
+    if ref is not None and al is not None:
+        dp, rot, rindex, nidx = baseline_values(ref)
+        got = (int(al[0]), float(al[1]), float(al[2]), int(al[3]))
+        same = (got[0] == dp and abs(got[1] - rot) < 0.01 and abs(got[2] - rindex) < 0.01
+                and got[3] == nidx)
+        msg = f'pattern {got[0]}, rotation {got[1]:.3f}, reliability {got[2]:.4f}, {got[3]} indexed'
+        if not same:
+            msg += f'; indexImage: {dp}, {rot}, {rindex}, {nidx}'
+        results.append(('orientation map: al.img as indexImage', same, msg))
+    noisy = [l for l in out.splitlines()
+             if l.startswith('*****') or 'Number of peaks found' in l or 'No diffraction peaks' in l
+             or 'Error while searching' in l]
+    results.append(('orientation map: quiet', not noisy,
+                    'no per-pattern output' if not noisy else f'{len(noisy)} lines printed: {noisy[0]}'))
+    return results
 
 
 def check_files():
@@ -494,6 +797,13 @@ def check_files():
     line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
     ok = code == 0 and line is not None and line.startswith('RESULT PASS')
     return [('TIFF files', ok, line[7:] if line else child_failure(code, err))]
+
+
+def check_peak_snr():
+    code, out, err = run_child('peaksnr')
+    line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
+    ok = code == 0 and line is not None and line.startswith('RESULT PASS')
+    return [('peak search min_snr', ok, line[7:] if line else child_failure(code, err))]
 
 
 def summary_line(lines, key):
@@ -522,6 +832,7 @@ def main():
         results += index_results
         results += check_files()
         results += check_rowcol()
+        results += check_peak_snr()
     else:
         ref = None
 
@@ -576,5 +887,11 @@ if __name__ == '__main__':
             case_nonsquare(*rest)
         elif kind == 'rowcol':
             case_rowcol(*rest)
+        elif kind == 'firstpass':
+            case_firstpass(*rest)
+        elif kind == 'orientmap':
+            case_orientmap(*rest)
+        elif kind == 'peaksnr':
+            case_peaksnr()
         sys.exit(0)
     sys.exit(main())

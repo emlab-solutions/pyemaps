@@ -60,6 +60,21 @@ def _remove_quietly(path):
         pass
 
 
+def _search_peaks(search_box, peak_threshold, min_snr):
+    '''
+    Run the backend peak search. *min_snr* needs an emaps that has it; with 0, the search
+    runs as in every emaps.
+    '''
+    if not min_snr:
+        return ediom.searchXPeaks(search_box, threshold=peak_threshold)
+    if min_snr < 0:
+        raise ValueError('min_snr must be 0 or more')
+    try:
+        return ediom.searchXPeaks(search_box, peak_threshold, min_snr)
+    except TypeError as e:
+        raise XDPImageError('min_snr needs a newer emaps: pip install --upgrade emaps') from e
+
+
 def _check_stem4d_size(img):
     '''
     Check that patterns read from a file suit the 4D-STEM features, and say what to change
@@ -712,9 +727,10 @@ class StackImage():
                    search_box              = DEF_BOXSIZE,
                    scaling_option          = (DEF_XSCALE, DEF_TSCALE),
                    filter_threshold        = DEF_FILTER_THRESHOLD,
-                   peak_threshold          = DEF_SEARCH_THRESHOLD,   
-                   ssel                    = 1,    
-                   bDebug                  = False
+                   peak_threshold          = DEF_SEARCH_THRESHOLD,
+                   ssel                    = 1,
+                   bDebug                  = False,
+                   min_snr                 = 0.0
               ):
         """
         Find the diffraction peaks in the experimental image and index them against a diffraction
@@ -728,7 +744,12 @@ class StackImage():
         :type dpdbfn: str
         :param cc: camera constant, in pixels per 1/Å.
         :type cc: float, optional
-        :param sigma: estimated width of the diffraction peaks, in pixels.
+        :param sigma: width of the diffraction peaks, in pixels. pyEMAPS draws a peak as a
+            Gaussian whose full width at half maximum is *sigma*: the starting kernel of the
+            peak search, and the peaks of the database patterns. Set it to about half the
+            measured full width at half maximum of the peaks: for *al.img*, whose peaks are
+            about 6 pixels wide at half height, 3.0. Much smaller or larger values find too few
+            peaks: for *al.img*, 2.5 and 6.0 both fail.
         :type sigma: float, optional
         :param img_center: center of the diffraction pattern ``(column, row)``, in pixels.
         :type img_center: tuple of float, optional
@@ -744,13 +765,19 @@ class StackImage():
         :param filter_threshold: screening threshold for the database patterns, from 0.0 to 1.0. Use
             0 to search all of them.
         :type filter_threshold: float, optional
-        :param peak_threshold: peak threshold, from 0.0 to 1.0, used to drop noisy peaks.
+        :param peak_threshold: how closely a peak's shape must match the search kernel, from 0.0
+            to 1.0. It tests the shape only, not the brightness, so on a noisy pattern a lower value
+            also picks up background ripples; use *min_snr* to drop those.
         :type peak_threshold: float, optional
         :param ssel: the stack to index, counting from 1.
         :type ssel: int, optional
         :param bDebug: also display the intermediate images: the search mask and kernel, and the
             peaks found before indexing.
         :type bDebug: bool, optional
+        :param min_snr: drop the peaks less than *min_snr* times the noise above the local
+            background around them. The default, 0, keeps every peak. 3 to 5 suits noisy
+            experimental patterns, such as 4D-STEM scans. Needs emaps 2.2.0 or later.
+        :type min_snr: float, optional
         :return: 0 on success. -1, or the backend's error code, if the peak search or the indexing
             fails; fewer than four peaks found counts as a failure.
         :rtype: int
@@ -879,7 +906,7 @@ class StackImage():
             StackImage.displaySearchKernel(kr, kc) 
 
         # Start peaks search...
-        xpeaks = ediom.searchXPeaks(search_box, threshold=peak_threshold)
+        xpeaks = _search_peaks(search_box, peak_threshold, min_snr)
 
         if xpeaks == -1:
             print(f'Peaks search failed')
@@ -909,7 +936,201 @@ class StackImage():
     
         ediom.printIndexDetails()
         return 0
-    
+
+    def mapOrientation(self,
+                       dpdbfn,
+                       cc                      = DEF_CC,
+                       sigma                   = DEF_SIGMA,
+                       img_center              = DEF_ICENTER,
+                       rmin                    = DEF_RMIN,
+                       search_box              = DEF_BOXSIZE,
+                       scaling_option          = (DEF_XSCALE, DEF_TSCALE),
+                       filter_threshold        = DEF_FILTER_THRESHOLD,
+                       peak_threshold          = DEF_SEARCH_THRESHOLD,
+                       scan_shape              = None,
+                       progress                = True,
+                       min_snr                 = 0.0
+                       ):
+        """
+        Index every pattern of a scan against a diffraction pattern database, giving the
+        crystal orientation at each scan point. This is a licensed feature.
+
+        .. note::
+
+           **Experimental.** Orientation mapping hasn't yet been validated against an
+           independent orientation map of real data, and its results depend on the peak search
+           settings. Check a map against patterns you can index by hand. Its parameters,
+           defaults and results may change in later releases.
+
+        Each pattern is indexed as :py:meth:`~pyemaps.stackimg.StackImage.indexImage` indexes
+        one, with the same parameters, but nothing is displayed or printed for each pattern.
+
+        :param dpdbfn: path of the diffraction pattern database file, made by
+            :py:meth:`~pyemaps.crystals.Crystal.generateDPDB`.
+        :type dpdbfn: str
+        :param cc: camera constant, in pixels per 1/Å.
+        :type cc: float, optional
+        :param sigma: width of the diffraction peaks, in pixels: about half their measured
+            full width at half maximum, as in *indexImage*.
+        :type sigma: float, optional
+        :param img_center: center of the diffraction patterns ``(column, row)``, in pixels.
+        :type img_center: tuple of float, optional
+        :param rmin: radius around the center, in pixels, excluded from the search.
+        :type rmin: float, optional
+        :param search_box: size of the peak search box, in pixels.
+        :type search_box: float, optional
+        :param scaling_option: how the experimental and the database pattern intensities are
+            scaled for matching: two integers, each 0 to 5, not both 0. The default is
+            *indexImage*'s, ``(1, 2)``. ``(2, 2)`` compares both on a logarithmic scale and
+            ``(5, 5)`` peak positions only; see below.
+        :type scaling_option: tuple of int, optional
+        :param filter_threshold: screening threshold for the database patterns, from 0.0 to
+            1.0. Use 0 to search all of them.
+        :type filter_threshold: float, optional
+        :param peak_threshold: how closely a peak's shape must match the search kernel, from
+            0.0 to 1.0. It tests the shape only, not the brightness: a lower value finds more of
+            the weak peaks, but on noisy patterns also background ripples, so pair it with
+            *min_snr*.
+        :type peak_threshold: float, optional
+        :param scan_shape: the scan's shape ``(rows, columns)``. By default, the shape
+            :py:meth:`from_file` read from the file, or one row of all the patterns.
+        :type scan_shape: tuple of int, optional
+        :param progress: print the progress, about 20 times in a run.
+        :type progress: bool, optional
+        :param min_snr: drop the peaks less than *min_snr* times the noise above the local
+            background around them, as in *indexImage*. The default, 0, keeps every peak; 3 to
+            5 suits noisy scans. Needs emaps 2.2.0 or later.
+        :type min_snr: float, optional
+        :return: the orientation map.
+        :rtype: :py:class:`~pyemaps.orientmap.OrientationMap`
+        :raise ~pyemaps.errors.XDPImageError: if *scaling_option* or *scan_shape* is invalid,
+            the database or the image can't be loaded, or the installed emaps is too old for
+            orientation mapping.
+        :raise ValueError: if *img_center* is outside the image.
+
+        Indexing takes about a second per pattern, so a 64 x 64 scan takes over an hour.
+        Try the parameters on a few patterns with
+        :py:meth:`~pyemaps.stackimg.StackImage.indexImage` first, and read part of a large
+        scan with *scan_roi* in :py:meth:`from_file`. Pressing Ctrl+C stops the run and
+        returns the patterns done so far; the rest have the status ``OM_NOT_RUN``.
+
+        A pattern with too few peaks, or one that fails to index, has the status
+        ``OM_FEW_PEAKS`` or ``OM_FAILED`` in the map. Judge the indexed ones by their
+        reliability index (above 5.0 means the indexing succeeded), as for *indexImage*.
+
+        The best scaling depends on the data, so try more than one on a few patterns, and check
+        the map against patterns you can index by hand. On simulated patterns of Aluminium and
+        Silicon, with their intensities randomly changed as dynamical diffraction changes them,
+        ``(2, 2)`` and ``(5, 5)`` found the right orientation for 75 to 80% of the patterns and
+        ``(1, 2)`` for 25 to 30%. The reliability index depends on the settings and the data, so
+        compare it only between maps made the same way.
+
+        The default *peak_threshold* suits clean patterns such as selected area diffraction.
+        In a scan the spots are often smaller and fainter than the search kernel expects, and
+        it misses many of them: try 0.6 to 0.7, with *min_snr* 3 to keep the background out of
+        the peak list. On a precession scan of nanocrystalline copper, 0.7 indexed every pattern
+        where the default left about one in five unindexed, and agreed with an independent
+        indexing of the same patterns about four times as often.
+        """
+        import time
+        from .orientmap import (OrientationMap, _DatabaseGeometry, OM_INDEXED,
+                                OM_FEW_PEAKS, OM_FAILED, OM_NOT_RUN)
+
+        if not hasattr(stem4d, 'getIndexResult'):
+            raise XDPImageError('Orientation mapping needs a newer emaps: '
+                                'pip install --upgrade emaps')
+
+        for s in scaling_option:
+            if s < 0 or s > 5:
+                raise XDPImageError('Scaling factors must be 0 to 5')
+        soption = scaling_option[0] * 10 + scaling_option[1]
+        if soption == 0:
+            raise XDPImageError('Both scaling factors out of range')
+
+        ret, _, _ = StackImage.loadDPDB(dpdbfn, bShowDBMap=False)
+        if ret != 0:
+            raise XDPImageError("Error loading theoretical diffraction pattern database")
+        geometry = _DatabaseGeometry(stem4d)
+
+        try:
+            self.loadImage(rmode=EL_ONE, stack=1)
+        except Exception as e:
+            raise XDPImageError(f"Error loading image for stem4d analysis: {e}") from e
+        npat = self._dim[2] if self.nformat != E_NPY else 1
+
+        if scan_shape is None:
+            if (self._scan_shape is not None and len(self._scan_shape) == 2
+                    and self._scan_shape[0] * self._scan_shape[1] == npat):
+                scan_shape = tuple(self._scan_shape)
+            else:
+                scan_shape = (1, npat)
+        scan_shape = tuple(int(n) for n in scan_shape)
+        if len(scan_shape) != 2 or scan_shape[0] * scan_shape[1] != npat:
+            raise XDPImageError(f'scan_shape {scan_shape} does not hold the {npat} patterns')
+
+        if img_center[0] < 0 or img_center[0] > self.dim[0] or \
+           img_center[1] < 0 or img_center[1] > self.dim[1]:
+            raise ValueError('Point of interest on Experimental image invalid')
+
+        status = np.full(npat, OM_NOT_RUN, dtype=np.int8)
+        dp = np.full(npat, -1, dtype=np.int32)
+        fields = {k: np.zeros(npat, dtype=np.float32)
+                  for k in ('rotation', 'correlation', 'map_peak', 'rindex')}
+        npeaks = np.zeros(npat, dtype=np.int32)
+        nindexed = np.zeros(npat, dtype=np.int32)
+        orientation = np.full((npat, 3, 3), np.nan)
+
+        edc = stem4d.cvar.edc
+
+        def index_one(k):
+            if k > 0:
+                self.loadImage(rmode=EL_ONE, stack=k + 1)
+            edc.cc = cc
+            edc.sigma = sigma
+            edc.set_center(img_center[0], img_center[1])
+            # a new kernel for every pattern: the search refines it from the pattern
+            ret, kc, kr = stem4d.prepareSearch(img_center[0], img_center[1], rmin)
+            if ret != 0 or kc <= 0 or kr <= 0:
+                return OM_FAILED
+            n = _search_peaks(search_box, peak_threshold, min_snr)
+            npeaks[k] = max(n, 0)
+            if n <= 3:
+                return OM_FEW_PEAKS if n >= 0 else OM_FAILED
+            ret = ediom.indexXPeaks(rmin, soption, filter_threshold)
+            r = stem4d.getIndexResult()
+            if ret != 0 or r[0] != 0:
+                return OM_FAILED
+            (_, dp[k], fields['rotation'][k], fields['correlation'][k],
+             fields['map_peak'][k], fields['rindex'][k], npeaks[k], nindexed[k]) = r[:8]
+            orientation[k] = geometry.orientation(dp[k], fields['rotation'][k])
+            return OM_INDEXED
+
+        step = max(1, npat // 20)
+        start = time.perf_counter()
+        stem4d.setVerbose(0)
+        try:
+            for k in range(npat):
+                status[k] = index_one(k)
+                if progress and ((k + 1) % step == 0 or k + 1 == npat):
+                    done = k + 1
+                    left = (time.perf_counter() - start) / done * (npat - done)
+                    print(f'Orientation map: {done} of {npat} patterns, '
+                          f'about {left / 60:.1f} min left', flush=True)
+        except KeyboardInterrupt:
+            print(f'Orientation map stopped: {np.count_nonzero(status != OM_NOT_RUN)} of '
+                  f'{npat} patterns done', flush=True)
+        finally:
+            stem4d.setVerbose(1)
+
+        params = dict(cc=cc, sigma=sigma, img_center=tuple(img_center), rmin=rmin,
+                      search_box=search_box, scaling_option=tuple(scaling_option),
+                      filter_threshold=filter_threshold, peak_threshold=peak_threshold,
+                      min_snr=min_snr)
+        return OrientationMap(scan_shape, status, dp, fields['rotation'],
+                              fields['correlation'], fields['map_peak'], fields['rindex'],
+                              npeaks, nindexed, orientation, geometry.basis,
+                              geometry.corners, database=dpdbfn, params=params)
+
     def generateBDF(self,
                     center=(0.0, 0.0), 
                     rads = (0.0, 0.0),
