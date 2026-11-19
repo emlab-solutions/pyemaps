@@ -955,6 +955,13 @@ class StackImage():
         Index every pattern of a scan against a diffraction pattern database, giving the
         crystal orientation at each scan point. This is a licensed feature.
 
+        .. note::
+
+           **Experimental.** Orientation mapping hasn't yet been validated against an
+           independent orientation map of real data, and its results depend on the peak search
+           settings. Check a map against patterns you can index by hand. Its parameters,
+           defaults and results may change in later releases.
+
         Each pattern is indexed as :py:meth:`~pyemaps.stackimg.StackImage.indexImage` indexes
         one, with the same parameters, but nothing is displayed or printed for each pattern.
 
@@ -1015,9 +1022,8 @@ class StackImage():
         the map against patterns you can index by hand. On simulated patterns of Aluminium and
         Silicon, with their intensities randomly changed as dynamical diffraction changes them,
         ``(2, 2)`` and ``(5, 5)`` found the right orientation for 75 to 80% of the patterns and
-        ``(1, 2)`` for 25 to 30%. Orientation mapping hasn't yet been validated against an
-        independent map of real data. The reliability index depends on the settings and the
-        data, so compare it only between maps made the same way.
+        ``(1, 2)`` for 25 to 30%. The reliability index depends on the settings and the data, so
+        compare it only between maps made the same way.
 
         The default *peak_threshold* suits clean patterns such as selected area diffraction.
         In a scan the spots are often smaller and fainter than the search kernel expects, and
