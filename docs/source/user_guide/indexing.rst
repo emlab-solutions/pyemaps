@@ -218,7 +218,7 @@ an :py:class:`~pyemaps.orientmap.OrientationMap`. It takes the same parameters a
    scan = StackImage.from_file('scan.dm4', scan_roi=(0, 0, 20, 20))
    omap = scan.mapOrientation(db_file, cc=29.0, sigma=3.0, img_center=(99.9, 99.9),
                               rmin=10, search_box=10.0, filter_threshold=0.0,
-                              peak_threshold=0.5)
+                              peak_threshold=0.6, min_snr=3.0)
    print(omap)              # how many patterns were indexed, and how many reliably
    omap.show()              # the orientation map, coloured by beam direction, with its key
    omap.show('rindex')      # the reliability index at each scan point
@@ -226,6 +226,17 @@ an :py:class:`~pyemaps.orientmap.OrientationMap`. It takes the same parameters a
 
 Indexing takes about a second per pattern, so a 64 x 64 scan takes over an hour. Read part of
 a large scan with *scan_roi*. Pressing Ctrl+C stops the run and returns the patterns done so far.
+
+The sample *al_orientmap.py* shows a whole run on a synthetic scan: four Aluminium grains of
+known orientation, with counting noise. It maps the scan and compares the map with the truth.
+Most patterns come out within 1 degree of their true orientation; the few the map can't index
+reliably are black.
+
+*peak_threshold* tests how closely a peak's shape matches the search kernel, not how bright it
+is. The default (0.825) suits clean patterns such as selected area diffraction, but in a scan
+the spots are often fainter and noisier, and it can miss them all. Try 0.6 to 0.7, with
+*min_snr* 3 to keep the background out of the peak list. A higher *min_snr*, such as 5, starts
+dropping weak real peaks.
 
 The best *scaling_option* and *peak_threshold* depend on the data, so try a few on some patterns
 first, and check the map against patterns you can index by hand. ``(2, 2)`` compares intensities

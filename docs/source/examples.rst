@@ -73,6 +73,8 @@ More samples
 * *si_scm.py*: the scattering matrix, eigenvalues and diffracted beams of a Bloch session.
 * *al_dpgen.py*: generates a diffraction pattern database for Aluminium, used by 4D-STEM
   indexing. :bdg-info:`Licensed`
+* *al_orientmap.py*: an orientation map of a synthetic Aluminium 4D-STEM scan, compared with
+  the true orientations. See :doc:`user_guide/indexing`. :bdg-info:`Licensed`
 * *convert_image.py*: converts a raw image into pyEMAPS' small-header image format.
   :bdg-info:`Licensed`
 * *adf.py*: annular bright and dark field images and a masked image from an experimental
