@@ -30,13 +30,13 @@ current directory (see :doc:`../examples`). Run the example from that folder.
    image = StackImage('al.img')
    image.indexImage(db_file,
                     cc=29.0,                       # camera constant, pixels per 1/Å
-                    sigma=3.0,                     # estimated peak width, in pixels
+                    sigma=3.0,                     # half the peaks' full width at half maximum
                     img_center=(99.923, 99.919),   # pattern center, in pixels
                     rmin=10,                       # radius excluded around the center
                     search_box=10.0,               # peak search box size, in pixels
                     scaling_option=(1, 2),         # intensity scaling for matching
                     filter_threshold=0.0,          # 0 searches every database pattern
-                    peak_threshold=0.8)            # drops noisy peaks
+                    peak_threshold=0.8)            # how closely a peak's shape must match
 
    StackImage.showMatchedDBDP()
 
@@ -44,6 +44,13 @@ current directory (see :doc:`../examples`). Run the example from that folder.
 pattern that best matches the image. For all the parameters, see
 :py:obj:`StackImage.indexImage <pyemaps.stackimg.StackImage.indexImage>`. The *al_ediom.py*
 sample runs this whole example.
+
+*sigma* sets the width of a peak. pyEMAPS draws peaks as Gaussians whose full width at half
+maximum is *sigma*, both for the starting kernel of the peak search and for the database
+patterns, but the value that works is about half the width you measure across your peaks at
+half their height. The peaks in *al.img* are about 6 pixels wide at half height, and *sigma* 3.0
+indexes it best. From 3.5 to 5.0 it finds the same orientation with fewer peaks indexed, and
+2.5 or 6.0 find too few peaks to index at all.
 
 Images from TIFF files
 ----------------------
@@ -206,6 +213,15 @@ the one with the most patterns; choose another with *dataset*, its number or its
 Orientation maps
 ----------------
 
+.. admonition:: Experimental
+   :class: warning
+
+   Orientation mapping is experimental. It finds the right orientations on simulated scans and
+   gives the same result as *indexImage* on *al.img*, but it hasn't yet been validated against an
+   independent orientation map of real data, and its results depend on the peak search settings.
+   Check a map against patterns you can index by hand before relying on it. Its parameters,
+   defaults and results may change in later releases.
+
 :py:meth:`StackImage.mapOrientation <pyemaps.stackimg.StackImage.mapOrientation>` indexes every
 pattern of a scan against a database, and returns the crystal orientation at each scan point as
 an :py:class:`~pyemaps.orientmap.OrientationMap`. It takes the same parameters as
@@ -243,9 +259,8 @@ first, and check the map against patterns you can index by hand. ``(2, 2)`` comp
 on a logarithmic scale, and ``(5, 5)`` compares peak positions only. On simulated patterns of
 Aluminium and Silicon, with their intensities randomly changed as dynamical diffraction changes
 them, both found the right orientation for 75 to 80% of the patterns, against 25 to 30% for the
-default ``(1, 2)``. Orientation mapping hasn't yet been validated against an independent map of
-real data. The reliability index depends on the settings and the data, so compare it only
-between maps made the same way.
+default ``(1, 2)``. The reliability index depends on the settings and the data, so compare it
+only between maps made the same way.
 
 The map holds, for each pattern:
 

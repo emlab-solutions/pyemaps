@@ -11,6 +11,11 @@
 Orientation maps from 4D-STEM scans: the result of
 :py:meth:`StackImage.mapOrientation <pyemaps.stackimg.StackImage.mapOrientation>`.
 
+.. note::
+
+   **Experimental.** Orientation mapping hasn't yet been validated against an independent
+   orientation map of real data. Its interface and results may change in later releases.
+
 Frames. The *sample frame* is the image's: x along the image columns (to the right), y along
 the image rows (down), and z = x × y, into the image. The *crystal frame* is Cartesian, with x
 along the crystal's a axis and y in the plane of a and b. An orientation matrix U turns a
@@ -170,7 +175,7 @@ class OrientationMap:
     The crystal orientation at each pattern of a 4D-STEM scan, from
     :py:meth:`StackImage.mapOrientation <pyemaps.stackimg.StackImage.mapOrientation>`. Each
     array has the scan's shape, ``(rows, columns)``, with an extra axis or two for vectors
-    and matrices.
+    and matrices. Orientation mapping is experimental; see *mapOrientation*.
 
     Every pattern is indexed against the database on its own, as by
     :py:meth:`~pyemaps.stackimg.StackImage.indexImage`. Each result is a database pattern

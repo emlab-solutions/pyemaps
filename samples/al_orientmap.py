@@ -44,7 +44,8 @@ A = 4.0493                  # Aluminium lattice parameter, Å (cubic: a along x,
 SIZE = 200                  # pattern size, pixels
 CENTER = (99.5, 99.5)       # pattern center (column, row), pixels
 CC = 29.0                   # camera constant, pixels per 1/Å
-SIGMA = 3.0                 # spot width, pixels
+SIGMA = 3.0                 # spot width, pixels: the spots' standard deviation, about
+                            # half their full width at half maximum, as sigma wants
 SCAN = (12, 12)             # scan rows and columns
 
 # Each grain: its zone axis [u v w] along the beam, its in-plane rotation in degrees, and the
@@ -201,7 +202,7 @@ def map_scan(name='Aluminium', seed=1):
             m = StackImage(scan_file).mapOrientation(
                 db_file,
                 cc=CC,                          # camera constant, pixels per 1/Å
-                sigma=SIGMA,                    # estimated peak width, in pixels
+                sigma=SIGMA,                    # half the peaks' full width at half maximum
                 img_center=CENTER,              # pattern center (column, row), in pixels
                 rmin=10,                        # radius excluded around the center
                 search_box=10.0,                # peak search box size, in pixels

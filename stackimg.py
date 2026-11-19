@@ -744,7 +744,12 @@ class StackImage():
         :type dpdbfn: str
         :param cc: camera constant, in pixels per 1/Å.
         :type cc: float, optional
-        :param sigma: estimated width of the diffraction peaks, in pixels.
+        :param sigma: width of the diffraction peaks, in pixels. pyEMAPS draws a peak as a
+            Gaussian whose full width at half maximum is *sigma*: the starting kernel of the
+            peak search, and the peaks of the database patterns. Set it to about half the
+            measured full width at half maximum of the peaks: for *al.img*, whose peaks are
+            about 6 pixels wide at half height, 3.0. Much smaller or larger values find too few
+            peaks: for *al.img*, 2.5 and 6.0 both fail.
         :type sigma: float, optional
         :param img_center: center of the diffraction pattern ``(column, row)``, in pixels.
         :type img_center: tuple of float, optional
@@ -950,6 +955,13 @@ class StackImage():
         Index every pattern of a scan against a diffraction pattern database, giving the
         crystal orientation at each scan point. This is a licensed feature.
 
+        .. note::
+
+           **Experimental.** Orientation mapping hasn't yet been validated against an
+           independent orientation map of real data, and its results depend on the peak search
+           settings. Check a map against patterns you can index by hand. Its parameters,
+           defaults and results may change in later releases.
+
         Each pattern is indexed as :py:meth:`~pyemaps.stackimg.StackImage.indexImage` indexes
         one, with the same parameters, but nothing is displayed or printed for each pattern.
 
@@ -958,7 +970,8 @@ class StackImage():
         :type dpdbfn: str
         :param cc: camera constant, in pixels per 1/Å.
         :type cc: float, optional
-        :param sigma: estimated width of the diffraction peaks, in pixels.
+        :param sigma: width of the diffraction peaks, in pixels: about half their measured
+            full width at half maximum, as in *indexImage*.
         :type sigma: float, optional
         :param img_center: center of the diffraction patterns ``(column, row)``, in pixels.
         :type img_center: tuple of float, optional
@@ -1009,9 +1022,8 @@ class StackImage():
         the map against patterns you can index by hand. On simulated patterns of Aluminium and
         Silicon, with their intensities randomly changed as dynamical diffraction changes them,
         ``(2, 2)`` and ``(5, 5)`` found the right orientation for 75 to 80% of the patterns and
-        ``(1, 2)`` for 25 to 30%. Orientation mapping hasn't yet been validated against an
-        independent map of real data. The reliability index depends on the settings and the
-        data, so compare it only between maps made the same way.
+        ``(1, 2)`` for 25 to 30%. The reliability index depends on the settings and the data, so
+        compare it only between maps made the same way.
 
         The default *peak_threshold* suits clean patterns such as selected area diffraction.
         In a scan the spots are often smaller and fainter than the search kernel expects, and
