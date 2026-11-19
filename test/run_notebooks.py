@@ -29,9 +29,10 @@ import nbformat
 
 NOTEBOOKS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'notebooks')
 
-# Calls that must produce a figure in a notebook: pyEMAPS' displays, and matplotlib's own.
+# Calls that must produce a figure in a notebook: pyEMAPS' displays, including
+# OrientationMap.show, and matplotlib's own plt.show.
 PLOT_CALL = re.compile(r'\b(showDif|showBloch|showStereo|plot2Powder|showMatchedDBDP|'
-                       r'viewExpImage|indexImage)\(|\bplt\.show\(')
+                       r'viewExpImage|indexImage)\(|\.show\(')
 
 
 def add_data_files(data, work):

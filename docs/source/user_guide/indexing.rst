@@ -246,7 +246,8 @@ a large scan with *scan_roi*. Pressing Ctrl+C stops the run and returns the patt
 The sample *al_orientmap.py* shows a whole run on a synthetic scan: four Aluminium grains of
 known orientation, with counting noise. It maps the scan and compares the map with the truth.
 Most patterns come out within 1 degree of their true orientation; the few the map can't index
-reliably are black.
+reliably are black. The notebook *al_orientmap.ipynb* walks through the same run step by step,
+with the choice of settings and how to read the map (``pyemaps -cp notebooks`` copies it).
 
 *peak_threshold* tests how closely a peak's shape matches the search kernel, not how bright it
 is. The default (0.825) suits clean patterns such as selected area diffraction, but in a scan
