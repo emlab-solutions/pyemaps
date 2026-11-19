@@ -305,6 +305,78 @@ def check_loading():
     return results
 
 
+# al.img (200 x 200) placed in larger canvases: (rows, columns) and its top-left (row, column).
+NONSQUARE_CASES = {
+    'wide':     ((200, 300), (0, 50)),
+    'tall':     ((300, 200), (50, 0)),
+    'wide_off': ((220, 330), (13, 71)),
+    'tall_off': ((330, 220), (71, 13)),
+    'square300_wide': ((300, 300), (0, 50)),     # the 'wide' pattern on a square canvas
+}
+RESULT_KEYS = ('Best matching database DP', 'DP rotation angle', 'Reliability index',
+               'Number of diffraction peaks indexed', 'correlation maximum')
+
+
+def case_nonsquare(name, dbfn):
+    '''Index al.img placed in a larger canvas, with the pattern center moved to match.'''
+    import numpy as np
+    from pyemaps import StackImage, E_NPY
+
+    headless_plots()
+    al = StackImage(str(ALIMG))
+    al.loadImage()
+    ncol, nrow, _ = al.dim
+    a = np.array(al.data, dtype=np.float32).reshape(nrow, ncol)
+    (rows, cols), (r0, c0) = NONSQUARE_CASES[name]
+    img = np.full((rows, cols), np.median(np.r_[a[0], a[-1], a[:, 0], a[:, -1]]), np.float32)
+    img[r0:r0 + nrow, c0:c0 + ncol] = a
+    si = StackImage(None, nformat=E_NPY)
+    si.data = img
+    params = dict(INDEX_PARAMS)
+    params['img_center'] = (params['img_center'][0] + c0, params['img_center'][1] + r0)
+    sys.stdout.flush()
+    ret = si.indexImage(dbfn, **params)
+    sys.stdout.flush()
+    print(f'INDEXRET {ret}', flush=True)
+
+
+def result_values(lines):
+    '''The values of RESULT_KEYS in indexing output lines, as strings (None if missing).'''
+    return [next((l.split(':')[-1].split()[0] for l in lines if k in l), None) for k in RESULT_KEYS]
+
+
+def check_nonsquare(dbfn, ref):
+    '''
+    Non-square patterns used to overrun the indexing buffers (heap corruption) or index a
+    cut-short pattern. Placed in a non-square canvas, al.img must index as it does alone: same
+    pattern and peaks, rotation within 0.05 degree. The wide canvas must also give exactly the
+    result of the same pattern on a square canvas of the same width.
+    '''
+    results, got = [], {}
+    for name in NONSQUARE_CASES:
+        code, out, err = run_child('nonsquare', name, dbfn)
+        ret_line = next((l for l in out.splitlines() if l.startswith('INDEXRET')), None)
+        if code == 0 and ret_line == 'INDEXRET 0':
+            got[name] = result_values(index_result_lines(out))
+        else:
+            results.append((f'non-square {name}', False, ret_line or child_failure(code, err)))
+    base = result_values(ref) if ref is not None else None
+    for name, v in got.items():
+        if name.startswith('square') or base is None:
+            continue
+        (rows, cols), _ = NONSQUARE_CASES[name]
+        ok = (v[0] == base[0] and v[3] == base[3] and abs(float(v[1]) - float(base[1])) < 0.05
+              and float(v[2]) >= 5.0)
+        msg = (f'{rows} x {cols}: pattern {v[0]}, rotation {v[1]}, reliability {v[2]}, {v[3]} indexed'
+               + ('' if ok else f'; al.img alone: {base[:4]}'))
+        results.append((f'non-square {name}', ok, msg))
+    if 'wide' in got and 'square300_wide' in got:
+        same = got['wide'] == got['square300_wide']
+        results.append(('non-square wide == square canvas', same, 'identical' if same else
+                        f"{got['wide']} vs {got['square300_wide']}"))
+    return results
+
+
 def run_indexing():
     '''Generate the Aluminium database and index al.img every way. Returns (results, lines).'''
     import tempfile
@@ -335,6 +407,7 @@ def run_indexing():
             results.append((f'index al.img ({mode})', ok, msg))
             if mode == 'file' and not ok:
                 break
+    results += check_nonsquare(dbfn, lines.get('file'))
     try:
         os.remove(dbfn)
     except OSError:
@@ -433,5 +506,7 @@ if __name__ == '__main__':
             case_index(*rest)
         elif kind == 'files':
             case_files(*rest)
+        elif kind == 'nonsquare':
+            case_nonsquare(*rest)
         sys.exit(0)
     sys.exit(main())
