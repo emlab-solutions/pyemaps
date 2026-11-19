@@ -170,6 +170,9 @@ from .display import showDif, showBloch, showStereo, plot2Powder
 #--------------Experimental images from image files (TIFF, .im3)--------------------
 from .expimage import read_image, write_im3, image_readers, ExperimentalImage
 
+#--------------Orientation maps (made by StackImage.mapOrientation; loading needs no license)----
+from .orientmap import OrientationMap, OM_INDEXED, OM_FEW_PEAKS, OM_FAILED, OM_NOT_RUN
+
 if PKG_TYPE != TYPE_FREE:
     #------------------Diffraction Database Generator - paid package only---------------------------
     try:

@@ -23,6 +23,11 @@ What it checks:
   like al.img; a 6 x 5 scan gives the same bright field image from its .im3 and its TIFF (scan
   width from the file); and a TIFF mask converted by convertImage(E_FILE) gives the same
   masked image as an .im3 mask.
+- orientation map: StackImage.mapOrientation on a 2 x 3 scan of four synthetic Aluminium
+  patterns at known orientations (zones [111], [112], [114], [012], made from the crystal
+  lattice, not the database), al.img and a blank pattern. The synthetic ones must come back
+  within 1 degree of their orientation, al.img with the same result as indexImage (the
+  baseline), the blank one unindexed, and nothing printed for each pattern.
 
 Each case runs in its own process, so a crash in the native code fails that case instead
 of the whole run. indexImage always shows its plots; the indexing cases draw them off screen,
@@ -74,6 +79,8 @@ SH_DIMS = (128, 120, 3)          # width, height, stacks
 SH_TYPES = {'int16': 11, 'float32': 12}   # header data type: 10 + E_INT or E_FLOAT, multi-stack
 INDEX_MODES = ['file', 'npy32', 'npy64', 'npyF', 'tif']
 TIFFDATA = HERE / 'tiffdata'
+# Synthetic orientation map patterns: zone axis and in-plane angle (degrees)
+MAP_ZONES = [((1, 1, 1), 17.0), ((1, 1, 2), 141.0), ((1, 1, 4), 233.0), ((0, 1, 2), 302.0)]
 
 
 def make_image(shape, dtype, layout):
@@ -249,6 +256,116 @@ def case_files(tmp):
               f'sum {ref.sum():.6g}); TIFF mask converted, masked image identical')
 
 
+def synth_pattern(U, recip, size=200, cc=29.0, center=(99.923, 99.919), sigma=3.0):
+    '''
+    A kinematic FCC spot pattern for orientation U (crystal frame to the image frame: column,
+    row, beam), 200 kV, with reflections near the Ewald sphere. *recip* has a*, b*, c* as rows.
+    '''
+    import numpy as np
+    h = np.arange(-8, 9)
+    H = np.array(np.meshgrid(h, h, h, indexing='ij')).reshape(3, -1).T
+    odd = (H % 2).sum(1)
+    H = H[((odd == 0) | (odd == 3)) & np.any(H != 0, axis=1)]      # FCC reflections
+    g = H @ recip @ U.T
+    gl = np.linalg.norm(g, axis=1)
+    k, sg_tol = 1 / 0.0251, 0.02
+    s = -(2 * k * g[:, 2] + gl ** 2) / (2 * k)                      # excitation error
+    keep = (gl < 1.6) & (np.abs(s) < sg_tol)
+    yy, xx = np.mgrid[0:size, 0:size].astype(float)
+    img = 3.0 * np.exp(-((xx - center[0]) ** 2 + (yy - center[1]) ** 2) / (2 * (2 * sigma) ** 2))
+    for (gx, gy, _), gg, ss in zip(g[keep], gl[keep], s[keep]):
+        amp = np.exp(-0.6 * gg ** 2) * np.exp(-(ss / (sg_tol / 2)) ** 2)
+        img += amp * np.exp(-((xx - center[0] - cc * gx) ** 2 + (yy - center[1] - cc * gy) ** 2)
+                            / (2 * sigma ** 2))
+    return (img * 1000).astype(np.float32)
+
+
+def zone_orientation(zone, angle, basis):
+    '''The orientation with the beam along *zone* [uvw], turned *angle* degrees about it.'''
+    import numpy as np
+    b = np.asarray(zone, float) @ basis
+    b /= np.linalg.norm(b)
+    x = np.cross(b, [0.3, 0.5, 0.8])
+    x /= np.linalg.norm(x)
+    y = np.cross(b, x)
+    c, s = np.cos(np.radians(angle)), np.sin(np.radians(angle))
+    return np.array([c * x + s * y, -s * x + c * y, b])
+
+
+def cubic_misorientation(U1, U2):
+    '''
+    Smallest rotation angle (degrees) between two orientations, over the cubic rotations and
+    a 180 degree turn about the beam (which a zero-order pattern can't tell apart).
+    '''
+    import itertools
+    import numpy as np
+    best = 180.0
+    for p in itertools.permutations(range(3)):
+        for sg in itertools.product([1, -1], repeat=3):
+            S = np.zeros((3, 3))
+            S[range(3), p] = sg
+            if np.linalg.det(S) < 0:
+                continue
+            for E in (np.eye(3), np.diag([-1.0, -1.0, 1.0])):
+                M = E @ U1 @ S @ U2.T
+                best = min(best, np.degrees(np.arccos(np.clip((np.trace(M) - 1) / 2, -1, 1))))
+    return best
+
+
+def case_orientmap(dbfn, tmp):
+    '''Orientation map of synthetic patterns, al.img and a blank pattern.'''
+    import numpy as np
+    from pyemaps import StackImage, write_im3, OM_INDEXED, OM_FEW_PEAKS, OM_FAILED
+    from pyemaps.orientmap import direct_basis, reciprocal_basis
+    from pyemaps.stackimg import stem4d
+
+    headless_plots()
+    if not hasattr(stem4d, 'getIndexResult'):
+        print('RESULT FAIL this emaps has no orientation mapping (getIndexResult)')
+        return
+    StackImage.loadDPDB(dbfn)
+    ret, gmx = stem4d.getDPDBMetric(9)
+    A = direct_basis(gmx)
+    B = reciprocal_basis(A)
+
+    al = StackImage(str(ALIMG))
+    al.loadImage()
+    alimg = np.array(al.data, dtype=np.float32).reshape(200, 200)
+    truth = [zone_orientation(z, a, A) for z, a in MAP_ZONES]
+    patterns = [synth_pattern(U, B) for U in truth] + [alimg, np.zeros((200, 200), np.float32)]
+    scan = os.path.join(tmp, 'map_scan.im3')
+    write_im3(scan, np.array(patterns))
+
+    sys.stdout.flush()
+    m = StackImage(scan).mapOrientation(dbfn, scan_shape=(2, 3), progress=False, **INDEX_PARAMS)
+    sys.stdout.flush()
+    print(m)
+
+    def flat(a):
+        return a.reshape((-1,) + a.shape[2:])
+
+    status, U = flat(m.status), flat(m.orientation)
+    bad = []
+    for i, (zone, angle) in enumerate(MAP_ZONES):
+        if status[i] != OM_INDEXED:
+            bad.append(f'{zone} not indexed (status {status[i]})')
+            continue
+        mis = cubic_misorientation(truth[i], U[i])
+        print(f'MAP {zone}: misorientation {mis:.3f} deg, reliability {flat(m.rindex)[i]:.2f}, '
+              f'{flat(m.nindexed)[i]} indexed')
+        if mis > 1.0 or not flat(m.reliable())[i]:
+            bad.append(f'{zone}: {mis:.2f} deg, reliability {flat(m.rindex)[i]:.2f}')
+    print(f'MAPAL {flat(m.dp)[4]} {flat(m.rotation)[4]:.3f} {flat(m.rindex)[4]:.4f} '
+          f'{flat(m.nindexed)[4]}')
+    if status[5] not in (OM_FEW_PEAKS, OM_FAILED):
+        bad.append(f'blank pattern has status {status[5]}')
+    if bad:
+        print(f'RESULT FAIL {bad}')
+    else:
+        print(f'RESULT PASS {len(MAP_ZONES)} synthetic orientations within 1 degree; '
+              f'blank pattern not indexed')
+
+
 def run_child(*args):
     p = subprocess.run([sys.executable, str(Path(__file__).resolve()), '--case', *args],
                        capture_output=True, text=True, cwd=HERE)
@@ -335,18 +452,54 @@ def run_indexing():
             results.append((f'index al.img ({mode})', ok, msg))
             if mode == 'file' and not ok:
                 break
+    ref = lines.get('file')
+    results += check_orientmap(dbfn, ref)
     try:
         os.remove(dbfn)
     except OSError:
         pass
 
-    ref = lines.get('file')
     for mode in INDEX_MODES[1:]:
         if mode in lines and ref is not None:
             same = sorted(lines[mode]) == sorted(ref)
             results.append((f'index {mode} == file', same,
                             'identical' if same else 'result lines differ from the file run'))
     return results, ref
+
+
+def baseline_values(lines):
+    '''Best matching pattern, rotation, reliability index and peaks indexed from result lines.'''
+    def number(key):
+        line = summary_line(lines, key)
+        return float(line.split(':')[-1].split()[0]) if line else None
+    return (number('Best matching database DP'), number('DP rotation angle'),
+            number('Reliability index'), number('Number of diffraction peaks indexed'))
+
+
+def check_orientmap(dbfn, ref):
+    '''The orientation map case; al.img in the map must match the indexImage result.'''
+    import tempfile
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        code, out, err = run_child('orientmap', dbfn, tmp)
+    line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
+    ok = code == 0 and line is not None and line.startswith('RESULT PASS')
+    results = [('orientation map', ok, line[7:] if line else child_failure(code, err))]
+    al = next((l.split()[1:] for l in out.splitlines() if l.startswith('MAPAL')), None)
+    if ref is not None and al is not None:
+        dp, rot, rindex, nidx = baseline_values(ref)
+        got = (int(al[0]), float(al[1]), float(al[2]), int(al[3]))
+        same = (got[0] == dp and abs(got[1] - rot) < 0.01 and abs(got[2] - rindex) < 0.01
+                and got[3] == nidx)
+        msg = f'pattern {got[0]}, rotation {got[1]:.3f}, reliability {got[2]:.4f}, {got[3]} indexed'
+        if not same:
+            msg += f'; indexImage: {dp}, {rot}, {rindex}, {nidx}'
+        results.append(('orientation map: al.img as indexImage', same, msg))
+    noisy = [l for l in out.splitlines()
+             if l.startswith('*****') or 'Number of peaks found' in l or 'No diffraction peaks' in l
+             or 'Error while searching' in l]
+    results.append(('orientation map: quiet', not noisy,
+                    'no per-pattern output' if not noisy else f'{len(noisy)} lines printed: {noisy[0]}'))
+    return results
 
 
 def check_files():
@@ -433,5 +586,7 @@ if __name__ == '__main__':
             case_index(*rest)
         elif kind == 'files':
             case_files(*rest)
+        elif kind == 'orientmap':
+            case_orientmap(*rest)
         sys.exit(0)
     sys.exit(main())
