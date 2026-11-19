@@ -422,6 +422,64 @@ def run_indexing():
     return results, ref
 
 
+def case_rowcol(tmp):
+    '''
+    Bright/dark field and masked images of a non-square scan (3 x 5) of non-square patterns
+    (120 x 170), against the same sums in numpy. Every pattern is different and asymmetric, so
+    swapped rows and columns, in the scan or in a pattern, give a different image.
+    '''
+    import numpy as np
+    from io import StringIO
+    from contextlib import redirect_stdout
+    from pyemaps import StackImage, write_im3
+
+    headless_plots()
+    sr, sc, pr, pc = 3, 5, 120, 170
+    yy, xx = np.mgrid[0:pr, 0:pc]
+    rng = np.random.default_rng(5)
+    spot = np.hypot(xx - 100, yy - 40) < 12
+    pats = np.array([10.0 + rng.random((pr, pc)) + (k + 1) * 50.0 * spot + 7.0 * (xx > 150)
+                     for k in range(sr * sc)], dtype=np.float32)
+    scan = os.path.join(tmp, 'rowcol.im3')
+    write_im3(scan, pats)
+    bad = []
+
+    si = StackImage.from_file(scan, scan_shape=(sr, sc))
+    with redirect_stdout(StringIO()):
+        ret, data = si.generateBDF(center=(100.0, 40.0), rads=(5.0, 15.0), bShow=False)
+    r = np.hypot(xx - 100, yy - 40)
+    want = pats[:, (r >= 5) & (r <= 15)].sum(axis=1).reshape(sr, sc)
+    got = np.array(data, dtype=np.float64).reshape(si.dim[1], si.dim[0]) if ret == 0 else None
+    if got is None or got.shape != (sr, sc) or not np.allclose(got, want, rtol=1e-5):
+        bad.append(f'generateBDF: {None if got is None else got.shape}')
+
+    mask = ((xx > 120) & (yy < 30)).astype(np.float32)
+    mfile = os.path.join(tmp, 'rowcol_mask.im3')
+    write_im3(mfile, mask)
+    si = StackImage.from_file(scan, scan_shape=(sr, sc))
+    with redirect_stdout(StringIO()):
+        ret, data = si.generateMaskedImage(mfile, bShow=False)
+    want = pats[:, mask > 0.5].sum(axis=1).reshape(sr, sc)
+    got = np.array(data, dtype=np.float64).reshape(si.dim[1], si.dim[0]) if ret == 0 else None
+    if got is None or got.shape != (sr, sc) or not np.allclose(got, want, rtol=1e-5):
+        bad.append(f'generateMaskedImage: {None if got is None else got.shape}')
+
+    if bad:
+        print(f'RESULT FAIL {bad}')
+    else:
+        print(f'RESULT PASS bright/dark field and masked images of a {sr} x {sc} scan of '
+              f'{pr} x {pc} patterns match numpy')
+
+
+def check_rowcol():
+    import tempfile
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        code, out, err = run_child('rowcol', tmp)
+    line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
+    ok = code == 0 and line is not None and line.startswith('RESULT PASS')
+    return [('non-square scan images', ok, line[7:] if line else child_failure(code, err))]
+
+
 def check_files():
     import tempfile
     with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
@@ -456,6 +514,7 @@ def main():
         index_results, ref = run_indexing()
         results += index_results
         results += check_files()
+        results += check_rowcol()
     else:
         ref = None
 
@@ -508,5 +567,7 @@ if __name__ == '__main__':
             case_files(*rest)
         elif kind == 'nonsquare':
             case_nonsquare(*rest)
+        elif kind == 'rowcol':
+            case_rowcol(*rest)
         sys.exit(0)
     sys.exit(main())
