@@ -206,6 +206,15 @@ the one with the most patterns; choose another with *dataset*, its number or its
 Orientation maps
 ----------------
 
+.. admonition:: Experimental
+   :class: warning
+
+   Orientation mapping is experimental. It finds the right orientations on simulated scans and
+   gives the same result as *indexImage* on *al.img*, but it hasn't yet been validated against an
+   independent orientation map of real data, and its results depend on the peak search settings.
+   Check a map against patterns you can index by hand before relying on it. Its parameters,
+   defaults and results may change in later releases.
+
 :py:meth:`StackImage.mapOrientation <pyemaps.stackimg.StackImage.mapOrientation>` indexes every
 pattern of a scan against a database, and returns the crystal orientation at each scan point as
 an :py:class:`~pyemaps.orientmap.OrientationMap`. It takes the same parameters as
@@ -232,9 +241,8 @@ first, and check the map against patterns you can index by hand. ``(2, 2)`` comp
 on a logarithmic scale, and ``(5, 5)`` compares peak positions only. On simulated patterns of
 Aluminium and Silicon, with their intensities randomly changed as dynamical diffraction changes
 them, both found the right orientation for 75 to 80% of the patterns, against 25 to 30% for the
-default ``(1, 2)``. Orientation mapping hasn't yet been validated against an independent map of
-real data. The reliability index depends on the settings and the data, so compare it only
-between maps made the same way.
+default ``(1, 2)``. The reliability index depends on the settings and the data, so compare it
+only between maps made the same way.
 
 The map holds, for each pattern:
 
