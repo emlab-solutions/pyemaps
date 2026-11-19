@@ -366,6 +366,88 @@ def case_orientmap(dbfn, tmp):
               f'blank pattern not indexed')
 
 
+def case_peaksnr():
+    '''
+    Peak search on a lattice of spots over a noisy background: without min_snr a low
+    threshold also picks up the noise; with it, the spots and little else.
+    '''
+    import numpy as np
+    from io import StringIO
+    from contextlib import redirect_stdout
+    from pyemaps import StackImage, E_NPY
+    from pyemaps.errors import XDPImageError
+    from pyemaps.stackimg import stem4d, ediom, _search_peaks
+
+    size, c, sigma = 200, (99.5, 100.5), 3.0
+    a = np.radians(17.0)
+    u, v = 22.0 * np.array([np.cos(a), np.sin(a)]), 22.0 * np.array([-np.sin(a), np.cos(a)])
+    spots = [c + i * u + j * v for i in range(-5, 6) for j in range(-5, 6)]
+    spots = np.array([p for p in spots if 15 < np.hypot(*(p - c)) < 90])
+    yy, xx = np.mgrid[0:size, 0:size].astype(float)
+    img = 10.0 + 200.0 * np.exp(-((xx - c[0]) ** 2 + (yy - c[1]) ** 2) / (2 * 6.0 ** 2))
+    for x, y in spots:
+        img += 20.0 * np.exp(-((xx - x) ** 2 + (yy - y) ** 2) / (2 * sigma ** 2))
+    # spatially correlated noise, like the smooth ripples of a real (median-filtered) detector
+    # background: white noise alone seldom looks like a spot, so it wouldn't test min_snr
+    noise = np.random.default_rng(7).normal(0.0, 1.0, img.shape)
+    f = np.fft.fftfreq(size)
+    kernel = np.exp(-2 * (np.pi * 2.5) ** 2 * (f[:, None] ** 2 + f[None, :] ** 2))
+    noise = np.real(np.fft.ifft2(np.fft.fft2(noise) * kernel))
+    img += noise / noise.std()
+
+    si = StackImage(None, nformat=E_NPY)
+    si.data = img.astype(np.float32)
+    with redirect_stdout(StringIO()):
+        si.loadImage()
+    edc = stem4d.cvar.edc
+    stem4d.setVerbose(0)
+
+    def search(snr):
+        edc.sigma = sigma
+        edc.set_center(*c)
+        stem4d.prepareSearch(c[0], c[1], 10.0)
+        n = _search_peaks(10.0, 0.5, snr)
+        if n is None or n <= 0:
+            return np.zeros((0, 2))
+        ret, kd = ediom.getXKDif(n + 1)
+        pk = np.array([(k[0], k[1]) for k in kd], float)
+        return pk[np.hypot(pk[:, 0] - c[0], pk[:, 1] - c[1]) > 12]
+
+    def score(pk):
+        if len(pk) == 0:
+            return 0.0, 0
+        d = np.hypot(pk[:, None, 0] - spots[None, :, 0], pk[:, None, 1] - spots[None, :, 1])
+        return np.mean(d.min(0) <= 2.0), int(np.sum(d.min(1) > 2.0))
+
+    try:
+        loose = search(0.0)
+        strict = search(5.0)
+    except XDPImageError as e:
+        print(f'RESULT FAIL {e}')
+        return
+    try:
+        _search_peaks(10.0, 0.5, -1.0)
+        neg = False
+    except ValueError:
+        neg = True
+    rec0, false0 = score(loose)
+    rec5, false5 = score(strict)
+    print(f'PEAKSNR {len(spots)} spots; min_snr 0: {len(loose)} peaks, recall {rec0:.2f}, '
+          f'{false0} false; min_snr 5: {len(strict)} peaks, recall {rec5:.2f}, {false5} false')
+    bad = []
+    if len(loose) < 2 * len(spots):
+        bad.append(f'without min_snr only {len(loose)} peaks: the noise case no longer tests it')
+    if rec5 < 0.9 or false5 > 0.1 * len(spots):
+        bad.append(f'min_snr 5: recall {rec5:.2f}, {false5} false peaks')
+    if not neg:
+        bad.append('a negative min_snr was accepted')
+    if bad:
+        print(f'RESULT FAIL {bad}')
+    else:
+        print(f'RESULT PASS min_snr 5 finds {rec5:.0%} of {len(spots)} spots with {false5} false '
+              f'peaks; without it, {len(loose)} peaks')
+
+
 def run_child(*args):
     p = subprocess.run([sys.executable, str(Path(__file__).resolve()), '--case', *args],
                        capture_output=True, text=True, cwd=HERE)
@@ -511,6 +593,13 @@ def check_files():
     return [('TIFF files', ok, line[7:] if line else child_failure(code, err))]
 
 
+def check_peak_snr():
+    code, out, err = run_child('peaksnr')
+    line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
+    ok = code == 0 and line is not None and line.startswith('RESULT PASS')
+    return [('peak search min_snr', ok, line[7:] if line else child_failure(code, err))]
+
+
 def summary_line(lines, key):
     return next((l.strip() for l in lines if key in l), '')
 
@@ -536,6 +625,7 @@ def main():
         index_results, ref = run_indexing()
         results += index_results
         results += check_files()
+        results += check_peak_snr()
     else:
         ref = None
 
@@ -588,5 +678,7 @@ if __name__ == '__main__':
             case_files(*rest)
         elif kind == 'orientmap':
             case_orientmap(*rest)
+        elif kind == 'peaksnr':
+            case_peaksnr()
         sys.exit(0)
     sys.exit(main())
