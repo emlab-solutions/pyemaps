@@ -48,13 +48,13 @@ def index_image(image_file=IMAGE_FILE, name='Aluminium'):
     try:
         image.indexImage(db_file,
                          cc=29.0,                       # camera constant, pixels per 1/Å
-                         sigma=3.0,                     # estimated peak width, in pixels
+                         sigma=3.0,                     # peak width: half the FWHM, in pixels
                          img_center=(99.923, 99.919),   # pattern center, in pixels
                          rmin=10,                       # radius excluded around the center
                          search_box=10.0,               # peak search box size, in pixels
                          scaling_option=(1, 2),         # intensity scaling for matching
                          filter_threshold=0.0,          # 0 searches every database pattern
-                         peak_threshold=0.8)            # drops noisy peaks
+                         peak_threshold=0.8)            # how closely a peak's shape must match
     except XDPImageError as e:
         print(f'Failed to index the image: {e.message}')
         return -1

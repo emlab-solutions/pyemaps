@@ -744,7 +744,12 @@ class StackImage():
         :type dpdbfn: str
         :param cc: camera constant, in pixels per 1/Å.
         :type cc: float, optional
-        :param sigma: estimated width of the diffraction peaks, in pixels.
+        :param sigma: width of the diffraction peaks, in pixels. pyEMAPS draws a peak as a
+            Gaussian whose full width at half maximum is *sigma*: the starting kernel of the
+            peak search, and the peaks of the database patterns. Set it to about half the
+            measured full width at half maximum of the peaks: for *al.img*, whose peaks are
+            about 6 pixels wide at half height, 3.0. Much smaller or larger values find too few
+            peaks: for *al.img*, 2.5 and 6.0 both fail.
         :type sigma: float, optional
         :param img_center: center of the diffraction pattern ``(column, row)``, in pixels.
         :type img_center: tuple of float, optional
@@ -958,7 +963,8 @@ class StackImage():
         :type dpdbfn: str
         :param cc: camera constant, in pixels per 1/Å.
         :type cc: float, optional
-        :param sigma: estimated width of the diffraction peaks, in pixels.
+        :param sigma: width of the diffraction peaks, in pixels: about half their measured
+            full width at half maximum, as in *indexImage*.
         :type sigma: float, optional
         :param img_center: center of the diffraction patterns ``(column, row)``, in pixels.
         :type img_center: tuple of float, optional
