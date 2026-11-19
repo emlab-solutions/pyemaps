@@ -536,6 +536,7 @@ def run_indexing():
                 break
     ref = lines.get('file')
     results += check_orientmap(dbfn, ref)
+    results += check_firstpass(dbfn)
     try:
         os.remove(dbfn)
     except OSError:
@@ -556,6 +557,75 @@ def baseline_values(lines):
         return float(line.split(':')[-1].split()[0]) if line else None
     return (number('Best matching database DP'), number('DP rotation angle'),
             number('Reliability index'), number('Number of diffraction peaks indexed'))
+
+
+def case_firstpass(dbfn):
+    '''
+    Noisy [111] patterns whose spots are wider than the starting search kernel: no spot reaches
+    the default peak threshold with that kernel, so the search's first pass (which picks the spot
+    the kernel is refined from) finds nothing. It must retry looser, and the patterns must map.
+    '''
+    import numpy as np
+    from numpy.lib.stride_tricks import sliding_window_view
+    from pyemaps import StackImage, write_im3, OM_INDEXED
+    from pyemaps.orientmap import direct_basis, reciprocal_basis
+    from pyemaps.stackimg import stem4d
+
+    headless_plots()
+    StackImage.loadDPDB(dbfn)
+    ret, gmx = stem4d.getDPDBMetric(9)
+    A = direct_basis(gmx)
+    B = reciprocal_basis(A)
+    rng = np.random.default_rng(3)
+    truth = [zone_orientation((1, 1, 1), 17.0 + 7.0 * i, A) for i in range(12)]
+    pats = np.array([rng.poisson(synth_pattern(U, B) / 1000.0 * 200.0 + 5.0) for U in truth],
+                    dtype=np.float32)
+
+    # the starting kernel: a Gaussian whose full width at half maximum is sigma
+    sigma = INDEX_PARAMS['sigma']
+    n = 2 * int(sigma * 3 / 2) + 1
+    yy, xx = np.mgrid[0:n, 0:n] - n // 2
+    K = np.exp(-4 * np.log(2) * (xx ** 2 + yy ** 2) / sigma ** 2)
+    Kc = K - K.mean()
+    best = []
+    for p in pats:
+        w = sliding_window_view(p.astype(float), (n, n))
+        wc = w - w.mean(axis=(2, 3), keepdims=True)
+        den = np.sqrt((wc ** 2).sum(axis=(2, 3))) * np.sqrt((Kc ** 2).sum())
+        c = (wc * Kc).sum(axis=(2, 3)) / np.maximum(den, 1e-12)
+        best.append(c.max())
+    # keep the patterns where no spot reaches the threshold with the starting kernel: without
+    # the fallback their search fails outright
+    thr = INDEX_PARAMS['peak_threshold']
+    keep = [i for i in range(len(pats)) if best[i] < thr]
+    if len(keep) < 4:
+        print(f'RESULT FAIL the case no longer tests the fallback: only {len(keep)} patterns have '
+              f'no spot matching the starting kernel at {thr}')
+        return
+    pats, truth, best = pats[keep], [truth[i] for i in keep], [best[i] for i in keep]
+
+    scan = os.path.join(os.path.dirname(dbfn), f'firstpass_{os.getpid()}.im3')
+    write_im3(scan, pats)
+    try:
+        m = StackImage(scan).mapOrientation(dbfn, scan_shape=(1, len(pats)), progress=False,
+                                            **INDEX_PARAMS)
+    finally:
+        os.remove(scan)
+    errs = [cubic_misorientation(truth[i], m.orientation[0, i])
+            if m.status[0, i] == OM_INDEXED else 180.0 for i in range(len(pats))]
+    if max(errs) > 1.0:
+        print(f'RESULT FAIL errors {np.round(errs, 2).tolist()} deg (best starting-kernel '
+              f'match {max(best):.2f})')
+    else:
+        print(f'RESULT PASS {len(pats)} noisy [111] patterns within 1 degree at peak_threshold '
+              f'{thr}, though no spot matches the starting kernel above {max(best):.2f}')
+
+
+def check_firstpass(dbfn):
+    code, out, err = run_child('firstpass', dbfn)
+    line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
+    ok = code == 0 and line is not None and line.startswith('RESULT PASS')
+    return [('peak search first-pass fallback', ok, line[7:] if line else child_failure(code, err))]
 
 
 def check_orientmap(dbfn, ref):
@@ -676,6 +746,8 @@ if __name__ == '__main__':
             case_index(*rest)
         elif kind == 'files':
             case_files(*rest)
+        elif kind == 'firstpass':
+            case_firstpass(*rest)
         elif kind == 'orientmap':
             case_orientmap(*rest)
         elif kind == 'peaksnr':
