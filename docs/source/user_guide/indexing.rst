@@ -30,7 +30,7 @@ current directory (see :doc:`../examples`). Run the example from that folder.
    image = StackImage('al.img')
    image.indexImage(db_file,
                     cc=29.0,                       # camera constant, pixels per 1/Å
-                    sigma=3.0,                     # peak width: half the FWHM, in pixels
+                    sigma=3.0,                     # half the peaks' full width at half maximum
                     img_center=(99.923, 99.919),   # pattern center, in pixels
                     rmin=10,                       # radius excluded around the center
                     search_box=10.0,               # peak search box size, in pixels
@@ -46,11 +46,11 @@ pattern that best matches the image. For all the parameters, see
 sample runs this whole example.
 
 *sigma* sets the width of a peak. pyEMAPS draws peaks as Gaussians whose full width at half
-maximum (FWHM) is *sigma*, both for the starting kernel of the peak search and for the database
-patterns, but the value that works is about half the FWHM you measure on your peaks. The peaks
-in *al.img* are about 6 pixels wide at half height, and *sigma* 3.0 indexes it best. From 3.5 to
-5.0 it finds the same orientation with fewer peaks indexed, and 2.5 or 6.0 find too few peaks
-to index at all.
+maximum is *sigma*, both for the starting kernel of the peak search and for the database
+patterns, but the value that works is about half the width you measure across your peaks at
+half their height. The peaks in *al.img* are about 6 pixels wide at half height, and *sigma* 3.0
+indexes it best. From 3.5 to 5.0 it finds the same orientation with fewer peaks indexed, and
+2.5 or 6.0 find too few peaks to index at all.
 
 Images from TIFF files
 ----------------------

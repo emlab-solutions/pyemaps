@@ -202,7 +202,7 @@ def map_scan(name='Aluminium', seed=1):
             m = StackImage(scan_file).mapOrientation(
                 db_file,
                 cc=CC,                          # camera constant, pixels per 1/Å
-                sigma=SIGMA,                    # peak width: half the FWHM, in pixels
+                sigma=SIGMA,                    # half the peaks' full width at half maximum
                 img_center=CENTER,              # pattern center (column, row), in pixels
                 rmin=10,                        # radius excluded around the center
                 search_box=10.0,                # peak search box size, in pixels

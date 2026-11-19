@@ -48,7 +48,7 @@ def index_image(image_file=IMAGE_FILE, name='Aluminium'):
     try:
         image.indexImage(db_file,
                          cc=29.0,                       # camera constant, pixels per 1/Å
-                         sigma=3.0,                     # peak width: half the FWHM, in pixels
+                         sigma=3.0,                     # half the peaks' full width at half maximum
                          img_center=(99.923, 99.919),   # pattern center, in pixels
                          rmin=10,                       # radius excluded around the center
                          search_box=10.0,               # peak search box size, in pixels
