@@ -444,31 +444,38 @@ def case_rowcol(tmp):
     write_im3(scan, pats)
     bad = []
 
-    si = StackImage.from_file(scan, scan_shape=(sr, sc))
-    with redirect_stdout(StringIO()):
-        ret, data = si.generateBDF(center=(100.0, 40.0), rads=(5.0, 15.0), bShow=False)
-    r = np.hypot(xx - 100, yy - 40)
-    want = pats[:, (r >= 5) & (r <= 15)].sum(axis=1).reshape(sr, sc)
-    got = np.array(data, dtype=np.float64).reshape(si.dim[1], si.dim[0]) if ret == 0 else None
-    if got is None or got.shape != (sr, sc) or not np.allclose(got, want, rtol=1e-5):
-        bad.append(f'generateBDF: {None if got is None else got.shape}')
+    # whole-pixel and fractional detectors: the centre and radii used to be cut to whole pixels
+    for (cx, cy), (r1, r2) in (((100.0, 40.0), (5.0, 15.0)), ((100.4, 39.6), (5.5, 14.7))):
+        si = StackImage.from_file(scan, scan_shape=(sr, sc))
+        with redirect_stdout(StringIO()):
+            ret, data = si.generateBDF(center=(cx, cy), rads=(r1, r2), bShow=False)
+        r = np.hypot(xx - cx, yy - cy)
+        want = pats[:, (r >= r1) & (r <= r2)].sum(axis=1).reshape(sr, sc)
+        got = np.array(data, dtype=np.float64).reshape(si.dim[1], si.dim[0]) if ret == 0 else None
+        if got is None or got.shape != (sr, sc) or not np.allclose(got, want, rtol=1e-5):
+            bad.append(f'generateBDF centre {(cx, cy)} radii {(r1, r2)}: '
+                       f'{None if got is None else got.shape}')
 
-    mask = ((xx > 120) & (yy < 30)).astype(np.float32)
-    mfile = os.path.join(tmp, 'rowcol_mask.im3')
-    write_im3(mfile, mask)
-    si = StackImage.from_file(scan, scan_shape=(sr, sc))
-    with redirect_stdout(StringIO()):
-        ret, data = si.generateMaskedImage(mfile, bShow=False)
-    want = pats[:, mask > 0.5].sum(axis=1).reshape(sr, sc)
-    got = np.array(data, dtype=np.float64).reshape(si.dim[1], si.dim[0]) if ret == 0 else None
-    if got is None or got.shape != (sr, sc) or not np.allclose(got, want, rtol=1e-5):
-        bad.append(f'generateMaskedImage: {None if got is None else got.shape}')
+    # float and 16-bit integer masks: integer masks used to be read as floats
+    mask = (xx > 120) & (yy < 30)
+    want = pats[:, mask].sum(axis=1).reshape(sr, sc)
+    for dtype in (np.float32, np.int16):
+        mfile = os.path.join(tmp, f'rowcol_mask_{np.dtype(dtype).name}.im3')
+        write_im3(mfile, mask.astype(dtype))
+        si = StackImage.from_file(scan, scan_shape=(sr, sc))
+        with redirect_stdout(StringIO()):
+            ret, data = si.generateMaskedImage(mfile, bShow=False)
+        got = np.array(data, dtype=np.float64).reshape(si.dim[1], si.dim[0]) if ret == 0 else None
+        if got is None or got.shape != (sr, sc) or not np.allclose(got, want, rtol=1e-5):
+            bad.append(f'generateMaskedImage, {np.dtype(dtype).name} mask: '
+                       f'{None if got is None else got.shape}')
 
     if bad:
         print(f'RESULT FAIL {bad}')
     else:
-        print(f'RESULT PASS bright/dark field and masked images of a {sr} x {sc} scan of '
-              f'{pr} x {pc} patterns match numpy')
+        print(f'RESULT PASS bright/dark field (whole-pixel and fractional detector) and masked '
+              f'images (float and int16 mask) of a {sr} x {sc} scan of {pr} x {pc} patterns '
+              f'match numpy')
 
 
 def check_rowcol():
