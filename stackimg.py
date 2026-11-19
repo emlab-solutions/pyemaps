@@ -520,7 +520,7 @@ class StackImage():
         """
         nr, nc = MAX_IMAGESIZE, MAX_IMAGESIZE
         
-        img1d = np.ascontiguousarray(np.zeros(shape=(nc,nr)), dtype=np.float32)
+        img1d = np.ascontiguousarray(np.zeros(shape=(nr,nc)), dtype=np.float32)
        
         nPeaks = ediom.DPGetCurrentImage(img1d)
         if nPeaks <=0:
@@ -538,7 +538,7 @@ class StackImage():
             print(f'Python ----Failed to get diffraction disks list')
             return -1
         displayXImage(img1d, 
-                      fsize=(nc,nr), 
+                      fsize=(nr,nc), 
                       iShow=True, 
                       ds=kdisk,
                       suptitle = 'Matching Database Diffraction Pattern')

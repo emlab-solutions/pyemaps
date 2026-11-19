@@ -504,6 +504,78 @@ def check_loading():
     return results
 
 
+# al.img (200 x 200) placed in larger canvases: (rows, columns) and its top-left (row, column).
+NONSQUARE_CASES = {
+    'wide':     ((200, 300), (0, 50)),
+    'tall':     ((300, 200), (50, 0)),
+    'wide_off': ((220, 330), (13, 71)),
+    'tall_off': ((330, 220), (71, 13)),
+    'square300_wide': ((300, 300), (0, 50)),     # the 'wide' pattern on a square canvas
+}
+RESULT_KEYS = ('Best matching database DP', 'DP rotation angle', 'Reliability index',
+               'Number of diffraction peaks indexed', 'correlation maximum')
+
+
+def case_nonsquare(name, dbfn):
+    '''Index al.img placed in a larger canvas, with the pattern center moved to match.'''
+    import numpy as np
+    from pyemaps import StackImage, E_NPY
+
+    headless_plots()
+    al = StackImage(str(ALIMG))
+    al.loadImage()
+    ncol, nrow, _ = al.dim
+    a = np.array(al.data, dtype=np.float32).reshape(nrow, ncol)
+    (rows, cols), (r0, c0) = NONSQUARE_CASES[name]
+    img = np.full((rows, cols), np.median(np.r_[a[0], a[-1], a[:, 0], a[:, -1]]), np.float32)
+    img[r0:r0 + nrow, c0:c0 + ncol] = a
+    si = StackImage(None, nformat=E_NPY)
+    si.data = img
+    params = dict(INDEX_PARAMS)
+    params['img_center'] = (params['img_center'][0] + c0, params['img_center'][1] + r0)
+    sys.stdout.flush()
+    ret = si.indexImage(dbfn, **params)
+    sys.stdout.flush()
+    print(f'INDEXRET {ret}', flush=True)
+
+
+def result_values(lines):
+    '''The values of RESULT_KEYS in indexing output lines, as strings (None if missing).'''
+    return [next((l.split(':')[-1].split()[0] for l in lines if k in l), None) for k in RESULT_KEYS]
+
+
+def check_nonsquare(dbfn, ref):
+    '''
+    Non-square patterns used to overrun the indexing buffers (heap corruption) or index a
+    cut-short pattern. Placed in a non-square canvas, al.img must index as it does alone: same
+    pattern and peaks, rotation within 0.05 degree. The wide canvas must also give exactly the
+    result of the same pattern on a square canvas of the same width.
+    '''
+    results, got = [], {}
+    for name in NONSQUARE_CASES:
+        code, out, err = run_child('nonsquare', name, dbfn)
+        ret_line = next((l for l in out.splitlines() if l.startswith('INDEXRET')), None)
+        if code == 0 and ret_line == 'INDEXRET 0':
+            got[name] = result_values(index_result_lines(out))
+        else:
+            results.append((f'non-square {name}', False, ret_line or child_failure(code, err)))
+    base = result_values(ref) if ref is not None else None
+    for name, v in got.items():
+        if name.startswith('square') or base is None:
+            continue
+        (rows, cols), _ = NONSQUARE_CASES[name]
+        ok = (v[0] == base[0] and v[3] == base[3] and abs(float(v[1]) - float(base[1])) < 0.05
+              and float(v[2]) >= 5.0)
+        msg = (f'{rows} x {cols}: pattern {v[0]}, rotation {v[1]}, reliability {v[2]}, {v[3]} indexed'
+               + ('' if ok else f'; al.img alone: {base[:4]}'))
+        results.append((f'non-square {name}', ok, msg))
+    if 'wide' in got and 'square300_wide' in got:
+        same = got['wide'] == got['square300_wide']
+        results.append(('non-square wide == square canvas', same, 'identical' if same else
+                        f"{got['wide']} vs {got['square300_wide']}"))
+    return results
+
+
 def run_indexing():
     '''Generate the Aluminium database and index al.img every way. Returns (results, lines).'''
     import tempfile
@@ -535,6 +607,7 @@ def run_indexing():
             if mode == 'file' and not ok:
                 break
     ref = lines.get('file')
+    results += check_nonsquare(dbfn, ref)
     results += check_orientmap(dbfn, ref)
     results += check_firstpass(dbfn)
     try:
@@ -550,6 +623,69 @@ def run_indexing():
     return results, ref
 
 
+def case_rowcol(tmp):
+    '''
+    Bright/dark field and masked images of a non-square scan (3 x 5) of non-square patterns
+    (120 x 170), against the same sums in numpy. Every pattern is different and asymmetric, so
+    swapped rows and columns, in the scan or in a pattern, give a different image.
+    '''
+    import numpy as np
+    from io import StringIO
+    from contextlib import redirect_stdout
+    from pyemaps import StackImage, write_im3
+
+    headless_plots()
+    sr, sc, pr, pc = 3, 5, 120, 170
+    yy, xx = np.mgrid[0:pr, 0:pc]
+    rng = np.random.default_rng(5)
+    spot = np.hypot(xx - 100, yy - 40) < 12
+    pats = np.array([10.0 + rng.random((pr, pc)) + (k + 1) * 50.0 * spot + 7.0 * (xx > 150)
+                     for k in range(sr * sc)], dtype=np.float32)
+    scan = os.path.join(tmp, 'rowcol.im3')
+    write_im3(scan, pats)
+    bad = []
+
+    # whole-pixel and fractional detectors: the centre and radii used to be cut to whole pixels
+    for (cx, cy), (r1, r2) in (((100.0, 40.0), (5.0, 15.0)), ((100.4, 39.6), (5.5, 14.7))):
+        si = StackImage.from_file(scan, scan_shape=(sr, sc))
+        with redirect_stdout(StringIO()):
+            ret, data = si.generateBDF(center=(cx, cy), rads=(r1, r2), bShow=False)
+        r = np.hypot(xx - cx, yy - cy)
+        want = pats[:, (r >= r1) & (r <= r2)].sum(axis=1).reshape(sr, sc)
+        got = np.array(data, dtype=np.float64).reshape(si.dim[1], si.dim[0]) if ret == 0 else None
+        if got is None or got.shape != (sr, sc) or not np.allclose(got, want, rtol=1e-5):
+            bad.append(f'generateBDF centre {(cx, cy)} radii {(r1, r2)}: '
+                       f'{None if got is None else got.shape}')
+
+    # float and 16-bit integer masks: integer masks used to be read as floats
+    mask = (xx > 120) & (yy < 30)
+    want = pats[:, mask].sum(axis=1).reshape(sr, sc)
+    for dtype in (np.float32, np.int16):
+        mfile = os.path.join(tmp, f'rowcol_mask_{np.dtype(dtype).name}.im3')
+        write_im3(mfile, mask.astype(dtype))
+        si = StackImage.from_file(scan, scan_shape=(sr, sc))
+        with redirect_stdout(StringIO()):
+            ret, data = si.generateMaskedImage(mfile, bShow=False)
+        got = np.array(data, dtype=np.float64).reshape(si.dim[1], si.dim[0]) if ret == 0 else None
+        if got is None or got.shape != (sr, sc) or not np.allclose(got, want, rtol=1e-5):
+            bad.append(f'generateMaskedImage, {np.dtype(dtype).name} mask: '
+                       f'{None if got is None else got.shape}')
+
+    if bad:
+        print(f'RESULT FAIL {bad}')
+    else:
+        print(f'RESULT PASS bright/dark field (whole-pixel and fractional detector) and masked '
+              f'images (float and int16 mask) of a {sr} x {sc} scan of {pr} x {pc} patterns '
+              f'match numpy')
+
+
+def check_rowcol():
+    import tempfile
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        code, out, err = run_child('rowcol', tmp)
+    line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
+    ok = code == 0 and line is not None and line.startswith('RESULT PASS')
+    return [('non-square scan images', ok, line[7:] if line else child_failure(code, err))]
 def baseline_values(lines):
     '''Best matching pattern, rotation, reliability index and peaks indexed from result lines.'''
     def number(key):
@@ -695,6 +831,7 @@ def main():
         index_results, ref = run_indexing()
         results += index_results
         results += check_files()
+        results += check_rowcol()
         results += check_peak_snr()
     else:
         ref = None
@@ -746,6 +883,10 @@ if __name__ == '__main__':
             case_index(*rest)
         elif kind == 'files':
             case_files(*rest)
+        elif kind == 'nonsquare':
+            case_nonsquare(*rest)
+        elif kind == 'rowcol':
+            case_rowcol(*rest)
         elif kind == 'firstpass':
             case_firstpass(*rest)
         elif kind == 'orientmap':
