@@ -16,6 +16,8 @@ pyEMAPS also ships with Jupyter notebooks that walk through the samples step by 
 copies both. Files already in those folders aren't overwritten, so copying again keeps your
 changes. To read them with their results, without running anything, see the
 `notebooks folder <https://github.com/emlab-solutions/pyemaps/tree/main/notebooks>`_ on GitHub.
+The two 4D-STEM indexing notebooks are also shown here with their results:
+:doc:`notebooks/al_ediom` and :doc:`notebooks/al_orientmap`.
 
 .. container:: pe-gallery
 
@@ -63,7 +65,17 @@ changes. To read them with their results, without running anything, see the
 
          Generates an Aluminium pattern database and indexes the sample image *al.img*.
 
-         Guide: :doc:`user_guide/indexing`
+         Guide: :doc:`user_guide/indexing`.
+         Notebook: :doc:`notebooks/al_ediom`
+
+      .. grid-item-card:: al_orientmap.py :bdg-info:`Licensed`
+         :img-top: _static/images/orientmap.png
+
+         An orientation map of a synthetic Aluminium 4D-STEM scan, compared with the true
+         orientations. Experimental.
+
+         Guide: :doc:`user_guide/indexing`.
+         Notebook: :doc:`notebooks/al_orientmap`
 
 More samples
 ------------
@@ -73,8 +85,6 @@ More samples
 * *si_scm.py*: the scattering matrix, eigenvalues and diffracted beams of a Bloch session.
 * *al_dpgen.py*: generates a diffraction pattern database for Aluminium, used by 4D-STEM
   indexing. :bdg-info:`Licensed`
-* *al_orientmap.py*: an orientation map of a synthetic Aluminium 4D-STEM scan, compared with
-  the true orientations. See :doc:`user_guide/indexing`. :bdg-info:`Licensed`
 * *convert_image.py*: converts a raw image into pyEMAPS' small-header image format.
   :bdg-info:`Licensed`
 * *adf.py*: annular bright and dark field images and a masked image from an experimental

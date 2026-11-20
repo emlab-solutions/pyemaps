@@ -175,6 +175,8 @@ test/sanity/output*
 
 # docs
 *docs/.doctrees
+# the notebooks docs/source/conf.py copies from notebooks/ at each build
+docs/source/notebooks/
 
 # wav files
 *.wav

@@ -25,7 +25,43 @@ extensions = [
     'sphinx_design',
     'sphinx_copybutton',
     'sphinx_reredirects',
+    'myst_nb',
 ]
+
+# -- Notebooks ----------------------------------------------------------------
+# The 4D-STEM notebooks are shown with the results saved in them; they aren't run, since the
+# docs build has no pyEMAPS license. They're copied from the repository's notebooks folder at
+# each build (into the gitignored notebooks/ here), so that folder keeps the only copy.
+# A link to a notebook the docs don't show goes to that notebook on GitHub instead.
+import json
+import os
+import re
+
+_nb_src = os.path.join(os.path.dirname(__file__), '..', '..', 'notebooks')
+_nb_dst = os.path.join(os.path.dirname(__file__), 'notebooks')
+_nb_shown = ('al_ediom.ipynb', 'al_orientmap.ipynb')
+_nb_github = 'https://github.com/emlab-solutions/pyemaps/blob/main/notebooks/'
+
+
+def _nb_link(m):
+    name = m.group(1)
+    return m.group(0) if name in _nb_shown else f']({_nb_github}{name})'
+
+
+os.makedirs(_nb_dst, exist_ok=True)
+for _nb in _nb_shown:
+    with open(os.path.join(_nb_src, _nb), encoding='utf-8') as f:
+        _data = json.load(f)
+    for _cell in _data['cells']:
+        if _cell['cell_type'] == 'markdown':
+            _cell['source'] = [re.sub(r'\]\(([\w.-]+\.ipynb)\)', _nb_link, line)
+                               for line in _cell['source']]
+    with open(os.path.join(_nb_dst, _nb), 'w', encoding='utf-8') as f:
+        json.dump(_data, f, ensure_ascii=False, indent=1)
+
+nb_execution_mode = 'off'
+# the notebooks write math as $...$, as Jupyter does
+myst_enable_extensions = ['dollarmath']
 
 html_favicon = 'pyemaps.ico'
 
