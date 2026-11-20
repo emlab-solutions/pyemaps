@@ -2,9 +2,9 @@ Number of peaks found: 27
 -----------------Diffraction Pattern(DP) Indexing Results--------------------
 ***** DP stack loaded and indexed: 1
 ***** Best matching database DP: 1715
-***** DP rotation angle: 284.192 (degrees)
+***** DP rotation angle: 284.191 (degrees)
 ***** Number of diffraction peaks indexed: 11
-***** Experimental and database DP correlation maximum: 0.988329
+***** Experimental and database DP correlation maximum: 0.988306
 ***** Beam direction: 0.0575418 0.0599394 0.232559
 ***** Reliability index (> 5.0): 30.5407
 Diffraction Database loaded successfully.
