@@ -48,8 +48,10 @@ Reading experimental patterns is free: TIFF, Gatan DigitalMicrograph (``.dm3``, 
 MRC, Quantum Detectors Merlin (``.mib``), PNG, BMP, JPEG and NumPy files, single images, stacks
 and 4D-STEM scans, with no other package, and EMD files from
 Thermo Fisher Velox or in the Berkeley EMD format, including py4DSTEM's 4D-STEM datacubes. See
-:ref:`Images from TIFF files`, :ref:`Images from DigitalMicrograph files`,
-:ref:`Images from MRC, Merlin and other files` and :ref:`Images from EMD files`.
+:ref:`user_guide/indexing:Images from TIFF files`,
+:ref:`user_guide/indexing:Images from DigitalMicrograph files`,
+:ref:`user_guide/indexing:Images from MRC, Merlin and other files` and
+:ref:`user_guide/indexing:Images from EMD files`.
 
 In development
 --------------
