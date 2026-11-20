@@ -6,6 +6,18 @@ with the patterns in a database that pyEMAPS' DPGEN module generates. The crysta
 and phase come from the database pattern that fits best. This feature requires
 :ref:`License Activation`.
 
+.. seealso::
+
+   Two notebooks run these steps end to end, shown here with their plots and output:
+   :doc:`../notebooks/al_ediom` indexes the sample image *al.img*, and
+   :doc:`../notebooks/al_orientmap` maps the orientations of a synthetic scan.
+
+.. toctree::
+   :hidden:
+
+   ../notebooks/al_ediom
+   ../notebooks/al_orientmap
+
 First, generate a DP database for the crystal, here Aluminium:
 
 .. code-block:: python
@@ -246,8 +258,9 @@ a large scan with *scan_roi*. Pressing Ctrl+C stops the run and returns the patt
 The sample *al_orientmap.py* shows a whole run on a synthetic scan: four Aluminium grains of
 known orientation, with counting noise. It maps the scan and compares the map with the truth.
 Most patterns come out within 1 degree of their true orientation; the few the map can't index
-reliably are black. The notebook *al_orientmap.ipynb* walks through the same run step by step,
-with the choice of settings and how to read the map (``pyemaps -cp notebooks`` copies it).
+reliably are black. The notebook :doc:`../notebooks/al_orientmap` walks through the same run
+step by step, with the choice of settings and how to read the map. It's shown here with its
+results; ``pyemaps -cp notebooks`` copies it to run yourself.
 
 *peak_threshold* tests how closely a peak's shape matches the search kernel, not how bright it
 is. The default (0.825) suits clean patterns such as selected area diffraction, but in a scan
