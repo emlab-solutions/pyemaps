@@ -1,6 +1,36 @@
 Release Notes
 =============
 
+Version 2.6.0 Stable
+--------------------
+
+11-20-2026
+~~~~~~~~~~
+
+Changes
+~~~~~~~
+
+From emaps 2.3.0:
+
+- emaps is built with the Intel Fortran Compiler ``ifx`` 2026.2 and Intel oneMKL 2026.2, instead of the classic Intel Fortran Compiler and oneMKL 2022.1. Some simulation results can differ from earlier versions in the last few digits.
+- When 4D-STEM indexing finds no peak in a pattern, the pattern's correlation is reported as 0. Before, it was a leftover value from an earlier step.
+
+Improvements
+~~~~~~~~~~~~
+
+From emaps 2.3.0:
+
+- Bloch simulations with many beams are 6 to 10 times faster. A large Bloch run of SiAlON, for example, takes about 8 seconds instead of 52 on a 6-core laptop.
+- 4D-STEM indexing, :py:meth:`~pyemaps.stackimg.StackImage.indexImage` and :py:meth:`~pyemaps.stackimg.StackImage.mapOrientation`, is 4 to 10 times faster, and uses all the computer's cores. On a 6-core laptop, an orientation map takes about a sixth of a second per pattern instead of 0.7 to 1.6 seconds. The results are the same, with the rotation changing by at most 0.002 degrees.
+- The first licensed 4D-STEM call in each Python session takes about 0.1 seconds instead of 1 to 2: the license check no longer contacts the license server.
+- emaps sets the OpenMP environment variable ``KMP_BLOCKTIME`` to 0, unless you have set it, so its worker threads stop as soon as each parallel step ends. This speeds up 4D-STEM indexing and Bloch runs.
+- emaps' *COPYING* file lists Intel oneMKL 2026.2, the OpenMP runtime from the Intel Fortran Compiler 2026.2 and the C++ runtime from Visual Studio 2026, with their license terms.
+
+Other improvements:
+
+- The 4D-STEM notebooks, *al_ediom.ipynb* and *al_orientmap.ipynb*, are shown with their results in the documentation: see :doc:`user_guide/indexing`.
+- Requires ``emaps >= 2.3.0``.
+
 Version 2.5.0 Stable
 --------------------
 

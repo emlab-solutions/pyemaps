@@ -252,8 +252,9 @@ an :py:class:`~pyemaps.orientmap.OrientationMap`. It takes the same parameters a
    omap.show('rindex')      # the reliability index at each scan point
    omap.save('scan_map.npz')
 
-Indexing takes about a second per pattern, so a 64 x 64 scan takes over an hour. Read part of
-a large scan with *scan_roi*. Pressing Ctrl+C stops the run and returns the patterns done so far.
+Indexing uses all the computer's cores. On a 6-core laptop it takes about a sixth of a second
+per pattern, so a 64 x 64 scan takes about 11 minutes; larger patterns and databases take
+longer. Read part of a large scan with *scan_roi*. Pressing Ctrl+C stops the run and returns the patterns done so far.
 
 The sample *al_orientmap.py* shows a whole run on a synthetic scan: four Aluminium grains of
 known orientation, with counting noise. It maps the scan and compares the map with the truth.
