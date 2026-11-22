@@ -10,7 +10,7 @@ Reading image files
 -------------------
 
 .. automodule:: pyemaps.expimage
-   :members: read_image, write_im3, image_readers, ExperimentalImage
+   :members: read_image, image_datasets, write_im3, image_readers, ExperimentalImage
 
 Orientation maps
 ----------------

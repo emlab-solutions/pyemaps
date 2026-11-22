@@ -8,14 +8,54 @@
 # combination with the separately licensed backend, emaps.
 
 '''
-What the single-dataset image readers (MRC, Merlin, image files, NumPy) share: one image
-dataset per file, read pattern by pattern. :py:func:`~pyemaps.expimage.read_image` uses them.
+What the image readers share: the single-dataset readers (MRC, Merlin, image files, NumPy)
+have one image dataset per file, read pattern by pattern; all readers describe what kind of
+image a dataset is, and the files with several (DigitalMicrograph, EMD) choose one the same way.
+:py:func:`~pyemaps.expimage.read_image` uses them.
 '''
 import numpy as np
 
+# The kinds of image, in the order the default choice prefers them: pyEMAPS indexes diffraction
+# patterns, so they come first; an image whose kind the file doesn't tell (no calibration)
+# may be one.
+DIFFRACTION, UNKNOWN, REAL_SPACE, SPECTRUM_MAP = 'diffraction', 'unknown', 'real-space', 'spectrum map'
+KINDS = (DIFFRACTION, UNKNOWN, REAL_SPACE, SPECTRUM_MAP)
+
+_LENGTHS = {'m', 'mm', 'um', 'nm', 'pm', 'a', 'ang', 'angstrom', 'angstroms'}
+_ANGLES = {'rad', 'mrad', 'urad', 'deg', 'degree', 'degrees', '°'}
+
+
+def unit_kind(units):
+    '''
+    The kind of image a pattern axis in *units* belongs to: ``'diffraction'`` for reciprocal
+    lengths (``1/nm``, ``nm^-1``, ``1/m`` …) and scattering angles (``mrad`` …),
+    ``'real-space'`` for lengths (``m``, ``nm``, ``Å`` …), ``'unknown'`` for anything else,
+    including no units.
+    '''
+    if not isinstance(units, str):
+        return UNKNOWN
+    u = units.strip().lower().replace('µ', 'u').replace('μ', 'u').replace('å', 'a').replace(' ', '')
+    if not u:
+        return UNKNOWN
+    if u.startswith('1/') or u.endswith('^-1') or u.endswith('-1') or u in _ANGLES:
+        return DIFFRACTION
+    if u in _LENGTHS:
+        return REAL_SPACE
+    return UNKNOWN
+
+
+def calibration_kind(axes):
+    '''The kind of image with pattern *axes* (rows, columns), when both axes' units agree.'''
+    kinds = {unit_kind(a.get('units')) for a in axes or []}
+    return kinds.pop() if len(kinds) == 1 else UNKNOWN
+
 
 class Dataset:
-    '''One image dataset: its patterns' layout, calibration and metadata.'''
+    '''
+    One image dataset: its patterns' layout, calibration and metadata. The formats these
+    readers handle don't say reliably whether an image is a diffraction pattern, so its kind is
+    ``'unknown'``.
+    '''
 
     def __init__(self, name, nav_shape, pattern_shape, dtype, axes, metadata, read):
         self.name = name
@@ -25,6 +65,7 @@ class Dataset:
         self.axes = axes
         self.metadata = metadata
         self._read = read
+        self.kind = UNKNOWN
 
     @property
     def npatterns(self):
@@ -60,19 +101,21 @@ class SingleDatasetFile:
         return self.datasets[0]
 
 
-def default_dataset(datasets, skip=None):
+def default_dataset(datasets):
     '''
-    The dataset to read from a file with several when none is named: the one with the most
-    patterns, the first of them on a tie, passing over the datasets *skip* marks (a function
-    of a dataset, such as Velox's elemental maps) and single images that are all zero, as long
-    as another dataset is left; otherwise the first with the most patterns. Only single images
-    are checked for zeros, so choosing never reads a whole scan.
+    The dataset to read from a file with several when none is named: diffraction patterns
+    first, then images of unknown kind, then real-space images, then maps computed from a
+    spectrum image (each dataset's ``kind``); within a kind, the one with the most patterns,
+    the first of them on a tie. Single images that are all zero are passed over while another
+    dataset is left. Only single images are checked for zeros, so choosing never reads a whole
+    scan.
     '''
-    order = sorted(range(len(datasets)), key=lambda i: (-datasets[i].npatterns, i))
+    rank = {k: i for i, k in enumerate(KINDS)}
+    order = sorted(range(len(datasets)),
+                   key=lambda i: (rank.get(getattr(datasets[i], 'kind', UNKNOWN), 1),
+                                  -datasets[i].npatterns, i))
     for i in order:
         d = datasets[i]
-        if skip is not None and skip(d):
-            continue
         if d.npatterns == 1 and not np.any(d.read([0])):
             continue
         return d

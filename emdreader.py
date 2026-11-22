@@ -15,8 +15,8 @@ extension.
   patterns, with the microscope settings it records for each frame (high voltage, camera
   length, detector, pixel size …) and the title Velox displays each image under. Spectra in
   the same file (EDS, EELS) aren't images, and are skipped. The elemental maps Velox computes
-  from a spectrum image are images, but not of the sample's diffraction or structure, so the
-  default choice passes over them.
+  from a spectrum image are images, but not diffraction patterns, so the default choice takes
+  them last.
 - **Berkeley EMD** files (the open EMD format of the National Center for Electron Microscopy,
   versions 0.x and 1.0), including the 4D-STEM datacubes of py4DSTEM: arrays whose last two
   axes are the pattern, with the calibration of every axis.
@@ -30,7 +30,7 @@ import json
 
 import numpy as np
 
-from .readerbase import default_dataset
+from .readerbase import SPECTRUM_MAP, calibration_kind, default_dataset
 
 INSTALL_HINT = 'pip install "pyemaps[emd]"'
 
@@ -88,6 +88,8 @@ class EmdDataset:
         self._read = read
         self.title = title                     # Velox: the title it displays the image under
         self.spectrum_map = spectrum_map       # Velox: 'EELS' or 'EDS' for a map of a spectrum image
+        # diffraction patterns are calibrated in reciprocal lengths, images in lengths
+        self.kind = SPECTRUM_MAP if spectrum_map else calibration_kind(axes)
 
     @property
     def npatterns(self):
@@ -153,12 +155,13 @@ class EmdFile:
     def choose(self, dataset=None):
         '''
         The dataset to read: *dataset* (its number in :py:attr:`datasets`, its name, or for a
-        Velox file the title Velox displays it under, such as ``'DF-S'``), or by default the one
-        with the most patterns, the first of them on a tie, passing over Velox's elemental maps
-        and single images that are all zero while another dataset is left.
+        Velox file the title Velox displays it under, such as ``'DF-S'``), or by default as
+        :py:func:`~pyemaps.readerbase.default_dataset` chooses: diffraction patterns first,
+        Velox's elemental maps last, then the one with the most patterns, passing over single
+        images that are all zero while another dataset is left.
         '''
         if dataset is None:
-            return default_dataset(self.datasets, skip=lambda d: d.spectrum_map is not None)
+            return default_dataset(self.datasets)
         if isinstance(dataset, (int, np.integer)) and not isinstance(dataset, bool):
             if not 0 <= dataset < len(self.datasets):
                 raise EmdError(f'dataset must be 0 to {len(self.datasets) - 1} for {self.path}, '

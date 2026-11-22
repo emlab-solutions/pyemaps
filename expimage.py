@@ -24,8 +24,10 @@ Read experimental diffraction patterns from image files.
   with their calibration. EMD files need the h5py package: ``pip install "pyemaps[emd]"``;
 - pyEMAPS' own small-header files (``.im3``, ``.img``).
 
-It returns the patterns as numpy arrays, with the scan shape. pyEMAPS reads all of these
-itself, except EMD, with no other package. Reading files needs no license; analysing
+It returns the patterns as numpy arrays, with the scan shape. :py:func:`image_datasets` lists
+the images in a file without reading them, with the kind of each: diffraction patterns, which
+pyEMAPS indexes, real-space images such as STEM images, or maps computed from a spectrum image.
+pyEMAPS reads all of these itself, except EMD, with no other package. Reading files needs no license; analysing
 them with the 4D-STEM features does (see
 :py:meth:`StackImage.from_file <pyemaps.stackimg.StackImage.from_file>`).
 
@@ -38,6 +40,7 @@ import os
 import numpy as np
 
 from . import dmreader, emdreader, mibreader, mrcreader, picreader, tiffreader
+from .readerbase import UNKNOWN
 
 # pyEMAPS small-header files: an 8-byte header of four little-endian shorts (width, height,
 # number of patterns, data type), then the patterns, row by row. Data types above 10 are
@@ -57,13 +60,27 @@ class ExperimentalImage:
     Experimental diffraction patterns read from a file by :py:func:`read_image`: one pattern,
     or a stack of them, one per scan position.
     '''
-    def __init__(self, data, scan_shape, reader, axes, metadata, source):
+    def __init__(self, data, scan_shape, reader, axes, metadata, source, kind=UNKNOWN):
         self._data = data
         self._scan_shape = tuple(scan_shape)
         self._reader = reader
         self._axes = axes
         self._metadata = metadata
         self._source = source
+        self._kind = kind
+
+    @property
+    def kind(self):
+        '''
+        What the file says these images are: ``'diffraction'`` for diffraction patterns, which
+        the 4D-STEM features index (calibrated in reciprocal lengths or angles, such as 1/nm or
+        mrad); ``'real-space'`` for images of the sample, such as STEM images (calibrated in
+        lengths, such as nm); ``'spectrum map'`` for a map Velox computed from a spectrum image,
+        such as an elemental map; ``'unknown'`` when the file doesn't tell, as for TIFF, MRC,
+        Merlin, picture, NumPy and pyEMAPS files, and for DigitalMicrograph and EMD images
+        without a calibration.
+        '''
+        return self._kind
 
     @property
     def data(self):
@@ -136,9 +153,10 @@ class ExperimentalImage:
         return self._source
 
     def __repr__(self):
+        kind = f', {self._kind}' if self._kind != UNKNOWN else ''
         return (f'ExperimentalImage({os.path.basename(self._source)!r}: {self.npatterns} '
                 f'pattern(s) of {self.pattern_shape[0]} x {self.pattern_shape[1]}, '
-                f'scan {self._scan_shape}, {self._data.dtype}, read by {self._reader})')
+                f'scan {self._scan_shape}, {self._data.dtype}, read by {self._reader}{kind})')
 
 
 def image_readers():
@@ -176,11 +194,12 @@ def read_image(path, reader=None, binning=1, scan_roi=None, scan_shape=None, dat
     :type scan_shape: tuple of int, optional
     :param dataset: for a DigitalMicrograph or EMD file with several images, the one to read:
         its number, counting from 0, its name in the file, or for a Velox file the title Velox
-        shows it under, such as ``'DF-S'``. By default, the one with the most patterns, such as
-        the 4D-STEM scan rather than an overview image, passing over single images that are all
-        zero and the elemental maps Velox computes from a spectrum image, unless nothing else
-        is left. A file with several images lists them, with their titles, in the error for a
-        dataset it doesn't have.
+        shows it under, such as ``'DF-S'``. By default, diffraction patterns before images of
+        unknown kind, real-space images and Velox's elemental maps (see
+        :py:attr:`ExperimentalImage.kind`), and among those the one with the most patterns,
+        such as the 4D-STEM scan rather than an overview image, passing over single images that
+        are all zero unless nothing else is left. :py:func:`image_datasets` lists a file's
+        images; so does the error for a dataset the file doesn't have.
     :type dataset: int or str, optional
     :return: the patterns.
     :rtype: ExperimentalImage
@@ -202,6 +221,7 @@ def read_image(path, reader=None, binning=1, scan_roi=None, scan_shape=None, dat
         raise ValueError(f'dataset is for files with several images, such as DigitalMicrograph '
                          f'and EMD files; {path} is read by the {name} reader')
     calibration = None
+    kind = UNKNOWN
     if name == 'TIFF':
         with tiffreader.TiffFile(path) as tif:
             nav = _scan_shape(scan_shape, tif.npages, tif.scan_shape, path)
@@ -214,7 +234,7 @@ def read_image(path, reader=None, binning=1, scan_roi=None, scan_shape=None, dat
             nav = _scan_shape(scan_shape, ds.npatterns, ds.nav_shape, path)
             pages, nav = _roi_pages(nav, scan_roi)
             stack = ds.read(pages)
-            metadata, calibration = ds.metadata, ds.axes
+            metadata, calibration, kind = ds.metadata, ds.axes, ds.kind
     else:
         data = _read_small_header(path)
         stack = data.reshape(-1, *data.shape[-2:])
@@ -239,7 +259,61 @@ def read_image(path, reader=None, binning=1, scan_roi=None, scan_shape=None, dat
         axes.append({'name': c.get('name', axis), 'size': size,
                      'scale': float(c.get('scale', 1.0)) * binning,
                      'offset': float(c.get('offset', 0.0)), 'units': c.get('units', '')})
-    return ExperimentalImage(np.ascontiguousarray(stack), nav, name, axes, metadata, path)
+    return ExperimentalImage(np.ascontiguousarray(stack), nav, name, axes, metadata, path, kind)
+
+
+def image_datasets(path, reader=None):
+    '''
+    The images in a file, without reading their pixels: to see whether it holds diffraction
+    patterns, and which image :py:func:`read_image` reads by default.
+
+    :param path: the file, in any format :py:func:`read_image` reads.
+    :type path: str or os.PathLike
+    :param reader: the reader to use whatever the file's extension; see :py:func:`image_readers`.
+    :type reader: str, optional
+    :return: one dictionary per image, in the file's order: its ``dataset`` number (for
+        :py:func:`read_image`'s *dataset*), ``name``, ``title`` (the title Velox shows it
+        under, else None), ``kind`` (see :py:attr:`ExperimentalImage.kind`), ``scan_shape``
+        as the file records it, ``npatterns``, ``pattern_shape``, ``dtype``, and ``default``,
+        True for the image :py:func:`read_image` reads when no *dataset* is given.
+    :rtype: list of dict
+    :raise FileNotFoundError: if the file doesn't exist.
+    :raise ImportError: for an EMD file, if h5py isn't installed.
+    :raise ValueError: if the file isn't one these readers read.
+
+    For a DigitalMicrograph or EMD file with several images, telling the default reads the
+    single images that are candidates for it, to pass over those that are all zero.
+    '''
+    path = os.fspath(path)
+    if not os.path.isfile(path):
+        raise FileNotFoundError(f'Image file not found: {path}')
+    name = _choose_reader(path, reader)
+    out = []
+    if name == 'TIFF':
+        with tiffreader.TiffFile(path) as tif:
+            out.append(_describe(0, os.path.basename(path), None, UNKNOWN, tif.scan_shape,
+                                 tif.npages, tif.shape, tif.dtype, True))
+    elif name in OPENERS:
+        with OPENERS[name](path) as f:
+            chosen = f.choose(None)
+            for k, d in enumerate(f.datasets):
+                out.append(_describe(k, d.name, getattr(d, 'title', None),
+                                     getattr(d, 'kind', UNKNOWN), d.nav_shape, d.npatterns,
+                                     d.pattern_shape, d.dtype, d is chosen))
+    else:
+        data = _read_small_header(path)
+        n = data.shape[0] if data.ndim == 3 else 1
+        out.append(_describe(0, os.path.basename(path), None, UNKNOWN,
+                             (n,) if data.ndim == 3 else (), n, data.shape[-2:], data.dtype, True))
+        del data
+    return out
+
+
+def _describe(k, name, title, kind, scan_shape, npatterns, pattern_shape, dtype, default):
+    return {'dataset': k, 'name': name, 'title': title, 'kind': kind,
+            'scan_shape': tuple(int(n) for n in scan_shape), 'npatterns': int(npatterns),
+            'pattern_shape': tuple(int(n) for n in pattern_shape), 'dtype': str(np.dtype(dtype)),
+            'default': bool(default)}
 
 
 def write_im3(path, data):

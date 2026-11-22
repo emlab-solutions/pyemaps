@@ -26,7 +26,7 @@ import struct
 
 import numpy as np
 
-from .readerbase import default_dataset
+from .readerbase import calibration_kind, default_dataset
 
 
 class DMError(ValueError):
@@ -210,8 +210,9 @@ class DMFile:
     def choose(self, dataset=None):
         '''
         The image to read: *dataset* (its number in :py:attr:`datasets`, or its name), or by
-        default the one with the most patterns, the first of them on a tie, passing over single
-        images that are all zero while another image is left.
+        default as :py:func:`~pyemaps.readerbase.default_dataset` chooses: diffraction patterns
+        first, then the one with the most patterns, passing over single images that are all
+        zero while another image is left.
         '''
         if dataset is None:
             return default_dataset(self.datasets)
@@ -366,6 +367,8 @@ class _Dataset:
         self.metadata = metadata
         self._read = read
         self.npatterns = npatterns
+        # diffraction patterns are calibrated in reciprocal lengths, images in lengths
+        self.kind = calibration_kind(axes)
 
     def read(self, indices):
         '''Patterns *indices* (in scan order, ascending), as ``(n, rows, columns)``.'''

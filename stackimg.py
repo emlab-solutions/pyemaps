@@ -60,6 +60,38 @@ def _remove_quietly(path):
         pass
 
 
+def _warn_not_diffraction(img, path, reader):
+    '''
+    Warn when the file says the image read isn't diffraction patterns, which the 4D-STEM
+    features index: a real-space image (such as a STEM image) or a map computed from a spectrum
+    image. Images whose kind the file doesn't tell get no warning. Return the message, or None.
+    '''
+    import os
+    import warnings
+    from .readerbase import DIFFRACTION, REAL_SPACE, SPECTRUM_MAP
+    if img.kind not in (REAL_SPACE, SPECTRUM_MAP):
+        return None
+    from .expimage import image_datasets
+    what = ('a map computed from a spectrum image' if img.kind == SPECTRUM_MAP
+            else 'a real-space image, such as a STEM image')
+    title = img.metadata.get('title') if isinstance(img.metadata, dict) else None
+    label = f' ({title})' if title else ''
+    try:
+        found = [d for d in image_datasets(path, reader) if d['kind'] == DIFFRACTION]
+    except (OSError, ValueError, ImportError):
+        found = []
+    if found:
+        d = found[0]
+        named = f" ({d['title']})" if d['title'] else ''
+        hint = f" The file's diffraction patterns are dataset={d['dataset']}{named}."
+    else:
+        hint = ' The file holds no diffraction patterns.'
+    msg = (f'{os.path.basename(path)}: the image read{label} is {what}, not diffraction '
+           f'patterns, which indexing and orientation mapping need.{hint}')
+    warnings.warn(msg, UserWarning, stacklevel=3)
+    return msg
+
+
 def _search_peaks(search_box, peak_threshold, min_snr):
     '''
     Run the backend peak search. *min_snr* needs an emaps that has it; with 0, the search
@@ -358,6 +390,12 @@ class StackImage():
         :raise ImportError: for an EMD file, if h5py isn't installed.
         :raise ~pyemaps.errors.XDPImageError: if the file can't be read, or its patterns are the
             wrong size or too many; the message suggests the *binning* or *scan_roi* to use.
+
+        If the file says the image read isn't diffraction patterns (its
+        :py:attr:`~pyemaps.expimage.ExperimentalImage.kind` is a real-space image or a map
+        computed from a spectrum image), a ``UserWarning`` says so, and which dataset holds the
+        file's diffraction patterns, if any. :py:func:`~pyemaps.expimage.image_datasets` lists
+        a file's images and their kinds.
         """
         import os
         import tempfile
@@ -369,6 +407,7 @@ class StackImage():
                              scan_shape=scan_shape, dataset=dataset)
         except ValueError as e:
             raise XDPImageError(str(e)) from e
+        _warn_not_diffraction(img, path, reader)
         _check_stem4d_size(img)
 
         if img.npatterns == 1:
