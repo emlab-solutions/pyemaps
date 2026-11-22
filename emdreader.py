@@ -13,8 +13,10 @@ extension.
 
 - **Thermo Fisher Velox** files: the images and image series Velox saves, such as diffraction
   patterns, with the microscope settings it records for each frame (high voltage, camera
-  length, detector, pixel size …). Spectra in the same file (EDS, EELS) aren't images, and are
-  skipped.
+  length, detector, pixel size …) and the title Velox displays each image under. Spectra in
+  the same file (EDS, EELS) aren't images, and are skipped. The elemental maps Velox computes
+  from a spectrum image are images, but not of the sample's diffraction or structure, so the
+  default choice passes over them.
 - **Berkeley EMD** files (the open EMD format of the National Center for Electron Microscopy,
   versions 0.x and 1.0), including the 4D-STEM datacubes of py4DSTEM: arrays whose last two
   axes are the pattern, with the calibration of every axis.
@@ -27,6 +29,8 @@ It needs `h5py <https://www.h5py.org/>`_ (BSD license), an optional dependency: 
 import json
 
 import numpy as np
+
+from .readerbase import default_dataset
 
 INSTALL_HINT = 'pip install "pyemaps[emd]"'
 
@@ -73,7 +77,8 @@ class EmdDataset:
     without reading the pixels.
     '''
 
-    def __init__(self, name, nav_shape, pattern_shape, dtype, axes, metadata, read):
+    def __init__(self, name, nav_shape, pattern_shape, dtype, axes, metadata, read, title=None,
+                 spectrum_map=None):
         self.name = name                       # the dataset's path in the file
         self.nav_shape = tuple(nav_shape)      # () for one pattern
         self.pattern_shape = tuple(pattern_shape)
@@ -81,6 +86,8 @@ class EmdDataset:
         self.axes = axes                       # [rows, columns]: name, scale, offset, units
         self.metadata = metadata
         self._read = read
+        self.title = title                     # Velox: the title it displays the image under
+        self.spectrum_map = spectrum_map       # Velox: 'EELS' or 'EDS' for a map of a spectrum image
 
     @property
     def npatterns(self):
@@ -92,7 +99,11 @@ class EmdDataset:
 
     def describe(self):
         scan = ' x '.join(str(n) for n in self.nav_shape) or 'one'
-        return (f'{self.name}: {scan} pattern(s) of {self.pattern_shape[0]} x '
+        label = ''
+        if self.title:
+            kind = f', {self.spectrum_map} map' if self.spectrum_map else ''
+            label = f' ({self.title}{kind})'
+        return (f'{self.name}{label}: {scan} pattern(s) of {self.pattern_shape[0]} x '
                 f'{self.pattern_shape[1]} {self.dtype}')
 
 
@@ -141,11 +152,13 @@ class EmdFile:
 
     def choose(self, dataset=None):
         '''
-        The dataset to read: *dataset* (its number in :py:attr:`datasets`, or its name), or
-        by default the one with the most patterns, the first of them on a tie.
+        The dataset to read: *dataset* (its number in :py:attr:`datasets`, its name, or for a
+        Velox file the title Velox displays it under, such as ``'DF-S'``), or by default the one
+        with the most patterns, the first of them on a tie, passing over Velox's elemental maps
+        and single images that are all zero while another dataset is left.
         '''
         if dataset is None:
-            return max(self.datasets, key=lambda d: d.npatterns)
+            return default_dataset(self.datasets, skip=lambda d: d.spectrum_map is not None)
         if isinstance(dataset, (int, np.integer)) and not isinstance(dataset, bool):
             if not 0 <= dataset < len(self.datasets):
                 raise EmdError(f'dataset must be 0 to {len(self.datasets) - 1} for {self.path}, '
@@ -153,6 +166,9 @@ class EmdFile:
             return self.datasets[dataset]
         for d in self.datasets:
             if d.name == dataset or d.name.split('/')[-1] == dataset:
+                return d
+        for d in self.datasets:
+            if d.title is not None and d.title == dataset:
                 return d
         raise EmdError(f'No image dataset {dataset!r} in {self.path}; it has: '
                        + '; '.join(d.describe() for d in self.datasets))
@@ -170,6 +186,7 @@ class EmdFile:
 
     def _velox(self):
         data = self._f['Data']
+        titles = _velox_titles(self._f)
         for kind in data:
             if kind != VELOX_IMAGE:
                 self.skipped.append(f'Velox {kind} (not images)')
@@ -184,11 +201,14 @@ class EmdFile:
                     continue
                 rows, cols, frames = (int(n) for n in ds.shape)
                 md = _velox_metadata(g)
+                title, display_id = titles.get(uid, (None, None))
+                smap = _velox_spectrum_map(display_id)
                 self.datasets.append(EmdDataset(
                     name=f'Data/{kind}/{uid}', nav_shape=(frames,) if frames > 1 else (),
                     pattern_shape=(rows, cols), dtype=ds.dtype, axes=_velox_axes(md),
-                    metadata=_velox_summary(md, uid),
-                    read=lambda idx, ds=ds: np.moveaxis(ds[:, :, _index(idx)], 2, 0)))
+                    metadata=_velox_summary(md, uid, title, smap),
+                    read=lambda idx, ds=ds: np.moveaxis(ds[:, :, _index(idx)], 2, 0),
+                    title=title, spectrum_map=smap))
 
     # ------------------------------------------------------------------ Berkeley EMD
 
@@ -335,6 +355,64 @@ def _dim_axis(d, default):
     return axis
 
 
+def _json(ds):
+    '''A JSON text stored in an HDF5 dataset (a string, or bytes as Velox writes them), or None.'''
+    try:
+        v = ds[()]
+        if isinstance(v, np.ndarray) and v.dtype.kind == 'O':
+            v = v.ravel()[0] if v.size else ''
+        return json.loads(_text(v))
+    except (ValueError, TypeError, IndexError, AttributeError, OSError):
+        return None
+
+
+def _velox_titles(f):
+    '''
+    The title and id Velox displays each image under, by image id. Velox records its displays
+    in Displays/ImageDisplay: each refers to an entry of
+    SharedProperties/ImageSeriesDataReference, which gives the image's path, Data/Image/<id>.
+    Files without displays give no titles.
+    '''
+    out = {}
+    try:
+        displays = f['Displays/ImageDisplay']
+        items = [displays[k] for k in displays]
+    except (KeyError, TypeError, AttributeError, OSError):
+        return out
+    for item in items:
+        disp = _json(item) if not hasattr(item, 'keys') else None
+        if not isinstance(disp, dict) or not isinstance(disp.get('data'), str):
+            continue
+        try:
+            ref = f[disp['data']]
+        except (KeyError, ValueError, TypeError, OSError):
+            continue
+        target = _json(ref) if not hasattr(ref, 'keys') else None
+        path = target.get('dataPath') if isinstance(target, dict) else None
+        if not isinstance(path, str):
+            continue
+        uid = path.rstrip('/').split('/')[-1]
+        display_id = str(disp.get('id') or '')
+        title = str(disp.get('title') or display_id)
+        if uid and title and uid not in out:
+            out[uid] = (title, display_id)
+    return out
+
+
+def _velox_spectrum_map(display_id):
+    '''
+    'EELS' or 'EDS' for an image Velox computed from a spectrum image, such as an elemental
+    map: Velox gives their displays ids like "Ta-EELS". None otherwise.
+    '''
+    if not display_id:
+        return None
+    upper = display_id.upper()
+    for kind in ('EELS', 'EDS'):
+        if upper.endswith('-' + kind):
+            return kind
+    return None
+
+
 def _velox_metadata(g):
     '''The first frame's metadata, a JSON text stored as bytes in column 0 of "Metadata".'''
     if 'Metadata' not in g:
@@ -366,14 +444,14 @@ def _velox_axes(md):
     return out
 
 
-def _velox_summary(md, uid):
+def _velox_summary(md, uid, title=None, spectrum_map=None):
     '''The settings that matter for diffraction, plus the full metadata under "velox".'''
     optics = md.get('Optics', {}) if isinstance(md, dict) else {}
     br = md.get('BinaryResult', {}) if isinstance(md, dict) else {}
     inst = md.get('Instrument', {}) if isinstance(md, dict) else {}
     kv = _float(optics.get('AccelerationVoltage'))
     cl = _float(optics.get('CameraLength'))
-    return {'format': 'Velox', 'dataset': uid,
+    return {'format': 'Velox', 'dataset': uid, 'title': title, 'spectrum_map': spectrum_map,
             'high_voltage_kV': kv / 1000 if kv else None,
             'camera_length_m': cl,
             'detector': br.get('Detector'),

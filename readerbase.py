@@ -60,6 +60,25 @@ class SingleDatasetFile:
         return self.datasets[0]
 
 
+def default_dataset(datasets, skip=None):
+    '''
+    The dataset to read from a file with several when none is named: the one with the most
+    patterns, the first of them on a tie, passing over the datasets *skip* marks (a function
+    of a dataset, such as Velox's elemental maps) and single images that are all zero, as long
+    as another dataset is left; otherwise the first with the most patterns. Only single images
+    are checked for zeros, so choosing never reads a whole scan.
+    '''
+    order = sorted(range(len(datasets)), key=lambda i: (-datasets[i].npatterns, i))
+    for i in order:
+        d = datasets[i]
+        if skip is not None and skip(d):
+            continue
+        if d.npatterns == 1 and not np.any(d.read([0])):
+            continue
+        return d
+    return datasets[order[0]]
+
+
 def runs(idx):
     '''Consecutive runs in ascending indices *idx*, as (position in idx, first index, count).'''
     out, k = [], 0

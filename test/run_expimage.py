@@ -30,9 +30,12 @@ What it checks:
   complex MRC, raw Merlin, colour and 1-bit pictures and 1-D arrays refused; truncated files;
   Merlin scan_shape, .hdr settings, scan_roi and closed files.
 - EMD files in emddata/ (see emddata/make_fixtures.py): Velox series with their settings, a
-  real Velox image (CC BY 4.0) whose orientation matches Velox's thumbnail, Berkeley EMD 1.0
-  and 0.2, py4DSTEM datacubes with calibration; dataset choice, scan_roi, binning, refused
-  files, closed files, and the message when h5py is missing.
+  real Velox image (CC BY 4.0) whose orientation matches Velox's thumbnail, a Velox
+  spectrum-image layout with elemental maps and the titles Velox displays images under,
+  Berkeley EMD 1.0 and 0.2, py4DSTEM datacubes with calibration; dataset choice (by number,
+  name and title; the default passes over elemental maps and empty images), scan_roi,
+  binning, refused files, closed files, and the message when h5py is missing.
+- The default dataset choice the DM and EMD readers share (pyemaps.readerbase).
 - StackImage.from_file and convertImage(E_FILE), on full builds: single patterns, stacks
   through a temporary .im3 (byte-exact, removed afterwards), the scan width, and the size
   checks that ask for binning or scan_roi.
@@ -555,6 +558,58 @@ def c_emd_options():
     return 'dataset by name and number; scan_roi (2, 2) from (3, 4); binning scales calibration'
 
 
+@check('Velox titles: images named as Velox displays them, elemental maps marked and passed '
+       'over by default, empty images too, datasets chosen by title')
+def c_emd_velox_titles():
+    from pyemaps import read_image
+    from pyemaps.emdreader import EmdFile
+    fn = emd_file('velox_maps')
+    with EmdFile(fn) as f:
+        desc = [d.describe() for d in f.datasets]
+        titles = [(d.title, d.spectrum_map) for d in f.datasets]
+    assert titles == [('Ta', 'EELS'), ('Eu', 'EELS'), (None, None), ('DF-S', None),
+                      ('Ref DF-S', None)], titles
+    assert '(Ta, EELS map)' in desc[0] and '(DF-S)' in desc[3], desc
+    img = read_image(fn)                    # not the empty Ta map, the Eu map or the blank image
+    assert img.metadata['title'] == 'DF-S' and img.metadata['spectrum_map'] is None, img.metadata
+    eu = read_image(fn, dataset='Eu')
+    assert np.array_equal(eu.data, EMD_EXPECTED['velox_maps_eu'].astype(np.float32))
+    assert eu.metadata['spectrum_map'] == 'EELS' and eu.axes[0]['units'] == ''
+    ref = read_image(fn, dataset='Ref DF-S')
+    assert np.array_equal(ref.data, as_read_image(EMD_EXPECTED['velox_maps_ref']))
+    ta = read_image(fn, dataset='Ta')
+    assert not ta.data.any() and ta.metadata['title'] == 'Ta'
+    assert read_image(fn, dataset='1' * 32).metadata['title'] == 'Eu', 'by id'
+    raises(ValueError, lambda: read_image(fn, dataset='Fe'), 'No image dataset', '(Ta, EELS map)')
+    plain = read_image(emd_file('velox_series'))
+    assert plain.metadata['title'] is None and plain.metadata['spectrum_map'] is None
+    return 'default DF-S; by title Eu, Ref DF-S, Ta; by id; a file without displays has no titles'
+
+
+class _Stub:
+    '''A dataset for default_dataset: npatterns and read only.'''
+
+    def __init__(self, npatterns, zero=False, mark=False):
+        self.npatterns, self.zero, self.mark = npatterns, zero, mark
+
+    def read(self, idx):
+        assert self.npatterns == 1, 'a scan was read to choose'
+        return np.zeros((1, 2, 2)) if self.zero else np.ones((1, 2, 2))
+
+
+@check('default dataset: most patterns first; empty single images and marked datasets passed '
+       'over while another is left; scans never read to choose')
+def c_default_dataset():
+    from pyemaps.readerbase import default_dataset
+    zero, img, img2, scan = _Stub(1, zero=True), _Stub(1), _Stub(1), _Stub(9, zero=True)
+    assert default_dataset([zero, scan]) is scan, 'the scan, unread'
+    assert default_dataset([zero, img, img2]) is img, 'the first non-empty image'
+    assert default_dataset([zero]) is zero, 'the only image, even empty'
+    marked = _Stub(1, mark=True)
+    assert default_dataset([marked, zero, img], skip=lambda d: d.mark) is img
+    assert default_dataset([marked, zero], skip=lambda d: d.mark) is marked, 'nothing else left'
+
+
 @check('EMD files are closed after reading (can be deleted on Windows)')
 def c_emd_closed(tmp):
     from pyemaps import read_image
@@ -678,11 +733,13 @@ def main():
         c_img_good()
         c_img_bad(tmp)
         c_img_options(tmp)
+        c_default_dataset()
         if have_h5py():
             c_emd_good()
             c_emd_bad()
             c_emd_velox_orientation()
             c_emd_options()
+            c_emd_velox_titles()
             c_emd_closed(tmp)
             c_emd_missing()
         else:

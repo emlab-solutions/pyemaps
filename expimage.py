@@ -117,7 +117,9 @@ class ExperimentalImage:
         by name (``ImageDescription``, ``Software``, ``DateTime`` …), the ``compression``,
         and ``imagej`` or ``shaped`` with the settings ImageJ or tifffile recorded. For Velox
         files: ``high_voltage_kV``, ``camera_length_m``, ``detector`` and ``instrument``,
-        and the full metadata of the first frame under ``velox``. For Berkeley EMD files:
+        the ``title`` Velox shows the image under, ``spectrum_map`` (``'EELS'`` or ``'EDS'``
+        for an elemental map computed from a spectrum image, else None), and the full metadata
+        of the first frame under ``velox``. For Berkeley EMD files:
         the ``format``, the ``dataset`` and its ``attributes``, and the ``scan_axes``. For
         DigitalMicrograph files: ``high_voltage_kV`` and ``camera_length_mm`` when recorded,
         ``scan_axes``, the image's ``name``, and its tags under ``tags``. For MRC files: the
@@ -173,8 +175,12 @@ def read_image(path, reader=None, binning=1, scan_roi=None, scan_shape=None, dat
         shape the file recorded, or else a series of patterns.
     :type scan_shape: tuple of int, optional
     :param dataset: for a DigitalMicrograph or EMD file with several images, the one to read:
-        its number, counting from 0, or its name in the file. By default, the one with the most
-        patterns, such as the 4D-STEM scan rather than an overview image.
+        its number, counting from 0, its name in the file, or for a Velox file the title Velox
+        shows it under, such as ``'DF-S'``. By default, the one with the most patterns, such as
+        the 4D-STEM scan rather than an overview image, passing over single images that are all
+        zero and the elemental maps Velox computes from a spectrum image, unless nothing else
+        is left. A file with several images lists them, with their titles, in the error for a
+        dataset it doesn't have.
     :type dataset: int or str, optional
     :return: the patterns.
     :rtype: ExperimentalImage

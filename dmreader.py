@@ -26,6 +26,8 @@ import struct
 
 import numpy as np
 
+from .readerbase import default_dataset
+
 
 class DMError(ValueError):
     '''A file that isn't a DigitalMicrograph file this reader can read, with the reason.'''
@@ -208,10 +210,11 @@ class DMFile:
     def choose(self, dataset=None):
         '''
         The image to read: *dataset* (its number in :py:attr:`datasets`, or its name), or by
-        default the one with the most patterns, the first of them on a tie.
+        default the one with the most patterns, the first of them on a tie, passing over single
+        images that are all zero while another image is left.
         '''
         if dataset is None:
-            return max(self.datasets, key=lambda d: d.npatterns)
+            return default_dataset(self.datasets)
         if isinstance(dataset, (int, np.integer)) and not isinstance(dataset, bool):
             if not 0 <= dataset < len(self.datasets):
                 raise DMError(f'dataset must be 0 to {len(self.datasets) - 1} for {self.path}, '

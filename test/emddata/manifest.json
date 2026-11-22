@@ -105,6 +105,28 @@
    },
    "scan_shape": []
   },
+  "velox_maps": {
+   "axes": [
+    {
+     "name": "rows",
+     "scale": 6.5e-11,
+     "units": "m"
+    },
+    {
+     "name": "columns",
+     "scale": 6.5e-11,
+     "units": "m"
+    }
+   ],
+   "dtype": "<u2",
+   "meta": {
+    "detector": "DF-S",
+    "format": "Velox",
+    "spectrum_map": null,
+    "title": "DF-S"
+   },
+   "scan_shape": []
+  },
   "velox_series": {
    "axes": [
     {
