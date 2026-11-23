@@ -567,13 +567,15 @@ def c_emd_velox_titles():
     with EmdFile(fn) as f:
         desc = [d.describe() for d in f.datasets]
         titles = [(d.title, d.spectrum_map) for d in f.datasets]
-    assert titles == [('Ta', 'EELS'), ('Eu', 'EELS'), (None, None), ('DF-S', None),
-                      ('Ref DF-S', None)], titles
+    assert titles == [('Ta', 'EELS'), ('Eu', 'EELS'), (None, None), ('Dy', 'spectrum'),
+                      ('DF-S', None), ('Ref DF-S', None)], titles
     with EmdFile(fn) as f:
         kinds = [d.kind for d in f.datasets]
-    assert kinds == ['spectrum map'] * 2 + ['real-space'] * 3, kinds
-    assert '(Ta, EELS map)' in desc[0] and '(DF-S)' in desc[3], desc
-    img = read_image(fn)                    # not the empty Ta map, the Eu map or the blank image
+    assert kinds == ['spectrum map'] * 2 + ['real-space'] + ['spectrum map'] + \
+        ['real-space'] * 2, kinds
+    assert '(Ta, EELS map)' in desc[0] and '(Dy, spectrum map)' in desc[3] and \
+        '(DF-S)' in desc[4], desc
+    img = read_image(fn)        # not the empty Ta map, the Eu map, the blank image or the EDS map
     assert img.metadata['title'] == 'DF-S' and img.metadata['spectrum_map'] is None, img.metadata
     assert img.kind == 'real-space' and 'real-space' in repr(img), repr(img)
     eu = read_image(fn, dataset='Eu')
@@ -583,12 +585,16 @@ def c_emd_velox_titles():
     assert np.array_equal(ref.data, as_read_image(EMD_EXPECTED['velox_maps_ref']))
     ta = read_image(fn, dataset='Ta')
     assert not ta.data.any() and ta.metadata['title'] == 'Ta'
+    dy = read_image(fn, dataset='Dy')        # an EDS map: calibrated in metres, still a map
+    assert np.array_equal(dy.data, EMD_EXPECTED['velox_maps_dy'].astype(np.float32))
+    assert dy.kind == 'spectrum map' and dy.metadata['spectrum_map'] == 'spectrum', dy.metadata
     assert read_image(fn, dataset='1' * 32).metadata['title'] == 'Eu', 'by id'
     raises(ValueError, lambda: read_image(fn, dataset='Fe'), 'No image dataset', '(Ta, EELS map)')
     plain = read_image(emd_file('velox_series'))
     assert plain.metadata['title'] is None and plain.metadata['spectrum_map'] is None
     assert plain.kind == 'diffraction', plain.kind
-    return 'default DF-S; by title Eu, Ref DF-S, Ta; by id; a file without displays has no titles'
+    return ('default DF-S; by title Eu, Ref DF-S, Ta, Dy (an EDS map, by its detector); by id; '
+            'a file without displays has no titles')
 
 
 class _Stub:
@@ -645,8 +651,9 @@ def c_emd_image_datasets():
     assert got == [(0, 'Ta', 'spectrum map', (20, 30), False),
                    (1, 'Eu', 'spectrum map', (20, 30), False),
                    (2, None, 'real-space', (20, 30), False),
-                   (3, 'DF-S', 'real-space', (20, 30), True),
-                   (4, 'Ref DF-S', 'real-space', (32, 32), False)], got
+                   (3, 'Dy', 'spectrum map', (20, 30), False),
+                   (4, 'DF-S', 'real-space', (20, 30), True),
+                   (5, 'Ref DF-S', 'real-space', (32, 32), False)], got
     ds = image_datasets(emd_file('velox_series'))
     assert [(d['kind'], d['npatterns'], d['scan_shape'], d['default']) for d in ds] == \
         [('diffraction', 3, (3,), True), ('real-space', 1, (), False)], ds

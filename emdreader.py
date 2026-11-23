@@ -87,7 +87,7 @@ class EmdDataset:
         self.metadata = metadata
         self._read = read
         self.title = title                     # Velox: the title it displays the image under
-        self.spectrum_map = spectrum_map       # Velox: 'EELS' or 'EDS' for a map of a spectrum image
+        self.spectrum_map = spectrum_map       # Velox: 'EELS', 'EDS' or 'spectrum' for a map of a spectrum image
         # diffraction patterns are calibrated in reciprocal lengths, images in lengths
         self.kind = SPECTRUM_MAP if spectrum_map else calibration_kind(axes)
 
@@ -205,7 +205,7 @@ class EmdFile:
                 rows, cols, frames = (int(n) for n in ds.shape)
                 md = _velox_metadata(g)
                 title, display_id = titles.get(uid, (None, None))
-                smap = _velox_spectrum_map(display_id)
+                smap = _velox_spectrum_map(display_id, md)
                 self.datasets.append(EmdDataset(
                     name=f'Data/{kind}/{uid}', nav_shape=(frames,) if frames > 1 else (),
                     pattern_shape=(rows, cols), dtype=ds.dtype, axes=_velox_axes(md),
@@ -402,17 +402,31 @@ def _velox_titles(f):
     return out
 
 
-def _velox_spectrum_map(display_id):
+def _velox_spectrum_map(display_id, md=None):
     '''
-    'EELS' or 'EDS' for an image Velox computed from a spectrum image, such as an elemental
-    map: Velox gives their displays ids like "Ta-EELS". None otherwise.
+    For an image Velox computed from a spectrum image, such as an elemental map: 'EELS' or
+    'EDS' when its display id says which (Velox gives EELS maps ids like "Ta-EELS"), else
+    'spectrum' when the detector that recorded it is one of the file's analytical detectors
+    (a spectrometer: Velox gives EDS maps ids like "b", but their detector, such as "UltraX",
+    names the EDS detectors "UltraX1" ... "UltraX6"). None for any other image.
     '''
-    if not display_id:
+    if display_id:
+        upper = display_id.upper()
+        for kind in ('EELS', 'EDS'):
+            if upper.endswith('-' + kind):
+                return kind
+    if not isinstance(md, dict):
         return None
-    upper = display_id.upper()
-    for kind in ('EELS', 'EDS'):
-        if upper.endswith('-' + kind):
-            return kind
+    br = md.get('BinaryResult')
+    det = br.get('Detector') if isinstance(br, dict) else None
+    dets = md.get('Detectors')
+    if not isinstance(det, str) or not det or not isinstance(dets, dict):
+        return None
+    for d in dets.values():
+        if isinstance(d, dict) and d.get('DetectorType') == 'AnalyticalDetector':
+            name = d.get('DetectorName')
+            if isinstance(name, str) and name.startswith(det):
+                return 'spectrum'
     return None
 
 

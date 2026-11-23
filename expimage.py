@@ -134,8 +134,9 @@ class ExperimentalImage:
         by name (``ImageDescription``, ``Software``, ``DateTime`` …), the ``compression``,
         and ``imagej`` or ``shaped`` with the settings ImageJ or tifffile recorded. For Velox
         files: ``high_voltage_kV``, ``camera_length_m``, ``detector`` and ``instrument``,
-        the ``title`` Velox shows the image under, ``spectrum_map`` (``'EELS'`` or ``'EDS'``
-        for an elemental map computed from a spectrum image, else None), and the full metadata
+        the ``title`` Velox shows the image under, ``spectrum_map`` (for a map computed from a
+        spectrum image, such as an elemental map: ``'EELS'`` or ``'EDS'``, or ``'spectrum'`` when
+        the file doesn't say which; else None), and the full metadata
         of the first frame under ``velox``. For Berkeley EMD files:
         the ``format``, the ``dataset`` and its ``attributes``, and the ``scan_axes``. For
         DigitalMicrograph files: ``high_voltage_kV`` and ``camera_length_mm`` when recorded,
