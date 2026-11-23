@@ -7,6 +7,8 @@ perf_fname_dict = {
     'stereo': 'perf_baseline_stereo.json',
 }
 
+BLOCH_SKIP = ['SiAlONa']
+
 def get_baseline_fname(ty='dif'):
     import os
     from pathlib import Path
@@ -66,6 +68,10 @@ def run_perf(ty = 'dif', bBaseline = False):
     res_dict = {}
 
     for c in cblist:
+        # SiAlONa is the Bloch stress test's crystal (stress/bloch/zone.py): its Bloch run
+        # takes minutes, so the Bloch timings leave it out.
+        if ty == 'bloch' and c in BLOCH_SKIP:
+            continue
         tic = time.perf_counter()
         cc = cr.from_builtin(c)
 
@@ -84,7 +90,7 @@ def run_perf(ty = 'dif', bBaseline = False):
         except Exception:
             print(f'Failed to measure performance for {ty}')
             failure_count += 1
-            failure_cases.append[c]
+            failure_cases.append(c)
         else:
             res_dict[c] = float(toc-tic)
 
@@ -116,10 +122,9 @@ def run_perf(ty = 'dif', bBaseline = False):
                     print(f'{ty} + {n}: by {diff} or {percent}%')
                     continue
             else:
-                print(f'{ty} + {n}: ****no baseline perf data compared to current run: {v}')
-                # newData = {}
-                jBaseline[n] = v
-                update_baseline(ty=ty, data = sorted(jBaseline.items()))
+                # A run only compares: the baseline changes only with -bl.
+                print(f'{ty} ? {n}: ****no baseline perf data compared to current run: {v} '
+                      f'(run_perf_test.py -bl {ty} adds it)')
 
 
 
