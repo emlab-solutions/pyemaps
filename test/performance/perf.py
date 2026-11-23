@@ -84,7 +84,7 @@ def run_perf(ty = 'dif', bBaseline = False):
         except Exception:
             print(f'Failed to measure performance for {ty}')
             failure_count += 1
-            failure_cases.append[c]
+            failure_cases.append(c)
         else:
             res_dict[c] = float(toc-tic)
 
@@ -116,10 +116,9 @@ def run_perf(ty = 'dif', bBaseline = False):
                     print(f'{ty} + {n}: by {diff} or {percent}%')
                     continue
             else:
-                print(f'{ty} + {n}: ****no baseline perf data compared to current run: {v}')
-                # newData = {}
-                jBaseline[n] = v
-                update_baseline(ty=ty, data = sorted(jBaseline.items()))
+                # A run only compares: the baseline changes only with -bl.
+                print(f'{ty} ? {n}: ****no baseline perf data compared to current run: {v} '
+                      f'(run_perf_test.py -bl {ty} adds it)')
 
 
 

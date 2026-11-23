@@ -162,7 +162,12 @@ def get_test_cases(cdata_ty=TY_BUILTIN, feature = feat_list[0]):
     test_cases = []
     
     failed_cif_cases_list = ['1010115.cif', '1010195.cif', '1010197.cif', '1010198.cif']
+    # SiAlONa is the Bloch stress test's crystal (stress/bloch/zone.py, with its own
+    # baseline); the feature baselines don't include it.
+    stress_only_list = ['SiAlONa.xtl']
     for f in os.listdir(data_dir):
+        if f in stress_only_list:
+            continue
         if f not in failed_cif_cases_list and f.endswith(data_ext):
             if feature == 'bloch' and cdata_ty !=TY_BUILTIN and int(os.path.splitext(f)[0]) < 1010150:
                 continue
