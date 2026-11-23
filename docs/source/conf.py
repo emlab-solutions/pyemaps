@@ -78,6 +78,9 @@ autodoc_mock_imports = ['pyemaps.diffract.emaps',
                         'pyemaps.spg.spg']
 # Make sure the target is unique
 autosectionlabel_prefix_document = True
+# The release notes repeat the headings New, Changes and Improvements under every release, so
+# their labels can't be unique; nothing links to them. Duplicates in other pages still warn.
+suppress_warnings = ['autosectionlabel.rn']
 autodoc_preserve_defaults = True
 
 exclude_patterns = ['_build', '**.ipynb_checkpoints']

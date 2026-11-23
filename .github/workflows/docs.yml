@@ -61,8 +61,15 @@ jobs:
         run: |
           sphinx-build -E -b html docs\source docs\_build\html 2>&1 | Tee-Object -FilePath sphinx.log
           if ($LASTEXITCODE -ne 0) { exit 1 }
-          $warnings = (Select-String -Path sphinx.log -Pattern 'WARNING|ERROR').Count
+          # Case-sensitive, so Sphinx's closing "build succeeded, N warnings." line isn't counted.
+          $warnings = (Select-String -Path sphinx.log -Pattern 'WARNING|ERROR' -CaseSensitive).Count
           "Sphinx warnings and errors: $warnings" >> $env:GITHUB_STEP_SUMMARY
+          # A pull request must leave the docs free of warnings. A release or a manual run still
+          # deploys, and only reports them.
+          if ($warnings -gt 0 -and '${{ github.event_name }}' -eq 'pull_request') {
+            "::error::The docs build gave $warnings warnings or errors; see sphinx.log above."
+            exit 1
+          }
 
       - name: Upload the site for review
         if: github.event_name == 'pull_request'
