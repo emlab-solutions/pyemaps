@@ -7,6 +7,8 @@ perf_fname_dict = {
     'stereo': 'perf_baseline_stereo.json',
 }
 
+BLOCH_SKIP = ['SiAlONa']
+
 def get_baseline_fname(ty='dif'):
     import os
     from pathlib import Path
@@ -66,6 +68,10 @@ def run_perf(ty = 'dif', bBaseline = False):
     res_dict = {}
 
     for c in cblist:
+        # SiAlONa is the Bloch stress test's crystal (stress/bloch/zone.py): its Bloch run
+        # takes minutes, so the Bloch timings leave it out.
+        if ty == 'bloch' and c in BLOCH_SKIP:
+            continue
         tic = time.perf_counter()
         cc = cr.from_builtin(c)
 
