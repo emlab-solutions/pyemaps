@@ -28,6 +28,10 @@ What it checks:
   lattice, not the database), al.img and a blank pattern. The synthetic ones must come back
   within 1 degree of their orientation, al.img with the same result as indexImage (the
   baseline), the blank one unindexed, and nothing printed for each pattern.
+- rmax and database reach: al.img indexes the same with rmax=None and with the automatic
+  radius given explicitly (on an emaps without rmax, setting it says a newer emaps is needed);
+  rmax must exceed rmin; no reach warning for al.img with its database, a warning when the
+  camera constant makes the pattern reach beyond the database's reflections.
 
 Each case runs in its own process, so a crash in the native code fails that case instead
 of the whole run. indexImage always shows its plots; the indexing cases draw them off screen,
@@ -610,6 +614,7 @@ def run_indexing():
     results += check_nonsquare(dbfn, ref)
     results += check_orientmap(dbfn, ref)
     results += check_firstpass(dbfn)
+    results += check_rmaxreach(dbfn)
     try:
         os.remove(dbfn)
     except OSError:
@@ -757,6 +762,67 @@ def case_firstpass(dbfn):
               f'{thr}, though no spot matches the starting kernel above {max(best):.2f}')
 
 
+def case_rmaxreach(dbfn):
+    '''
+    rmax: None (the automatic outer radius) and the same radius given explicitly index al.img
+    the same, and rmax must exceed rmin; an emaps without rmax says it needs a newer one. The
+    database-reach check: quiet for al.img with this database, a warning when the camera
+    constant makes the pattern reach beyond the database's reflections.
+    '''
+    import warnings
+    import numpy as np
+    from pyemaps import StackImage
+    from pyemaps.errors import XDPImageError
+    from pyemaps.stackimg import _check_reach, _outer_radius
+
+    headless_plots()
+    si = StackImage(str(ALIMG))
+    kw = dict(INDEX_PARAMS, scan_shape=(1, 1), progress=False)
+    bad = []
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter('always')
+        m0 = si.mapOrientation(dbfn, **kw)
+    if any(issubclass(x.category, UserWarning) for x in w):
+        bad.append(f'unexpected warning for al.img: {w[0].message}')
+    auto = _outer_radius(INDEX_PARAMS['img_center'], si.dim, None)
+    try:
+        m1 = si.mapOrientation(dbfn, rmax=auto, **kw)
+        same = all(np.array_equal(getattr(m0, f), getattr(m1, f))
+                   for f in ('dp', 'rotation', 'rindex', 'nindexed'))
+        if not same:
+            bad.append(f'rmax={auto:.2f} (the automatic radius) indexes differently from rmax=None')
+        if m1.params.get('rmax') != auto:
+            bad.append(f'params record rmax {m1.params.get("rmax")}')
+        rmax_note = f'rmax=None and rmax={auto:.1f} index alike'
+    except XDPImageError as e:
+        if 'newer emaps' not in str(e):
+            bad.append(f'rmax: {e}')
+        rmax_note = 'this emaps has no rmax, and says so'
+    try:
+        si.mapOrientation(dbfn, rmax=INDEX_PARAMS['rmin'], **kw)
+        bad.append('rmax equal to rmin was accepted')
+    except ValueError:
+        pass
+    StackImage.loadDPDB(dbfn)
+    quiet = _check_reach(dbfn, INDEX_PARAMS['cc'], INDEX_PARAMS['img_center'], si.dim, None)
+    with warnings.catch_warnings(record=True):
+        warnings.simplefilter('always')
+        loud = _check_reach(dbfn, 10.0, INDEX_PARAMS['img_center'], si.dim, None)
+    if quiet is not None:
+        bad.append(f'reach warning for al.img: {quiet}')
+    if loud is None or 'gmax' not in loud:
+        bad.append('no reach warning with cc 10, which needs 6.7 1/Å')
+    print(f'RESULT FAIL {bad}' if bad else
+          f'RESULT PASS {rmax_note}; reach warning only when the database falls short')
+
+
+def check_rmaxreach(dbfn):
+    code, out, err = run_child('rmaxreach', dbfn)
+    line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
+    ok = code == 0 and line is not None and line.startswith('RESULT PASS')
+    return [('rmax and database reach', ok, line[7:] if line else child_failure(code, err))]
+
+
 def check_firstpass(dbfn):
     code, out, err = run_child('firstpass', dbfn)
     line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
@@ -893,5 +959,7 @@ if __name__ == '__main__':
             case_orientmap(*rest)
         elif kind == 'peaksnr':
             case_peaksnr()
+        elif kind == 'rmaxreach':
+            case_rmaxreach(*rest)
         sys.exit(0)
     sys.exit(main())

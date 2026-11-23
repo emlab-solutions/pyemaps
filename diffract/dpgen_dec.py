@@ -64,7 +64,11 @@ def add_dpgen(target):
         :ref:`Environment Variables <Environment Variables>`.
 
         :param emc: microscope and simulation controls. Its accelerating voltage, zone axis and
-            simulation controls are used.
+            simulation controls are used. For 4D-STEM indexing, the simulation controls' *gmax*
+            must reach as far out as the experimental peaks used: at least their outer radius
+            in pixels divided by the camera constant, in 1/Å (see
+            :py:meth:`~pyemaps.stackimg.StackImage.indexImage`). The default, 3.5, covers most
+            patterns; a smaller one leaves out reflections and tilted orientations index worse.
         :type emc: :py:class:`~pyemaps.emcontrols.EMControl`, optional
         :param xa: the crystal's horizontal axis, as three integers. Defaults to ``(0, 0, 0)``,
             which lets the backend choose it.
