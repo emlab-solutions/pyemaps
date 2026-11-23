@@ -831,7 +831,7 @@ class StackImage():
 
                -----------------Diffraction Pattern(DP) Indexing Results--------------------
                ***** DP stack loaded and indexed: 1
-               ***** Best matching database DP: 1715
+               ***** Best matching database DP: 1715 (its number in the database, counting from 0)
                ***** DP rotation angle: 284.191 (degrees)
                ***** Number of diffraction peaks indexed: 11
                ***** Experimental and database DP correlation maximum: 0.988308
