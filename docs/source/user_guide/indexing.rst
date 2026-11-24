@@ -32,6 +32,14 @@ an array of 3 or 4 zone axis indexes, encloses the orientation area within which
 diffraction patterns are generated. For details, see
 :py:obj:`generateDPDB <pyemaps.crystals.Crystal.generateDPDB>`.
 
+The database must reach as far out as the experimental peaks that indexing uses: the
+reflections' *gmax* (``EMC(simc=SIMC(gmax=...))``) must be at least the outer radius of those
+peaks, in pixels, divided by the camera constant *cc*. By default the outer radius is two
+thirds of the distance from the pattern center to the nearest edge; *rmax* in *indexImage* and
+*mapOrientation* changes it. The default *gmax*, 3.5 1/Å, covers most patterns. With a smaller
+one, the outer reflections are missing from the database and tilted orientations index worse;
+*indexImage* and *mapOrientation* warn when that happens.
+
 Then load the experimental image and index it against the database. *indexImage* loads the
 database itself. *al.img* is a sample experimental image that ships with pyEMAPS:
 ``pyemaps -cp samples`` copies it, with the sample scripts, into a *pyemaps_samples* folder in the

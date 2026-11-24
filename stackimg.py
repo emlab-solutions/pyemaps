@@ -107,6 +107,100 @@ def _search_peaks(search_box, peak_threshold, min_snr):
         raise XDPImageError('min_snr needs a newer emaps: pip install --upgrade emaps') from e
 
 
+def _check_rmax(rmax, rmin):
+    '''*rmax* must be None (automatic) or a radius larger than *rmin*.'''
+    if rmax is None:
+        return
+    if isinstance(rmax, bool) or not isinstance(rmax, (int, float, np.integer, np.floating)) \
+            or not np.isfinite(rmax) or rmax <= rmin:
+        raise ValueError(f'rmax must be None or a radius in pixels larger than rmin ({rmin}), '
+                         f'not {rmax!r}')
+
+
+def _index_peaks(rmin, soption, filter_threshold, rmax):
+    '''
+    Run the backend indexing. *rmax* needs an emaps that has it; with None (the automatic outer
+    radius), indexing runs as in every emaps.
+    '''
+    if rmax is None:
+        return ediom.indexXPeaks(rmin, soption, filter_threshold)
+    try:
+        # the backend's defaults for the parameters before rmax
+        return ediom.indexXPeaks(rmin, soption, filter_threshold, 1, 0, 0, 0, -1, 1, float(rmax))
+    except TypeError as e:
+        raise XDPImageError('rmax needs a newer emaps: pip install --upgrade emaps') from e
+
+
+def _outer_radius(img_center, dim, rmax):
+    '''
+    The outer radius, in pixels, of the peaks indexing matches, as the backend sets it: *rmax*,
+    or by default 2/3 of the distance from the center to the nearest edge; at most that
+    distance.
+    '''
+    col, row = img_center
+    edge = min(col, dim[0] - col, row, dim[1] - row)
+    return min(float(rmax), edge) if rmax is not None else edge * 2.0 / 3.0
+
+
+_REACH = {}
+
+
+def _database_reach(dpdbfn):
+    '''
+    The longest reflection, in 1/Å, of the patterns in the loaded database: how far out it can
+    index a pattern. Computed once per database file. None if the emaps can't tell.
+    '''
+    import os
+    if not hasattr(stem4d, 'getDPDBPattern') or not hasattr(stem4d, 'getDPDBSize'):
+        return None
+    try:
+        st = os.stat(dpdbfn)
+        key = (os.path.abspath(dpdbfn), st.st_mtime_ns, st.st_size)
+    except OSError:
+        key = None
+    if key is not None and key in _REACH:
+        return _REACH[key]
+    ret, n = stem4d.getDPDBSize()
+    if ret != 0:
+        return None
+    reach = 0.0
+    for k in range(n):
+        ret, refl, ng = stem4d.getDPDBPattern(k, 6 * 256)
+        if ret == 0 and ng > 256:
+            ret, refl, ng = stem4d.getDPDBPattern(k, 6 * ng)
+        if ret != 0 or ng <= 0:
+            continue
+        r = np.asarray(refl, dtype=float).reshape(-1, 6)[:ng]
+        reach = max(reach, float(np.hypot(r[:, 3], r[:, 4]).max()))
+    if key is not None:
+        _REACH[key] = reach
+    return reach
+
+
+def _check_reach(dpdbfn, cc, img_center, dim, rmax):
+    '''
+    Warn when the database's reflections stop short of the pattern's outer radius: peaks
+    beyond them can't be indexed, and tilted orientations then index worse. Returns the
+    message, or None.
+    '''
+    import os
+    import warnings
+    reach = _database_reach(dpdbfn)
+    if not reach or cc <= 0:
+        return None
+    radius = _outer_radius(img_center, dim, rmax)
+    need = radius / cc
+    if reach >= 0.95 * need:
+        return None
+    msg = (f'The database {os.path.basename(dpdbfn)} has reflections out to {reach:.2f} 1/Å, but '
+           f'indexing uses peaks out to {need:.2f} 1/Å (outer radius {radius:.0f} pixels / camera '
+           f'constant {cc:g}). Peaks further out can\'t be indexed, so tilted orientations index '
+           f'worse. Generate the database with gmax {need:.1f} or more: '
+           f'Crystal.generateDPDB(emc=EMC(simc=SIMC(gmax=...))).')
+    warnings.warn(msg, UserWarning, stacklevel=3)
+    return msg
+
+
 def _check_stem4d_size(img):
     '''
     Check that patterns read from a file suit the 4D-STEM features, and say what to change
@@ -769,7 +863,8 @@ class StackImage():
                    peak_threshold          = DEF_SEARCH_THRESHOLD,
                    ssel                    = 1,
                    bDebug                  = False,
-                   min_snr                 = 0.0
+                   min_snr                 = 0.0,
+                   rmax                    = None
               ):
         """
         Find the diffraction peaks in the experimental image and index them against a diffraction
@@ -817,15 +912,30 @@ class StackImage():
             background around them. The default, 0, keeps every peak. 3 to 5 suits noisy
             experimental patterns, such as 4D-STEM scans. Needs emaps 2.2.0 or later.
         :type min_snr: float, optional
+        :param rmax: the outer radius, in pixels, of the peaks matched against the database:
+            those between *rmin* and *rmax* from the center. The default, None, takes two thirds
+            of the distance from the center to the nearest edge of the image; a value larger
+            than that distance is reduced to it. Raise it when useful peaks lie further out.
+            Needs an emaps later than 2.3.0.
+        :type rmax: float, optional
         :return: 0 on success. -1, or the backend's error code, if the peak search or the indexing
             fails; fewer than four peaks found counts as a failure.
         :rtype: int
         :raise ~pyemaps.errors.XDPImageError: if *scaling_option* is out of range, or the database or
             the image can't be loaded.
-        :raise ValueError: if *img_center* is outside the image.
+        :raise ValueError: if *img_center* is outside the image, or *rmax* isn't larger than
+            *rmin*.
 
         The image measurements, *cc* to *rmin*, need to be accurate: errors in them can spoil the
         peak search and the indexing. The remaining parameters tune the search and the indexing.
+
+        The database must reach as far out as the peaks indexing uses: generate it with a *gmax*
+        (:py:class:`~pyemaps.emcontrols.SIMControl`) of at least the outer radius divided by
+        *cc*, in 1/Å. For a 128-pixel pattern with *cc* 23.75, that is about 41 / 23.75 = 1.7
+        with the default outer radius; the default *gmax*, 3.5, covers most patterns. With a
+        smaller *gmax*, the reflections further out are missing from the database, and tilted
+        orientations index worse. *indexImage* warns (``UserWarning``) when the database's
+        reflections stop short of that radius.
 
         A typical run displays:
 
@@ -930,7 +1040,9 @@ class StackImage():
         if img_center[0] < 0 or img_center[0] > self.dim[0] or \
             img_center[1] < 0 or img_center[1] >self.dim[1]:
             raise ValueError('Point of interest on Experimental image invalid')
-        
+        _check_rmax(rmax, rmin)
+        _check_reach(dpdbfn, cc, img_center, self.dim, rmax)
+
         edc.set_center(img_center[0], img_center[1])
 
         # load stem4d control parameters with which the image is generated
@@ -958,8 +1070,8 @@ class StackImage():
         if bDebug:
             self.viewExpImage(peakDP=True, title = 'Experimental Diffraction Image', iShow = False)
         
-        ret = ediom.indexXPeaks(rmin, soption, filter_threshold)
-        
+        ret = _index_peaks(rmin, soption, filter_threshold, rmax)
+
         if ret != 0:
             print(f'Error indexing experimental image for DP')
             return ret
@@ -988,7 +1100,8 @@ class StackImage():
                        peak_threshold          = DEF_SEARCH_THRESHOLD,
                        scan_shape              = None,
                        progress                = True,
-                       min_snr                 = 0.0
+                       min_snr                 = 0.0,
+                       rmax                    = None
                        ):
         """
         Index every pattern of a scan against a diffraction pattern database, giving the
@@ -1040,6 +1153,10 @@ class StackImage():
             background around them, as in *indexImage*. The default, 0, keeps every peak; 3 to
             5 suits noisy scans. Needs emaps 2.2.0 or later.
         :type min_snr: float, optional
+        :param rmax: the outer radius, in pixels, of the peaks matched against the database, as
+            in *indexImage*. The default, None, takes two thirds of the distance from the center
+            to the nearest edge. Needs an emaps later than 2.3.0.
+        :type rmax: float, optional
         :return: the orientation map.
         :rtype: :py:class:`~pyemaps.orientmap.OrientationMap`
         :raise ~pyemaps.errors.XDPImageError: if *scaling_option* or *scan_shape* is invalid,
@@ -1063,6 +1180,9 @@ class StackImage():
         ``(2, 2)`` and ``(5, 5)`` found the right orientation for 75 to 80% of the patterns and
         ``(1, 2)`` for 25 to 30%. The reliability index depends on the settings and the data, so
         compare it only between maps made the same way.
+
+        As for *indexImage*, the database must reach as far out as the peaks used: its *gmax*
+        at least the outer radius divided by *cc*. *mapOrientation* warns once if it doesn't.
 
         The default *peak_threshold* suits clean patterns such as selected area diffraction.
         In a scan the spots are often smaller and fainter than the search kernel expects, and
@@ -1110,6 +1230,8 @@ class StackImage():
         if img_center[0] < 0 or img_center[0] > self.dim[0] or \
            img_center[1] < 0 or img_center[1] > self.dim[1]:
             raise ValueError('Point of interest on Experimental image invalid')
+        _check_rmax(rmax, rmin)
+        _check_reach(dpdbfn, cc, img_center, self.dim, rmax)
 
         status = np.full(npat, OM_NOT_RUN, dtype=np.int8)
         dp = np.full(npat, -1, dtype=np.int32)
@@ -1135,7 +1257,7 @@ class StackImage():
             npeaks[k] = max(n, 0)
             if n <= 3:
                 return OM_FEW_PEAKS if n >= 0 else OM_FAILED
-            ret = ediom.indexXPeaks(rmin, soption, filter_threshold)
+            ret = _index_peaks(rmin, soption, filter_threshold, rmax)
             r = stem4d.getIndexResult()
             if ret != 0 or r[0] != 0:
                 return OM_FAILED
@@ -1164,7 +1286,7 @@ class StackImage():
         params = dict(cc=cc, sigma=sigma, img_center=tuple(img_center), rmin=rmin,
                       search_box=search_box, scaling_option=tuple(scaling_option),
                       filter_threshold=filter_threshold, peak_threshold=peak_threshold,
-                      min_snr=min_snr)
+                      min_snr=min_snr, rmax=rmax)
         return OrientationMap(scan_shape, status, dp, fields['rotation'],
                               fields['correlation'], fields['map_peak'], fields['rindex'],
                               npeaks, nindexed, orientation, geometry.basis,
