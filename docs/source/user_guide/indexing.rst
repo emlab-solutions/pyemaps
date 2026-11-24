@@ -146,7 +146,8 @@ or 32 and 64-bit floats.
   with all its tags under ``tags``.
 - Thumbnails are skipped. Spectrum images (with an energy axis), colour and complex images
   aren't diffraction patterns, and are refused with a message saying so.
-- A file can hold several images; pyEMAPS reads the one with the most patterns. Choose another
+- A file can hold several images; pyEMAPS reads diffraction patterns first (see
+  :ref:`diffraction-or-not`), and among those the one with the most patterns. Choose another
   with *dataset*, its number or its name.
 - DM5 files, which are HDF5 underneath, aren't supported yet.
 
@@ -203,14 +204,17 @@ Two unrelated layouts share the ``.emd`` extension, and pyEMAPS reads both:
 
 - **Thermo Fisher Velox** files: the images and image series Velox saves, such as diffraction
   patterns. :py:attr:`metadata <pyemaps.expimage.ExperimentalImage.metadata>` gives the high
-  voltage (``high_voltage_kV``), the camera length (``camera_length_m``) and the ``detector``
-  Velox recorded, and :py:attr:`axes <pyemaps.expimage.ExperimentalImage.axes>` the pixel
-  size. Spectra in the same file, such as EDS and EELS, aren't images and are skipped.
+  voltage (``high_voltage_kV``), the camera length (``camera_length_m``), the ``detector``
+  Velox recorded and the ``title`` Velox shows the image under (such as ``DF-S``), and
+  :py:attr:`axes <pyemaps.expimage.ExperimentalImage.axes>` the pixel size. Spectra in the
+  same file, such as EDS and EELS, aren't images and are skipped; the elemental maps Velox
+  computes from them are images, marked by ``spectrum_map``.
 - **Berkeley EMD** files (versions 0.x and 1.0), including the 4D-STEM datacubes of py4DSTEM:
   the scan shape and the calibration of each axis come from the file.
 
 A file can hold several images, such as a 4D-STEM scan and an overview image. pyEMAPS reads
-the one with the most patterns; choose another with *dataset*, its number or its name:
+diffraction patterns first, and among those the one with the most patterns; choose another
+with *dataset*: its number, its name, or for a Velox file its title:
 
 .. code-block:: python
 
@@ -221,6 +225,36 @@ the one with the most patterns; choose another with *dataset*, its number or its
    print(img.metadata['high_voltage_kV'], img.metadata['camera_length_m'])
 
    overview = read_image('scan.emd', dataset=1)
+   stem = read_image('spectrum_image.emd', dataset='DF-S')
+
+.. _diffraction-or-not:
+
+Does a file hold diffraction patterns?
+--------------------------------------
+
+The 4D-STEM features index diffraction patterns, but microscope files also hold images of the
+sample, such as STEM images, and maps computed from spectra. A file's calibration tells them
+apart: diffraction patterns are calibrated in reciprocal lengths or angles (1/nm, mrad …),
+images of the sample in lengths (nm, Å …).
+:py:attr:`ExperimentalImage.kind <pyemaps.expimage.ExperimentalImage.kind>` gives what an
+image read is: ``'diffraction'``, ``'real-space'``, ``'spectrum map'``, or ``'unknown'`` when
+the file doesn't tell, as for TIFF, MRC, Merlin, picture and NumPy files and uncalibrated
+images. :py:func:`pyemaps.image_datasets <pyemaps.expimage.image_datasets>` lists a file's
+images and their kinds without reading them:
+
+.. code-block:: python
+
+   from pyemaps import image_datasets
+
+   for d in image_datasets('spectrum_image.emd'):
+       print(d['dataset'], d['title'], d['kind'], d['pattern_shape'], d['default'])
+
+When none is named, pyEMAPS reads diffraction patterns first, then images of unknown kind,
+then images of the sample, then spectrum maps, passing over single images that are all zero.
+If the image :py:meth:`StackImage.from_file <pyemaps.stackimg.StackImage.from_file>` reads
+is an image of the sample or a spectrum map, it warns, and says which dataset holds the file's
+diffraction patterns, if any. A Velox spectrum-imaging file, for example, holds STEM images and
+elemental maps but no diffraction patterns, so it has nothing to index.
 
 Orientation maps
 ----------------

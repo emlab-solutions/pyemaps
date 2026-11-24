@@ -30,9 +30,12 @@ What it checks:
   complex MRC, raw Merlin, colour and 1-bit pictures and 1-D arrays refused; truncated files;
   Merlin scan_shape, .hdr settings, scan_roi and closed files.
 - EMD files in emddata/ (see emddata/make_fixtures.py): Velox series with their settings, a
-  real Velox image (CC BY 4.0) whose orientation matches Velox's thumbnail, Berkeley EMD 1.0
-  and 0.2, py4DSTEM datacubes with calibration; dataset choice, scan_roi, binning, refused
-  files, closed files, and the message when h5py is missing.
+  real Velox image (CC BY 4.0) whose orientation matches Velox's thumbnail, a Velox
+  spectrum-image layout with elemental maps and the titles Velox displays images under,
+  Berkeley EMD 1.0 and 0.2, py4DSTEM datacubes with calibration; dataset choice (by number,
+  name and title; the default passes over elemental maps and empty images), scan_roi,
+  binning, refused files, closed files, and the message when h5py is missing.
+- The default dataset choice the DM and EMD readers share (pyemaps.readerbase).
 - StackImage.from_file and convertImage(E_FILE), on full builds: single patterns, stacks
   through a temporary .im3 (byte-exact, removed afterwards), the scan width, and the size
   checks that ask for binning or scan_roi.
@@ -555,6 +558,108 @@ def c_emd_options():
     return 'dataset by name and number; scan_roi (2, 2) from (3, 4); binning scales calibration'
 
 
+@check('Velox titles: images named as Velox displays them, elemental maps marked and passed '
+       'over by default, empty images too, datasets chosen by title')
+def c_emd_velox_titles():
+    from pyemaps import read_image
+    from pyemaps.emdreader import EmdFile
+    fn = emd_file('velox_maps')
+    with EmdFile(fn) as f:
+        desc = [d.describe() for d in f.datasets]
+        titles = [(d.title, d.spectrum_map) for d in f.datasets]
+    assert titles == [('Ta', 'EELS'), ('Eu', 'EELS'), (None, None), ('Dy', 'spectrum'),
+                      ('DF-S', None), ('Ref DF-S', None)], titles
+    with EmdFile(fn) as f:
+        kinds = [d.kind for d in f.datasets]
+    assert kinds == ['spectrum map'] * 2 + ['real-space'] + ['spectrum map'] + \
+        ['real-space'] * 2, kinds
+    assert '(Ta, EELS map)' in desc[0] and '(Dy, spectrum map)' in desc[3] and \
+        '(DF-S)' in desc[4], desc
+    img = read_image(fn)        # not the empty Ta map, the Eu map, the blank image or the EDS map
+    assert img.metadata['title'] == 'DF-S' and img.metadata['spectrum_map'] is None, img.metadata
+    assert img.kind == 'real-space' and 'real-space' in repr(img), repr(img)
+    eu = read_image(fn, dataset='Eu')
+    assert np.array_equal(eu.data, EMD_EXPECTED['velox_maps_eu'].astype(np.float32))
+    assert eu.metadata['spectrum_map'] == 'EELS' and eu.axes[0]['units'] == ''
+    ref = read_image(fn, dataset='Ref DF-S')
+    assert np.array_equal(ref.data, as_read_image(EMD_EXPECTED['velox_maps_ref']))
+    ta = read_image(fn, dataset='Ta')
+    assert not ta.data.any() and ta.metadata['title'] == 'Ta'
+    dy = read_image(fn, dataset='Dy')        # an EDS map: calibrated in metres, still a map
+    assert np.array_equal(dy.data, EMD_EXPECTED['velox_maps_dy'].astype(np.float32))
+    assert dy.kind == 'spectrum map' and dy.metadata['spectrum_map'] == 'spectrum', dy.metadata
+    assert read_image(fn, dataset='1' * 32).metadata['title'] == 'Eu', 'by id'
+    raises(ValueError, lambda: read_image(fn, dataset='Fe'), 'No image dataset', '(Ta, EELS map)')
+    plain = read_image(emd_file('velox_series'))
+    assert plain.metadata['title'] is None and plain.metadata['spectrum_map'] is None
+    assert plain.kind == 'diffraction', plain.kind
+    return ('default DF-S; by title Eu, Ref DF-S, Ta, Dy (an EDS map, by its detector); by id; '
+            'a file without displays has no titles')
+
+
+class _Stub:
+    '''A dataset for default_dataset: npatterns, kind and read only.'''
+
+    def __init__(self, npatterns, zero=False, kind='unknown'):
+        self.npatterns, self.zero, self.kind = npatterns, zero, kind
+
+    def read(self, idx):
+        assert self.npatterns == 1, 'a scan was read to choose'
+        return np.zeros((1, 2, 2)) if self.zero else np.ones((1, 2, 2))
+
+
+@check('default dataset: diffraction, then unknown, real-space and spectrum maps; most patterns '
+       'within a kind; empty single images passed over while another is left; scans not read')
+def c_default_dataset():
+    from pyemaps.readerbase import default_dataset
+    zero, img, img2, scan = _Stub(1, zero=True), _Stub(1), _Stub(1), _Stub(9, zero=True)
+    assert default_dataset([zero, scan]) is scan, 'the scan, unread'
+    assert default_dataset([zero, img, img2]) is img, 'the first non-empty image'
+    assert default_dataset([zero]) is zero, 'the only image, even empty'
+    dp = _Stub(1, kind='diffraction')
+    stem = _Stub(16, kind='real-space')
+    smap = _Stub(1, kind='spectrum map')
+    assert default_dataset([stem, dp]) is dp, 'a diffraction pattern before a STEM series'
+    assert default_dataset([smap, stem, img]) is img, 'unknown before real-space and maps'
+    assert default_dataset([smap, stem]) is stem, 'real-space before a map'
+    assert default_dataset([smap, _Stub(1, zero=True, kind='real-space')]) is smap, \
+        'a map before an empty image'
+    assert default_dataset([smap]) is smap, 'a map when nothing else is left'
+
+
+@check('image kinds from calibration units: reciprocal lengths and angles are diffraction, '
+       'lengths are real-space, anything else unknown')
+def c_unit_kinds():
+    from pyemaps.readerbase import unit_kind, calibration_kind
+    want = {'1/nm': 'diffraction', 'nm^-1': 'diffraction', '1/m': 'diffraction',
+            '1/Å': 'diffraction', 'mrad': 'diffraction', 'n_m^-1': 'diffraction',
+            'nm': 'real-space', 'm': 'real-space', 'Å': 'real-space', 'µm': 'real-space',
+            'pm': 'real-space', '': 'unknown', None: 'unknown', 'counts': 'unknown',
+            'frame': 'unknown'}
+    wrong = {u: unit_kind(u) for u, k in want.items() if unit_kind(u) != k}
+    assert not wrong, wrong
+    assert calibration_kind([{'units': '1/nm'}, {'units': '1/nm'}]) == 'diffraction'
+    assert calibration_kind([{'units': '1/nm'}, {'units': 'nm'}]) == 'unknown', 'mixed'
+    assert calibration_kind([]) == 'unknown'
+
+
+@check("image_datasets lists an EMD file's images with kinds and titles, and the default")
+def c_emd_image_datasets():
+    from pyemaps import image_datasets
+    ds = image_datasets(emd_file('velox_maps'))
+    got = [(d['dataset'], d['title'], d['kind'], d['pattern_shape'], d['default']) for d in ds]
+    assert got == [(0, 'Ta', 'spectrum map', (20, 30), False),
+                   (1, 'Eu', 'spectrum map', (20, 30), False),
+                   (2, None, 'real-space', (20, 30), False),
+                   (3, 'Dy', 'spectrum map', (20, 30), False),
+                   (4, 'DF-S', 'real-space', (20, 30), True),
+                   (5, 'Ref DF-S', 'real-space', (32, 32), False)], got
+    ds = image_datasets(emd_file('velox_series'))
+    assert [(d['kind'], d['npatterns'], d['scan_shape'], d['default']) for d in ds] == \
+        [('diffraction', 3, (3,), True), ('real-space', 1, (), False)], ds
+    return 'velox_maps: no diffraction; velox_series: the diffraction series is the default'
+
+
 @check('EMD files are closed after reading (can be deleted on Windows)')
 def c_emd_closed(tmp):
     from pyemaps import read_image
@@ -604,6 +709,50 @@ def stackimage():
     except ImportError:
         return None
     return StackImage
+
+
+@check('image_datasets: one entry for TIFF and small-header files; a DM file with its '
+       'default; a missing file')
+def c_image_datasets(tmp):
+    from pyemaps import image_datasets, write_im3
+    (d,) = image_datasets(DATA / 'al.tif')
+    assert d['kind'] == 'unknown' and d['default'] and d['npatterns'] == 1, d
+    fn = os.path.join(tmp, 'ds.im3')
+    write_im3(fn, np.arange(3 * 4 * 5, dtype=np.int16).reshape(3, 4, 5))
+    (d,) = image_datasets(fn)
+    assert d['npatterns'] == 3 and d['pattern_shape'] == (4, 5) and d['default'], d
+    ds = image_datasets(HERE / 'dmdata' / 'stack_4dstem.dm4')
+    assert [x['default'] for x in ds].count(True) == 1, ds
+    raises(FileNotFoundError, lambda: image_datasets(os.path.join(tmp, 'none.dm4')), 'not found')
+    return f"stack_4dstem.dm4: {[(x['kind'], x['npatterns']) for x in ds]}"
+
+
+@check("StackImage.from_file warns when the image read isn't diffraction patterns, and says "
+       'which dataset is; no warning for diffraction patterns or images of unknown kind')
+def c_from_not_diffraction():
+    import warnings
+    from pyemaps import StackImage
+    from pyemaps.errors import XDPImageError
+
+    def warned(*args, **kw):
+        # The EMD test images are smaller than the 4D-STEM features take, so from_file then
+        # refuses them; the warning comes first, so a user learns what the image is.
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter('always')
+            try:
+                StackImage.from_file(*args, **kw)
+            except XDPImageError as e:
+                assert 'per side' in str(e), e
+        return [str(x.message) for x in w if issubclass(x.category, UserWarning)]
+    w = warned(str(emd_file('velox_maps')))
+    assert len(w) == 1 and '(DF-S) is a real-space image' in w[0] and 'no diffraction' in w[0], w
+    w = warned(str(emd_file('velox_maps')), dataset='Eu')
+    assert len(w) == 1 and 'map computed from a spectrum image' in w[0], w
+    w = warned(str(emd_file('velox_series')), dataset=1)
+    assert len(w) == 1 and 'dataset=0' in w[0], w
+    assert warned(str(emd_file('velox_series'))) == [], 'diffraction: no warning'
+    assert warned(str(DATA / 'al.tif')) == [], 'unknown kind: no warning'
+    return w[0]
 
 
 @check('StackImage.from_file: a single pattern becomes a numpy image')
@@ -678,11 +827,16 @@ def main():
         c_img_good()
         c_img_bad(tmp)
         c_img_options(tmp)
+        c_default_dataset()
+        c_unit_kinds()
+        c_image_datasets(tmp)
         if have_h5py():
             c_emd_good()
             c_emd_bad()
             c_emd_velox_orientation()
             c_emd_options()
+            c_emd_velox_titles()
+            c_emd_image_datasets()
             c_emd_closed(tmp)
             c_emd_missing()
         else:
@@ -693,6 +847,8 @@ def main():
             c_from_scan(tmp)
             c_from_limits(tmp)
             c_convert(tmp)
+            if have_h5py():
+                c_from_not_diffraction()
         else:
             RESULTS.append(('StackImage checks', None, 'skipped: free build, no StackImage'))
         gc.collect()

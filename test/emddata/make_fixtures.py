@@ -9,6 +9,11 @@ Velox files (Thermo Fisher):
   (rows, columns, frames), and each frame's metadata is a JSON text in a column of
   Data/Image/<id>/Metadata. It also holds an overview image, an EDS spectrum stream and a text
   item, which aren't the patterns.
+- velox_maps.emd follows the layout of a Velox spectrum-image file: EELS maps Velox computed
+  from a spectrum image (the first all zero), an all-zero image, an EDS map (whose display id
+  doesn't say EDS, but whose detector is an analytical one), the DF-S image and a reference
+  DF-S image, with the displays (Displays/ImageDisplay and
+  SharedProperties/ImageSeriesDataReference) that give each its title, and a spectrum image.
 - velox_iliad_dfs.emd is cut from a real Velox file: the DF-S STEM image, its metadata and
   Velox's thumbnail, from "DSO: STEM EELS EMD" by Daen Jannis, Zenodo record 18267156
   (https://zenodo.org/records/18267156), CC BY 4.0
@@ -51,18 +56,49 @@ def rand(dtype, shape, seed):
     return rng.integers(info.min, info.max, size=shape, endpoint=True, dtype=dt)
 
 
-def velox_json(frame, kv=200000, cl=0.38, detector='BM-Ceta', pixel=2.5e7, unit='1/m'):
-    return json.dumps({
+def velox_json(frame, kv=200000, cl=0.38, detector='BM-Ceta', pixel=2.5e7, unit='1/m',
+               detectors=None):
+    '''
+    pixel=None: no pixel size, as Velox writes for the elemental maps of a spectrum image.
+    detectors: (name, type) pairs for a Velox "Detectors" section, such as
+    ('UltraX1', 'AnalyticalDetector'); none by default.
+    '''
+    result = {'AcquisitionUnit': 'CameraImage', 'Detector': detector}
+    if pixel is not None:
+        result.update({'PixelSize': {'width': str(pixel), 'height': str(pixel)},
+                       'PixelUnitX': unit, 'PixelUnitY': unit, 'Offset': {'x': '0', 'y': '0'}})
+    result['Encoding'] = 'Signed'
+    md = {
         'Core': {'MetadataDefinitionVersion': '7.9'},
         'Instrument': {'Manufacturer': 'FEI Company', 'InstrumentModel': 'Talos'},
         'Optics': {'AccelerationVoltage': str(kv), 'CameraLength': str(cl), 'ProjectorMode': '2'},
         'Scan': {'ScanSize': {'width': '0', 'height': '0'}},
-        'BinaryResult': {'AcquisitionUnit': 'CameraImage', 'Detector': detector,
-                         'PixelSize': {'width': str(pixel), 'height': str(pixel)},
-                         'PixelUnitX': unit, 'PixelUnitY': unit,
-                         'Offset': {'x': '0', 'y': '0'}, 'Encoding': 'Signed'},
-        'CustomProperties': {'Frame': {'value': str(frame)}},
-    }, indent=4)
+    }
+    if detectors:
+        md['Detectors'] = {f'Detector-{k}': {'DetectorName': n, 'DetectorType': t}
+                           for k, (n, t) in enumerate(detectors)}
+    md['BinaryResult'] = result
+    md['CustomProperties'] = {'Frame': {'value': str(frame)}}
+    return json.dumps(md, indent=4)
+
+
+def velox_display(f, did, rid, uid, display_id, title):
+    '''
+    A display as Velox records it: Displays/ImageDisplay/<did> refers to
+    SharedProperties/ImageSeriesDataReference/<rid>, which gives the image's path. Velox writes
+    each as a JSON text in a one-element variable-length string dataset. rid=None: a display
+    without data (such as Velox's ColorMix); uid=None: a reference that is missing.
+    '''
+    text = h5py.string_dtype()
+    disp = {'id': display_id, 'title': title, 'settings': '/SharedProperties/ImageDisplaySettings/0'}
+    if rid is not None:
+        disp['data'] = f'/SharedProperties/ImageSeriesDataReference/{rid}'
+        if uid is not None:
+            f.require_group('SharedProperties/ImageSeriesDataReference').create_dataset(
+                rid, data=[json.dumps({'dataPath': f'/Data/Image/{uid}', 'frameIndex': 0}).encode()],
+                dtype=text)
+    f.require_group('Displays/ImageDisplay').create_dataset(did, data=[json.dumps(disp).encode()],
+                                                            dtype=text)
 
 
 def velox_image(data_group, uid, stack, **meta):
@@ -133,6 +169,51 @@ def main():
        meta={'high_voltage_kV': 200.0, 'camera_length_m': 0.38, 'detector': 'BM-Ceta',
              'instrument': 'FEI Company Talos', 'format': 'Velox'})
     EXPECT['velox_series_overview'] = overview
+
+    # Velox: the layout of a spectrum-image file, as Velox saves an EELS map: elemental maps it
+    # computed from the spectrum image (an empty Ta map first, then Eu), an image that is all
+    # zero, an EDS map, the DF-S image acquired with the spectrum image and a larger reference
+    # DF-S image, with the displays that title them. Velox gives EELS maps display ids like
+    # "Ta-EELS", but EDS maps ids like "c" and a pixel size in metres; their detector, "UltraX",
+    # names the EDS detectors (UltraX1 ...) its Detectors section lists as analytical. The
+    # default must be the DF-S image.
+    ta = np.zeros((1, 20, 30), dtype='<f4')
+    eu = np.abs(rand('<f4', (1, 20, 30), 11))
+    blank = np.zeros((1, 20, 30), dtype='<u2')
+    dy = np.abs(rand('<f4', (1, 20, 30), 15))
+    dfs_si = rand('<u2', (1, 20, 30), 12)
+    ref = rand('<u2', (1, 32, 32), 13)
+    uids = {name: f'{k}' * 32 for k, name in enumerate(('ta', 'eu', 'blank', 'dfs', 'ref'))}
+    uids['dy'] = '2' * 31 + '5'                # between the blank image and DF-S
+    eds = [('DF-S', 'ScanningDetector'), ('Zebra', 'AnalyticalDetector'),
+           ('UltraX1', 'AnalyticalDetector'), ('UltraX2', 'AnalyticalDetector')]
+    with velox_file(os.path.join(HERE, 'velox_maps.emd'))[0] as f:
+        images = f['Data'].create_group('Image')
+        for name, stack, det in (('ta', ta, 'Zebra'), ('eu', eu, 'Zebra')):
+            velox_image(images, uids[name], stack, kv=300000, cl=0.035, detector=det, pixel=None)
+        velox_image(images, uids['blank'], blank, kv=300000, cl=0.035, detector='HAADF',
+                    pixel=6.5e-11, unit='m')
+        velox_image(images, uids['dy'], dy, kv=300000, cl=0.035, detector='UltraX',
+                    pixel=6.5e-11, unit='m', detectors=eds)
+        for name, stack in (('dfs', dfs_si), ('ref', ref)):
+            velox_image(images, uids[name], stack, kv=300000, cl=0.035, detector='DF-S',
+                        pixel=6.5e-11, unit='m')
+        si = f['Data'].create_group('EelsSpectrumImage').create_group('9' * 32)
+        si.create_dataset('Data', data=rand('<u2', (20, 30, 64), 14))
+        velox_display(f, 'a' * 32, 'f' * 32, uids['ta'], 'Ta-EELS', 'Ta')
+        velox_display(f, 'b' * 32, 'e' * 32, uids['eu'], 'Eu-EELS', 'Eu')
+        velox_display(f, 'c' * 32, 'd' * 32, uids['dfs'], 'DF-S', 'DF-S')
+        velox_display(f, 'd' * 32, 'c' * 32, uids['ref'], 'a', 'Ref DF-S')
+        velox_display(f, 'e' * 32, None, None, 'CM', 'ColorMix')            # no data
+        velox_display(f, 'f' * 32, 'b' * 32, None, 'Fe-EELS', 'Fe')          # reference missing
+        velox_display(f, '0' * 32, 'a' * 32, uids['dy'], 'c', 'Dy')          # an EDS map
+    ok('velox_maps', dfs_si, [],
+       axes=[{'name': 'rows', 'scale': 6.5e-11, 'units': 'm'},
+             {'name': 'columns', 'scale': 6.5e-11, 'units': 'm'}],
+       meta={'title': 'DF-S', 'spectrum_map': None, 'detector': 'DF-S', 'format': 'Velox'})
+    EXPECT['velox_maps_eu'] = eu
+    EXPECT['velox_maps_ref'] = ref
+    EXPECT['velox_maps_dy'] = dy
 
     with velox_file(os.path.join(HERE, 'velox_spectra_only.emd'))[0] as f:
         s = f['Data'].create_group('SpectrumImage').create_group('1' * 32)
