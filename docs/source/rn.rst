@@ -1,6 +1,53 @@
 Release Notes
 =============
 
+Version 2.7.0 Stable
+--------------------
+
+11-25-2026
+~~~~~~~~~~
+
+New
+~~~
+
+- *rmax* in :py:meth:`~pyemaps.stackimg.StackImage.indexImage` and :py:meth:`~pyemaps.stackimg.StackImage.mapOrientation`: the outer radius, in pixels, of the peaks matched against the database. The default, None, keeps the automatic radius, two thirds of the distance from the pattern centre to the nearest edge, so results don't change unless you set it. Raise it when useful peaks lie further out. Needs emaps 2.4.0 or later.
+- :py:meth:`~pyemaps.stackimg.StackImage.indexImage` and :py:meth:`~pyemaps.stackimg.StackImage.mapOrientation` warn when the diffraction pattern database doesn't reach as far out as the peaks they match: when its longest reflection is shorter than the outer radius divided by the camera constant. The warning gives the *gmax* to generate the database with. A database that is too short leaves out the outer reflections, and patterns index on fewer peaks with lower reliability. See :doc:`user_guide/indexing`.
+- The image readers tell diffraction patterns from other images, such as STEM images and maps computed from spectra:
+
+  - :py:attr:`ExperimentalImage.kind <pyemaps.expimage.ExperimentalImage.kind>` gives what the file says an image is: ``'diffraction'``, ``'real-space'``, ``'spectrum map'`` or ``'unknown'``. Only DigitalMicrograph and EMD files record enough to tell.
+  - DigitalMicrograph and EMD files are read from their diffraction patterns by default, then from images of unknown kind, real-space images and spectrum maps. Images that are all zero are passed over.
+  - :py:func:`pyemaps.image_datasets <pyemaps.expimage.image_datasets>` lists a file's images without reading them, with each one's title, kind, scan shape, pattern count and size, and whether :py:func:`~pyemaps.expimage.read_image` reads it by default.
+  - :py:meth:`StackImage.from_file <pyemaps.stackimg.StackImage.from_file>` warns when the image it reads is a real-space image or a spectrum map, and says which dataset holds the file's diffraction patterns, or that it has none.
+  - Thermo Fisher Velox images get the titles Velox shows them under, such as ``DF-S`` or ``Ta``, and ``dataset=`` accepts a title. Velox EELS and EDS maps are marked as spectrum maps.
+
+  See "Does a file hold diffraction patterns?" in :doc:`user_guide/indexing`.
+
+Changes
+~~~~~~~
+
+From emaps 2.4.0:
+
+- 16-bit image stacks index correctly. Before, the peak search read their data as floating-point numbers, so indexing and orientation maps of 16-bit stacks, which most 4D-STEM detectors record, found no peaks or meaningless ones. Single patterns given as numpy arrays weren't affected.
+- 4D-STEM indexing draws the database patterns faster, so its correlations and reliability indexes can differ from earlier versions in the last digits. On the patterns tested, no indexing result changed.
+- Loading a diffraction pattern database frees the one loaded before. Before, each :py:meth:`~pyemaps.stackimg.StackImage.indexImage` and :py:meth:`~pyemaps.stackimg.StackImage.mapOrientation` call after the first kept the previous database in memory until Python exited. A database file that fails to load is now closed; before, it stayed open, and locked on Windows.
+- The indexing details :py:meth:`~pyemaps.stackimg.StackImage.indexImage` prints:
+
+  - show the peaks at their real positions. Before, each position was up to a pixel short, by the fraction of the pattern centre. Indexing itself always used the real centre.
+  - are printed when the best match is the database's first pattern, number 0. Before, they said "Indexing details are not available".
+  - The best-match line says the number is the pattern's number in the database, counting from 0.
+
+Improvements
+~~~~~~~~~~~~
+
+From emaps 2.4.0:
+
+- 4D-STEM indexing is about 3.5 to 4 times faster than with emaps 2.3.0. On a 6-core laptop, the orientation map of the *al_orientmap.py* sample takes about 23 milliseconds per pattern instead of 92, and a 64 x 64 scan of 256 x 256 pixel patterns about 2 minutes. The peak search is 2 to 3 times faster.
+
+Other improvements:
+
+- The documentation explains how far the database must reach (*gmax*) for the patterns being indexed, with a worked example, in :py:meth:`~pyemaps.stackimg.StackImage.indexImage`, :py:meth:`~pyemaps.stackimg.StackImage.mapOrientation`, :py:meth:`~pyemaps.crystals.Crystal.generateDPDB` and :doc:`user_guide/indexing`.
+- Requires ``emaps >= 2.4.0``.
+
 Version 2.6.0 Stable
 --------------------
 
