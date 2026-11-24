@@ -916,7 +916,7 @@ class StackImage():
             those between *rmin* and *rmax* from the center. The default, None, takes two thirds
             of the distance from the center to the nearest edge of the image; a value larger
             than that distance is reduced to it. Raise it when useful peaks lie further out.
-            Needs an emaps later than 2.3.0.
+            Needs emaps 2.4.0 or later.
         :type rmax: float, optional
         :return: 0 on success. -1, or the backend's error code, if the peak search or the indexing
             fails; fewer than four peaks found counts as a failure.
@@ -1155,7 +1155,7 @@ class StackImage():
         :type min_snr: float, optional
         :param rmax: the outer radius, in pixels, of the peaks matched against the database, as
             in *indexImage*. The default, None, takes two thirds of the distance from the center
-            to the nearest edge. Needs an emaps later than 2.3.0.
+            to the nearest edge. Needs emaps 2.4.0 or later.
         :type rmax: float, optional
         :return: the orientation map.
         :rtype: :py:class:`~pyemaps.orientmap.OrientationMap`
@@ -1164,7 +1164,7 @@ class StackImage():
             orientation mapping.
         :raise ValueError: if *img_center* is outside the image.
 
-        Indexing takes about a second per pattern, so a 64 x 64 scan takes over an hour.
+        Indexing takes about 0.03 seconds per pattern, so a 64 x 64 scan takes about 2 minutes.
         Try the parameters on a few patterns with
         :py:meth:`~pyemaps.stackimg.StackImage.indexImage` first, and read part of a large
         scan with *scan_roi* in :py:meth:`from_file`. Pressing Ctrl+C stops the run and
