@@ -37,6 +37,12 @@ follow the links into the :doc:`../api/index`.
 
       Index experimental patterns. Licensed.
 
+   .. grid-item-card:: 4D-STEM imaging
+      :link: imaging
+      :link-type: doc
+
+      Bright field, dark field and masked images from a scan. Licensed.
+
    .. grid-item-card:: Using results in other tools
       :link: third_party
       :link-type: doc
@@ -57,5 +63,6 @@ follow the links into the :doc:`../api/index`.
    dynamic
    stereo
    indexing
+   imaging
    third_party
    configuration

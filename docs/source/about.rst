@@ -44,6 +44,8 @@ The extended 4D-STEM features, which need :ref:`License Activation`:
 * Annular bright and dark field images
 * Masked images
 
+See :doc:`user_guide/indexing` and :doc:`user_guide/imaging`.
+
 Reading experimental patterns is free: TIFF, Gatan DigitalMicrograph (``.dm3``, ``.dm4``),
 MRC, Quantum Detectors Merlin (``.mib``), PNG, BMP, JPEG and NumPy files, single images, stacks
 and 4D-STEM scans, with no other package, and EMD files from

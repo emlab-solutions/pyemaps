@@ -44,11 +44,16 @@ MASK_FILE = os.path.join(SAMPLES_DIR, 'mask.im3')
 
 SCAN_COLUMNS = 30    # scan positions per row: the width of the output images
 
+# The direct beam, at column 263, row 263 of the 512 x 512 patterns: the brightest pixel of
+# the patterns' average (the adf.ipynb notebook finds it). Detectors around the direct beam are
+# centred on it, not on the middle of the pattern.
+BEAM_CENTER = (263.0, 263.0)    # (column, row), in pixels
+
 
 def annular_dark_field():
     """Generate and display an annular dark field image."""
     image = StackImage(IMAGE_FILE, ndtype=EM_INT)
-    ret, _ = image.generateBDF(center=(256.0, 256.0),   # detector center, in pixels
+    ret, _ = image.generateBDF(center=BEAM_CENTER,      # detector center, in pixels
                                rads=(50.0, 200.0),      # inner and outer radius, in pixels
                                scol=SCAN_COLUMNS,
                                bShow=True)

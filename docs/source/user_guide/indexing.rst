@@ -101,7 +101,8 @@ a TIFF file, ready for indexing or for bright and dark field imaging:
 
 A multi-page TIFF holds the patterns one after another, in scan order. When tifffile wrote the
 file, it recorded the scan's shape, and pyEMAPS uses it. Otherwise, as for ImageJ stacks, give
-it with *scan_shape*, or give the scan width to the imaging methods (*scol*, *scancol*).
+it with *scan_shape*, or give the scan width to the imaging methods (*scol*, *scancol*). For
+the imaging methods, see :doc:`imaging`.
 
 The 4D-STEM features take patterns of 100 to 512 pixels per side and up to 5000 patterns.
 pyEMAPS doesn't shrink larger data for you; it says what to ask for:
