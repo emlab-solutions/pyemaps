@@ -8,18 +8,20 @@
 # combination with the separately licensed backend, emaps.
 
 '''
-Electron probes, Ronchigrams and contrast transfer functions of a probe-forming lens with
+Electron probes, Ronchigrams, contrast transfer functions and HREM images of a lens with
 aberrations, from emaps' probe module.
 
 A :py:class:`Probe` holds the microscope settings: the high voltage, the aperture, the defocus,
 the spherical, fifth-order and chromatic aberrations, the residual aberrations a corrector
 measures (a1 to a5, b2, b4, d4, s3), and the map the results are computed on. Its methods return
-the results as NumPy arrays:
+the results as NumPy arrays, in four modes:
 
 - :py:meth:`~Probe.ronchigram`: the Ronchigram, the shadow image of the probe through a thin
   sample, of a random amorphous potential or one you give;
 - :py:meth:`~Probe.probe`: the probe's intensity, and :py:meth:`~Probe.diameter` its size;
-- :py:meth:`~Probe.ctf`: the contrast transfer function, with its coherence envelopes.
+- :py:meth:`~Probe.ctf`: the contrast transfer function, with its coherence envelopes;
+- :py:meth:`~Probe.hrem`: the high-resolution TEM image of a thin sample's exit wave
+  (:py:meth:`~Probe.exit_wave`), with the lens as the objective lens.
 
 :py:meth:`~Probe.scherzer` and :py:meth:`~Probe.haider` set the defocus and aperture to the
 optimum for an uncorrected or a corrected lens, and :py:meth:`~Probe.show` displays the results
@@ -43,6 +45,8 @@ except ImportError:  # an emaps without the probe module
 ABERRATIONS = {'a1': 'nm', 'a2': 'nm', 'a3': 'um', 'a4': 'um', 'a5': 'mm',
                'b2': 'nm', 'b4': 'um', 'd4': 'um', 's3': 'um'}
 
+_KINDS = "kind must be 'ronchigram', 'probe', 'ctf', 'hrem' or 'potential'"
+
 _ERRORS = {1: 'the map is invalid: sampling must be an even number of at least 8 pixels, '
               'and size positive',
            2: 'the microscope settings are invalid: high voltage and aperture must be '
@@ -58,11 +62,14 @@ def _backend():
 
 class Probe:
     '''
-    A probe-forming lens and the map its probe, Ronchigram and CTF are computed on.
+    A lens with aberrations, and the map its probe, Ronchigram, CTF and HREM images are
+    computed on. For the probe and the Ronchigram it's the probe-forming lens; for the CTF and
+    HREM images, the objective lens.
 
     :param kv: high voltage, in kV.
     :type kv: float, optional
-    :param aperture: aperture semi-angle (convergence angle), in mrad.
+    :param aperture: aperture semi-angle, in mrad: the probe's convergence angle, or for HREM
+        images the objective aperture. The CTF isn't cut off at it; :py:meth:`show` draws it.
     :type aperture: float, optional
     :param defocus: defocus, in nm. Negative values are underfocus.
     :type defocus: float, optional
@@ -72,12 +79,12 @@ class Probe:
     :type c5: float, optional
     :param cc: chromatic aberration, in mm. With 0.01 mm or more, :py:meth:`probe` adds up the
         probes over the energy spread, and :py:meth:`ctf` includes the temporal coherence
-        envelope. The Ronchigram doesn't include it.
+        envelope, as do HREM images. The Ronchigram doesn't include it.
     :type cc: float, optional
     :param energy_spread: energy spread of the beam, full width at half maximum, in eV.
     :type energy_spread: float, optional
     :param semi_angle: illumination semi-angle, in mrad, for the spatial coherence envelope of
-        :py:meth:`ctf`.
+        :py:meth:`ctf` and :py:meth:`hrem`.
     :type semi_angle: float, optional
     :param tilt: beam tilt: amplitude, in mrad, and direction, in degrees.
     :type tilt: tuple of float, optional
@@ -219,16 +226,20 @@ class Probe:
         :rtype: numpy.ndarray
         :raise ValueError: if a setting is invalid or *potential* has the wrong shape.
         '''
+        v = self._potential(potential)
+        amp, ang = self._abr()
+        img, ierr = _backend().ronchigram(self._mic(), amp, ang, self.size, self.sampling,
+                                          v.ravel())
+        return self._image(img, ierr)
+
+    def _potential(self, potential):
         if potential is None:
             potential = self.random_potential()
         v = np.asarray(potential, dtype=np.float32)
         if v.shape != (self.sampling, self.sampling):
             raise ValueError(f'potential must be {self.sampling} x {self.sampling}, the sampling, '
                              f'not {" x ".join(str(s) for s in v.shape)}')
-        amp, ang = self._abr()
-        img, ierr = _backend().ronchigram(self._mic(), amp, ang, self.size, self.sampling,
-                                          v.ravel())
-        return self._image(img, ierr)
+        return v
 
     def probe(self):
         '''
@@ -284,6 +295,55 @@ class Probe:
         '''
         amp, ang = self._abr()
         img, ierr = _backend().ctfimage(self._mic(), amp, ang, self.size, self.sampling)
+        return self._image(img, ierr)
+
+    def exit_wave(self, potential=None):
+        '''
+        The exit wave of a thin sample under plane-wave illumination: its transmission
+        function, exp(iσV), for the projected potential V at this high voltage.
+
+        :param potential: the projected potential, ``(sampling, sampling)``. By default,
+            :py:meth:`random_potential` with its defaults.
+        :type potential: numpy.ndarray, optional
+        :return: the exit wave, complex, ``(sampling, sampling)``.
+        :rtype: numpy.ndarray
+        :raise ValueError: if a setting is invalid or *potential* has the wrong shape.
+        '''
+        v = self._potential(potential)
+        wave, ierr = _backend().exitwave(self.kv, self.size, self.sampling, v.ravel())
+        return self._image(wave, ierr)
+
+    def hrem(self, wave=None, integrate=False):
+        '''
+        The high-resolution TEM (HREM) image of an exit wave, with this lens as the objective
+        lens: the image intensity of the wave through the aperture, with the aberrations and
+        the coherence envelopes. The direct beam passes unchanged.
+
+        :param wave: the sample's exit wave, complex, ``(sampling, sampling)``, such as
+            :py:meth:`exit_wave` gives or a multislice program computes. By default,
+            :py:meth:`exit_wave` of the default random potential: 100 Å of amorphous aluminium.
+        :type wave: numpy.ndarray, optional
+        :param integrate: how to include the chromatic aberration. False: the coherent image,
+            damped by the temporal coherence envelope (*cc*, *energy_spread*) and the spatial
+            one (*semi_angle*). True: the images at each energy across the energy spread, added
+            up with the spatial envelope only; this needs *energy_spread*.
+        :type integrate: bool, optional
+        :return: the image intensity, ``(sampling, sampling)``, with pixels of
+            ``size / sampling`` Å. A plane wave's image is 1 everywhere.
+        :rtype: numpy.ndarray
+        :raise ValueError: if a setting is invalid or *wave* has the wrong shape.
+        '''
+        if wave is None:
+            wave = self.exit_wave()
+        w = np.asarray(wave, dtype=np.complex64)
+        if w.shape != (self.sampling, self.sampling):
+            raise ValueError(f'wave must be {self.sampling} x {self.sampling}, the sampling, '
+                             f'not {" x ".join(str(s) for s in w.shape)}')
+        amp, ang = self._abr()
+        img, ierr = _backend().hremimage(self._mic(), amp, ang, self.size, self.sampling,
+                                         w.ravel(), 1 if integrate else 0)
+        if ierr == 2 and integrate and self.energy_spread <= 0:
+            raise ValueError('integrate needs a positive energy_spread')
         return self._image(img, ierr)
 
     # ------------------------------------------------------------------ optimum settings
@@ -348,21 +408,21 @@ class Probe:
         '''
         The axis extent of a result for :py:func:`matplotlib.pyplot.imshow`.
 
-        :param kind: ``'probe'`` or ``'potential'`` (Å), ``'ronchigram'`` (mrad) or ``'ctf'``
-            (1/Å).
+        :param kind: ``'probe'``, ``'potential'`` or ``'hrem'`` (Å), ``'ronchigram'`` (mrad) or
+            ``'ctf'`` (1/Å).
         :type kind: str
         :return: ``(left, right, bottom, top)``.
         :rtype: tuple
         '''
         n, half = self.sampling, 0.5
-        if kind in ('probe', 'potential'):
+        if kind in ('probe', 'potential', 'hrem'):
             step = self.size / n
         elif kind == 'ronchigram':
             step = 1000.0 * self.wavelength / self.size
         elif kind == 'ctf':
             step = 1.0 / self.size
         else:
-            raise ValueError("kind must be 'probe', 'potential', 'ronchigram' or 'ctf'")
+            raise ValueError(_KINDS)
         # pixel n/2 (from 0) is the center
         lo, hi = (-n / 2 - half) * step, (n / 2 - 1 + half) * step
         return (lo, hi, hi, lo)
@@ -371,10 +431,10 @@ class Probe:
         '''
         Display a result with its axes.
 
-        :param image: the result, from :py:meth:`ronchigram`, :py:meth:`probe`, :py:meth:`ctf`
-            or :py:meth:`random_potential`.
+        :param image: the result, from :py:meth:`ronchigram`, :py:meth:`probe`, :py:meth:`ctf`,
+            :py:meth:`hrem` or :py:meth:`random_potential`.
         :type image: numpy.ndarray
-        :param kind: ``'ronchigram'``, ``'probe'``, ``'ctf'`` or ``'potential'``.
+        :param kind: ``'ronchigram'``, ``'probe'``, ``'ctf'``, ``'hrem'`` or ``'potential'``.
         :type kind: str
         :param ax: the axes to draw in. By default, a new figure, shown.
         :type ax: matplotlib.axes.Axes, optional
@@ -388,9 +448,10 @@ class Probe:
         import matplotlib.pyplot as plt
 
         labels = {'ronchigram': ('Ronchigram', 'mrad'), 'probe': ('Probe', 'Å'),
-                  'ctf': ('CTF', '1/Å'), 'potential': ('Potential', 'Å')}
+                  'ctf': ('CTF', '1/Å'), 'potential': ('Potential', 'Å'),
+                  'hrem': ('HREM image', 'Å')}
         if kind not in labels:
-            raise ValueError("kind must be 'probe', 'potential', 'ronchigram' or 'ctf'")
+            raise ValueError(_KINDS)
         name, unit = labels[kind]
         new = ax is None
         if new:

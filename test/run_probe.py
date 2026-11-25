@@ -1,7 +1,7 @@
 '''
-Checks for pyEMAPS' probe simulations (pyemaps/probe.py, emaps' probe module): the probe,
-Ronchigram, CTF and random potential against a stored baseline, and physical checks that need
-no baseline.
+Checks for pyEMAPS' probe simulations (pyemaps/probe.py, emaps' probe module): the four modes
+(Ronchigram, probe, CTF, HREM) and the random potential and exit wave against a stored baseline,
+and physical checks that need no baseline.
 
     python run_probe.py -bc      # run the checks (ci_sanity's "-bc all" works too)
     python run_probe.py -bg      # regenerate the baseline; only for an intended change
@@ -48,10 +48,13 @@ def titan_probe(**kwargs):
 def results():
     p = titan_probe()
     pot = p.random_potential(density=0.05, z=13, thickness=100, seed=1211)
-    chromatic = titan_probe(cc=1.5, energy_spread=0.6)
+    chromatic = titan_probe(cc=1.5, energy_spread=0.6, semi_angle=0.2)
+    wave = p.exit_wave(pot)
     return {'potential': pot, 'ronchigram': p.ronchigram(pot), 'probe': p.probe(),
             'ctf': p.ctf(), 'probe_cc': chromatic.probe(), 'ctf_cc': chromatic.ctf(),
-            'diameter': np.array([p.diameter(50), p.diameter(80)])}
+            'diameter': np.array([p.diameter(50), p.diameter(80)]),
+            'exit_wave': wave, 'hrem': p.hrem(wave), 'hrem_cc': chromatic.hrem(wave),
+            'hrem_integrated': chromatic.hrem(wave, integrate=True)}
 
 
 def c_baseline():
@@ -136,6 +139,59 @@ def c_ctf():
     return 'zero at the center, one sign in the Scherzer band, damped by the envelopes'
 
 
+def hrem_lens(**kwargs):
+    # an uncorrected 200 kV TEM at the Scherzer defocus for phase contrast
+    from pyemaps import Probe
+    p = Probe(kv=200, cs=1.2, size=100, sampling=256, **kwargs)
+    p.scherzer(mode=2)
+    p.aperture = 20.0
+    return p
+
+
+def c_hrem_plane_wave():
+    p = hrem_lens(cc=1.5, energy_spread=0.6, semi_angle=0.2)
+    flat = np.ones((256, 256), np.complex64)
+    for integrate in (False, True):
+        img = p.hrem(flat, integrate=integrate)
+        assert np.abs(img - 1.0).max() < 1e-4, f'a plane wave images as {img.min()}..{img.max()}'
+    return 'a plane wave images as 1 everywhere, coherent and integrated'
+
+
+def c_hrem_thon_rings():
+    # A weak phase object's image spectrum is its potential's spectrum times CTF^2 (Thon rings).
+    p = hrem_lens()
+    pot = p.random_potential(density=0.1, z=6, thickness=10, seed=3)
+    img = p.hrem(p.exit_wave(pot))
+    ctf = p.ctf()
+    spec = np.abs(np.fft.fftshift(np.fft.fft2(img - img.mean()))) ** 2
+    vspec = np.abs(np.fft.fftshift(np.fft.fft2(pot - pot.mean()))) ** 2
+    yy, xx = np.indices(img.shape)
+    r = np.hypot(xx - 128, yy - 128).astype(int)
+    band = (r > 3) & (r < 0.7 * p.kmax * p.size)          # inside the aperture
+    ratio = np.bincount(r[band], spec[band]) / np.maximum(np.bincount(r[band], vspec[band]), 1e-30)
+    ctf2 = np.bincount(r[band], ctf[band] ** 2) / np.maximum(np.bincount(r[band]), 1)
+    keep = np.bincount(r[band]) > 0
+    corr = np.corrcoef(ratio[keep], ctf2[keep])[0, 1]
+    assert corr > 0.95, f'image spectrum / potential spectrum vs CTF^2: correlation {corr:.3f}'
+    return f'Thon rings follow CTF^2 (correlation {corr:.3f})'
+
+
+def c_hrem_integrate():
+    # Without Cc, the sum over energies is the coherent image.
+    p = hrem_lens(energy_spread=0.6, semi_angle=0.2)
+    wave = p.exit_wave()
+    a, b = p.hrem(wave), p.hrem(wave, integrate=True)
+    diff = np.abs(a - b).max() / np.abs(a).max()
+    assert diff < 1e-5, f'without Cc, integrated and coherent differ by {diff:.3g}'
+    try:
+        hrem_lens(energy_spread=0.0).hrem(wave, integrate=True)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError('integrate without an energy spread raised no ValueError')
+    return 'without Cc the energy sum is the coherent image; it needs an energy spread'
+
+
 def c_potential():
     p = titan_probe()
     a = p.random_potential(seed=7)
@@ -198,13 +254,15 @@ def c_show():
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     p = titan_probe()
-    fig, axes = plt.subplots(1, 3)
+    fig, axes = plt.subplots(1, 4)
     p.show(p.ronchigram(), 'ronchigram', ax=axes[0])
     p.show(p.probe(), 'probe', ax=axes[1])
     p.show(p.ctf(), 'ctf', ax=axes[2])
+    p.show(p.hrem(), 'hrem', ax=axes[3])
     assert axes[0].get_xlabel() == 'mrad' and axes[2].get_xlabel() == '1/Å'
+    assert axes[3].get_xlabel() == 'Å'
     plt.close(fig)
-    return 'Ronchigram, probe and CTF displayed with their axes'
+    return 'Ronchigram, probe, CTF and HREM image displayed with their axes'
 
 
 def main():
@@ -223,6 +281,9 @@ def main():
                      ('round probe symmetry', c_symmetric),
                      ('Ronchigram without a sample', c_empty_ronchigram),
                      ('CTF', c_ctf),
+                     ('HREM of a plane wave', c_hrem_plane_wave),
+                     ('HREM Thon rings', c_hrem_thon_rings),
+                     ('HREM energy sum', c_hrem_integrate),
                      ('random potential', c_potential),
                      ('settings', c_settings),
                      ('parameter files', c_from_file),

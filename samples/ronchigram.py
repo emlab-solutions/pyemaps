@@ -9,24 +9,24 @@
 #
 # Author: EMLab Solutions, Inc. Questions and comments: support@emlabsoftware.com
 
-"""Ronchigram, probe and contrast transfer function of an aberration-corrected probe.
+"""Ronchigrams of a corrected and an uncorrected probe.
 
-This sample uses pyEMAPS' Probe class for a 200 kV probe-forming lens with a corrector: a 25 mrad
-aperture, a small negative Cs balancing C5, and the residual aberrations a corrector measured
-on a real microscope. It shows:
+A Ronchigram is the shadow image of a convergent probe through a thin amorphous sample. Where
+the probe's aberrations are small, the shadow is a smooth, magnified image of the sample; where
+they're large, it's distorted into rings and streaks. Corrector alignment is done on it.
 
-1. the Ronchigram of 100 A of amorphous aluminium;
-2. the probe, with the diameter that holds half of its intensity;
-3. the contrast transfer function;
+This sample uses pyEMAPS' Probe class to show the Ronchigrams of 100 A of amorphous aluminium:
 
-then the same for an uncorrected lens (Cs 1.2 mm) at its Scherzer settings, for comparison.
+1. a 200 kV probe with a corrector: a 25 mrad aperture, a small negative Cs balancing C5, and
+   the residual aberrations a corrector measured on a real microscope;
+2. the same probe with 20 nm of two-fold astigmatism added;
+3. an uncorrected probe, Cs 1.2 mm, at its Scherzer defocus, with the aperture opened to
+   25 mrad, which shows the rings of spherical aberration.
 
 Run it with:
 
     python ronchigram.py
 """
-import copy
-
 import matplotlib.pyplot as plt
 
 from pyemaps import Probe
@@ -38,47 +38,36 @@ CORRECTOR = {'a1': (1.349, 146.2), 'a2': (58.94, -131.9), 'b2': (22.89, 141.4),
              'd4': (20.8, -47.0), 'b4': (8.769, 2.8), 'a5': (0.7825, -114.8)}
 
 
-def show_probe(probe, title):
-    """Show a probe's Ronchigram, intensity and CTF side by side."""
-    ronchigram = probe.ronchigram()   # of the default random potential: 100 A of aluminium
-
-    # The probe on a finer map, 0.1 A pixels: its diameter counts whole pixels.
-    fine = copy.copy(probe)
-    fine.size = 25.6
-    intensity = fine.probe()
-    d50 = fine.diameter(50, intensity)
-
-    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
-    probe.show(ronchigram, 'ronchigram', ax=axes[0], title='Ronchigram')
-    fine.show(intensity, 'probe', ax=axes[1], title=f'Probe: 50% within {d50:.2f} A')
-    axes[1].set_xlim(-5, 5)
-    axes[1].set_ylim(5, -5)
-    probe.show(probe.ctf(), 'ctf', ax=axes[2], title='CTF')
-    # Out to 1.5 times the aperture: further out, an uncorrected lens's CTF oscillates faster
-    # than the map's pixels.
-    k = 1.5 * probe.kmax
-    axes[2].set_xlim(-k, k)
-    axes[2].set_ylim(k, -k)
-    fig.suptitle(f'{title}: {probe.kv:g} kV, {probe.aperture:.1f} mrad aperture, '
-                 f'defocus {probe.defocus:.2f} nm, Cs {probe.cs:g} mm')
-    fig.tight_layout(rect=(0, 0, 1, 0.94))
-    print(f'{title}: {probe}')
-    print(f'  50% of the intensity within a diameter of {d50:.3f} A')
+def corrected_probe():
+    """A corrected 200 kV probe. The map is 100 A across with 256 x 256 pixels, so the
+    Ronchigram reaches 32 mrad from its center, beyond the aperture."""
+    return Probe(kv=200, aperture=25, defocus=-5.14, cs=-0.00355, c5=3.829,
+                 aberrations=CORRECTOR, size=100, sampling=256)
 
 
 def main():
-    # A corrected lens. The map is 100 A across with 256 x 256 pixels: the Ronchigram then
-    # reaches 32 mrad from its center, beyond the aperture.
-    corrected = Probe(kv=200, aperture=25, defocus=-5.14, cs=-0.00355, c5=3.829,
-                      aberrations=CORRECTOR, size=100, sampling=256)
-    show_probe(corrected, 'Corrected')
+    probes = {}
+    probes['Corrected'] = corrected_probe()
 
-    # An uncorrected lens at its Scherzer defocus and aperture, on the same map.
+    astigmatic = corrected_probe()
+    astigmatic.set_aberration('a1', 20.0, 30.0)
+    probes['With 20 nm of a1'] = astigmatic
+
     uncorrected = Probe(kv=200, cs=1.2, size=100, sampling=256)
-    settings = uncorrected.scherzer()
-    print(f'Scherzer settings for Cs 1.2 mm: defocus {settings["defocus"]:.1f} nm, '
-          f'aperture {settings["aperture"]:.2f} mrad')
-    show_probe(uncorrected, 'Uncorrected (Scherzer)')
+    uncorrected.scherzer()
+    uncorrected.aperture = 25.0       # open the aperture to see the aberrations
+    probes['Uncorrected, Cs 1.2 mm'] = uncorrected
+
+    # The same sample for all three: 100 A of amorphous aluminium (the default potential).
+    sample = corrected_probe().random_potential(density=0.05, z=13, thickness=100, seed=1211)
+
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+    for ax, (name, probe) in zip(axes, probes.items()):
+        probe.show(probe.ronchigram(sample), 'ronchigram', ax=ax,
+                   title=f'{name}\ndefocus {probe.defocus:.1f} nm')
+        print(f'{name}: {probe}')
+    fig.suptitle('Ronchigrams, 200 kV, 25 mrad aperture (yellow)')
+    fig.tight_layout()
     plt.show()
 
 
