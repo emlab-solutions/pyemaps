@@ -54,7 +54,11 @@ def results():
             'ctf': p.ctf(), 'probe_cc': chromatic.probe(), 'ctf_cc': chromatic.ctf(),
             'diameter': np.array([p.diameter(50), p.diameter(80)]),
             'exit_wave': wave, 'hrem': p.hrem(wave), 'hrem_cc': chromatic.hrem(wave),
-            'hrem_integrated': chromatic.hrem(wave, integrate=True)}
+            'hrem_integrated': chromatic.hrem(wave, integrate=True),
+            'phase': p.phase_map(), 'stem': chromatic.stem_image(pot), 'mtf': chromatic.mtf(),
+            'psf': p.apply_psf(p.hrem(wave), 0.6, 40.0),
+            'diameter_interpolated': np.array([p.diameter(50, interpolate=True),
+                                               p.diameter(80, interpolate=True)])}
 
 
 def c_baseline():
@@ -246,7 +250,133 @@ def c_from_file():
     assert (p.kv, p.aperture, p.defocus, p.cs, p.c5) == (300, 21.5, -3.2, 0.002, 2.5)
     assert p.aberrations['a1'] == (1.2, 30.0) and p.aberrations['b2'] == (20.0, -45.0)
     assert (p.size, p.sampling) == (50, 128)
-    return 'program parameter files read; unknown lines refused with their number'
+    # the program's other settings: semi, kmax (as the aperture), dim and sam
+    with tempfile.TemporaryDirectory() as tmp:
+        path = os.path.join(tmp, 'mic.txt')
+        with open(path, 'w') as f:
+            f.write('kv 300\nsemi 0.5\nkmax 0.5\ndim 50\nsam 128\ntilt 0.2 30\n')
+        q = Probe.from_file(path)
+    assert (q.semi_angle, q.size, q.sampling, q.tilt) == (0.5, 50.0, 128, (0.2, 30.0))
+    assert abs(q.kmax - 0.5) < 1e-9, q.kmax
+    return 'program parameter files read, all settings; unknown lines refused with their number'
+
+
+def c_errors_not_crashes():
+    # Bugs that crashed Python or gave silent wrong answers: each is now a clear error.
+    import subprocess
+    from pyemaps import Probe
+    # maps too large: a Python error, not a crash. 65536 pixels overflowed 32-bit integers;
+    # the work maps of 32768 x 32768 need about 40 GB, which normally fails to allocate.
+    code = ('from pyemaps import Probe\n'
+            'for n in (65536, 32768):\n'
+            '    try:\n'
+            '        Probe(size=100, sampling=n).probe()\n'
+            '    except (ValueError, MemoryError) as e:\n'
+            '        print("refused:", n, type(e).__name__)\n')
+    res = subprocess.run([sys.executable, '-c', code], capture_output=True, text=True)
+    assert res.returncode == 0 and 'refused: 65536' in res.stdout, \
+        f'exit {res.returncode}: {res.stdout[-200:]} {res.stderr[-200:]}'
+    # a probe wider than the map, and one inside a pixel: no diameter instead of the map's width
+    for lens, msg in ((Probe(kv=200, aperture=2, cs=1.2, size=10, sampling=64), 'larger size'),
+                      (Probe(kv=300, aperture=40, cs=0, size=200, sampling=256), 'smaller pixels')):
+        for interpolate in (False, True):
+            try:
+                lens.diameter(80 if msg == 'larger size' else 50, interpolate=interpolate)
+            except ValueError as e:
+                assert msg in str(e), str(e)
+            else:
+                raise AssertionError(f'diameter gave a value where it should say "{msg}"')
+    # more than 1e8 atoms: an error, not an empty potential from an integer overflow
+    try:
+        Probe(size=5000, sampling=64).random_potential(density=0.1, thickness=1000)
+    except ValueError as e:
+        assert '1e8 atoms' in str(e), str(e)
+    else:
+        raise AssertionError('a potential of 2.5e9 atoms raised no error')
+    # seeds: 2**31 - 1 is the generator's fixed point
+    for seed in (0, 2**31 - 1, 2**40):
+        try:
+            Probe(sampling=64).random_potential(seed=seed)
+        except ValueError:
+            continue
+        raise AssertionError(f'seed {seed} raised no ValueError')
+    assert Probe(sampling=64).random_potential(seed=2**31 - 2).max() > 0
+    # a copy keeps its own aberrations
+    import copy
+    a = Probe()
+    b = copy.copy(a)
+    b.set_aberration('a1', 10, 0)
+    assert a.aberrations['a1'] == (0.0, 0.0), a.aberrations['a1']
+    return ('large map, probe outside the map or inside a pixel, 1e8 atoms, seeds and copies: '
+            'errors or correct results')
+
+
+def c_phase_map():
+    from pyemaps import Probe
+    # no envelopes: no Cc, and a point source (semi_angle 0)
+    p = Probe(kv=200, aperture=20, cs=1.2, defocus=-40, semi_angle=0.0,
+              aberrations={'a1': (5, 30)}, size=50, sampling=256)
+    chi, ctf = p.phase_map(), p.ctf()
+    n = p.sampling
+    yy, xx = np.indices(chi.shape)
+    inside = np.hypot(xx - n // 2, yy - n // 2) / p.size < p.kmax    # inside the aperture
+    diff = np.abs(np.sin(chi[inside]) - ctf[inside]).max()
+    assert diff < 1e-4, f'sin(chi) and the CTF differ by {diff:.3g} inside the aperture'
+    assert chi[n // 2, n // 2] == 0.0
+    return f'sin(chi) is the CTF without envelopes (within {diff:.1g} inside the aperture)'
+
+
+def c_stem_mtf_psf():
+    from pyemaps import Probe
+    n = 256
+    p = Probe(kv=200, aperture=20, cs=1.2, defocus=-40, size=50, sampling=n)
+    probe = p.probe()
+    mtf = p.mtf()
+    ref = np.abs(np.fft.fftshift(np.fft.fft2(probe)))
+    assert abs(mtf[n // 2, n // 2] - 1) < 1e-5
+    assert np.abs(mtf - ref).max() < 1e-5, 'MTF differs from |FFT(probe)|'
+    point = np.zeros((n, n), np.float32)
+    point[n // 2, n // 2] = 1.0
+    assert np.abs(p.stem_image(point) - probe).max() < 1e-5 * probe.max(), \
+        'the STEM image of a point is not the probe'
+    v = p.random_potential(seed=5)
+    conv = np.real(np.fft.ifft2(np.fft.fft2(v) * np.fft.fft2(np.fft.ifftshift(probe))))
+    assert np.abs(p.stem_image(v) - conv).max() < 1e-5 * conv.max(), \
+        'the STEM image is not the convolution'
+    img = p.hrem()
+    assert np.abs(p.apply_psf(img, 0.0, 5.0) - img).max() < 1e-5
+    w = np.fft.fftshift(np.fft.fftfreq(n))
+    wx, wy = np.meshgrid(w, w)
+    filt = 0.7 / (1 + 30 * (wx ** 2 + wy ** 2)) + 0.3
+    ref = np.real(np.fft.ifft2(np.fft.fft2(img) * np.fft.ifftshift(filt)))
+    assert np.abs(p.apply_psf(img, 0.7, 30) - ref).max() < 1e-5 * ref.max(), \
+        'the PSF differs from its transfer function'
+    return 'MTF = |FFT(probe)|; STEM image = probe convolved with the sample; PSF filter'
+
+
+def c_focal_series_optimize():
+    from pyemaps import Probe
+    p = Probe(kv=200, cs=1.2, size=25.6, sampling=256)
+    s = p.scherzer()
+    series = p.focal_series([-60, s['defocus'], -50], 'probe')
+    assert series.shape == (3, 256, 256) and p.defocus == s['defocus']
+    assert np.array_equal(series[1], p.probe())
+    # the interpolated diameter changes smoothly with the defocus
+    sizes = []
+    for df in np.linspace(-56, -54, 5):
+        p.defocus = df
+        sizes.append(p.diameter(50, interpolate=True))
+    assert len(set(np.round(sizes, 6))) == 5, f'interpolated diameters plateau: {sizes}'
+    # the optimizer removes added astigmatism and finds a defocus near Scherzer's
+    p.defocus = -30.0
+    p.set_aberration('a1', 15.0, 40.0)
+    before = p.diameter(50, interpolate=True)
+    r = p.optimize(vary=('defocus', 'a1'))
+    assert r['a1'][0] < 1.0, f"a1 left at {r['a1'][0]:.2f} nm"
+    assert -60 < r['defocus'] < -45, f"defocus {r['defocus']:.1f} nm"
+    assert r['diameter'] < before
+    return (f"a focal series; interpolated diameters move smoothly; optimize: a1 15 -> "
+            f"{r['a1'][0]:.2f} nm, d50 {before:.2f} -> {r['diameter']:.2f} A")
 
 
 def c_show():
@@ -287,6 +417,10 @@ def main():
                      ('random potential', c_potential),
                      ('settings', c_settings),
                      ('parameter files', c_from_file),
+                     ('errors, not crashes or wrong answers', c_errors_not_crashes),
+                     ('phase map', c_phase_map),
+                     ('STEM image, MTF and PSF', c_stem_mtf_psf),
+                     ('focal series and optimizer', c_focal_series_optimize),
                      ('plots', c_show)):
         check(name, fn)
     for name, ok, msg in RESULTS:

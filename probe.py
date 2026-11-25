@@ -23,9 +23,17 @@ the results as NumPy arrays, in four modes:
 - :py:meth:`~Probe.hrem`: the high-resolution TEM image of a thin sample's exit wave
   (:py:meth:`~Probe.exit_wave`), with the lens as the objective lens.
 
-:py:meth:`~Probe.scherzer` and :py:meth:`~Probe.haider` set the defocus and aperture to the
-optimum for an uncorrected or a corrected lens, and :py:meth:`~Probe.show` displays the results
-with their axes.
+And around them:
+
+- :py:meth:`~Probe.phase_map`: the aberration function χ(k) itself;
+- :py:meth:`~Probe.stem_image` and :py:meth:`~Probe.mtf`: the incoherent STEM image of a sample,
+  and the probe's transfer function;
+- :py:meth:`~Probe.apply_psf`: a camera's point spread function, for HREM images;
+- :py:meth:`~Probe.focal_series`: any of these over a range of defocus;
+- :py:meth:`~Probe.scherzer` and :py:meth:`~Probe.haider`: the optimum defocus and aperture for
+  an uncorrected or a corrected lens, and :py:meth:`~Probe.optimize`: the defocus and residual
+  aberrations that make the probe smallest;
+- :py:meth:`~Probe.show`: the results with their axes.
 '''
 
 import math
@@ -45,12 +53,23 @@ except ImportError:  # an emaps without the probe module
 ABERRATIONS = {'a1': 'nm', 'a2': 'nm', 'a3': 'um', 'a4': 'um', 'a5': 'mm',
                'b2': 'nm', 'b4': 'um', 'd4': 'um', 's3': 'um'}
 
-_KINDS = "kind must be 'ronchigram', 'probe', 'ctf', 'hrem' or 'potential'"
+_KINDS = ("kind must be 'ronchigram', 'probe', 'ctf', 'hrem', 'stem', 'phase', 'mtf' or "
+          "'potential'")
 
-_ERRORS = {1: 'the map is invalid: sampling must be an even number of at least 8 pixels, '
-              'and size positive',
+#: The largest sampling: larger maps' pixel counts overflow the backend's 32-bit integers.
+MAX_SAMPLING = 32768
+
+_ERRORS = {1: 'the map is invalid: sampling must be an even number of pixels from 8 to '
+              f'{MAX_SAMPLING}, and size positive',
            2: 'the microscope settings are invalid: high voltage and aperture must be '
-              'positive, cc and energy_spread not negative, and energy_spread positive with cc'}
+              'positive, cc and energy_spread not negative, and energy_spread positive with cc',
+           3: 'not enough memory for the map: use a smaller sampling',
+           4: 'the random potential would have more than 1e8 atoms: use a smaller map, '
+              'density or thickness'}
+
+#: The largest random number seed: the Park-Miller generator's modulus, 2**31 - 1, is excluded,
+#: since the generator never leaves it.
+MAX_SEED = 2**31 - 2
 
 
 def _backend():
@@ -58,6 +77,61 @@ def _backend():
         raise ImportError('The probe simulations need an emaps with the probe module: '
                           'pip install --upgrade emaps')
     return probesim
+
+
+def _nelder_mead(f, x0, step, max_evaluations, tolerance=1e-4):
+    '''
+    Minimize *f* from *x0* with the Nelder-Mead simplex method: the first simplex has *x0* and,
+    for each coordinate, *x0* moved by its *step*. It stops when the simplex's values agree to
+    *tolerance* (relative), or after *max_evaluations* evaluations of *f*.
+    Returns ``(best point, its value, evaluations)``.
+    '''
+    n = len(x0)
+    points = [np.array(x0, dtype=float)]
+    for i in range(n):
+        p = np.array(x0, dtype=float)
+        p[i] += step[i]
+        points.append(p)
+    values = [f(p) for p in points]
+    evaluations = n + 1
+    while evaluations < max_evaluations:
+        order = np.argsort(values)
+        points = [points[i] for i in order]
+        values = [values[i] for i in order]
+        best, worst = values[0], values[-1]
+        if math.isfinite(worst) and abs(worst - best) <= tolerance * max(abs(best), 1e-12):
+            break
+        centroid = np.mean(points[:-1], axis=0)
+        # reflect the worst point through the others' centroid
+        reflected = centroid + (centroid - points[-1])
+        fr = f(reflected)
+        evaluations += 1
+        if fr < best:
+            # going further that way
+            expanded = centroid + 2.0 * (centroid - points[-1])
+            fe = f(expanded)
+            evaluations += 1
+            points[-1], values[-1] = (expanded, fe) if fe < fr else (reflected, fr)
+        elif fr < values[-2]:
+            points[-1], values[-1] = reflected, fr
+        else:
+            # contract toward the centroid, on the better side of the worst point
+            if fr < worst:
+                contracted = centroid + 0.5 * (reflected - centroid)
+            else:
+                contracted = centroid + 0.5 * (points[-1] - centroid)
+            fc = f(contracted)
+            evaluations += 1
+            if fc < min(fr, worst):
+                points[-1], values[-1] = contracted, fc
+            else:
+                # shrink every point toward the best
+                for i in range(1, n + 1):
+                    points[i] = points[0] + 0.5 * (points[i] - points[0])
+                    values[i] = f(points[i])
+                evaluations += n
+    i = int(np.argmin(values))
+    return points[i], values[i], evaluations
 
 
 class Probe:
@@ -157,7 +231,8 @@ class Probe:
         key = str(name).lower()
         if key not in ABERRATIONS:
             raise ValueError(f'Unknown aberration {name!r}: use one of {", ".join(ABERRATIONS)}')
-        self._aberrations[key] = (float(amplitude), float(angle))
+        # a new dictionary, not a change to the old one, so a copy.copy of the probe keeps its own
+        self._aberrations = {**self._aberrations, key: (float(amplitude), float(angle))}
 
     def zero_aberrations(self):
         '''Set all residual aberrations to 0.'''
@@ -170,7 +245,16 @@ class Probe:
                 f'residual aberrations: {", ".join(res) if res else "none"}; '
                 f'{self.size:g} A map of {self.sampling} x {self.sampling})')
 
+    def _check_map(self):
+        # before f2py sizes its arrays from sampling**2, which overflows a 32-bit integer from
+        # 46341 pixels
+        n = self.sampling
+        if not (isinstance(n, (int, np.integer)) and 8 <= n <= MAX_SAMPLING and n % 2 == 0
+                and self.size > 0):
+            raise ValueError(f'Probe simulation failed: {_ERRORS[1]}')
+
     def _mic(self):
+        self._check_map()
         return np.array([self.kv, self.aperture, self.defocus, self.cs, self.c5, self.cc,
                          self.energy_spread, self.semi_angle, self.tilt[0], self.tilt[1],
                          self.rotation], dtype=np.float32)
@@ -197,17 +281,19 @@ class Probe:
         :type z: float, optional
         :param thickness: the sample's thickness, in Å.
         :type thickness: float, optional
-        :param seed: the random number seed, a positive integer. The same seed gives the same
-            potential.
+        :param seed: the random number seed, from 1 to 2147483646 (:py:data:`MAX_SEED`). The
+            same seed gives the same potential.
         :type seed: int, optional
         :return: the projected potential, ``(sampling, sampling)``, rows then columns.
         :rtype: numpy.ndarray
-        :raise ValueError: if a setting is invalid.
+        :raise ValueError: if a setting is invalid, or the sample would have more than 10⁸
+            atoms (size² × thickness × density).
 
         The defaults are those of the probe program: 100 Å of amorphous aluminium.
         '''
-        if int(seed) <= 0:
-            raise ValueError('seed must be a positive integer')
+        if not 1 <= int(seed) <= MAX_SEED:
+            raise ValueError(f'seed must be an integer from 1 to {MAX_SEED}')
+        self._check_map()
         v, ierr = _backend().potential(self.size, self.sampling, density, z, thickness,
                                        int(seed))
         if ierr == 2:
@@ -254,7 +340,7 @@ class Probe:
         img, ierr = _backend().probeimage(self._mic(), amp, ang, self.size, self.sampling)
         return self._image(img, ierr)
 
-    def diameter(self, percent=50.0, probe=None):
+    def diameter(self, percent=50.0, probe=None, interpolate=False):
         '''
         The probe's diameter: that of the circle around the map's center that holds *percent*
         percent of its intensity.
@@ -263,24 +349,71 @@ class Probe:
         :type percent: float, optional
         :param probe: the probe intensity from :py:meth:`probe`. By default, computed.
         :type probe: numpy.ndarray, optional
+        :param interpolate: False: count whole pixels, as the probe program does. True:
+            interpolate the intensity within the circle between the pixels' distances from the
+            center, so the diameter changes smoothly with the probe; :py:meth:`optimize` uses
+            it.
+        :type interpolate: bool, optional
         :return: the diameter, in Å.
         :rtype: float
-        :raise ValueError: if *percent* isn't between 0 and 100, or the probe has no intensity
-            near the center of the map.
+        :raise ValueError: if *percent* isn't between 0 and 100, the probe has no intensity
+            near the center of the map, the map is too small to hold *percent* percent of it, or
+            its pixels are too large to measure it (it fits within one pixel of the center).
 
-        The circle counts whole pixels, so the diameter changes in steps of about a pixel, and
-        probes of slightly different sizes can give the same value. Use a map whose pixels
-        (*size* / *sampling*) are much smaller than the probe, such as 0.1 Å.
+        Counting whole pixels, the diameter changes in steps of about a pixel, and probes of
+        slightly different sizes can give the same value. Use a map whose pixels
+        (*size* / *sampling*) are much smaller than the probe, such as 0.1 Å, or *interpolate*.
         '''
         if not 0.0 < percent < 100.0:
             raise ValueError('percent must be between 0 and 100')
+        self._check_map()
         img = self.probe() if probe is None else np.asarray(probe, dtype=np.float32)
         if img.shape != (self.sampling, self.sampling):
             raise ValueError(f'probe must be {self.sampling} x {self.sampling}, the sampling')
+        if interpolate:
+            return self._interpolated_diameter(img, percent)
         d = _backend().probediameter(self.size, self.sampling, img.ravel(), percent)
+        if d == -2:
+            raise ValueError(f'The map, {self.size:g} Å across, holds less than {percent:g}% of '
+                             f'the probe: use a larger size')
+        if d == -3:
+            raise ValueError(f'{percent:g}% of the probe lies within one pixel of the center: '
+                             f'use smaller pixels (size / sampling, now '
+                             f'{self.size / self.sampling:.3g} Å)')
         if d < 0:
             raise ValueError('The probe has no intensity near the center of the map')
         return float(d)
+
+    def _interpolated_diameter(self, img, percent):
+        # the pixels by their distance from the center pixel, and the intensity within each
+        n, step = self.sampling, self.size / self.sampling
+        yy, xx = np.indices(img.shape)
+        r = (np.hypot(xx - n // 2, yy - n // 2) * step).ravel()
+        order = np.argsort(r, kind='stable')
+        r = r[order]
+        total = float(img.sum())
+        if total <= 0.0:
+            raise ValueError('The probe has no intensity')
+        within = np.cumsum(img.ravel()[order], dtype=np.float64) / total
+        # Many pixels lie at the same distance: take the intensity within each distinct radius,
+        # so the result moves smoothly as the probe changes, instead of stepping from ring to
+        # ring.
+        radii, counts = np.unique(r, return_counts=True)
+        within = within[np.cumsum(counts) - 1]
+        share = percent / 100.0
+        inscribed = radii <= self.size / 2
+        if within[inscribed][-1] < share:
+            raise ValueError(f'The map, {self.size:g} Å across, holds less than {percent:g}% of '
+                             f'the probe: use a larger size')
+        if within[0] >= share:
+            raise ValueError(f'{percent:g}% of the probe is in the center pixel: use smaller '
+                             f'pixels (size / sampling, now {step:.3g} Å)')
+        # the radius at which the intensity within reaches the share, between the two radii
+        # that bracket it
+        k = int(np.searchsorted(within, share))
+        r0, r1, w0, w1 = radii[k - 1], radii[k], within[k - 1], within[k]
+        radius = r0 + (r1 - r0) * (share - w0) / (w1 - w0) if w1 > w0 else r1
+        return float(2 * radius)
 
     def ctf(self):
         '''
@@ -310,6 +443,7 @@ class Probe:
         :raise ValueError: if a setting is invalid or *potential* has the wrong shape.
         '''
         v = self._potential(potential)
+        self._check_map()
         wave, ierr = _backend().exitwave(self.kv, self.size, self.sampling, v.ravel())
         return self._image(wave, ierr)
 
@@ -345,6 +479,214 @@ class Probe:
         if ierr == 2 and integrate and self.energy_spread <= 0:
             raise ValueError('integrate needs a positive energy_spread')
         return self._image(img, ierr)
+
+    def phase_map(self):
+        '''
+        The aberration function χ(k): the phase, in radians, that the lens adds to the wave at
+        each spatial frequency, from the defocus, Cs, C5 and the residual aberrations, with the
+        beam tilt and rotation. The CTF without its envelopes is sin(χ). It's computed within
+        80% of the map's radius, as the CTF, and is 0 outside.
+
+        :return: χ, ``(sampling, sampling)``, with zero frequency at the center. Each pixel is
+            ``1 / size`` 1/Å.
+        :rtype: numpy.ndarray
+        :raise ValueError: if a setting is invalid.
+
+        Where χ is nearly flat, within about π/4 of its value at the center, the lens is free of
+        aberrations: that region sets how large an aperture can be used.
+        '''
+        amp, ang = self._abr()
+        img, ierr = _backend().phasemap(self._mic(), amp, ang, self.size, self.sampling)
+        return self._image(img, ierr)
+
+    def stem_image(self, potential=None):
+        '''
+        The incoherent (annular dark field) STEM image of a thin sample: the probe's intensity,
+        as :py:meth:`probe` computes it, convolved with the sample's projected potential.
+
+        :param potential: the projected potential, ``(sampling, sampling)``. By default,
+            :py:meth:`random_potential` with its defaults.
+        :type potential: numpy.ndarray, optional
+        :return: the image, ``(sampling, sampling)``, with pixels of ``size / sampling`` Å.
+        :rtype: numpy.ndarray
+        :raise ValueError: if a setting is invalid or *potential* has the wrong shape.
+        '''
+        v = self._potential(potential)
+        amp, ang = self._abr()
+        img, ierr = _backend().stemimage(self._mic(), amp, ang, self.size, self.sampling,
+                                         v.ravel())
+        return self._image(img, ierr)
+
+    def mtf(self):
+        '''
+        The probe's modulation transfer function: the amplitude of the Fourier transform of its
+        intensity, which tells how strongly each spatial frequency of the sample shows in an
+        incoherent STEM image. It's 1 at zero frequency.
+
+        :return: the MTF, ``(sampling, sampling)``, with zero frequency at the center. Each
+            pixel is ``1 / size`` 1/Å.
+        :rtype: numpy.ndarray
+        :raise ValueError: if a setting is invalid.
+        '''
+        amp, ang = self._abr()
+        img, ierr = _backend().probemtf(self._mic(), amp, ang, self.size, self.sampling)
+        return self._image(img, ierr)
+
+    def apply_psf(self, image, a, b):
+        '''
+        Blur an image with a detector's point spread function, as recorded by a camera: its
+        transfer function is ``a / (1 + b w²) + 1 - a`` at the spatial frequency w, in cycles per
+        pixel (0 to 0.5).
+
+        :param image: the image, square, with an even number of pixels along each side, such as
+            :py:meth:`hrem` gives.
+        :type image: numpy.ndarray
+        :param a: the share of the transfer that falls off with frequency, 0 to 1.
+        :type a: float
+        :param b: how fast it falls off; 0 leaves the image as it is.
+        :type b: float
+        :return: the blurred image, the same shape.
+        :rtype: numpy.ndarray
+        :raise ValueError: if *image* isn't square with an even size of at least 8 pixels, or
+            *b* is negative.
+        '''
+        img = np.asarray(image, dtype=np.float32)
+        n = img.shape[0] if img.ndim == 2 else 0
+        if img.ndim != 2 or img.shape[1] != n or n < 8 or n % 2 or n > MAX_SAMPLING:
+            raise ValueError(f'image must be square, with an even number of pixels from 8 to '
+                             f'{MAX_SAMPLING} along each side')
+        if b < 0:
+            raise ValueError('b must not be negative')
+        out, ierr = _backend().applypsf(n, a, b, img.ravel())
+        if ierr != 0:
+            raise ValueError(f'Probe simulation failed: {_ERRORS.get(ierr, f"error {ierr}")}')
+        return np.asarray(out).reshape(n, n)
+
+    def focal_series(self, defocus, kind='probe', sample=None, integrate=False):
+        '''
+        A result at each of a series of defocus values, the probe program's focus command.
+
+        :param defocus: the defocus values, in nm.
+        :type defocus: sequence of float
+        :param kind: ``'probe'``, ``'ronchigram'``, ``'ctf'``, ``'hrem'``, ``'stem'`` or
+            ``'phase'``.
+        :type kind: str, optional
+        :param sample: the projected potential for ``'ronchigram'`` and ``'stem'``, or the exit
+            wave for ``'hrem'``. By default, as those methods take it, computed once.
+        :type sample: numpy.ndarray, optional
+        :param integrate: for ``'hrem'``, as :py:meth:`hrem` takes it.
+        :type integrate: bool, optional
+        :return: the results, ``(len(defocus), sampling, sampling)``.
+        :rtype: numpy.ndarray
+        :raise ValueError: if *kind* or a setting is invalid.
+
+        The probe's defocus is left as it was.
+        '''
+        methods = {'probe': self.probe, 'ctf': self.ctf, 'phase': self.phase_map}
+        if kind in ('ronchigram', 'stem'):
+            sample = self._potential(sample)
+            method = self.ronchigram if kind == 'ronchigram' else self.stem_image
+            methods[kind] = lambda: method(sample)
+        elif kind == 'hrem':
+            sample = self.exit_wave() if sample is None else sample
+            methods[kind] = lambda: self.hrem(sample, integrate=integrate)
+        if kind not in methods:
+            raise ValueError("kind must be 'probe', 'ronchigram', 'ctf', 'hrem', 'stem' or "
+                             "'phase'")
+        saved = self.defocus
+        try:
+            results = []
+            for df in defocus:
+                self.defocus = float(df)
+                results.append(methods[kind]())
+        finally:
+            self.defocus = saved
+        return np.stack(results)
+
+    # ------------------------------------------------------------------ optimization
+    def optimize(self, percent=50.0, vary=('defocus', 'a1'), steps=None, max_evaluations=400):
+        '''
+        Find the settings that make the probe smallest: the diameter holding *percent* percent of
+        its intensity, as :py:meth:`diameter` measures it with ``interpolate=True``, the
+        probe program's optimize command. It searches with the Nelder-Mead simplex method and
+        sets the probe to the best settings it found.
+
+        :param percent: the share of the intensity whose diameter is minimized, in percent.
+        :type percent: float, optional
+        :param vary: what to adjust: ``'defocus'``, and the residual aberrations, such as
+            ``'a1'``, ``'a2'`` and ``'b2'``, each by its two components (amplitude times the
+            cosine and sine of its angle). The probe program's options were ('defocus', 'a1'),
+            ('defocus', 'a1', 'a2', 'b2'), ('a1', 'a2', 'b2') and ('defocus',).
+        :type vary: sequence of str, optional
+        :param steps: the size of the first steps, ``{name: step}``, in the setting's units.
+            By default, as the probe program: 10 nm for the defocus, and 25 in each aberration's
+            units.
+        :type steps: dict, optional
+        :param max_evaluations: the most probes to compute.
+        :type max_evaluations: int, optional
+        :return: the result: ``diameter`` (Å), the settings found (``defocus`` in nm, and each
+            aberration as ``(amplitude, angle)``), and ``evaluations``.
+        :rtype: dict
+        :raise ValueError: if *vary* names an unknown setting, or the probe can't be measured at
+            the starting settings (see :py:meth:`diameter`).
+
+        The probe's map must hold the probe with room to spare, with pixels much smaller than
+        it. The search finds a local minimum, near the starting settings.
+        '''
+        vary = list(vary)
+        for name in vary:
+            if name != 'defocus' and name not in ABERRATIONS:
+                raise ValueError(f'Unknown setting {name!r}: use defocus or one of '
+                                 f'{", ".join(ABERRATIONS)}')
+        steps = dict(steps or {})
+
+        def unpack(x):
+            values, k = {}, 0
+            for name in vary:
+                if name == 'defocus':
+                    values[name] = x[k]
+                    k += 1
+                else:
+                    values[name] = (x[k], x[k + 1])
+                    k += 2
+            return values
+
+        def apply(x):
+            for name, value in unpack(x).items():
+                if name == 'defocus':
+                    self.defocus = float(value)
+                else:
+                    cx, cy = value
+                    self.set_aberration(name, math.hypot(cx, cy),
+                                        math.degrees(math.atan2(cy, cx)))
+
+        x0, step = [], []
+        for name in vary:
+            if name == 'defocus':
+                x0.append(self.defocus)
+                step.append(steps.get(name, 10.0))
+            else:
+                amplitude, angle = self._aberrations[name]
+                x0 += [amplitude * math.cos(math.radians(angle)),
+                       amplitude * math.sin(math.radians(angle))]
+                step += [steps.get(name, 25.0)] * 2
+        start = self.diameter(percent, interpolate=True)    # raises if it can't be measured
+
+        def objective(x):
+            apply(x)
+            try:
+                return self.diameter(percent, interpolate=True)
+            except ValueError:
+                return math.inf
+
+        best, value, evaluations = _nelder_mead(objective, x0, step, max_evaluations)
+        if value > start:   # no better than where it started: keep the starting settings
+            best, value = x0, start
+        apply(best)
+        result = {'diameter': value, 'evaluations': evaluations}
+        for name in vary:
+            result[name] = self.defocus if name == 'defocus' else self._aberrations[name]
+        return result
 
     # ------------------------------------------------------------------ optimum settings
     def scherzer(self, mode=1):
@@ -408,18 +750,18 @@ class Probe:
         '''
         The axis extent of a result for :py:func:`matplotlib.pyplot.imshow`.
 
-        :param kind: ``'probe'``, ``'potential'`` or ``'hrem'`` (Å), ``'ronchigram'`` (mrad) or
-            ``'ctf'`` (1/Å).
+        :param kind: ``'probe'``, ``'potential'``, ``'hrem'`` or ``'stem'`` (Å),
+            ``'ronchigram'`` (mrad), or ``'ctf'``, ``'phase'`` or ``'mtf'`` (1/Å).
         :type kind: str
         :return: ``(left, right, bottom, top)``.
         :rtype: tuple
         '''
         n, half = self.sampling, 0.5
-        if kind in ('probe', 'potential', 'hrem'):
+        if kind in ('probe', 'potential', 'hrem', 'stem'):
             step = self.size / n
         elif kind == 'ronchigram':
             step = 1000.0 * self.wavelength / self.size
-        elif kind == 'ctf':
+        elif kind in ('ctf', 'phase', 'mtf'):
             step = 1.0 / self.size
         else:
             raise ValueError(_KINDS)
@@ -432,15 +774,18 @@ class Probe:
         Display a result with its axes.
 
         :param image: the result, from :py:meth:`ronchigram`, :py:meth:`probe`, :py:meth:`ctf`,
-            :py:meth:`hrem` or :py:meth:`random_potential`.
+            :py:meth:`hrem`, :py:meth:`stem_image`, :py:meth:`phase_map`, :py:meth:`mtf` or
+            :py:meth:`random_potential`.
         :type image: numpy.ndarray
-        :param kind: ``'ronchigram'``, ``'probe'``, ``'ctf'``, ``'hrem'`` or ``'potential'``.
+        :param kind: ``'ronchigram'``, ``'probe'``, ``'ctf'``, ``'hrem'``, ``'stem'``,
+            ``'phase'``, ``'mtf'`` or ``'potential'``.
         :type kind: str
         :param ax: the axes to draw in. By default, a new figure, shown.
         :type ax: matplotlib.axes.Axes, optional
         :param title: the title. By default, the kind and the main settings.
         :type title: str, optional
-        :param aperture: on a Ronchigram or CTF, draw the aperture's edge.
+        :param aperture: on a Ronchigram, CTF, phase map or MTF, draw the aperture's edge.
+            A phase map is shown modulo 2π, with a cyclic colour map.
         :type aperture: bool, optional
         :return: the axes.
         :rtype: matplotlib.axes.Axes
@@ -449,19 +794,26 @@ class Probe:
 
         labels = {'ronchigram': ('Ronchigram', 'mrad'), 'probe': ('Probe', 'Å'),
                   'ctf': ('CTF', '1/Å'), 'potential': ('Potential', 'Å'),
-                  'hrem': ('HREM image', 'Å')}
+                  'hrem': ('HREM image', 'Å'), 'stem': ('STEM image', 'Å'),
+                  'phase': ('Aberration phase (rad)', '1/Å'), 'mtf': ('Probe MTF', '1/Å')}
         if kind not in labels:
             raise ValueError(_KINDS)
         name, unit = labels[kind]
         new = ax is None
         if new:
             _, ax = plt.subplots(figsize=(6, 6))
-        cmap = 'RdBu_r' if kind == 'ctf' else 'gray'
+        cmap = {'ctf': 'RdBu_r', 'phase': 'twilight_shifted'}.get(kind, 'gray')
         opts = {'vmin': -1, 'vmax': 1} if kind == 'ctf' else {}
-        ax.imshow(image, cmap=cmap, extent=self.extent(kind), **opts)
+        if kind == 'phase':
+            # modulo 2 pi, with a cyclic colour map, as corrector software shows phase plates
+            image = np.angle(np.exp(1j * np.asarray(image, dtype=np.float64)))
+            opts = {'vmin': -math.pi, 'vmax': math.pi}
+        shown = ax.imshow(image, cmap=cmap, extent=self.extent(kind), **opts)
+        if kind == 'phase':
+            ax.figure.colorbar(shown, ax=ax, fraction=0.046, pad=0.04)
         ax.set_xlabel(unit)
         ax.set_ylabel(unit)
-        if aperture and kind in ('ronchigram', 'ctf'):
+        if aperture and kind in ('ronchigram', 'ctf', 'phase', 'mtf'):
             r = self.aperture if kind == 'ronchigram' else self.kmax
             ax.add_patch(plt.Circle((0, 0), r, fill=False, color='yellow', linewidth=1))
         if title is None:
@@ -479,7 +831,9 @@ class Probe:
         Create a probe from a probe program parameter file: lines of a name and values, such as
         ``kv 200``, ``aperture 25``, ``df -5.14``, ``cs -0.00355`` (or ``c3_mm``), ``c5 3.829``
         and ``a1 1.349 146.2``, as the program's ``write -m`` and its microscope files have them.
-        Lines starting with ``#``, and ``end``, are skipped.
+        The program's other settings are read too: ``kmax`` (1/Å, instead of the aperture),
+        ``semi``, ``cc``, ``de``, ``fhi``, ``tilt`` (amplitude and angle), ``dim`` (the map's
+        size) and ``sam`` (its sampling). Lines starting with ``#``, and ``end``, are skipped.
 
         :param path: the file.
         :type path: str or os.PathLike
@@ -491,7 +845,10 @@ class Probe:
         '''
         names = {'kv': 'kv', 'aperture': 'aperture', 'ap': 'aperture', 'df': 'defocus',
                  'df_nm': 'defocus', 'cs': 'cs', 'c3': 'cs', 'c3_mm': 'cs', 'c5': 'c5',
-                 'c5_mm': 'c5', 'cc': 'cc', 'de': 'energy_spread', 'fhi': 'rotation'}
+                 'c5_mm': 'c5', 'cc': 'cc', 'de': 'energy_spread', 'fhi': 'rotation',
+                 'sem': 'semi_angle', 'semi': 'semi_angle', 'km': 'kmax', 'kmax': 'kmax',
+                 'dim': 'size', 'dimension': 'size', 'sam': 'sampling', 'sample': 'sampling',
+                 'sampling': 'sampling'}
         settings, aberrations = dict(kwargs), {}
         with open(os.fspath(path), encoding='utf-8', errors='replace') as f:
             for number, line in enumerate(f, 1):
@@ -506,7 +863,7 @@ class Probe:
                 base = key.split('_')[0]
                 if base in ABERRATIONS and len(values) == 2:
                     aberrations[base] = tuple(values)
-                elif key == 'tilt' and len(values) == 2:
+                elif key in ('tilt', 'til') and len(values) == 2:
                     settings['tilt'] = tuple(values)
                 elif key in names and len(values) == 1:
                     settings[names[key]] = values[0]
@@ -516,6 +873,12 @@ class Probe:
         # a written aperture of 0 means the file didn't set it
         if settings.get('aperture') == 0.0:
             settings.pop('aperture')
+        if 'sampling' in settings:
+            settings['sampling'] = int(settings['sampling'])
+        # kmax, in 1/A, as the aperture: wavelength * kmax in mrad, at the file's high voltage
+        kmax = settings.pop('kmax', None)
+        if kmax is not None:
+            settings['aperture'] = kmax * cls(kv=settings.get('kv', 200.0)).wavelength * 1000.0
         merged = dict(kwargs.get('aberrations') or {})
         merged.update(aberrations)
         settings['aberrations'] = merged
