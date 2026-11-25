@@ -186,11 +186,13 @@ temporal envelope.
 
 A camera blurs the image it records. :py:meth:`~pyemaps.probe.Probe.apply_psf` applies a
 detector's point spread function, through its transfer function ``a / (1 + b w²) + 1 - a`` at
-w cycles per pixel, as the probe program's psf command did:
+w cycles per pixel, as the probe program's psf command did. The defaults, *a* = 0.6 and
+*b* = 400, are typical of a camera: they transfer about 0.4 at the Nyquist frequency.
 
 .. code-block:: python
 
-   recorded = tem.apply_psf(image, a=0.6, b=400.0)     # about 0.4 at the Nyquist frequency
+   recorded = tem.apply_psf(image)                     # a=0.6, b=400.0
+   sharper = tem.apply_psf(image, a=0.3, b=400.0)      # a better camera
 
 The image of an amorphous sample shows the CTF in its Fourier transform, as Thon rings. The
 sample *hrem.py* shows images at the Scherzer defocus, further underfocus, with two-fold

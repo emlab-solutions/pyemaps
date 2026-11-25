@@ -345,6 +345,7 @@ def c_stem_mtf_psf():
         'the STEM image is not the convolution'
     img = p.hrem()
     assert np.abs(p.apply_psf(img, 0.0, 5.0) - img).max() < 1e-5
+    assert np.array_equal(p.apply_psf(img), p.apply_psf(img, 0.6, 400.0)), 'PSF defaults'
     w = np.fft.fftshift(np.fft.fftfreq(n))
     wx, wy = np.meshgrid(w, w)
     filt = 0.7 / (1 + 30 * (wx ** 2 + wy ** 2)) + 0.3
