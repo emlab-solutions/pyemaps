@@ -27,6 +27,10 @@ Most work starts from the :py:class:`~pyemaps.crystals.Crystal` class.
       :link: images
       :link-type: doc
 
+   .. grid-item-card:: Electron probes
+      :link: probe
+      :link-type: doc
+
    .. grid-item-card:: Crystal structures
       :link: structure
       :link-type: doc
@@ -52,6 +56,7 @@ Most work starts from the :py:class:`~pyemaps.crystals.Crystal` class.
    kinematic
    dynamic
    images
+   probe
    structure
    display
    fileutils

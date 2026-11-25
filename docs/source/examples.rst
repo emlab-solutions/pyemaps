@@ -60,6 +60,37 @@ The two 4D-STEM indexing notebooks are also shown here with their results:
 
          Guide: :doc:`user_guide/crystals`
 
+      .. grid-item-card:: ronchigram.py
+         :img-top: _static/images/probe_ronchigram.png
+
+         Ronchigrams of a corrected probe, with astigmatism, and of an uncorrected one.
+
+         Guide: :doc:`user_guide/probe`.
+         Notebook: :doc:`notebooks/probe`
+
+      .. grid-item-card:: stem_probe.py
+         :img-top: _static/images/probe_stem_probe.png
+
+         STEM probes and their sizes: uncorrected, corrected, and with a corrector's
+         residual aberrations.
+
+         Guide: :doc:`user_guide/probe`
+
+      .. grid-item-card:: ctf.py
+         :img-top: _static/images/probe_ctf.png
+
+         The contrast transfer function at and around the Scherzer defocus, with its
+         envelopes, and for a corrected lens.
+
+         Guide: :doc:`user_guide/probe`
+
+      .. grid-item-card:: hrem.py
+         :img-top: _static/images/probe_hrem.png
+
+         HREM images of amorphous carbon and their Thon rings.
+
+         Guide: :doc:`user_guide/probe`
+
       .. grid-item-card:: al_ediom.py :bdg-info:`Licensed`
          :img-top: _static/images/ediom_img1.png
 

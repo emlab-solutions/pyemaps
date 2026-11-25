@@ -173,6 +173,9 @@ from .expimage import read_image, write_im3, image_readers, image_datasets, Expe
 #--------------Orientation maps (made by StackImage.mapOrientation; loading needs no license)----
 from .orientmap import OrientationMap, OM_INDEXED, OM_FEW_PEAKS, OM_FAILED, OM_NOT_RUN
 
+#--------------Electron probes, Ronchigrams and CTF (emaps' probe module; free)----------------
+from .probe import Probe
+
 if PKG_TYPE != TYPE_FREE:
     #------------------Diffraction Database Generator - paid package only---------------------------
     try:

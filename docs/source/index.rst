@@ -89,6 +89,14 @@ What you can simulate
 
          44 built-in crystals, CIF import, structure factors and supercells.
 
+      .. grid-item-card:: Probes, Ronchigrams, CTF and HREM
+         :img-top: _static/images/probe_card.png
+         :link: user_guide/probe
+         :link-type: doc
+
+         What a lens with aberrations does: Ronchigrams, STEM probes, the contrast transfer
+         function and HREM images, for corrected and uncorrected microscopes.
+
       .. grid-item-card:: 4D-STEM indexing :bdg-info:`Licensed`
          :img-top: _static/images/ediom_img1.png
          :link: user_guide/indexing

@@ -31,6 +31,11 @@ The base features are free, under the GNU General Public License v3.0:
   - Convergent beam electron diffraction, including large-angle CBED
   - The electron scattering matrix
   - Electron dispersion (the eigenvalues of the Bloch wave solution)
+- **Electron lenses with aberrations**, corrected or not
+  - Ronchigrams
+  - STEM probes and their size
+  - Contrast transfer functions, with their coherence envelopes
+  - HREM images of thin samples
 
 The extended 4D-STEM features need a license:
 

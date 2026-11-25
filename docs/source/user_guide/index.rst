@@ -43,6 +43,13 @@ follow the links into the :doc:`../api/index`.
 
       Bright field, dark field and masked images from a scan. Licensed.
 
+   .. grid-item-card:: Probes, Ronchigrams, CTF and HREM
+      :link: probe
+      :link-type: doc
+
+      What a lens with aberrations does: Ronchigrams, STEM probes, the contrast transfer
+      function and HREM images.
+
    .. grid-item-card:: Using results in other tools
       :link: third_party
       :link-type: doc
@@ -64,5 +71,6 @@ follow the links into the :doc:`../api/index`.
    stereo
    indexing
    imaging
+   probe
    third_party
    configuration
