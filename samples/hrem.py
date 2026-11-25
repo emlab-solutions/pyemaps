@@ -21,7 +21,9 @@ This sample uses pyEMAPS' Probe class, with the lens as an uncorrected 200 kV ob
 
 1. the HREM image at the Scherzer defocus and 40 nm further underfocus;
 2. the Fourier transform of each, with its Thon rings;
-3. the image at Scherzer with 30 nm of two-fold astigmatism, whose Thon rings become ellipses.
+3. the image at Scherzer with 30 nm of two-fold astigmatism, whose Thon rings become ellipses;
+4. the image at Scherzer as a camera records it, blurred by its point spread function, which
+   fades the outer Thon rings.
 
 Run it with:
 
@@ -49,13 +51,18 @@ def main():
     carbon = lens.random_potential(density=0.1, z=6, thickness=50, seed=7)
     wave = lens.exit_wave(carbon)
 
-    cases = [('Scherzer', scherzer, None), ('40 nm underfocus', scherzer - 40, None),
-             ('Scherzer, 30 nm of a1', scherzer, (30.0, 45.0))]
-    fig, axes = plt.subplots(2, 3, figsize=(15, 10))
-    for k, (name, df, a1) in enumerate(cases):
+    # the last case: a camera's point spread function, transfer 0.6 / (1 + 400 w^2) + 0.4:
+    # about 0.4 at the Nyquist frequency (w = 0.5 cycles per pixel), typical of a camera
+    cases = [('Scherzer', scherzer, None, None), ('40 nm underfocus', scherzer - 40, None, None),
+             ('Scherzer, 30 nm of a1', scherzer, (30.0, 45.0), None),
+             ('Scherzer, recorded by a camera', scherzer, None, (0.6, 400.0))]
+    fig, axes = plt.subplots(2, 4, figsize=(20, 10))
+    for k, (name, df, a1, psf) in enumerate(cases):
         lens.defocus = df
         lens.set_aberration('a1', *(a1 or (0.0, 0.0)))
         image = lens.hrem(wave)
+        if psf:
+            image = lens.apply_psf(image, *psf)
         print(f'{name}: defocus {df:.1f} nm; image contrast (std / mean) '
               f'{image.std() / image.mean():.3f}')
 

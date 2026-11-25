@@ -60,7 +60,13 @@ program parameter file, with lines such as ``kv 200``, ``df -5.14`` or ``a1 1.34
 ``size / sampling`` Å. The Ronchigram and the CTF are in reciprocal space, with pixels of
 ``1 / size`` 1/Å; a Ronchigram reaches ``1000 * wavelength * sampling / (2 * size)`` mrad from
 its center. :py:meth:`~pyemaps.probe.Probe.show` displays any result with its axes, and
-:py:meth:`~pyemaps.probe.Probe.extent` gives those axes for your own plots.
+:py:meth:`~pyemaps.probe.Probe.extent` gives those axes for your own plots. The sampling can be
+up to 32768 pixels, as memory allows.
+
+**The aberration function.** :py:meth:`~pyemaps.probe.Probe.phase_map` returns χ(k) itself, in
+radians, the phase the lens adds at each spatial frequency. Where it stays within about π/4 of
+its value at the center, the lens is free of aberrations; that region sets how large an aperture
+can be used. ``lens.show(lens.phase_map(), 'phase')`` draws it with the aperture.
 
 Ronchigram
 ----------
@@ -77,7 +83,7 @@ there, or pass a potential of your own.
 
 The map has to be large for the Ronchigram to reach beyond the aperture: 100 Å with 256 pixels
 reaches 32 mrad at 200 kV. The sample *ronchigram.py* compares a corrected probe, the same with
-two-fold astigmatism, and an uncorrected one:
+two-fold astigmatism, and an uncorrected one, with the phase map behind each:
 
 .. image:: ../_static/images/probe_ronchigram.png
    :width: 100%
@@ -107,9 +113,31 @@ Two methods set the optimum settings:
   lens, and the aperture too unless you keep yours, after Haider et al., *Ultramicroscopy*
   (2000).
 
+:py:meth:`~pyemaps.probe.Probe.optimize` searches for the defocus and residual aberrations
+that make the probe smallest, as the probe program's optimize command did, with the
+Nelder-Mead simplex method. It minimizes the diameter as ``diameter(interpolate=True)``
+measures it, interpolating between pixels so that it changes smoothly:
+
+.. code-block:: python
+
+   fine.set_aberration('a1', 15.0, 40.0)                   # 15 nm of two-fold astigmatism
+   result = fine.optimize(percent=50, vary=('defocus', 'a1'))
+   print(result['diameter'], result['a1'])                 # a1 tuned back to about 0
+
+**STEM images.** :py:meth:`~pyemaps.probe.Probe.stem_image` gives the incoherent (annular dark
+field) STEM image of a sample: the probe's intensity convolved with its projected potential.
+:py:meth:`~pyemaps.probe.Probe.mtf` gives the probe's modulation transfer function, the
+amplitude of the Fourier transform of its intensity, which says how strongly each spatial
+frequency of the sample shows in such an image.
+
+:py:meth:`~pyemaps.probe.Probe.focal_series` computes a probe, Ronchigram, CTF, HREM or STEM
+image, or phase map at each of a list of defocus values, as a stack.
+
 The sample *stem_probe.py* compares an uncorrected probe at its Scherzer settings with a
 corrected one at the Haider settings, with and without a corrector's measured residual
-aberrations, and shows the uncorrected probe's size across defocus:
+aberrations. It shows the uncorrected probe's size across defocus, the STEM images of a thin
+amorphous sample and the probes' MTFs, then tunes out the measured astigmatism with
+:py:meth:`~pyemaps.probe.Probe.optimize`:
 
 .. image:: ../_static/images/probe_stem_probe.png
    :width: 100%
@@ -156,9 +184,19 @@ temporal envelope.
    image = tem.hrem(tem.exit_wave(carbon))
    tem.show(image, 'hrem')
 
+A camera blurs the image it records. :py:meth:`~pyemaps.probe.Probe.apply_psf` applies a
+detector's point spread function, through its transfer function ``a / (1 + b w²) + 1 - a`` at
+w cycles per pixel, as the probe program's psf command did. The defaults, *a* = 0.6 and
+*b* = 400, are typical of a camera: they transfer about 0.4 at the Nyquist frequency.
+
+.. code-block:: python
+
+   recorded = tem.apply_psf(image)                     # a=0.6, b=400.0
+   sharper = tem.apply_psf(image, a=0.3, b=400.0)      # a better camera
+
 The image of an amorphous sample shows the CTF in its Fourier transform, as Thon rings. The
-sample *hrem.py* shows images at the Scherzer defocus, further underfocus, and with two-fold
-astigmatism, which makes the rings elliptical:
+sample *hrem.py* shows images at the Scherzer defocus, further underfocus, with two-fold
+astigmatism, which makes the rings elliptical, and as a camera records them:
 
 .. image:: ../_static/images/probe_hrem.png
    :width: 100%

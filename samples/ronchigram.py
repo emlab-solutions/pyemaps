@@ -21,7 +21,9 @@ This sample uses pyEMAPS' Probe class to show the Ronchigrams of 100 A of amorph
    the residual aberrations a corrector measured on a real microscope;
 2. the same probe with 20 nm of two-fold astigmatism added;
 3. an uncorrected probe, Cs 1.2 mm, at its Scherzer defocus, with the aperture opened to
-   25 mrad, which shows the rings of spherical aberration.
+   25 mrad, which shows the rings of spherical aberration;
+
+and below each, its aberration function chi(k), the phase the lens adds at each angle.
 
 Run it with:
 
@@ -61,12 +63,18 @@ def main():
     # The same sample for all three: 100 A of amorphous aluminium (the default potential).
     sample = corrected_probe().random_potential(density=0.05, z=13, thickness=100, seed=1211)
 
-    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
-    for ax, (name, probe) in zip(axes, probes.items()):
-        probe.show(probe.ronchigram(sample), 'ronchigram', ax=ax,
+    fig, axes = plt.subplots(2, 3, figsize=(15, 10))
+    for k, (name, probe) in enumerate(probes.items()):
+        probe.show(probe.ronchigram(sample), 'ronchigram', ax=axes[0, k],
                    title=f'{name}\ndefocus {probe.defocus:.1f} nm')
+        # The aberration function chi behind each Ronchigram, modulo 2 pi: where it's flat,
+        # the Ronchigram is a smooth shadow image.
+        probe.show(probe.phase_map(), 'phase', ax=axes[1, k], title='Aberration phase (rad)')
+        k_max = 1.3 * probe.kmax
+        axes[1, k].set_xlim(-k_max, k_max)
+        axes[1, k].set_ylim(k_max, -k_max)
         print(f'{name}: {probe}')
-    fig.suptitle('Ronchigrams, 200 kV, 25 mrad aperture (yellow)')
+    fig.suptitle('Ronchigrams and aberration phase maps, 200 kV, 25 mrad aperture (yellow)')
     fig.tight_layout()
     plt.show()
 
