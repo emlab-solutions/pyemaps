@@ -30,6 +30,7 @@ from . import (E_INT, EM_INT,
                EL_ONE, #STEM4D image loading only one particular stack
                EL_MORE #STEM4D image loading all stacks
             )
+import os
 import numpy as np
 
 
@@ -1296,7 +1297,8 @@ class StackImage():
                     center=(0.0, 0.0), 
                     rads = (0.0, 0.0),
                     scol = 0.0,
-                    bShow=False):
+                    bShow=False,
+                    title=None):
         """
         Generate a bright field (BF), dark field (DF), annular bright field (ABF) or annular
         dark field (ADF) image from a 4D-STEM image stack, with a virtual detector. Each stack is
@@ -1317,6 +1319,11 @@ class StackImage():
         :type scol: int or float
         :param bShow: display the image.
         :type bShow: bool, optional
+        :param title: the title of the displayed image, such as ``'Annular Dark Field'``. By
+            default, the detector's shape, radii and center, such as
+            ``'Ring Detector, Radii 50-200 px, Center (263, 263)'``: whether the image is bright
+            or dark field depends on where the direct beam is, which the method doesn't know.
+        :type title: str, optional
         :return: ``(code, data)``. The code is 0 on success, and *data* is the image as a numpy
             array, also stored in :py:attr:`~pyemaps.stackimg.StackImage.data`. On failure, the code
             is negative, *data* is ``None`` and a message is printed.
@@ -1360,15 +1367,20 @@ class StackImage():
         self._data = adfimg.getImageData(1)
 
         if bShow:
-            self.viewExpImage(title='Annular Dark or Bright Field Image' if rads[0] > 0.0 else \
-                              'Dark or Bright Field Image')
+            if title is None:
+                r_in, r_out = sorted(rads)
+                at = f'Center ({center[0]:g}, {center[1]:g})'
+                title = (f'Ring Detector, Radii {r_in:g}-{r_out:g} px, {at}' if r_in > 0 else
+                         f'Disk Detector, Radius {r_out:g} px, {at}')
+            self.viewExpImage(title=title)
 
         return 0, self._data
     
     def generateMaskedImage(self,
                    maskfn,
                    scancol = 0.0,
-                   bShow=False):
+                   bShow=False,
+                   title=None):
         """
         Generate an image from a 4D-STEM image stack with a detector mask: each pixel of the
         output is the sum of the masked pixels in one stack. This is a licensed feature; see the
@@ -1385,6 +1397,9 @@ class StackImage():
         :type scancol: int or float
         :param bShow: display the image.
         :type bShow: bool, optional
+        :param title: the title of the displayed image. By default, ``'Masked Image'`` and the
+            mask's file name, such as ``'Masked Image, Mask mask.im3'``.
+        :type title: str, optional
         :return: ``(code, data)``. The code is 0 on success, and *data* is the image as a numpy
             array, also stored in :py:attr:`~pyemaps.stackimg.StackImage.data`. On failure, the code
             is negative and *data* is ``None``.
@@ -1416,7 +1431,9 @@ class StackImage():
         self._data = maskedimg.getImageData(1)
 
         if bShow:
-            self.viewExpImage(title = "Experimental Diffraction Image - Masked")
+            if title is None:
+                title = f'Masked Image, Mask {os.path.basename(maskfn)}'
+            self.viewExpImage(title=title)
 
         return 0, self._data
     

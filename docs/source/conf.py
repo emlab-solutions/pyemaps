@@ -39,7 +39,7 @@ import re
 
 _nb_src = os.path.join(os.path.dirname(__file__), '..', '..', 'notebooks')
 _nb_dst = os.path.join(os.path.dirname(__file__), 'notebooks')
-_nb_shown = ('al_ediom.ipynb', 'al_orientmap.ipynb')
+_nb_shown = ('adf.ipynb', 'al_ediom.ipynb', 'al_orientmap.ipynb')
 _nb_github = 'https://github.com/emlab-solutions/pyemaps/blob/main/notebooks/'
 
 

@@ -44,14 +44,20 @@ MASK_FILE = os.path.join(SAMPLES_DIR, 'mask.im3')
 
 SCAN_COLUMNS = 30    # scan positions per row: the width of the output images
 
+# The direct beam, at column 263, row 263 of the 512 x 512 patterns: the brightest pixel of
+# the patterns' average (the adf.ipynb notebook finds it). Detectors around the direct beam are
+# centred on it, not on the middle of the pattern.
+BEAM_CENTER = (263.0, 263.0)    # (column, row), in pixels
+
 
 def annular_dark_field():
     """Generate and display an annular dark field image."""
     image = StackImage(IMAGE_FILE, ndtype=EM_INT)
-    ret, _ = image.generateBDF(center=(256.0, 256.0),   # detector center, in pixels
+    ret, _ = image.generateBDF(center=BEAM_CENTER,      # detector center, in pixels
                                rads=(50.0, 200.0),      # inner and outer radius, in pixels
                                scol=SCAN_COLUMNS,
-                               bShow=True)
+                               bShow=True,
+                               title='Annular Dark Field')
     if ret != 0:
         print('Failed to generate the annular dark field image')
 
@@ -62,7 +68,8 @@ def dark_field():
     ret, _ = image.generateBDF(center=(1.0, 256.0),
                                rads=(0.0, 200.0),
                                scol=SCAN_COLUMNS,
-                               bShow=True)
+                               bShow=True,
+                               title='Dark Field')
     if ret != 0:
         print('Failed to generate the dark field image')
 
@@ -70,7 +77,8 @@ def dark_field():
 def masked_image():
     """Generate and display an image with the detector shape taken from a mask image."""
     image = StackImage(IMAGE_FILE, ndtype=EM_INT)
-    ret, _ = image.generateMaskedImage(MASK_FILE, SCAN_COLUMNS, bShow=True)
+    ret, _ = image.generateMaskedImage(MASK_FILE, SCAN_COLUMNS, bShow=True,
+                                       title='Masked Image')
     if ret != 0:
         print('Failed to generate the masked image')
 

@@ -90,6 +90,6 @@ More samples
 * *adf.py*: annular bright and dark field images and a masked image from an experimental
   image. It needs *adftest900.im3*, available from
   `Zenodo <https://zenodo.org/records/14028793/files/adftest900.im3?download=1>`_; save it
-  in the *pyemaps_samples* folder. :bdg-info:`Licensed`
+  in the *pyemaps_samples* folder. See :doc:`user_guide/imaging`. :bdg-info:`Licensed`
 * *dm_diff.py*: draws kinematic diffraction patterns in DigitalMicrograph; run it inside DM.
   See :doc:`user_guide/third_party`.
