@@ -37,6 +37,13 @@ The free base features:
   * The electron scattering matrix
   * Electron dispersion (the eigenvalues of the Bloch wave solution)
 
+* **Electron lenses with aberrations**, corrected or not
+
+  * Ronchigrams
+  * STEM probes and their size
+  * Contrast transfer functions, with their coherence envelopes
+  * HREM images of thin samples
+
 The extended 4D-STEM features, which need :ref:`License Activation`:
 
 * Building and searching diffraction pattern databases
