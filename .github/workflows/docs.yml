@@ -18,8 +18,10 @@ on:
       - 'docs/**'
       - '*.py'
       - 'diffract/**'
+      - 'notebooks/adf.ipynb'
       - 'notebooks/al_ediom.ipynb'
       - 'notebooks/al_orientmap.ipynb'
+      - 'notebooks/probe.ipynb'
       - '.github/workflows/docs.yml'
   workflow_dispatch:
 
