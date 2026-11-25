@@ -768,19 +768,20 @@ class Probe:
         img, ierr = _backend().probemtf(self._mic(), amp, ang, self.size, self.sampling)
         return self._image(img, ierr)
 
-    def apply_psf(self, image, a, b):
+    def apply_psf(self, image, a=0.6, b=400.0):
         '''
         Blur an image with a detector's point spread function, as recorded by a camera: its
         transfer function is ``a / (1 + b w²) + 1 - a`` at the spatial frequency w, in cycles per
-        pixel (0 to 0.5).
+        pixel (0 to 0.5). The defaults are typical of a camera: the transfer is about 0.4 at the
+        Nyquist frequency.
 
         :param image: the image, square, with an even number of pixels along each side, such as
             :py:meth:`hrem` gives.
         :type image: numpy.ndarray
         :param a: the share of the transfer that falls off with frequency, 0 to 1.
-        :type a: float
+        :type a: float, optional
         :param b: how fast it falls off; 0 leaves the image as it is.
-        :type b: float
+        :type b: float, optional
         :return: the blurred image, the same shape.
         :rtype: numpy.ndarray
         :raise ValueError: if *image* isn't square with an even size of at least 8 pixels, or
