@@ -1,7 +1,7 @@
 '''
 Checks for pyEMAPS' probe simulations (pyemaps/probe.py, emaps' probe module): the four modes
-(Ronchigram, probe, CTF, HREM) and the random potential and exit wave against a stored baseline,
-and physical checks that need no baseline.
+(Ronchigram, probe, CTF, HREM), the random and crystal potentials and the exit wave against a
+stored baseline, and physical checks that need no baseline.
 
     python run_probe.py -bc      # run the checks (ci_sanity's "-bc all" works too)
     python run_probe.py -bg      # regenerate the baseline; only for an intended change
@@ -58,7 +58,8 @@ def results():
             'phase': p.phase_map(), 'stem': chromatic.stem_image(pot), 'mtf': chromatic.mtf(),
             'psf': p.apply_psf(p.hrem(wave), 0.6, 40.0),
             'diameter_interpolated': np.array([p.diameter(50, interpolate=True),
-                                               p.diameter(80, interpolate=True)])}
+                                               p.diameter(80, interpolate=True)]),
+            'crystal': crystal_map()}
 
 
 def c_baseline():
@@ -380,6 +381,86 @@ def c_focal_series_optimize():
             f"{r['a1'][0]:.2f} nm, d50 {before:.2f} -> {r['diameter']:.2f} A")
 
 
+def crystal_map():
+    # silicon along [110], with [001] across: 12 a is 17 repeats along y within 0.2%
+    from pyemaps import Crystal, Probe
+    si = Crystal.from_builtin('Silicon')
+    p = Probe(kv=200, size=12 * float(si.cell.a), sampling=256)
+    return p.crystal_potential(si, zone=(1, 1, 0), thickness=30.0)
+
+
+def c_crystal_potential():
+    from pyemaps import Crystal, Probe
+    from pyemaps.probe import _slab_atoms
+    lines = []
+    # 1. The map's Fourier coefficients, per unit thickness, are emaps' electron structure
+    # factors in volts: along [001], with a map of 8 cells and a slab of 10.
+    for name, hkls in (('Silicon', ((2, 2, 0), (4, 0, 0))), ('Aluminium', ((2, 0, 0), (2, 2, 0)))):
+        c = Crystal.from_builtin(name)
+        a = float(c.cell.a)
+        p = Probe(kv=200, size=8 * a, sampling=128)
+        v = p.crystal_potential(c, zone=(0, 0, 1), thickness=10 * a, x_axis=(1, 0, 0))
+        f = np.fft.fft2(v) / v.size / (10 * a)
+        csf = c.generateCSF(kv=200, smax=1.0, sftype=2, aptype=0)
+        table = {tuple(sorted(abs(int(i)) for i in d['hkl'])): complex(d['amp_re'], d['phase_im'])
+                 for d in csf[1:]}
+        for h, k, l in hkls:
+            got = f[8 * k % 128, 8 * h % 128]
+            ref = table[tuple(sorted((h, k, l)))]
+            assert abs(got - ref) <= 1e-4 * abs(ref), \
+                f'{name} {h}{k}{l}: map {got:.5f} V, emaps structure factor {ref:.5f} V'
+            lines.append(f'{name} {h}{k}{l} {got.real:.4f} V')
+        # the mean inner potential doesn't depend on the thickness
+        thin = p.crystal_potential(c, zone=(0, 0, 1), thickness=5 * a, x_axis=(1, 0, 0))
+        mip, mip_thin = v.mean() / (10 * a), thin.mean() / (5 * a)
+        assert abs(mip - mip_thin) <= 1e-5 * mip, f'{name}: mean inner potential {mip}, {mip_thin}'
+        # moving the crystal by whole pixels moves the map
+        moved = p.crystal_potential(c, zone=(0, 0, 1), thickness=10 * a, x_axis=(1, 0, 0),
+                                    shift=(3 * p.size / 128, 5 * p.size / 128))
+        assert np.allclose(moved, np.roll(v, (5, 3), axis=(0, 1)), rtol=0,
+                           atol=1e-4 * v.max()), f'{name}: shift doesn\'t move the map'
+        lines.append(f'mean inner potential {mip:.2f} V')
+
+    # 2. The slab's atoms are mxtal's, in an oblique cell with mixed sites (Li2MnO3, monoclinic)
+    c = Crystal.from_builtin('Li2MnO3')
+    size, depth, zone = 15.0, 10.0, (1, 1, 0)
+    mine = np.concatenate([xyz for xyz, _ in _slab_atoms(c, zone, None, size, depth).values()])
+    from pyemaps.probe import _lattice, _perpendicular
+    lat = _lattice(c.cell)
+    ez = np.asarray(zone, float) @ lat
+    ez /= np.linalg.norm(ez)
+    ex = _perpendicular(zone, lat) @ lat
+    ex -= (ex @ ez) * ez
+    ex /= np.linalg.norm(ex)
+    cell = lat @ np.array([ex, np.cross(ez, ex), ez]).T
+    corners = np.array([[i * size, j * size, k * depth]
+                        for i in (0, 1) for j in (0, 1) for k in (0, 1)]) @ np.linalg.inv(cell)
+    mx = c.generateMxtal(cellbox=[list(np.floor(corners.min(0)) - 1),
+                                  list(np.ceil(corners.max(0)) + 1)],
+                         xz=[list(ex @ np.linalg.inv(lat)), list(map(float, zone))])
+    theirs = np.array([at.coord for at in mx.acoordList], dtype=float)
+    inside = np.all((theirs >= 1e-3) & (theirs < np.array([size, size, depth]) - 1e-3), axis=1)
+    theirs = theirs[inside]
+    mine_in = mine[np.all((mine >= 1e-3) & (mine < np.array([size, size, depth]) - 1e-3), axis=1)]
+    d1 = np.min(np.linalg.norm(mine_in[:, None] - theirs[None], axis=2), axis=1)
+    d2 = np.min(np.linalg.norm(theirs[:, None] - mine_in[None], axis=2), axis=1)
+    assert d1.max() < 1e-3 and d2.max() < 1e-3, \
+        f'slab atoms and mxtal differ by up to {max(d1.max(), d2.max()):.3g} A'
+    lines.append(f'Li2MnO3 [110] slab = mxtal ({len(theirs)} positions)')
+
+    # 3. errors
+    si = Crystal.from_builtin('Silicon')
+    p = Probe(size=20, sampling=64)
+    for kwargs in ({'zone': (0, 0, 0)}, {'thickness': 0}, {'x_axis': (0, 0, 3)},
+                   {'thickness': 1e9}):
+        try:
+            p.crystal_potential(si, **kwargs)
+        except ValueError:
+            continue
+        raise AssertionError(f'no error for {kwargs}')
+    return '; '.join(lines)
+
+
 def c_show():
     import matplotlib
     matplotlib.use('Agg')
@@ -422,6 +503,7 @@ def main():
                      ('phase map', c_phase_map),
                      ('STEM image, MTF and PSF', c_stem_mtf_psf),
                      ('focal series and optimizer', c_focal_series_optimize),
+                     ('crystal potential', c_crystal_potential),
                      ('plots', c_show)):
         check(name, fn)
     for name, ok, msg in RESULTS:
