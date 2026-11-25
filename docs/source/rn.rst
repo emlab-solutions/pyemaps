@@ -1,6 +1,45 @@
 Release Notes
 =============
 
+Version 2.8.0 Stable
+--------------------
+
+11-25-2026
+~~~~~~~~~~
+
+New
+~~~
+
+- :py:class:`~pyemaps.probe.Probe`: electron probes, Ronchigrams, contrast transfer functions and HREM images of a lens with aberrations, from J. M. Zuo's probe program, now part of emaps 2.5.0. Free, with no license needed. A probe holds the microscope settings: the high voltage, the aperture, the defocus, Cs, C5 and Cc, and the residual aberrations a corrector measures (a1 to a5, b2, b4, d4, s3). Its methods return NumPy arrays:
+
+  - :py:meth:`~pyemaps.probe.Probe.ronchigram`: the shadow image of the probe through a thin sample, which corrector alignment is done on;
+  - :py:meth:`~pyemaps.probe.Probe.probe` and :py:meth:`~pyemaps.probe.Probe.diameter`: the probe's intensity and the diameter holding a given share of it;
+  - :py:meth:`~pyemaps.probe.Probe.ctf`: the contrast transfer function, with its temporal and spatial coherence envelopes;
+  - :py:meth:`~pyemaps.probe.Probe.hrem` and :py:meth:`~pyemaps.probe.Probe.exit_wave`: the HREM image of a thin sample's exit wave, coherent or added up over the energy spread;
+  - :py:meth:`~pyemaps.probe.Probe.phase_map`: the aberration function χ(k);
+  - :py:meth:`~pyemaps.probe.Probe.stem_image` and :py:meth:`~pyemaps.probe.Probe.mtf`: the incoherent STEM image of a sample, and the probe's transfer function;
+  - :py:meth:`~pyemaps.probe.Probe.apply_psf`: a camera's point spread function;
+  - :py:meth:`~pyemaps.probe.Probe.focal_series`: any of these over a range of defocus;
+  - :py:meth:`~pyemaps.probe.Probe.scherzer` and :py:meth:`~pyemaps.probe.Probe.haider`: the optimum defocus and aperture of an uncorrected and a corrected lens, and :py:meth:`~pyemaps.probe.Probe.optimize`: the defocus and residual aberrations that make the probe smallest;
+  - :py:meth:`~pyemaps.probe.Probe.random_potential`: an amorphous sample, and :py:meth:`~pyemaps.probe.Probe.crystal_potential`: a pyEMAPS crystal along a zone axis, from its atoms;
+  - :py:meth:`~pyemaps.probe.Probe.from_file`: the probe program's parameter files;
+  - :py:meth:`~pyemaps.probe.Probe.show`: any result with its axes.
+
+  Every setting has a default, the probe program's. The samples *ronchigram.py*, *stem_probe.py*, *ctf.py*, *hrem.py* and *crystal_imaging.py* show each mode, and the User Guide page :doc:`user_guide/probe` and the notebook :doc:`notebooks/probe` explain them. Needs emaps 2.5.0 or later.
+- :doc:`user_guide/imaging`, a User Guide page on 4D-STEM imaging with virtual detectors: bright field, annular dark field and dark field images with :py:meth:`~pyemaps.stackimg.StackImage.generateBDF`, and detector masks with :py:meth:`~pyemaps.stackimg.StackImage.generateMaskedImage`. The documentation now shows the *adf* notebook, :doc:`notebooks/adf`, with its results.
+- :py:meth:`~pyemaps.stackimg.StackImage.generateBDF` and :py:meth:`~pyemaps.stackimg.StackImage.generateMaskedImage` take an optional *title* for the image they display.
+
+Changes
+~~~~~~~
+
+- :py:meth:`~pyemaps.stackimg.StackImage.generateBDF` and :py:meth:`~pyemaps.stackimg.StackImage.generateMaskedImage` title their images by the detector, such as "Ring Detector, Radii 50-200 px, Center (263, 263)" or "Masked Image, Mask mask.im3". Before, every image was titled "Dark or Bright Field Image", "Annular Dark or Bright Field Image" or "Experimental Diffraction Image - Masked".
+- The *adf.py* sample centres its annular detector on the direct beam, at (263, 263), instead of the middle of the pattern, 7 pixels away, and titles its images "Annular Dark Field", "Dark Field" and "Masked Image".
+
+Improvements
+~~~~~~~~~~~~
+
+- Requires ``emaps >= 2.5.0``.
+
 Version 2.7.0 Stable
 --------------------
 
