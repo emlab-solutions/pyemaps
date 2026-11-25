@@ -199,4 +199,49 @@ astigmatism, which makes the rings elliptical, and as a camera records them:
 .. image:: ../_static/images/probe_hrem.png
    :width: 100%
 
+Crystals
+--------
+
+Any of the samples above can be a crystal instead of an amorphous film.
+:py:meth:`~pyemaps.probe.Probe.crystal_potential` builds the projected potential of a pyEMAPS
+crystal along a zone axis: the atoms of a slab of the given thickness, each with its projected
+atomic potential, added up. Pass it wherever a potential goes: to
+:py:meth:`~pyemaps.probe.Probe.ronchigram`, :py:meth:`~pyemaps.probe.Probe.stem_image` or
+:py:meth:`~pyemaps.probe.Probe.exit_wave`.
+
+.. code-block:: python
+
+   from pyemaps import Crystal, Probe
+
+   si = Crystal.from_builtin('Silicon')
+   a = float(si.cell.a)
+   lens = Probe(kv=200, size=12 * a, sampling=1024)
+   potential = lens.crystal_potential(si, zone=(1, 1, 0), thickness=30)
+   lens.show(potential, 'potential')
+
+The unit cell is filled from the space group by
+:py:meth:`~pyemaps.crystals.Crystal.generateMxtal`. Each atom's potential comes from its
+electron scattering factor, as emaps' structure factors have it, with its Debye–Waller factor
+and occupancy. The beam is along the zone axis. *x_axis* sets the direction along the map's
+columns; by default, it's the shortest lattice direction perpendicular to the zone axis.
+*shift* moves the crystal on the map.
+
+Like the random potential, it's the whole slab projected onto one plane, so it suits thin
+crystals: the electrons don't propagate through the thickness, as they do in a multislice or
+Bloch-wave calculation.
+
+The map repeats itself at its edges, so choose *size* as a whole number of the crystal's
+repeats along x and y. Otherwise the crystal has a seam at the map's edges, away from the
+probe at its center. Along [110] in silicon, with [001] across, the repeats are *a* = 5.43 Å
+and *a*/√2 = 3.84 Å; 12 *a* is 17 of the second within 0.2%.
+
+The sample *crystal_imaging.py* shows silicon's [110] dumbbells, two columns 1.36 Å apart, in
+HREM and STEM images with an uncorrected and a corrected lens, and the corrected probe's
+Ronchigram, where the crystal's diffracted disks overlap. Only the corrected lenses resolve the
+dumbbells. At the Scherzer defocus the columns are dark. With the corrected lens's negative Cs,
+they're bright:
+
+.. image:: ../_static/images/probe_crystal.png
+   :width: 100%
+
 The calculations come from the probe program by J. M. Zuo, now part of emaps.

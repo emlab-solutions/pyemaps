@@ -17,7 +17,8 @@ measures (a1 to a5, b2, b4, d4, s3), and the map the results are computed on. It
 the results as NumPy arrays, in four modes:
 
 - :py:meth:`~Probe.ronchigram`: the Ronchigram, the shadow image of the probe through a thin
-  sample, of a random amorphous potential or one you give;
+  sample: a random amorphous potential (:py:meth:`~Probe.random_potential`), a crystal along a
+  zone axis (:py:meth:`~Probe.crystal_potential`) or one you give;
 - :py:meth:`~Probe.probe`: the probe's intensity, and :py:meth:`~Probe.diameter` its size;
 - :py:meth:`~Probe.ctf`: the contrast transfer function, with its coherence envelopes;
 - :py:meth:`~Probe.hrem`: the high-resolution TEM image of a thin sample's exit wave
@@ -70,6 +71,110 @@ _ERRORS = {1: 'the map is invalid: sampling must be an even number of pixels fro
 #: The largest random number seed: the Park-Miller generator's modulus, 2**31 - 1, is excluded,
 #: since the generator never leaves it.
 MAX_SEED = 2**31 - 2
+
+#: The most atoms :py:meth:`Probe.crystal_potential` places, as for the random potential.
+MAX_ATOMS = 10**8
+
+# m0 e^2 / (8 pi^2 eps0 h^2) in A, of the Mott-Bethe formula, as emaps' structure factors use it
+_MOTT = 0.023933754
+# 2 pi a0 e, in V A^2: the projected potential of an atom from its electron scattering factor,
+# as the probe module's random potential uses it
+_TWO_PI_A0_E = 47.878
+
+
+def _lattice(cell):
+    # the direct lattice vectors as rows, in A: a along x, b in the xy plane
+    a, b, c = float(cell.a), float(cell.b), float(cell.c)
+    al, be, ga = (math.radians(float(x)) for x in (cell.alpha, cell.beta, cell.gamma))
+    cx = c * math.cos(be)
+    cy = c * (math.cos(al) - math.cos(be) * math.cos(ga)) / math.sin(ga)
+    cz2 = c * c - cx * cx - cy * cy
+    if not (a > 0 and b > 0 and c > 0 and cz2 > 0):
+        raise ValueError('the crystal\'s cell is invalid')
+    return np.array([[a, 0.0, 0.0], [b * math.cos(ga), b * math.sin(ga), 0.0],
+                     [cx, cy, math.sqrt(cz2)]])
+
+
+def _scattering(symbol):
+    # emaps' X-ray scattering factor of an element: Z and the 9 Cromer-Mann coefficients
+    from .scattering.sct_dec import sct, sct_symbtable, sct_cifsymbtable
+    name = symbol.strip().upper()
+    for table in (sct_symbtable, sct_cifsymbtable):
+        if name in table:
+            k = table.index(name)
+            return float(sct.zt0[k]), np.array(sct.abx0[k], dtype=np.float64)
+    raise ValueError(f'no scattering factor for the element {symbol!r}')
+
+
+def _electron_factor(symbol, s2):
+    # the electron scattering factor in A at s^2 = (sin(theta) / lambda)^2, by the Mott-Bethe
+    # formula as emaps' sfsub has it; its limit at s = 0 leaves out any ionic charge, which a
+    # neutral crystal cancels
+    z, abx = _scattering(symbol)
+    a, b, c = abx[0:8:2], abx[1:8:2], abx[8]
+    fe = np.empty_like(s2)
+    zero = s2 <= 0.0
+    s = s2[~zero]
+    fx = c + sum(ai * np.exp(-bi * s) for ai, bi in zip(a, b))
+    fe[~zero] = _MOTT * (z - fx) / s
+    fe[zero] = _MOTT * float(np.dot(a, b))
+    return fe
+
+
+def _isotropic_b(atom, lattice):
+    # the atom's Debye-Waller factor B, in A^2; anisotropic factors are averaged to the
+    # equivalent isotropic one, B = 8 pi^2 U_eq
+    loc = [float(v) for v in atom.loc]
+    if atom.atype == 1:
+        return loc[3]
+    # U_eq = (1/3) sum_ij U_ij a*_i a*_j (a_i . a_j)
+    rec = np.linalg.norm(np.linalg.inv(lattice).T, axis=1)     # a*, b*, c*
+    g = lattice @ lattice.T
+    t = loc[3:9]
+    m = np.array([[t[0], t[3], t[4]], [t[3], t[1], t[5]], [t[4], t[5], t[2]]])
+    if atom.atype == 2:
+        # beta_ij = 2 pi^2 a*_i a*_j U_ij
+        m = m / (2.0 * math.pi ** 2 * np.outer(rec, rec))
+    ueq = float(np.sum(m * np.outer(rec, rec) * g)) / 3.0
+    return 8.0 * math.pi ** 2 * ueq
+
+
+def _site_orbit(crystal, atom, lattice):
+    # all the positions of one site in the unit cell, fractional, from emaps' mxtal: it applies
+    # the space group with its lattice centering
+    import copy
+    one = copy.deepcopy(crystal)
+    one.atoms = [atom]
+    cstar = np.linalg.solve(lattice @ lattice.T, [0.0, 0.0, 1.0])
+    # x along a and z along c*: the same Cartesian frame as _lattice
+    mx = one.generateMxtal(cellbox=[[0, 0, 0], [1, 1, 1]], xz=[[1.0, 0.0, 0.0], list(cstar)])
+    xyz = np.array([a.coord for a in mx.acoordList], dtype=np.float64).reshape(-1, 3)
+    frac = np.mod(np.linalg.solve(lattice.T, xyz.T).T + 1e-6, 1.0) - 1e-6
+    sites = []
+    for f in frac:
+        if not any(np.allclose(np.mod(f - g + 0.5, 1.0) - 0.5, 0.0, atol=1e-4) for g in sites):
+            sites.append(f)
+    return np.array(sites)
+
+
+def _perpendicular(zone, lattice):
+    # the shortest lattice direction [uvw], indices up to 6, perpendicular to the zone axis; in
+    # an oblique cell there may be none, and then the shortest one not parallel to it
+    t = np.asarray(zone, dtype=np.float64) @ lattice
+    r = np.arange(-6, 7)
+    n = np.stack(np.meshgrid(r, r, r, indexing='ij'), axis=-1).reshape(-1, 3)
+    n = n[np.any(n != 0, axis=1)]
+    v = n @ lattice
+    length, tn = np.linalg.norm(v, axis=1), np.linalg.norm(t)
+    ok = np.abs(v @ t) <= 1e-6 * length * tn
+    if not ok.any():
+        ok = np.linalg.norm(np.cross(v, t), axis=1) > 1e-6 * length * tn
+    n, v = n[ok], v[ok]
+    # shortest, then the first in a fixed order with a positive first nonzero index
+    first = np.array([row[np.flatnonzero(row)[0]] for row in n])
+    n, v = n[first > 0], v[first > 0]
+    k = np.lexsort((-n[:, 2], -n[:, 1], -n[:, 0], np.round(np.linalg.norm(v, axis=1), 6)))
+    return n[k[0]]
 
 
 def _backend():
@@ -132,6 +237,71 @@ def _nelder_mead(f, x0, step, max_evaluations, tolerance=1e-4):
                 evaluations += n
     i = int(np.argmin(values))
     return points[i], values[i], evaluations
+
+
+def _slab_atoms(crystal, zone, x_axis, size, depth):
+    # the crystal's atoms in the slab x, y in [0, size), z in [0, depth), in the map's frame
+    # (x along the columns, y along the rows, z along the zone axis), in A, grouped by element
+    # and Debye-Waller factor: {(symbol, B): (positions (m, 3), occupancies (m,))}
+    lattice = _lattice(crystal.cell)
+    zone = np.asarray(zone, dtype=np.float64)
+    t = zone @ lattice
+    if zone.shape != (3,) or not np.linalg.norm(t) > 0:
+        raise ValueError('zone must be three numbers, not all 0')
+    ez = t / np.linalg.norm(t)
+    if x_axis is None:
+        x_axis = _perpendicular(zone, lattice)
+    x = np.asarray(x_axis, dtype=np.float64)
+    if x.shape != (3,):
+        raise ValueError('x_axis must be three numbers')
+    full = x @ lattice
+    x = full - (full @ ez) * ez
+    if not np.linalg.norm(x) > 1e-6 * np.linalg.norm(full):
+        raise ValueError('x_axis must not be parallel to the zone axis')
+    ex = x / np.linalg.norm(x)
+    rot = np.array([ex, np.cross(ez, ex), ez])
+    cell = lattice @ rot.T          # the lattice vectors as rows, in the map's frame
+
+    # each site's positions in the cell, its scattering factor group and its weight
+    groups = {}
+    for atom in crystal.atoms:
+        loc = [float(v) for v in atom.loc]
+        occ = loc[-1]
+        if occ <= 0:
+            continue
+        key = (atom.symb.strip().upper(), round(_isotropic_b(atom, lattice), 6))
+        _scattering(key[0])                  # every element has one
+        groups.setdefault(key, []).append((_site_orbit(crystal, atom, lattice), occ))
+
+    # the lattice translations that reach the slab
+    corners = np.array([[i * size, j * size, k * depth]
+                        for i in (0, 1) for j in (0, 1) for k in (0, 1)])
+    frac = corners @ np.linalg.inv(cell)
+    lo = np.floor(frac.min(axis=0)).astype(int) - 1
+    hi = np.ceil(frac.max(axis=0)).astype(int) + 1
+    volume = abs(np.linalg.det(cell))
+    per_cell = sum(len(p) for sites in groups.values() for p, _ in sites)
+    if size * size * depth / volume * per_cell > MAX_ATOMS:
+        raise ValueError(f'the slab would have more than {MAX_ATOMS:.0e} atoms: use a '
+                         'smaller map or thickness')
+    r = [np.arange(lo[i], hi[i] + 1) for i in range(3)]
+    trans = np.stack(np.meshgrid(*r, indexing='ij'), axis=-1).reshape(-1, 3) @ cell
+
+    # an atom on a face counts once: rounding puts it just inside or just outside, and its
+    # image on the opposite face is then outside
+    tol = 1e-6
+    out = {}
+    for key, sites in groups.items():
+        xyz, occ = [], []
+        for positions, weight in sites:
+            for p in positions @ cell:
+                q = trans + p
+                q = q[(q[:, 0] >= -tol) & (q[:, 0] < size - tol) & (q[:, 1] >= -tol)
+                      & (q[:, 1] < size - tol) & (q[:, 2] >= -tol) & (q[:, 2] < depth - tol)]
+                xyz.append(q)
+                occ.append(np.full(len(q), weight))
+        out[key] = (np.concatenate(xyz), np.concatenate(occ))
+    return out
 
 
 class Probe:
@@ -299,6 +469,72 @@ class Probe:
         if ierr == 2:
             raise ValueError('density and thickness must not be negative')
         return self._image(v, ierr)
+
+    def crystal_potential(self, crystal, zone=(0, 0, 1), thickness=50.0, x_axis=None,
+                          shift=(0.0, 0.0)):
+        '''
+        The projected potential of a crystal along a zone axis: the atoms of the crystal in a
+        slab of the given thickness, each with its projected atomic potential, added up.
+
+        :param crystal: the crystal, such as ``Crystal.from_builtin('Silicon')``.
+        :type crystal: :py:class:`~pyemaps.crystals.Crystal`
+        :param zone: the zone axis [uvw], a direction in the crystal's direct lattice, along
+            the beam.
+        :type zone: tuple of int, optional
+        :param thickness: the slab's thickness along the zone axis, in Å.
+        :type thickness: float, optional
+        :param x_axis: the direction [uvw] along the map's x axis (its columns). It must not be
+            parallel to the zone axis; its part along the zone axis is ignored. By default, the
+            shortest direction with indices up to 6 perpendicular to the zone axis.
+        :type x_axis: tuple of int, optional
+        :param shift: where the crystal's origin is on the map, (x, y) in Å from the map's top
+            left corner.
+        :type shift: tuple of float, optional
+        :return: the projected potential in V·Å, ``(sampling, sampling)``, rows then columns,
+            as :py:meth:`random_potential` gives it.
+        :rtype: numpy.ndarray
+        :raise ValueError: if a setting is invalid, an element has no scattering factor, or
+            the slab would have more than 10⁸ atoms (:py:data:`MAX_ATOMS`).
+
+        Each atom's potential comes from its electron scattering factor, by the Mott–Bethe
+        formula from emaps' X-ray scattering factors, as emaps' structure factors have it. It
+        includes the atom's Debye–Waller factor, an anisotropic one averaged to the equivalent
+        isotropic factor, and its occupancy. The unit cell is filled with the space group by
+        :py:meth:`~pyemaps.crystals.Crystal.generateMxtal`.
+
+        The potential is that of the whole slab projected onto one plane, as the probe
+        program's random potential is, so it suits thin crystals: there's no propagation
+        through the thickness.
+
+        The map repeats itself at its edges. Unless *size* is a whole number of the crystal's
+        repeats along x and y, the crystal has a seam there; it's away from the map's center,
+        where the probe is.
+        '''
+        self._check_map()
+        if not float(thickness) > 0:
+            raise ValueError('thickness must be positive')
+        size, depth = self.size, float(thickness)
+        groups = _slab_atoms(crystal, zone, x_axis, size, depth)
+
+        n = self.sampling
+        k = np.fft.fftfreq(n, d=size / n)                    # 1/A
+        s2 = (k[:, None] ** 2 + k[None, :] ** 2) / 4.0       # (sin(theta) / lambda)^2
+        total = np.zeros((n, n), dtype=np.complex128)
+        for (symbol, b), (xyz, occ) in groups.items():
+            # the columns: atoms at the same projected position add up
+            xy = np.column_stack([np.mod(xyz[:, 0] + shift[0], size),
+                                  np.mod(xyz[:, 1] + shift[1], size)])
+            xy, inverse = np.unique(np.round(xy, 6), axis=0, return_inverse=True)
+            w = np.bincount(inverse.ravel(), weights=occ, minlength=len(xy))
+            # the structure factor of the columns, sum_j w_j exp(-2 pi i k . r_j), by blocks
+            sf = np.zeros((n, n), dtype=np.complex128)
+            for i in range(0, len(xy), 2048):
+                ex = np.exp(-2j * math.pi * np.outer(xy[i:i + 2048, 0], k))
+                ey = np.exp(-2j * math.pi * np.outer(xy[i:i + 2048, 1], k))
+                sf += (ey * w[i:i + 2048, None]).T @ ex      # rows ky, columns kx
+            total += sf * _electron_factor(symbol, s2) * np.exp(-b * s2)
+        v = np.fft.ifft2(total).real * (_TWO_PI_A0_E * n * n / (size * size))
+        return v.astype(np.float32)
 
     def ronchigram(self, potential=None):
         '''
@@ -774,8 +1010,8 @@ class Probe:
         Display a result with its axes.
 
         :param image: the result, from :py:meth:`ronchigram`, :py:meth:`probe`, :py:meth:`ctf`,
-            :py:meth:`hrem`, :py:meth:`stem_image`, :py:meth:`phase_map`, :py:meth:`mtf` or
-            :py:meth:`random_potential`.
+            :py:meth:`hrem`, :py:meth:`stem_image`, :py:meth:`phase_map`, :py:meth:`mtf`,
+            :py:meth:`random_potential` or :py:meth:`crystal_potential`.
         :type image: numpy.ndarray
         :param kind: ``'ronchigram'``, ``'probe'``, ``'ctf'``, ``'hrem'``, ``'stem'``,
             ``'phase'``, ``'mtf'`` or ``'potential'``.
