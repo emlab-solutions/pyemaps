@@ -65,7 +65,10 @@ per row, the width of the image.
            center=c, rads=rads, scol=30)
        image = np.array(data, dtype=float).reshape(-1, 30)   # 30 x 30 pixels
 
-*ret* is 0 on success. Pass ``bShow=True`` to display the image as well.
+*ret* is 0 on success. Pass ``bShow=True`` to display the image as well, and *title* to name
+it, such as ``title='Annular Dark Field'``. Without *title*, the image is titled by its detector,
+such as "Ring Detector, Radii 50-200 px, Center (263, 263)": whether a detector gives bright or
+dark field depends on where the direct beam is, which pyEMAPS doesn't know.
 
 - **Bright field (BF):** a disk on the direct beam, a little smaller than it. It records the
   electrons that pass the sample unscattered.

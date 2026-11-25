@@ -56,7 +56,8 @@ def annular_dark_field():
     ret, _ = image.generateBDF(center=BEAM_CENTER,      # detector center, in pixels
                                rads=(50.0, 200.0),      # inner and outer radius, in pixels
                                scol=SCAN_COLUMNS,
-                               bShow=True)
+                               bShow=True,
+                               title='Annular Dark Field')
     if ret != 0:
         print('Failed to generate the annular dark field image')
 
@@ -67,7 +68,8 @@ def dark_field():
     ret, _ = image.generateBDF(center=(1.0, 256.0),
                                rads=(0.0, 200.0),
                                scol=SCAN_COLUMNS,
-                               bShow=True)
+                               bShow=True,
+                               title='Dark Field')
     if ret != 0:
         print('Failed to generate the dark field image')
 
@@ -75,7 +77,8 @@ def dark_field():
 def masked_image():
     """Generate and display an image with the detector shape taken from a mask image."""
     image = StackImage(IMAGE_FILE, ndtype=EM_INT)
-    ret, _ = image.generateMaskedImage(MASK_FILE, SCAN_COLUMNS, bShow=True)
+    ret, _ = image.generateMaskedImage(MASK_FILE, SCAN_COLUMNS, bShow=True,
+                                       title='Masked Image')
     if ret != 0:
         print('Failed to generate the masked image')
 
