@@ -43,6 +43,12 @@ follow the links into the :doc:`../api/index`.
 
       Bright field, dark field and masked images from a scan. Licensed.
 
+   .. grid-item-card:: Electron probes
+      :link: probe
+      :link-type: doc
+
+      Probes, Ronchigrams and the contrast transfer function of a lens with aberrations.
+
    .. grid-item-card:: Using results in other tools
       :link: third_party
       :link-type: doc
@@ -64,5 +70,6 @@ follow the links into the :doc:`../api/index`.
    stereo
    indexing
    imaging
+   probe
    third_party
    configuration

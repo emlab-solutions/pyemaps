@@ -60,6 +60,14 @@ The two 4D-STEM indexing notebooks are also shown here with their results:
 
          Guide: :doc:`user_guide/crystals`
 
+      .. grid-item-card:: ronchigram.py
+         :img-top: _static/images/probe_corrected.png
+
+         The Ronchigram, probe and contrast transfer function of a corrected and an
+         uncorrected 200 kV probe.
+
+         Guide: :doc:`user_guide/probe`
+
       .. grid-item-card:: al_ediom.py :bdg-info:`Licensed`
          :img-top: _static/images/ediom_img1.png
 

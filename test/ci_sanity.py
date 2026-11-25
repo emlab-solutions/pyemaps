@@ -14,6 +14,8 @@ The performance test isn't run: its timings depend on the machine, so it means
 nothing on a shared CI runner. Run it locally (performance/run_perf_test.py -r all).
 The stem4d checks (run_stem4d.py) need an activated license, so they aren't run here.
 The image reading checks (run_expimage.py) need no license and no other package.
+The probe checks (run_probe.py) need no license; they're skipped with an emaps that has no
+probe module.
 '''
 import os
 import re
@@ -33,6 +35,8 @@ SUITES = [
     ('images', 'run_expimage.py', r'Image reading checks SUCCEEDED', 1),
     ('cif', 'run_cifreader.py', r'CIF reader checks SUCCEEDED', 1),
     ('orientmap', 'run_orientmap.py', r'Orientation map checks SUCCEEDED', 1),
+    # SKIPPED with an emaps that has no probe module (before emaps' first release with it)
+    ('probe', 'run_probe.py', r'Probe checks (SUCCEEDED|SKIPPED)', 1),
 ]
 FAILURE = re.compile(r'FAILED|There are failures|does not compare with baseline|'
                      r'Failed to load|test failed|Traceback', re.IGNORECASE)
