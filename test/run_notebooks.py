@@ -44,14 +44,18 @@ PLOT_CALL = re.compile(r'\b(showDif|showBloch|showStereo|plot2Powder|showMatched
 
 
 def add_data_files(data, work):
-    """Link (or, across drives, copy) each file in the folder *data* into *work*."""
+    """Link (or, across drives, copy) each file in the folder *data* into *work*. With --save,
+    every notebook runs in the same folder, so a file linked for an earlier one is kept."""
     for name in os.listdir(data):
-        source = os.path.join(data, name)
-        if os.path.isfile(source):
-            try:
-                os.link(source, os.path.join(work, name))
-            except OSError:
-                shutil.copy2(source, work)
+        source, target = os.path.join(data, name), os.path.join(work, name)
+        if not os.path.isfile(source):
+            continue
+        if os.path.exists(target) and os.path.samefile(source, target):
+            continue
+        try:
+            os.link(source, target)
+        except OSError:
+            shutil.copy2(source, target)
 
 
 def execute(nb, kernel, work, data=None):
@@ -133,19 +137,22 @@ def main():
         os.path.join(NOTEBOOKS_DIR, f) for f in os.listdir(NOTEBOOKS_DIR) if f.endswith('.ipynb'))
 
     failed = 0
-    for path in paths:
-        start = time.time()
-        problems = check_notebook(path, args.kernel, args.data, save_dir)
-        status = 'FAILED' if problems else ('SAVED ' if save_dir else 'PASSED')
-        print(f'{status}  {os.path.basename(path)}  ({time.time() - start:.0f} s)')
-        for p in problems:
-            print(f'        {p}')
-        failed += bool(problems)
+    try:
+        for path in paths:
+            start = time.time()
+            problems = check_notebook(path, args.kernel, args.data, save_dir)
+            status = 'FAILED' if problems else ('SAVED ' if save_dir else 'PASSED')
+            print(f'{status}  {os.path.basename(path)}  ({time.time() - start:.0f} s)')
+            for p in problems:
+                print(f'        {p}')
+            failed += bool(problems)
+    finally:
+        # also after an error, so a folder this run made isn't left behind
+        if made:
+            shutil.rmtree(save_dir, ignore_errors=True)
 
     print(f'{len(paths) - failed} of {len(paths)} notebooks passed'
           + (' and were saved' if save_dir else ''))
-    if made:
-        shutil.rmtree(save_dir, ignore_errors=True)
     sys.exit(1 if failed else 0)
 
 
