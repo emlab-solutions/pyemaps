@@ -9,15 +9,22 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+    # edited: a pull request retargeted to main (a stacked one, after its base merged) gets its
+    # checks, which opening it against another branch didn't run. Edits of the title or
+    # description don't run them (the job's if below).
+    types: [opened, synchronize, reopened, edited]
   workflow_dispatch:
 
 concurrency:
-  group: sanity-${{ github.ref }}
+  # An edit that doesn't change the base gets a group of its own, so it can't cancel a run
+  # in progress.
+  group: sanity-${{ github.ref }}${{ github.event.action == 'edited' && !github.event.changes.base && format('-{0}', github.run_id) || '' }}
   cancel-in-progress: true
 
 jobs:
   sanity:
     name: Python ${{ matrix.python }}
+    if: github.event.action != 'edited' || github.event.changes.base
     # emaps ships Windows wheels only. windows-latest avoids pinning an image
     # GitHub later retires (windows-2019 was, and the old workflow then queued forever).
     runs-on: windows-latest

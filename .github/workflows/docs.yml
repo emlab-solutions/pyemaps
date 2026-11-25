@@ -18,21 +18,30 @@ on:
       - 'docs/**'
       - '*.py'
       - 'diffract/**'
+      - 'notebooks/adf.ipynb'
       - 'notebooks/al_ediom.ipynb'
       - 'notebooks/al_orientmap.ipynb'
+      - 'notebooks/probe.ipynb'
       - '.github/workflows/docs.yml'
+    # edited: a pull request retargeted to main (a stacked one, after its base merged) gets its
+    # checks, which opening it against another branch didn't run. Edits of the title or
+    # description don't run them (the job's if below).
+    types: [opened, synchronize, reopened, edited]
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: docs-${{ github.ref }}
+  # An edit that doesn't change the base gets a group of its own, so it can't cancel a run
+  # in progress.
+  group: docs-${{ github.ref }}${{ github.event.action == 'edited' && !github.event.changes.base && format('-{0}', github.run_id) || '' }}
   cancel-in-progress: true
 
 jobs:
   build:
     name: Build docs
+    if: github.event.action != 'edited' || github.event.changes.base
     # The API pages import pyemaps, which imports emaps; emaps ships Windows wheels only.
     runs-on: windows-latest
     timeout-minutes: 30
