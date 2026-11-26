@@ -11,7 +11,7 @@ project = 'pyemaps'
 import datetime
 copyright = f'2022-{datetime.date.today().year}, EMLab Solutions, Inc.'
 author = 'EMLab Solutions, Inc.'
-release = '2.8.0 Stable'
+release = '2.9.0 Stable'
 
 
 
