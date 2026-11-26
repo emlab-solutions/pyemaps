@@ -639,6 +639,133 @@ def case_scananalysis(tmp):
               f'groups), classifyPatterns gets all {npat} right; 16-bit scans agree')
 
 
+def write_im3_double(path, pats):
+    """A stack of doubles in pyEMAPS' small-header format (type 14), which write_im3 doesn't
+    write."""
+    import numpy as np
+    n, rows, cols = pats.shape
+    with open(path, 'wb') as f:
+        f.write(np.array([cols, rows, n, 14], dtype='<i2').tobytes())
+        f.write(np.ascontiguousarray(pats, dtype='<f8').tobytes())
+
+
+def scan_results(si, scan, mask, pats):
+    """Every scan-analysis result for the scan_groups scan, by name."""
+    import numpy as np
+    from pyemaps import polar_transform
+    truth = np.repeat(np.arange(scan[1]) * 3 // scan[1], 1)[np.newaxis].repeat(scan[0], 0)
+    r = {'average': si.averagePattern()}
+    means, _, _ = si.averageByLabel(truth)
+    r['by_label'] = means
+    r['correlation'] = si.correlationMap(pats[5], mask=mask, scan_shape=scan)
+    r['groups'], r['group_corr'] = si.findSimilar(threshold=0.5, mask=mask, seed=3,
+                                                  scan_shape=scan)
+    r['classes'], r['class_corr'] = si.classifyPatterns(means, mask=mask, scan_shape=scan)
+    r['polar'] = si.polarTransform((60.3, 70.7), 2.0)
+    r['polar_one'] = polar_transform(pats[9], (60.3, 70.7), 2.0)
+    return r
+
+
+def group_problems(name, g, truth, rows_only=False):
+    """What's wrong with findSimilar's groups g: mixed kinds of pattern, a label that isn't a
+    seed of its own group, or (rows_only) a group spanning scan rows."""
+    import numpy as np
+    bad = []
+    flat = g.ravel()
+    if not np.array_equal(flat[flat], flat):
+        bad.append(f'{name}: a group is named after a pattern outside it')
+    impure = [int(v) for v in np.unique(g) if len(np.unique(truth[g == v])) > 1]
+    if impure:
+        bad.append(f'{name}: groups {impure[:5]} mix kinds of pattern')
+    if rows_only:
+        spread = [int(v) for v in np.unique(g) if len(np.unique(np.nonzero(g == v)[0])) > 1]
+        if spread:
+            bad.append(f'{name}: groups {spread[:5]} span scan rows')
+    return bad
+
+
+def case_scanmore(tmp):
+    """
+    More scan-analysis checks: a scan of doubles gives exactly the results of the same scan in
+    floats, and findSimilar's reach and fraction behave as documented.
+    """
+    import numpy as np
+    from io import StringIO
+    from contextlib import redirect_stdout
+    from pyemaps import StackImage, write_im3
+
+    pats, truth, scan = scan_groups(np.random.default_rng(7))
+    size = pats.shape[1]
+    yy, xx = np.mgrid[0:size, 0:size]
+    mask = np.hypot(xx - (size - 1) / 2, yy - (size - 1) / 2) > 8
+    bad = []
+    with redirect_stdout(StringIO()):
+        f32, f64 = os.path.join(tmp, 'groups.im3'), os.path.join(tmp, 'groups64.im3')
+        write_im3(f32, pats)
+        write_im3_double(f64, pats)
+        si, si64 = StackImage(f32), StackImage(f64)
+        r32 = scan_results(si, scan, mask, pats)
+        r64 = scan_results(si64, scan, mask, pats)
+        from emaps.stem4d import stem4d
+        dtype = stem4d.cvar.ximg.h.type
+        differ = [k for k in r32 if not np.array_equal(r32[k], r64[k])]
+        if dtype != 14:
+            bad.append(f'the double scan loaded as type {dtype}, not 14')
+        if differ:
+            bad.append(f'the double scan differs from the float one in {differ}')
+
+        # reach 1: a search stops after two misses, so with the kinds in vertical bands of
+        # the scan, no group reaches past its band in its own scan row
+        default = r32['groups']
+        short, _ = si.findSimilar(threshold=0.5, mask=mask, seed=3, reach=1, scan_shape=scan)
+        bad += group_problems('reach 1', short, truth, rows_only=True)
+        if len(np.unique(short)) <= len(np.unique(default)):
+            bad.append(f'reach 1 gave {len(np.unique(short))} groups, the default '
+                       f'{len(np.unique(default))}: it should split them')
+        # fraction 1: every pattern a group hasn't taken is tried as a seed
+        every, _ = si.findSimilar(threshold=0.5, mask=mask, seed=3, fraction=1.0,
+                                  scan_shape=scan)
+        bad += group_problems('fraction 1', every, truth)
+        bad += group_problems('the default', default, truth)
+        # a threshold no pattern reaches leaves every pattern alone
+        alone, corr = si.findSimilar(threshold=0.9999, mask=mask, seed=3, scan_shape=scan)
+        if not np.array_equal(alone.ravel(), np.arange(alone.size)) or np.any(corr > 1):
+            bad.append('threshold 0.9999 still grouped patterns')
+        for what, kw in (('threshold 0', {'threshold': 0}), ('threshold 1', {'threshold': 1}),
+                         ('fraction 0', {'fraction': 0}), ('reach 0', {'reach': 0})):
+            try:
+                si.findSimilar(mask=mask, scan_shape=scan, **kw)
+                bad.append(f'{what} was accepted')
+            except ValueError:
+                pass
+    if bad:
+        print(f'RESULT FAIL {bad}')
+    else:
+        print(f'RESULT PASS a scan of doubles gives results identical to floats; findSimilar: '
+              f'reach 1 splits the {len(np.unique(default))} groups into '
+              f'{len(np.unique(short))} within scan rows, fraction 1 gives '
+              f'{len(np.unique(every))} pure groups, threshold 0.9999 none; bad settings refused')
+
+
+def case_scanresults(tmp, out):
+    """Every scan-analysis result, saved to *out* (.npz), for the thread-count comparison."""
+    import numpy as np
+    from io import StringIO
+    from contextlib import redirect_stdout
+    from pyemaps import StackImage, write_im3
+
+    pats, _, scan = scan_groups(np.random.default_rng(7))
+    size = pats.shape[1]
+    yy, xx = np.mgrid[0:size, 0:size]
+    mask = np.hypot(xx - (size - 1) / 2, yy - (size - 1) / 2) > 8
+    with redirect_stdout(StringIO()):
+        f = os.path.join(tmp, f'groups_{os.environ.get("OMP_NUM_THREADS", "all")}.im3')
+        write_im3(f, pats)
+        r = scan_results(StackImage(f), scan, mask, pats)
+    np.savez(out, **r)
+    print(f'RESULT PASS {len(r)} results saved')
+
+
 def case_scanlicense(tmp):
     """Without a license the scan-analysis routines refuse, with a license message."""
     import numpy as np
@@ -1093,6 +1220,34 @@ def check_scananalysis():
     ok = p.returncode == 0 and line is not None and line.startswith('RESULT PASS')
     results.append(('scan analysis without a license', ok,
                     line[7:] if line else child_failure(p.returncode, p.stderr)))
+
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        code, out, err = run_child('scanmore', tmp)
+    line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
+    ok = code == 0 and line is not None and line.startswith('RESULT PASS')
+    results.append(('scan analysis: doubles and findSimilar settings', ok,
+                    line[7:] if line else child_failure(code, err)))
+
+    # the results mustn't depend on the number of threads
+    import numpy as np
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        saved, ok = {}, False
+        for n in ('1', '4'):
+            out_file = os.path.join(tmp, f'threads{n}.npz')
+            p = subprocess.run([sys.executable, str(Path(__file__).resolve()), '--case',
+                                'scanresults', tmp, out_file], capture_output=True, text=True,
+                               cwd=HERE, env=dict(os.environ, OMP_NUM_THREADS=n))
+            if p.returncode != 0 or not os.path.exists(out_file):
+                msg = f'{n} threads: {child_failure(p.returncode, p.stderr)}'
+                break
+            with np.load(out_file) as z:
+                saved[n] = {k: z[k] for k in z.files}
+        else:
+            differ = [k for k in saved['1'] if not np.array_equal(saved['1'][k], saved['4'][k])]
+            ok = not differ
+            msg = (f'{len(saved["1"])} results identical with OMP_NUM_THREADS 1 and 4' if ok
+                   else f'1 and 4 threads differ in {differ}')
+    results.append(('scan analysis: thread count', ok, msg))
     return results
 
 
@@ -1190,5 +1345,9 @@ if __name__ == '__main__':
             case_scananalysis(*rest)
         elif kind == 'scanlicense':
             case_scanlicense(*rest)
+        elif kind == 'scanmore':
+            case_scanmore(*rest)
+        elif kind == 'scanresults':
+            case_scanresults(*rest)
         sys.exit(0)
     sys.exit(main())
