@@ -73,6 +73,8 @@ def get_samples(sdn = 'samples'):
     sfile_list.append('al.img')
     sfile_list.append('mask.im3')
     sfile_list.append('raw.img')
+    # crystal structures from the Crystallography Open Database, for the samples
+    sfile_list += glob.glob(os.path.join(samples_base_dir, '*.cif'))
 
 
     return [os.path.join(sdn, os.path.basename(name)) for name in sfile_list]

@@ -12,4 +12,5 @@ include license-exception.txt
 
 include cdata/*.xtl
 include samples/*.py
+include samples/*.cif
 include notebooks/*.ipynb
