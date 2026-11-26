@@ -23,7 +23,7 @@ or use them in class.
 
 GitHub shows each notebook with its results, so you can read it without installing anything.
 
-The 4D-STEM notebooks, `al_ediom`, `al_orientmap` and `adf`, and the multislice notebook, `si_multislice`, need an activated pyEMAPS license. `pyemaps -l trial`
+The 4D-STEM notebooks, `al_ediom`, `al_orientmap`, `al_cu_phasemap` and `adf`, and the multislice notebook, `si_multislice`, need an activated pyEMAPS license. `pyemaps -l trial`
 activates a free 7-day trial; for a full license, contact support@emlabsoftware.com.
 
 ## Running them
