@@ -24,6 +24,13 @@ the results as NumPy arrays, in four modes:
 - :py:meth:`~Probe.hrem`: the high-resolution TEM image of a thin sample's exit wave
   (:py:meth:`~Probe.exit_wave`), with the lens as the objective lens.
 
+For crystals thicker than the projection suits, the multislice method (a licensed feature):
+
+- :py:meth:`~Probe.crystal_exit_wave`: the exit wave of a crystal, for :py:meth:`~Probe.hrem`;
+- :py:meth:`~Probe.crystal_ronchigram`: the Ronchigram, or the CBED pattern, of a crystal;
+- :py:meth:`~Probe.crystal_repeats`: how a crystal repeats on the map, and the map sizes that
+  fit it without a seam.
+
 And around them:
 
 - :py:meth:`~Probe.phase_map`: the aberration function χ(k) itself;
@@ -66,7 +73,8 @@ _ERRORS = {1: 'the map is invalid: sampling must be an even number of pixels fro
               'positive, cc and energy_spread not negative, and energy_spread positive with cc',
            3: 'not enough memory for the map: use a smaller sampling',
            4: 'the random potential would have more than 1e8 atoms: use a smaller map, '
-              'density or thickness'}
+              'density or thickness',
+           7: "MKL's FFT failed"}
 
 #: The largest random number seed: the Park-Miller generator's modulus, 2**31 - 1, is excluded,
 #: since the generator never leaves it.
@@ -74,13 +82,6 @@ MAX_SEED = 2**31 - 2
 
 #: The most atoms :py:meth:`Probe.crystal_potential` places, as for the random potential.
 MAX_ATOMS = 10**8
-
-# m0 e^2 / (8 pi^2 eps0 h^2) in A, of the Mott-Bethe formula, as emaps' structure factors use it
-_MOTT = 0.023933754
-# 2 pi a0 e, in V A^2: the projected potential of an atom from its electron scattering factor,
-# as the probe module's random potential uses it
-_TWO_PI_A0_E = 47.878
-
 
 def _lattice(cell):
     # the direct lattice vectors as rows, in A: a along x, b in the xy plane
@@ -104,21 +105,6 @@ def _scattering(symbol):
             k = table.index(name)
             return float(sct.zt0[k]), np.array(sct.abx0[k], dtype=np.float64)
     raise ValueError(f'no scattering factor for the element {symbol!r}')
-
-
-def _electron_factor(symbol, s2):
-    # the electron scattering factor in A at s^2 = (sin(theta) / lambda)^2, by the Mott-Bethe
-    # formula as emaps' sfsub has it; its limit at s = 0 leaves out any ionic charge, which a
-    # neutral crystal cancels
-    z, abx = _scattering(symbol)
-    a, b, c = abx[0:8:2], abx[1:8:2], abx[8]
-    fe = np.empty_like(s2)
-    zero = s2 <= 0.0
-    s = s2[~zero]
-    fx = c + sum(ai * np.exp(-bi * s) for ai, bi in zip(a, b))
-    fe[~zero] = _MOTT * (z - fx) / s
-    fe[zero] = _MOTT * float(np.dot(a, b))
-    return fe
 
 
 def _isotropic_b(atom, lattice):
@@ -239,16 +225,16 @@ def _nelder_mead(f, x0, step, max_evaluations, tolerance=1e-4):
     return points[i], values[i], evaluations
 
 
-def _slab_atoms(crystal, zone, x_axis, size, depth):
-    # the crystal's atoms in the slab x, y in [0, size), z in [0, depth), in the map's frame
-    # (x along the columns, y along the rows, z along the zone axis), in A, grouped by element
-    # and Debye-Waller factor: {(symbol, B): (positions (m, 3), occupancies (m,))}
+def _frame(crystal, zone, x_axis):
+    # the map's frame for a crystal along a zone axis: x along the columns, y along the rows, z
+    # along the zone axis. Returns the lattice, its vectors as rows in the map's frame, and the
+    # x axis [uvw]
     lattice = _lattice(crystal.cell)
     zone = np.asarray(zone, dtype=np.float64)
-    t = zone @ lattice
-    if zone.shape != (3,) or not np.linalg.norm(t) > 0:
+    if zone.shape != (3,) or not np.linalg.norm(zone @ lattice) > 0:
         raise ValueError('zone must be three numbers, not all 0')
-    ez = t / np.linalg.norm(t)
+    ez = zone @ lattice
+    ez = ez / np.linalg.norm(ez)
     if x_axis is None:
         x_axis = _perpendicular(zone, lattice)
     x = np.asarray(x_axis, dtype=np.float64)
@@ -260,7 +246,119 @@ def _slab_atoms(crystal, zone, x_axis, size, depth):
         raise ValueError('x_axis must not be parallel to the zone axis')
     ex = x / np.linalg.norm(x)
     rot = np.array([ex, np.cross(ez, ex), ez])
-    cell = lattice @ rot.T          # the lattice vectors as rows, in the map's frame
+    return lattice, lattice @ rot.T, tuple(x_axis)
+
+
+def _translations(crystal, lattice):
+    # the crystal's lattice translations within the unit cell, fractional, with 0: the
+    # translations that map every site's positions onto themselves, such as the centering
+    # translations of an F, I or C lattice
+    orbits = [_site_orbit(crystal, atom, lattice) for atom in crystal.atoms
+              if float(atom.loc[-1]) > 0]
+    if not orbits:
+        return np.zeros((1, 3))
+
+    def maps(orbit, t):
+        moved = np.mod(orbit + t, 1.0)
+        return all(np.any(np.all(np.abs(np.mod(orbit - q + 0.5, 1.0) - 0.5) < 1e-4, axis=1))
+                   for q in moved)
+
+    out = []
+    for t in np.mod(orbits[0] - orbits[0][0] + 1e-6, 1.0) - 1e-6:
+        if all(maps(o, t) for o in orbits):
+            out.append(t)
+    return np.array(out)
+
+
+def _lattice_vectors(cell, translations, reach=12):
+    # the crystal's lattice translations with whole-cell indices up to reach, plus each
+    # centering translation, as rows in the frame of cell
+    r = np.arange(-reach, reach + 1)
+    n = np.stack(np.meshgrid(r, r, r, indexing='ij'), axis=-1).reshape(-1, 3).astype(float)
+    return np.concatenate([(n + t) @ cell for t in translations])
+
+
+def _period(zone, lattice, translations):
+    # the repeat of the crystal along the zone axis [uvw], in A: its shortest lattice
+    # translation along it, centering translations included
+    z = np.asarray(zone, dtype=np.float64)
+    if z.shape != (3,) or not np.all(z == np.round(z)) or not np.any(z):
+        raise ValueError('zone must be three integers, not all 0')
+    t = z @ lattice
+    v = _lattice_vectors(lattice, translations)
+    length = np.linalg.norm(v, axis=1)
+    along = (length > 1e-9) & (np.linalg.norm(np.cross(v, t), axis=1)
+                               <= 1e-6 * length * np.linalg.norm(t))
+    if not along.any():
+        return float(np.linalg.norm(t))
+    return float(length[along].min())
+
+
+def _plane_basis(cell, translations):
+    # two lattice vectors spanning the crystal's lattice perpendicular to the zone axis, in the
+    # map's (x, y), shortest first: the crystal's repeats on the map. In two dimensions the two
+    # shortest independent lattice vectors are a basis
+    v = _lattice_vectors(cell, translations)
+    length = np.linalg.norm(v, axis=1)
+    v = v[(length > 1e-9) & (np.abs(v[:, 2]) <= 1e-6 * np.maximum(length, 1.0))][:, :2]
+    if len(v) == 0:
+        raise ValueError('the crystal has no lattice vectors perpendicular to the zone axis '
+                         'with indices up to 12: choose a lower-index zone axis')
+    v = v[np.argsort(np.linalg.norm(v, axis=1), kind='stable')]
+    b1 = v[0]
+    cross = np.abs(v[:, 0] * b1[1] - v[:, 1] * b1[0])
+    other = v[cross > 1e-6 * np.linalg.norm(b1) * np.linalg.norm(v, axis=1)]
+    if len(other) == 0:
+        raise ValueError('the crystal has no second lattice vector perpendicular to the zone '
+                         'axis with indices up to 12: choose a lower-index zone axis')
+    return b1, other[0]
+
+
+def _nearest(b1, b2, target):
+    # the lattice vector i*b1 + j*b2 nearest the 2-D vector target, not 0
+    m = np.column_stack([b1, b2])
+    c = np.linalg.solve(m, target)
+    best = None
+    for i in (math.floor(c[0]), math.ceil(c[0])):
+        for j in (math.floor(c[1]), math.ceil(c[1])):
+            if i == 0 and j == 0:
+                continue
+            v = i * b1 + j * b2
+            d = np.linalg.norm(v - target)
+            if best is None or d < best[0]:
+                best = (d, v)
+    return best[1]
+
+
+def _fit(cell, translations, size):
+    # the in-plane strain F that makes the crystal repeat at the map's edges: the lattice
+    # vectors A and B nearest (size, 0) and (0, size) become those exactly. Returns F, a 2 x 2
+    # matrix acting on (x, y), and the largest strain, the largest of |singular value - 1|
+    b1, b2 = _plane_basis(cell, translations)
+    a = _nearest(b1, b2, np.array([size, 0.0]))
+    b = _nearest(b1, b2, np.array([0.0, size]))
+    m = np.column_stack([a, b])
+    if abs(np.linalg.det(m)) < 1e-9 * size * size or np.linalg.det(m) < 0:
+        raise ValueError('the map is too small to fit the crystal: use a larger size')
+    f = size * np.linalg.inv(m)
+    strain = float(np.max(np.abs(np.linalg.svd(f, compute_uv=False) - 1.0)))
+    return f, strain
+
+
+def _slab_atoms(crystal, zone, x_axis, size, depth, fit=False):
+    # the crystal's atoms in the slab x, y in [0, size), z in [0, depth), in the map's frame
+    # (x along the columns, y along the rows, z along the zone axis), in A, grouped by element
+    # and Debye-Waller factor: {(symbol, B): (positions (m, 3), occupancies (m,))}. With fit,
+    # the crystal is strained in-plane so that it repeats at the map's edges
+    lattice, cell, _ = _frame(crystal, zone, x_axis)
+    if fit:
+        f, strain = _fit(cell, _translations(crystal, lattice), size)
+        if strain > 0.01:
+            import warnings
+            warnings.warn(f'fitting the crystal to the map strains it by {100 * strain:.1f}%: '
+                          'choose a size from crystal_repeats()', stacklevel=3)
+        cell = cell.copy()
+        cell[:, :2] = cell[:, :2] @ f.T
 
     # each site's positions in the cell, its scattering factor group and its weight
     groups = {}
@@ -302,6 +400,62 @@ def _slab_atoms(crystal, zone, x_axis, size, depth):
                 occ.append(np.full(len(q), weight))
         out[key] = (np.concatenate(xyz), np.concatenate(occ))
     return out
+
+
+def _atom_arrays(groups, size, shift, depth=None):
+    # the atoms as the backend takes them: x, y (and z, within [0, depth]), type, occupancy,
+    # and each type's atomic number, Cromer-Mann coefficients and Debye-Waller factor. Without
+    # depth, for a projection: atoms at the same projected position are added up
+    xs, ys, zs, its, ws, zt, abx, bt = [], [], [], [], [], [], [], []
+    for t, ((symbol, b), (xyz, occ)) in enumerate(groups.items(), start=1):
+        z, coef = _scattering(symbol)
+        zt.append(z)
+        abx.append(coef)
+        bt.append(b)
+        x = np.mod(xyz[:, 0] + shift[0], size)
+        y = np.mod(xyz[:, 1] + shift[1], size)
+        if depth is None:
+            xy, inverse = np.unique(np.round(np.column_stack([x, y]), 6), axis=0,
+                                    return_inverse=True)
+            x, y = xy[:, 0], xy[:, 1]
+            occ = np.bincount(inverse.ravel(), weights=occ, minlength=len(xy))
+        else:
+            zs.append(np.clip(xyz[:, 2], 0.0, depth))
+        xs.append(x)
+        ys.append(y)
+        ws.append(occ)
+        its.append(np.full(len(x), t, dtype=np.int32))
+    if not xs:
+        raise ValueError('the crystal has no atoms with a positive occupancy')
+    arrays = {'x': np.concatenate(xs), 'y': np.concatenate(ys), 'it': np.concatenate(its),
+              'w': np.concatenate(ws), 'zt': np.array(zt, dtype=np.float64),
+              'abx': np.asfortranarray(np.array(abx, dtype=np.float64).T),
+              'bt': np.array(bt, dtype=np.float64)}
+    if depth is not None:
+        arrays['z'] = np.concatenate(zs)
+    return arrays
+
+
+def _routine(name):
+    # a backend routine that came with emaps 2.6.0
+    backend = _backend()
+    if not hasattr(backend, name):
+        raise ImportError('Crystal potentials and multislice need emaps 2.6.0 or later: '
+                          'pip install --upgrade emaps')
+    return getattr(backend, name)
+
+
+def _check_license(ierr):
+    # the licensed routines' errors 5 and 6
+    if ierr == 5:
+        from .errors import LicenseError
+        raise LicenseError('Multislice simulations are a licensed feature, and no active '
+                           'pyEMAPS license was found. Run "pyemaps -l trial" for a 7-day trial '
+                           'license, or contact support@emlabsoftware.com for one.')
+    if ierr == 6:
+        from .errors import LicenseError
+        raise LicenseError('Multislice simulations are a licensed feature, not in this emaps '
+                           'package.')
 
 
 class Probe:
@@ -471,7 +625,7 @@ class Probe:
         return self._image(v, ierr)
 
     def crystal_potential(self, crystal, zone=(0, 0, 1), thickness=50.0, x_axis=None,
-                          shift=(0.0, 0.0)):
+                          shift=(0.0, 0.0), fit=False):
         '''
         The projected potential of a crystal along a zone axis: the atoms of the crystal in a
         slab of the given thickness, each with its projected atomic potential, added up.
@@ -490,51 +644,217 @@ class Probe:
         :param shift: where the crystal's origin is on the map, (x, y) in Å from the map's top
             left corner.
         :type shift: tuple of float, optional
+        :param fit: strain the crystal slightly in the plane of the map so that it repeats at
+            the map's edges, without a seam; see :py:meth:`crystal_repeats`. A strain above 1%
+            gives a warning.
+        :type fit: bool, optional
         :return: the projected potential in V·Å, ``(sampling, sampling)``, rows then columns,
             as :py:meth:`random_potential` gives it.
         :rtype: numpy.ndarray
         :raise ValueError: if a setting is invalid, an element has no scattering factor, or
             the slab would have more than 10⁸ atoms (:py:data:`MAX_ATOMS`).
+        :raise ImportError: if emaps is older than 2.6.0.
 
         Each atom's potential comes from its electron scattering factor, by the Mott–Bethe
         formula from emaps' X-ray scattering factors, as emaps' structure factors have it. It
         includes the atom's Debye–Waller factor, an anisotropic one averaged to the equivalent
         isotropic factor, and its occupancy. The unit cell is filled with the space group by
-        :py:meth:`~pyemaps.crystals.Crystal.generateMxtal`.
+        :py:meth:`~pyemaps.crystals.Crystal.generateMxtal`, and emaps computes the potential.
 
         The potential is that of the whole slab projected onto one plane, as the probe
         program's random potential is, so it suits thin crystals: there's no propagation
-        through the thickness.
+        through the thickness. For thicker crystals, see :py:meth:`crystal_exit_wave`.
 
         The map repeats itself at its edges. Unless *size* is a whole number of the crystal's
-        repeats along x and y, the crystal has a seam there; it's away from the map's center,
-        where the probe is.
+        repeats along x and y, or *fit* is set, the crystal has a seam there; it's away from
+        the map's center, where the probe is.
         '''
         self._check_map()
+        routine = _routine('crystalpotential')
         if not float(thickness) > 0:
             raise ValueError('thickness must be positive')
-        size, depth = self.size, float(thickness)
-        groups = _slab_atoms(crystal, zone, x_axis, size, depth)
+        groups = _slab_atoms(crystal, zone, x_axis, self.size, float(thickness), fit)
+        a = _atom_arrays(groups, self.size, shift)
+        v, ierr = routine(self.size, self.sampling, a['x'], a['y'], a['it'], a['w'], a['zt'],
+                          a['abx'], a['bt'])
+        return self._image(v, ierr)
 
+    def crystal_repeats(self, crystal, zone=(0, 0, 1), x_axis=None, max_size=200.0,
+                        max_strain=0.002):
+        '''
+        How a crystal along a zone axis repeats on the map, and the map sizes that fit it
+        without a seam.
+
+        :param crystal: the crystal.
+        :type crystal: :py:class:`~pyemaps.crystals.Crystal`
+        :param zone: the zone axis [uvw], along the beam.
+        :type zone: tuple of int, optional
+        :param x_axis: the direction [uvw] along the map's x axis, as
+            :py:meth:`crystal_potential` takes it.
+        :type x_axis: tuple of int, optional
+        :param max_size: the largest map size to list, in Å.
+        :type max_size: float, optional
+        :param max_strain: the largest strain *fit* would need for a listed size.
+        :type max_strain: float, optional
+        :return: a dictionary:
+
+            - ``'x_axis'``: the direction [uvw] along x;
+            - ``'repeats'``: two lattice vectors that span the crystal's repeats in the plane
+              of the map, (x, y) in Å, shortest first;
+            - ``'period'``: the crystal's repeat along the zone axis, in Å; the multislice
+              cuts it into slices;
+            - ``'sizes'``: ``(size, strain)`` pairs, the map sizes up to *max_size* at which the
+              crystal repeats at the map's edges with at most *max_strain*, smallest first. At
+              these sizes ``fit=True`` changes almost nothing, and without it the seam is
+              hardly there.
+        :rtype: dict
+        :raise ValueError: if a setting is invalid.
+
+        The current map's *size* doesn't matter here.
+        '''
+        lattice, cell, x_used = _frame(crystal, zone, x_axis)
+        translations = _translations(crystal, lattice)
+        b1, b2 = _plane_basis(cell, translations)
+        # the lattice vectors within 10 degrees of x or y are the candidate sizes
+        m = int(math.ceil(max_size / min(np.linalg.norm(b1), np.linalg.norm(b2)))) + 1
+        r = np.arange(-m, m + 1)
+        i, j = np.meshgrid(r, r, indexing='ij')
+        v = i.reshape(-1, 1) * b1 + j.reshape(-1, 1) * b2
+        length = np.linalg.norm(v, axis=1)
+        ok = (length > 1e-9) & (length <= max_size)
+        angle = np.degrees(np.arctan2(np.abs(v[:, 1]), np.abs(v[:, 0])))
+        near = ok & ((angle <= 10.0) | (angle >= 80.0))
+        sizes = []
+        for size in np.unique(np.round(length[near], 4)):
+            try:
+                _, strain = _fit(cell, translations, float(size))
+            except ValueError:
+                continue
+            if strain <= max_strain and not any(abs(size - s) < 0.01 for s, _ in sizes):
+                sizes.append((float(size), strain))
+        def plain(v):
+            return tuple(float(c) + 0.0 for c in v)     # + 0.0: no -0.0
+
+        x_used = tuple(int(c) if float(c).is_integer() else float(c) for c in x_used)
+        return {'x_axis': x_used, 'repeats': (plain(b1), plain(b2)),
+                'period': _period(zone, lattice, translations), 'sizes': sizes}
+
+    def _multislice(self, crystal, zone, thickness, slice_thickness, x_axis, shift, fit):
+        # the atoms of one period and the slice counts, as the multislice routines take them
+        self._check_map()
+        if not float(slice_thickness) > 0:
+            raise ValueError('slice_thickness must be positive')
+        many = np.ndim(thickness) > 0
+        thick = np.atleast_1d(np.asarray(thickness, dtype=np.float64))
+        if thick.size == 0 or not np.all(thick > 0):
+            raise ValueError('thickness must be positive')
+        lattice = _lattice(crystal.cell)
+        period = _period(zone, lattice, _translations(crystal, lattice))
+        nsub = max(1, int(round(period / float(slice_thickness))))
+        dz = period / nsub
+        nsl = np.maximum(1, np.round(thick / dz)).astype(np.int32)
+        groups = _slab_atoms(crystal, zone, x_axis, self.size, period, fit)
+        return _atom_arrays(groups, self.size, shift, depth=period), period, nsub, nsl, many
+
+    def crystal_exit_wave(self, crystal, zone=(0, 0, 1), thickness=100.0, slice_thickness=2.0,
+                          x_axis=None, shift=(0.0, 0.0), fit=False, bandlimit=True):
+        '''
+        The exit wave of a crystal under plane-wave illumination, by the multislice method: the
+        wave through the crystal slice by slice, for crystals too thick for
+        :py:meth:`exit_wave` of :py:meth:`crystal_potential`. This is a licensed feature.
+
+        :param crystal: the crystal.
+        :type crystal: :py:class:`~pyemaps.crystals.Crystal`
+        :param zone: the zone axis [uvw], three integers, along the beam.
+        :type zone: tuple of int, optional
+        :param thickness: the crystal's thickness in Å, or a list of thicknesses: the waves at
+            each come from one pass through the crystal. Each is rounded to a whole number of
+            slices.
+        :type thickness: float or list of float, optional
+        :param slice_thickness: about how thick each slice is, in Å. The crystal's repeat along
+            the zone axis (``crystal_repeats()['period']``) is cut into a whole number of slices
+            of about this thickness, and each slice's potential is that of its atoms. Thinner
+            slices are more accurate and slower.
+        :type slice_thickness: float, optional
+        :param x_axis: the direction [uvw] along the map's x axis, as
+            :py:meth:`crystal_potential` takes it.
+        :type x_axis: tuple of int, optional
+        :param shift: where the crystal's origin is on the map, (x, y) in Å.
+        :type shift: tuple of float, optional
+        :param fit: strain the crystal slightly so that it repeats at the map's edges, as
+            :py:meth:`crystal_potential` does.
+        :type fit: bool, optional
+        :param bandlimit: limit the slices' transmission functions and the propagator to 2/3 of
+            the map's largest spatial frequency, so their products don't alias. Leave it on,
+            except to compare with :py:meth:`exit_wave`.
+        :type bandlimit: bool, optional
+        :return: the exit wave, complex, ``(sampling, sampling)``, or with a list of
+            thicknesses, ``(len(thickness), sampling, sampling)``. Pass it to :py:meth:`hrem`.
+        :rtype: numpy.ndarray
+        :raise ~pyemaps.errors.LicenseError: without an active pyEMAPS license.
+        :raise ValueError: if a setting is invalid, an element has no scattering factor, or
+            the map doesn't fit in memory.
+        :raise ImportError: if emaps is older than 2.6.0.
+
+        The crystal repeats along the zone axis, so the slices of one repeat serve for every
+        repeat. Each slice's transmission function is exp(iσV) for its projected potential V,
+        and the wave travels to the next slice by the Fresnel propagator. With the band limit,
+        the wave's total intensity drops slightly as the crystal scatters beyond it; finer
+        pixels (a larger *sampling* for the same *size*) keep more of it.
+
+        There is no absorption and no thermal diffuse scattering, and the beam is along the zone
+        axis.
+        '''
+        routine = _routine('msexitwave')
+        a, period, nsub, nsl, many = self._multislice(crystal, zone, thickness,
+                                                      slice_thickness, x_axis, shift, fit)
+        waves, ierr = routine(self.kv, self.size, self.sampling, a['x'], a['y'], a['z'],
+                              a['it'], a['w'], a['zt'], a['abx'], a['bt'], period, nsub, nsl,
+                              1 if bandlimit else 0)
+        _check_license(ierr)
+        return self._images(waves, ierr, many)
+
+    def crystal_ronchigram(self, crystal, zone=(0, 0, 1), thickness=100.0, slice_thickness=2.0,
+                           x_axis=None, shift=(0.0, 0.0), fit=False, bandlimit=True):
+        '''
+        The Ronchigram of this probe through a crystal, by the multislice method: the probe's
+        wave through the crystal slice by slice, then its intensity in the far field. With a
+        small aperture and the probe focused on the crystal, it's a convergent-beam diffraction
+        (CBED) pattern, with the crystal's dynamical diffraction inside its disks. This is a
+        licensed feature.
+
+        The parameters are those of :py:meth:`crystal_exit_wave`.
+
+        :return: the Ronchigram, ``(sampling, sampling)``, with the beam at the center, as
+            :py:meth:`ronchigram` gives it, or with a list of thicknesses,
+            ``(len(thickness), sampling, sampling)``.
+        :rtype: numpy.ndarray
+        :raise ~pyemaps.errors.LicenseError: without an active pyEMAPS license.
+        :raise ValueError: if a setting is invalid, an element has no scattering factor, or
+            the map doesn't fit in memory.
+        :raise ImportError: if emaps is older than 2.6.0.
+
+        The probe sits at the map's center. As for :py:meth:`ronchigram`, the chromatic
+        aberration isn't included.
+        '''
+        routine = _routine('msronchigram')
+        a, period, nsub, nsl, many = self._multislice(crystal, zone, thickness,
+                                                      slice_thickness, x_axis, shift, fit)
+        amp, ang = self._abr()
+        imgs, ierr = routine(self._mic(), amp, ang, self.size, self.sampling, a['x'], a['y'],
+                             a['z'], a['it'], a['w'], a['zt'], a['abx'], a['bt'], period, nsub,
+                             nsl, 1 if bandlimit else 0)
+        _check_license(ierr)
+        return self._images(imgs, ierr, many)
+
+    def _images(self, data, ierr, many):
+        # the backend's (sampling * sampling, n) results as n images, or one
+        if ierr != 0:
+            raise ValueError(f'Probe simulation failed: {_ERRORS.get(ierr, f"error {ierr}")}')
+        data = np.asarray(data)
         n = self.sampling
-        k = np.fft.fftfreq(n, d=size / n)                    # 1/A
-        s2 = (k[:, None] ** 2 + k[None, :] ** 2) / 4.0       # (sin(theta) / lambda)^2
-        total = np.zeros((n, n), dtype=np.complex128)
-        for (symbol, b), (xyz, occ) in groups.items():
-            # the columns: atoms at the same projected position add up
-            xy = np.column_stack([np.mod(xyz[:, 0] + shift[0], size),
-                                  np.mod(xyz[:, 1] + shift[1], size)])
-            xy, inverse = np.unique(np.round(xy, 6), axis=0, return_inverse=True)
-            w = np.bincount(inverse.ravel(), weights=occ, minlength=len(xy))
-            # the structure factor of the columns, sum_j w_j exp(-2 pi i k . r_j), by blocks
-            sf = np.zeros((n, n), dtype=np.complex128)
-            for i in range(0, len(xy), 2048):
-                ex = np.exp(-2j * math.pi * np.outer(xy[i:i + 2048, 0], k))
-                ey = np.exp(-2j * math.pi * np.outer(xy[i:i + 2048, 1], k))
-                sf += (ey * w[i:i + 2048, None]).T @ ex      # rows ky, columns kx
-            total += sf * _electron_factor(symbol, s2) * np.exp(-b * s2)
-        v = np.fft.ifft2(total).real * (_TWO_PI_A0_E * n * n / (size * size))
-        return v.astype(np.float32)
+        images = np.stack([data[:, k].reshape(n, n) for k in range(data.shape[1])])
+        return images if many else images[0]
 
     def ronchigram(self, potential=None):
         '''

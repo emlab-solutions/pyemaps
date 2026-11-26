@@ -84,6 +84,8 @@ def add_dpgen(target):
         :return: ``(status, file_name)``: 0 and the database file's path on success, or -1 and
             ``None`` (or the intended path) on failure. A message is printed either way.
         :rtype: tuple
+        :raise ~pyemaps.errors.LicenseError: without an active pyEMAPS license (emaps 2.6.0
+            and later).
 
         .. image:: https://github.com/emlab-solutions/imagepypy/raw/main/stereoprojectionmap.png
            :width: 75%
@@ -136,6 +138,12 @@ def add_dpgen(target):
         #release the memory
         dpgen.cleanup()
 
+        if ret == -5:
+            from ..errors import LicenseError
+            raise LicenseError('Diffraction pattern database generation is a licensed feature, '
+                               'and no active pyEMAPS license was found. Run "pyemaps -l trial" '
+                               'for a 7-day trial license, or contact '
+                               'support@emlabsoftware.com for one.')
         if ret != 0:
             print(f'Error generating diffraction patterns for {self.name}')
             return -1, final_fp

@@ -13,7 +13,9 @@
 
 This sample uses pyEMAPS' dpgen and stem4d modules. It makes a small scan of four Aluminium
 grains whose orientations are known, maps the crystal orientation at every scan point with
-StackImage.mapOrientation, and compares the map with the truth:
+StackImage.mapOrientation, and compares the map with the truth. The Aluminium is a refined
+crystal structure from the Crystallography Open Database (COD entry 4004108), read from the CIF
+file next to this sample:
 
 1. the true orientations and the mapped ones, coloured by the beam direction in the crystal
    (inverse pole figure colours) with the same colour key;
@@ -40,7 +42,12 @@ import numpy as np
 from pyemaps import (EMC, Crystal, StackImage, XDPImageError, write_im3,
                      OrientationMap, OM_INDEXED)
 
-A = 4.0493                  # Aluminium lattice parameter, Å (cubic: a along x, b along y)
+# Aluminium from the Crystallography Open Database (https://www.crystallography.net, public
+# domain): COD 4004108, Didier et al. (2020), a = 4.0494 Å, B = 0.8 Å²
+ALUMINIUM = Crystal.from_cif(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                          'Al_COD_4004108.cif'))
+ALUMINIUM.name = 'Aluminium'            # a CIF names it after its COD entry
+A = float(ALUMINIUM.cell.a)             # lattice parameter, Å (cubic: a along x, b along y)
 SIZE = 200                  # pattern size, pixels
 CENTER = (99.5, 99.5)       # pattern center (column, row), pixels
 CC = 29.0                   # camera constant, pixels per 1/Å
@@ -182,12 +189,12 @@ def show(m, truth):
     return fig
 
 
-def map_scan(name='Aluminium', seed=1):
-    """Make the synthetic scan, map its orientations and compare them with the truth.
+def map_scan(crystal=ALUMINIUM, seed=1):
+    """Make the synthetic scan, map its orientations against *crystal*'s database and compare
+    them with the truth.
 
     :return: the orientation map, or None on failure.
     """
-    crystal = Crystal.from_builtin(name)
     ret, db_file = crystal.generateDPDB(emc=EMC(zone=(0, 0, 1)), xa=(2, 0, 0), res=200)
     if ret != 0:
         print('Failed to generate the diffraction pattern database')

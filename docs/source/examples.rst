@@ -91,6 +91,15 @@ The two 4D-STEM indexing notebooks are also shown here with their results:
 
          Guide: :doc:`user_guide/probe`
 
+      .. grid-item-card:: crystal_thickness.py :bdg-info:`Licensed`
+         :img-top: _static/images/probe_multislice.png
+
+         Silicon [110] through the thickness by the multislice method: HREM images and CBED
+         patterns at several thicknesses.
+
+         Guide: :doc:`user_guide/probe`.
+         Notebook: :doc:`notebooks/si_multislice`
+
       .. grid-item-card:: al_ediom.py :bdg-info:`Licensed`
          :img-top: _static/images/ediom_img1.png
 
