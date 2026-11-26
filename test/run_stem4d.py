@@ -28,6 +28,11 @@ What it checks:
   lattice, not the database), al.img and a blank pattern. The synthetic ones must come back
   within 1 degree of their orientation, al.img with the same result as indexImage (the
   baseline), the blank one unindexed, and nothing printed for each pattern.
+- phase map: StackImage.mapPhases on a 3 x 3 scan of synthetic Aluminium and Copper
+  patterns (both FCC, 4.05 and 3.61 A) and a blank one, against both phases' databases: at
+  least 3 in 4 of the Al and Cu patterns decided, every decided one right, the blank one without
+  a phase, nothing printed for each pattern, and PhaseMap save and load agreeing. Without a
+  license (LOCALAPPDATA at an empty folder), phaseMapBegin returns the no-license code.
 - rmax and database reach: al.img indexes the same with rmax=None and with the automatic
   radius given explicitly (on an emaps without rmax, setting it says a newer emaps is needed);
   rmax must exceed rmin; no reach warning for al.img with its database, a warning when the
@@ -942,6 +947,7 @@ def run_indexing():
     ref = lines.get('file')
     results += check_nonsquare(dbfn, ref)
     results += check_orientmap(dbfn, ref)
+    results += check_phasemap(dbfn)
     results += check_firstpass(dbfn)
     results += check_rmaxreach(dbfn)
     try:
@@ -1185,6 +1191,115 @@ def check_orientmap(dbfn, ref):
     return results
 
 
+def case_phasemap(dbfn, tmp):
+    '''Phase map of a synthetic Aluminium and Copper scan (both FCC, 4.05 and 3.61 A).'''
+    import numpy as np
+    from pyemaps import Crystal, EMC, StackImage, write_im3, PhaseMap
+    from pyemaps.stackimg import stem4d
+
+    headless_plots()
+    if not hasattr(stem4d, 'phaseMapBegin'):
+        print('RESULT SKIP this emaps has no phase mapping')
+        return
+    from io import StringIO
+    from contextlib import redirect_stdout
+    with redirect_stdout(StringIO()):
+        ret, cudb = Crystal.from_builtin('Copper_FCC').generateDPDB(
+            emc=EMC(zone=(0, 0, 1)), res=200, xa=(2, 0, 0))
+    if ret != 0:
+        print(f'RESULT FAIL dpgen Copper_FCC returned {ret}')
+        return
+    # a 3 x 3 scan: Al and Cu patterns at known zones, and a blank one
+    lattice = {'Al': 4.0493, 'Cu': 3.6149}
+    grains = [('Al', (1, 1, 1), 17.0), ('Cu', (1, 1, 2), 141.0), ('Al', (0, 1, 2), 302.0),
+              ('Cu', (1, 1, 1), 64.0), ('Al', (1, 1, 2), 200.0), ('Cu', (0, 1, 2), 12.0),
+              ('Al', (1, 1, 4), 233.0), ('Cu', (1, 1, 4), 101.0)]
+    truth, patterns = [], []
+    for name, zone, angle in grains:
+        basis = np.eye(3) * lattice[name]
+        U = zone_orientation(zone, angle, basis)
+        patterns.append(synth_pattern(U, np.linalg.inv(basis).T))
+        truth.append(name)
+    patterns.append(np.zeros((200, 200), np.float32))
+    scan = os.path.join(tmp, 'phase_scan.im3')
+    write_im3(scan, np.array(patterns))
+
+    sys.stdout.flush()
+    pm = StackImage(scan).mapPhases({'Al': dbfn, 'Cu': cudb}, scan_shape=(3, 3),
+                                    progress=False, **INDEX_PARAMS)
+    sys.stdout.flush()
+    print(pm)
+    names = np.array(pm.names)
+    phase, decided = pm.phase.ravel(), pm.decided().ravel()
+    bad = []
+    for i, name in enumerate(truth):
+        got = names[phase[i]] if phase[i] >= 0 else '-'
+        print(f'PHASE {name} {grains[i][1]}: {got}, confidence {pm.confidence.ravel()[i]:.3f}, '
+              f'spacing {np.round(pm.spacing.reshape(-1, 2)[i], 3)}')
+        if decided[i] and got != name:
+            bad.append(f'{name} {grains[i][1]} decided as {got}')
+    n_decided = int(np.count_nonzero(decided[:len(truth)]))
+    if n_decided < 0.75 * len(truth):
+        bad.append(f'only {n_decided} of {len(truth)} decided')
+    if decided[-1]:
+        bad.append('the blank pattern has a phase')
+    # save and load
+    path = os.path.join(tmp, 'phases.npz')
+    pm.save(path)
+    back = PhaseMap.load(path)
+    same = (back.names == pm.names and np.array_equal(back.phase, pm.phase)
+            and np.array_equal(back.spacing, pm.spacing)
+            and np.array_equal(back.maps[1].rotation, pm.maps[1].rotation))
+    if not same:
+        bad.append('save and load differ')
+    try:
+        os.remove(cudb)
+    except OSError:
+        pass
+    if bad:
+        print(f'RESULT FAIL {bad}')
+    else:
+        print(f'RESULT PASS {n_decided} of {len(truth)} Al and Cu patterns decided, all '
+              f'correctly; the blank one has no phase; save and load agree')
+
+
+def case_phaselicense():
+    '''Without a license (LOCALAPPDATA at an empty folder), phase mapping refuses.'''
+    from pyemaps.stackimg import stem4d
+    if not hasattr(stem4d, 'phaseMapBegin'):
+        print('RESULT SKIP this emaps has no phase mapping')
+        return
+    code = stem4d.phaseMapBegin(4, 2)
+    print(f'RESULT {"PASS" if code == stem4d.LICENSE_NONEXISTENT else "FAIL"} '
+          f'phaseMapBegin without a license returned {code}')
+
+
+def check_phasemap(dbfn):
+    '''The phase map case, and phase mapping without a license.'''
+    import tempfile
+    results = []
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        code, out, err = run_child('phasemap', dbfn, tmp)
+    line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
+    if line is not None and line.startswith('RESULT SKIP'):
+        return results
+    ok = code == 0 and line is not None and line.startswith('RESULT PASS')
+    results.append(('phase map', ok, line[7:] if line else child_failure(code, err)))
+    noisy = [l for l in out.splitlines()
+             if l.startswith('*****') or 'Number of peaks found' in l or 'No diffraction peaks' in l]
+    results.append(('phase map: quiet', not noisy,
+                    'no per-pattern output' if not noisy else f'{len(noisy)} lines printed: {noisy[0]}'))
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as empty:
+        env = dict(os.environ, LOCALAPPDATA=empty)
+        p = subprocess.run([sys.executable, str(Path(__file__).resolve()), '--case',
+                            'phaselicense'], capture_output=True, text=True, cwd=HERE, env=env)
+    line = next((l for l in p.stdout.splitlines() if l.startswith('RESULT')), None)
+    results.append(('phase map without a license', line is not None and
+                    line.startswith('RESULT PASS'),
+                    line[7:] if line else child_failure(p.returncode, p.stderr)))
+    return results
+
+
 def check_files():
     import tempfile
     with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
@@ -1337,6 +1452,10 @@ if __name__ == '__main__':
             case_firstpass(*rest)
         elif kind == 'orientmap':
             case_orientmap(*rest)
+        elif kind == 'phasemap':
+            case_phasemap(*rest)
+        elif kind == 'phaselicense':
+            case_phaselicense()
         elif kind == 'peaksnr':
             case_peaksnr()
         elif kind == 'rmaxreach':

@@ -108,6 +108,23 @@ def _search_peaks(search_box, peak_threshold, min_snr):
         raise XDPImageError('min_snr needs a newer emaps: pip install --upgrade emaps') from e
 
 
+def _check_phase_map(ret, what):
+    # a phase-map routine's return: 0, a license code, or -1
+    if ret == 0:
+        return
+    if ret == stem4d.LICENSE_EXPIRED:
+        raise XDPImageError('Phase mapping needs a valid license, and yours has expired. '
+                            'Contact support@emlabsoftware.com to renew it.')
+    if ret == stem4d.LICENSE_NONEXISTENT:
+        raise XDPImageError('Phase mapping needs a pyEMAPS license, and none was found. Run '
+                            '"pyemaps -l trial" for a 7-day trial license, or contact '
+                            'support@emlabsoftware.com.')
+    if ret == stem4d.LICENSE_OTHERS:
+        raise XDPImageError('Phase mapping could not read the license. Contact '
+                            'support@emlabsoftware.com if the problem persists.')
+    raise XDPImageError(f'Phase map: could not {what}')
+
+
 def _check_rmax(rmax, rmin):
     '''*rmax* must be None (automatic) or a radius larger than *rmin*.'''
     if rmax is None:
@@ -1282,6 +1299,16 @@ class StackImage():
         where the default left about one in five unindexed, and agreed with an independent
         indexing of the same patterns about four times as often.
         """
+        return self._map_scan(dpdbfn, cc, sigma, img_center, rmin, search_box,
+                              scaling_option, filter_threshold, peak_threshold, scan_shape,
+                              progress, min_snr, rmax)
+
+    def _map_scan(self, dpdbfn, cc, sigma, img_center, rmin, search_box, scaling_option,
+                  filter_threshold, peak_threshold, scan_shape, progress, min_snr, rmax,
+                  on_loaded=None, on_pattern=None, label='Orientation map'):
+        # mapOrientation's work, with two hooks: on_loaded() once the database is loaded, and
+        # on_pattern(k, status, searched) after pattern k, searched telling whether its peak
+        # search ran
         import time
         from .orientmap import (OrientationMap, _DatabaseGeometry, OM_INDEXED,
                                 OM_FEW_PEAKS, OM_FAILED, OM_NOT_RUN)
@@ -1301,6 +1328,8 @@ class StackImage():
         if ret != 0:
             raise XDPImageError("Error loading theoretical diffraction pattern database")
         geometry = _DatabaseGeometry(stem4d)
+        if on_loaded is not None:
+            on_loaded()
 
         try:
             self.loadImage(rmode=EL_ONE, stack=1)
@@ -1331,6 +1360,7 @@ class StackImage():
         npeaks = np.zeros(npat, dtype=np.int32)
         nindexed = np.zeros(npat, dtype=np.int32)
         orientation = np.full((npat, 3, 3), np.nan)
+        searched = np.zeros(npat, dtype=bool)
 
         edc = stem4d.cvar.edc
 
@@ -1345,6 +1375,7 @@ class StackImage():
             if ret != 0 or kc <= 0 or kr <= 0:
                 return OM_FAILED
             n = _search_peaks(search_box, peak_threshold, min_snr)
+            searched[k] = n >= 0
             npeaks[k] = max(n, 0)
             if n <= 3:
                 return OM_FEW_PEAKS if n >= 0 else OM_FAILED
@@ -1363,13 +1394,15 @@ class StackImage():
         try:
             for k in range(npat):
                 status[k] = index_one(k)
+                if on_pattern is not None:
+                    on_pattern(k, status[k], searched[k])
                 if progress and ((k + 1) % step == 0 or k + 1 == npat):
                     done = k + 1
                     left = (time.perf_counter() - start) / done * (npat - done)
-                    print(f'Orientation map: {done} of {npat} patterns, '
+                    print(f'{label}: {done} of {npat} patterns, '
                           f'about {left / 60:.1f} min left', flush=True)
         except KeyboardInterrupt:
-            print(f'Orientation map stopped: {np.count_nonzero(status != OM_NOT_RUN)} of '
+            print(f'{label} stopped: {np.count_nonzero(status != OM_NOT_RUN)} of '
                   f'{npat} patterns done', flush=True)
         finally:
             stem4d.setVerbose(1)
@@ -1382,6 +1415,144 @@ class StackImage():
                               fields['correlation'], fields['map_peak'], fields['rindex'],
                               npeaks, nindexed, orientation, geometry.basis,
                               geometry.corners, database=dpdbfn, params=params)
+
+    def mapPhases(self,
+                  phases,
+                  cc                      = DEF_CC,
+                  sigma                   = DEF_SIGMA,
+                  img_center              = DEF_ICENTER,
+                  rmin                    = DEF_RMIN,
+                  search_box              = DEF_BOXSIZE,
+                  scaling_option          = (DEF_XSCALE, DEF_TSCALE),
+                  filter_threshold        = DEF_FILTER_THRESHOLD,
+                  peak_threshold          = DEF_SEARCH_THRESHOLD,
+                  scan_shape              = None,
+                  progress                = True,
+                  min_snr                 = 0.0,
+                  rmax                    = None,
+                  spacing_tol             = 1.0,
+                  min_confidence          = 0.2,
+                  min_rindex              = 5.0,
+                  orientation_weight      = 0.0
+                  ):
+        """
+        Map which of several crystal phases each pattern of a scan belongs to, with one
+        diffraction pattern database per phase. This is a licensed feature, and it is
+        experimental, as :py:meth:`mapOrientation` is.
+
+        Every pattern is indexed against each phase's database, as :py:meth:`mapOrientation`
+        indexes it against one, so it takes as long as one orientation map per phase. emaps then
+        scores each phase for each pattern (see :py:class:`~pyemaps.phasemap.PhaseMap`):
+
+        - how well the distances of the pattern's peaks from its centre match the phase's
+          reflection spacings, with the camera constant *cc*. This needs no orientation, and it
+          tells apart phases with the same structure and different lattice constants, which the
+          indexing alone can't: it matches angles and ratios, so a database also indexes the
+          patterns of a similar phase;
+        - where the phase's indexing is reliable (reliability index at least *min_rindex*), the
+          share of the peaks it explains and the share of its predicted reflections found,
+          with *orientation_weight*.
+
+        The best-scoring phase is the pattern's phase; where it leads the second best by less
+        than *min_confidence*, the pattern is ambiguous.
+
+        On synthetic scans the spacing score alone decided best: at the default
+        *min_confidence*, 78 to 98% of the patterns were decided, all of them correctly, while
+        adding the indexing's score at full weight brought some errors back. So
+        *orientation_weight* is 0 by default, and the indexing's scores are only reported. Raise
+        it for phases whose reflection spacings coincide, which the spacing score can't tell
+        apart.
+
+        :param phases: the phases and their databases, ``{name: database file}``, 2 to 10 of
+            them, each database made by :py:meth:`~pyemaps.crystals.Crystal.generateDPDB` for
+            that phase. Every database must reach as far out as the peaks used (see
+            :py:meth:`mapOrientation`).
+        :type phases: dict
+        :param spacing_tol: the spacing score's tolerance, in pixels: how far a peak may be
+            from a reflection spacing and still count. It depends on how precisely the camera
+            constant and the pattern centre are known.
+        :type spacing_tol: float, optional
+        :param min_confidence: the lead over the second-best phase below which a pattern is
+            ambiguous.
+        :type min_confidence: float, optional
+        :param min_rindex: the reliability index from which a phase's indexing adds its score.
+        :type min_rindex: float, optional
+        :param orientation_weight: the weight of the indexing's score against the spacing
+            score; 0 decides by the spacing score alone.
+        :type orientation_weight: float, optional
+
+        The other parameters are those of :py:meth:`mapOrientation`, the same for every phase.
+
+        :return: the phase map, with each phase's orientation map.
+        :rtype: :py:class:`~pyemaps.phasemap.PhaseMap`
+        :raise ~pyemaps.errors.XDPImageError: if the image or a database can't be loaded, the
+            settings are invalid, or there's no valid license.
+
+        .. note::
+
+            Phase mapping is experimental. It has been tested on synthetic two-phase scans of
+            kinematic spot patterns (aluminium with copper, and aluminium with silicon), not yet
+            on measured data. The spacing score depends on an accurate camera constant and
+            pattern centre.
+        """
+        from .phasemap import PhaseMap
+        from .orientmap import OM_INDEXED
+
+        if not hasattr(stem4d, 'phaseMapBegin'):
+            raise XDPImageError('Phase mapping needs a newer emaps: '
+                                'pip install --upgrade emaps')
+        if not isinstance(phases, dict) or not 2 <= len(phases) <= 10:
+            raise XDPImageError('phases must be a dictionary of 2 to 10 {name: database file}')
+        if not spacing_tol > 0:
+            raise XDPImageError('spacing_tol must be positive')
+        names = list(phases)
+
+        try:
+            self.loadImage(rmode=EL_ONE, stack=1)
+        except Exception as e:
+            raise XDPImageError(f"Error loading image for stem4d analysis: {e}") from e
+        npat = self._dim[2] if self.nformat != E_NPY else 1
+
+        ret = stem4d.phaseMapBegin(npat, len(names))
+        _check_phase_map(ret, 'start the phase map')
+        try:
+            maps = []
+            for p, name in enumerate(names):
+                # the radius the indexing uses (see indexXPeaks) bounds the scored peaks
+                def on_loaded(p=p, name=name):
+                    _check_phase_map(stem4d.phaseMapPhase(p), f'read the {name} database')
+
+                def on_pattern(k, status, searched, p=p):
+                    if not searched:
+                        return
+                    redge = min(img_center[0], self.dim[0] - img_center[0],
+                                img_center[1], self.dim[1] - img_center[1])
+                    r_out = min(rmax, redge) if rmax else 2.0 * redge / 3.0
+                    _check_phase_map(stem4d.phaseMapScore(int(k), p, int(status == OM_INDEXED),
+                                                          float(rmin), float(r_out),
+                                                          float(spacing_tol)),
+                                     'score the pattern')
+
+                maps.append(self._map_scan(phases[name], cc, sigma, img_center, rmin,
+                                           search_box, scaling_option, filter_threshold,
+                                           peak_threshold, scan_shape, progress, min_snr, rmax,
+                                           on_loaded=on_loaded, on_pattern=on_pattern,
+                                           label=f'Phase map, {name}'))
+            _check_phase_map(stem4d.phaseMapDecide(float(min_confidence), float(min_rindex),
+                                                   float(orientation_weight)), 'decide')
+            per = 4 + 7 * len(names)
+            ret, out = stem4d.getPhaseMapResults(npat * per)
+            _check_phase_map(ret, 'read the results')
+        finally:
+            stem4d.phaseMapEnd()
+
+        out = np.asarray(out).reshape(npat, per)
+        scores = out[:, 4:].reshape(npat, len(names), 7)
+        params = dict(maps[0].params, spacing_tol=spacing_tol, min_confidence=min_confidence,
+                      min_rindex=min_rindex, orientation_weight=orientation_weight,
+                      databases={n: phases[n] for n in names})
+        return PhaseMap(names, maps, out[:, 0], out[:, 1] > 0.5, out[:, 2], out[:, 3],
+                        scores[..., 0], scores[..., 1], scores[..., 2], params=params)
 
     def generateBDF(self,
                     center=(0.0, 0.0), 
