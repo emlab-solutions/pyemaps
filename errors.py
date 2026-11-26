@@ -220,3 +220,17 @@ class XDPImageError(Exception):
     def __init__(self, message=''):
         self.message = str(f'{message}')
         super().__init__(self.message)
+
+
+class LicenseError(Exception):
+    """
+    Raised when a licensed feature is used without an active pyEMAPS license, or isn't in this
+    emaps package: the multislice simulations of :py:class:`~pyemaps.probe.Probe`
+    (:py:meth:`~pyemaps.probe.Probe.crystal_exit_wave` and
+    :py:meth:`~pyemaps.probe.Probe.crystal_ronchigram`) and diffraction pattern database
+    generation (:py:meth:`~pyemaps.crystals.Crystal.generateDPDB`). Run ``pyemaps -l trial``
+    for a 7-day trial license, or contact support@emlabsoftware.com for one.
+    """
+    def __init__(self, message=''):
+        self.message = str(f'{message}')
+        super().__init__(self.message)

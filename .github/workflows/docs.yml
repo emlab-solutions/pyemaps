@@ -22,6 +22,7 @@ on:
       - 'notebooks/al_ediom.ipynb'
       - 'notebooks/al_orientmap.ipynb'
       - 'notebooks/probe.ipynb'
+      - 'notebooks/si_multislice.ipynb'
       - '.github/workflows/docs.yml'
   workflow_dispatch:
 
