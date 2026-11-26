@@ -227,6 +227,96 @@ def _check_stem4d_size(img):
                             f'features take up to {MAX_IMAGESTACK}. Read part of the scan with '
                             f'{hint}.')
 
+def _check_scan_call(ret, what):
+    """A scan-analysis routine's return: 0, a license code, or -1 (with its reason printed)."""
+    if ret == 0:
+        return
+    if ret == stem4d.LICENSE_EXPIRED:
+        raise XDPImageError(f'{what} needs a valid license, and yours has expired. Contact '
+                            'support@emlabsoftware.com to renew it.')
+    if ret == stem4d.LICENSE_NONEXISTENT:
+        raise XDPImageError(f'{what} needs a pyEMAPS license, and none was found. Run '
+                            '"pyemaps -l trial" for a 7-day trial license, or contact '
+                            'support@emlabsoftware.com.')
+    if ret == stem4d.LICENSE_OTHERS:
+        raise XDPImageError(f'{what} could not read the license. Contact '
+                            'support@emlabsoftware.com if the problem persists.')
+    raise XDPImageError(f'{what} failed; the reason is printed above')
+
+
+def _need_scan_routines(what):
+    if not hasattr(stem4d, 'stackImageAverage'):
+        raise XDPImageError(f'{what} needs a newer emaps: pip install --upgrade emaps')
+
+
+def _pattern_like(a, shape, name):
+    """*a* as a flat float32 array, checked to be one pattern of *shape* (rows, columns)."""
+    a = np.asarray(a)
+    if a.shape != tuple(shape):
+        raise ValueError(f'{name} must be {shape[0]} x {shape[1]} like the patterns, not '
+                         f'{"x".join(str(n) for n in a.shape) or "a scalar"}')
+    a = a.astype(np.float32).ravel()
+    if not np.all(np.isfinite(a)):
+        raise ValueError(f'{name} must be finite')
+    return np.ascontiguousarray(a)
+
+
+def _mask_like(mask, shape):
+    """The mask as a flat float32 array: all pixels if None."""
+    if mask is None:
+        return np.ones(shape[0] * shape[1], dtype=np.float32)
+    m = _pattern_like(mask, shape, 'The mask')
+    if np.count_nonzero(m > 0.5) < 2:
+        raise ValueError('The mask must keep at least two pixels (values above 0.5, or True)')
+    return m
+
+
+def _polar_center(center):
+    try:
+        ccol, crow = (float(v) for v in center)
+    except (TypeError, ValueError):
+        raise ValueError(f'center must be (column, row) in pixels, not {center!r}') from None
+    return ccol, crow
+
+
+def polar_transform(image, center, dtheta=1.0):
+    """
+    The polar transform of one diffraction pattern: its intensity at radius *r* pixels from
+    *center* and angle *θ*, interpolated bilinearly. Row *r* of the result is the circle of
+    radius *r*, from 0 to the pattern's nearest edge, and column *k* is the angle
+    ``k * dtheta`` degrees, counterclockwise from the pattern's +column direction as it is
+    displayed (rows running down). Rings about the center become straight rows, and a
+    pattern's symmetry about the center shows as a repeat along the rows.
+
+    This is a licensed feature, computed in emaps. For the patterns of a scan, see
+    :py:meth:`StackImage.polarTransform`.
+
+    :param image: the pattern, ``(rows, columns)``.
+    :type image: numpy.ndarray
+    :param center: the center, ``(column, row)`` in pixels, inside the pattern.
+    :type center: tuple of float
+    :param dtheta: the angle step, degrees: ``360 / dtheta`` angles.
+    :type dtheta: float, optional
+    :return: the transform, ``(radii, angles)``.
+    :rtype: numpy.ndarray
+    :raise ValueError: if the image isn't 2-D, or *center* or *dtheta* is out of range.
+    :raise ~pyemaps.errors.XDPImageError: without a valid license.
+    """
+    _need_scan_routines('polar_transform')
+    a = np.asarray(image)
+    if a.ndim != 2 or min(a.shape) < 2:
+        raise ValueError(f'image must be a 2-D pattern, not an array of shape {a.shape}')
+    ccol, crow = _polar_center(center)
+    ret, nr, nt = stem4d.polarShape(a.shape[1], a.shape[0], ccol, crow, float(dtheta))
+    if ret != 0:
+        raise ValueError(f'center {center} must be inside the {a.shape[1]} x {a.shape[0]} pattern '
+                         f'and dtheta in (0, 360], not {dtheta}')
+    ret, out = stem4d.polarImage(np.ascontiguousarray(a, dtype=np.float32), ccol, crow,
+                                 float(dtheta), nr * nt)
+    _check_scan_call(ret, 'The polar transform')
+    return out.reshape(nr, nt)
+
+
 class StackImage():
     """
     An experimental diffraction image, or a stack of them, for 4D-STEM analysis with the
@@ -1437,6 +1527,239 @@ class StackImage():
 
         return 0, self._data
     
+
+    # ------------------------------------------------------------------ scan analysis
+    # Averages, correlations, similar-pattern groups, classification and polar transforms of a
+    # scan: ports of the DigitalMicrograph plug-in's 4D-STEM functions, computed in emaps.
+
+    def _scan_for(self, what, scan_shape=None):
+        """Load every pattern for *what*: (number of patterns, scan shape, pattern shape)."""
+        _need_scan_routines(what)
+        try:
+            self.loadImage(rmode=EL_MORE)
+        except XDPImageError:
+            raise
+        except Exception as e:
+            raise XDPImageError(f'Error loading the scan for {what}: {e}') from e
+        npat = self._dim[2] if self.nformat != E_NPY else 1
+        if scan_shape is None:
+            if (self._scan_shape is not None and len(self._scan_shape) == 2
+                    and self._scan_shape[0] * self._scan_shape[1] == npat):
+                scan_shape = tuple(self._scan_shape)
+            else:
+                scan_shape = (1, npat)
+        scan_shape = tuple(int(n) for n in scan_shape)
+        if len(scan_shape) != 2 or scan_shape[0] * scan_shape[1] != npat:
+            raise XDPImageError(f'scan_shape {scan_shape} does not hold the {npat} patterns')
+        return npat, scan_shape, (self._dim[1], self._dim[0])
+
+    def averagePattern(self):
+        """
+        The mean of all the scan's patterns: for example the position-averaged pattern of a
+        4D-STEM scan. This is a licensed feature, computed in emaps.
+
+        :return: the mean pattern, ``(rows, columns)``.
+        :rtype: numpy.ndarray
+        :raise ~pyemaps.errors.XDPImageError: if the scan can't be loaded, or without a valid
+            license.
+        """
+        _, _, shape = self._scan_for('averagePattern')
+        ret, out = stem4d.stackImageAverage(shape[0] * shape[1])
+        _check_scan_call(ret, 'Averaging the patterns')
+        return out.reshape(shape)
+
+    def averageByLabel(self, labels, scan_shape=None):
+        """
+        One mean pattern per label: each the mean of the patterns with that label, for example
+        the groups :py:meth:`findSimilar` finds, or regions marked by hand. Averaging similar
+        patterns brings out weak reflections the noise hides in each. This is a licensed
+        feature, computed in emaps.
+
+        :param labels: an integer label per pattern, in the scan's shape or flat. Patterns with a
+            negative label are left out.
+        :type labels: numpy.ndarray
+        :param scan_shape: ``(rows, columns)`` of the scan; by default the shape the scan was
+            read with, or one row.
+        :type scan_shape: tuple of int, optional
+        :return: ``(averages, values, counts)``: the mean patterns, ``(n, rows, columns)``, one
+            per distinct label of 0 or more in increasing order, those labels, and the number of
+            patterns averaged for each.
+        :rtype: tuple of numpy.ndarray
+        :raise ValueError: if there isn't one integer label per pattern, or none is 0 or more.
+        :raise ~pyemaps.errors.XDPImageError: if the scan can't be loaded, or without a valid
+            license.
+        """
+        npat, _, shape = self._scan_for('averageByLabel', scan_shape)
+        lab = np.asarray(labels)
+        if lab.size != npat:
+            raise ValueError(f'labels has {lab.size} values for {npat} patterns')
+        lab = lab.ravel()
+        if not np.issubdtype(lab.dtype, np.integer):
+            if not (np.all(np.isfinite(lab)) and np.all(lab == np.round(lab))):
+                raise ValueError('labels must be integers')
+        lab = lab.astype(np.int64)
+        keep = lab >= 0
+        values = np.unique(lab[keep])
+        if values.size == 0:
+            raise ValueError('no pattern has a label of 0 or more')
+        compact = np.full(npat, -1, dtype=np.int32)
+        compact[keep] = np.searchsorted(values, lab[keep])
+        ret, out = stem4d.stackLabelAverage(compact, values.size * shape[0] * shape[1])
+        _check_scan_call(ret, 'Averaging the patterns by label')
+        counts = np.bincount(compact[keep], minlength=values.size)
+        return out.reshape(values.size, *shape), values, counts
+
+    def correlationMap(self, template, mask=None, scan_shape=None):
+        """
+        How closely each pattern matches a template: their correlation coefficient over the
+        mask's pixels, from -1 to 1, arranged as the scan. 1 means the same up to brightness and
+        background. Bright areas of the map are where the template's structure or orientation
+        is. This is a licensed feature, computed in emaps.
+
+        :param template: a pattern ``(rows, columns)``, such as one of the scan's or an average.
+        :type template: numpy.ndarray
+        :param mask: the pixels to compare: those above 0.5, or ``True``. By default all of them.
+            Masking out the direct beam keeps it from dominating the correlation.
+        :type mask: numpy.ndarray, optional
+        :param scan_shape: ``(rows, columns)`` of the scan; by default the shape the scan was
+            read with, or one row.
+        :type scan_shape: tuple of int, optional
+        :return: the correlation map, in the scan's shape. A pattern or template flat inside the
+            mask scores 0.
+        :rtype: numpy.ndarray
+        :raise ValueError: if the template or mask isn't the patterns' size.
+        :raise ~pyemaps.errors.XDPImageError: if the scan can't be loaded, or without a valid
+            license.
+        """
+        npat, scan_shape, shape = self._scan_for('correlationMap', scan_shape)
+        t = _pattern_like(template, shape, 'The template')
+        m = _mask_like(mask, shape)
+        ret, out = stem4d.stackCorrelationMap(t, m, npat)
+        _check_scan_call(ret, 'The correlation map')
+        return out.reshape(scan_shape)
+
+    def findSimilar(self, threshold=0.8, mask=None, seed=1, fraction=0.2, reach=None,
+                    scan_shape=None):
+        """
+        Groups similar patterns, without a database: for example the grains or phases of a
+        scan. In a random order, a *fraction* of the patterns are tried as seeds. A seed that no
+        group has taken yet starts a group, and takes the patterns that correlate with it above
+        *threshold*, better than with any group so far, searching along the scan from the seed
+        both ways until *reach* patterns in a row don't match. This is a licensed feature,
+        computed in emaps.
+
+        Use :py:meth:`averageByLabel` to average each group, and :py:meth:`classifyPatterns`
+        with those averages to label every pattern by its closest group.
+
+        :param threshold: the correlation a pattern needs to join a group, between 0 and 1.
+        :type threshold: float, optional
+        :param mask: the pixels to compare, as in :py:meth:`correlationMap`.
+        :type mask: numpy.ndarray, optional
+        :param seed: the random order's seed: the same seed gives the same groups.
+        :type seed: int, optional
+        :param fraction: the share of the patterns tried as seeds, more than 0 and up to 1.
+        :type fraction: float, optional
+        :param reach: how many patterns in a row may fail to match before the search from a seed
+            stops; by default two scan rows.
+        :type reach: int, optional
+        :param scan_shape: ``(rows, columns)`` of the scan; by default the shape the scan was
+            read with, or one row.
+        :type scan_shape: tuple of int, optional
+        :return: ``(labels, correlation)``, both in the scan's shape: each pattern's group,
+            named by the index of its seed pattern (a pattern no group took is its own group),
+            and its correlation with the seed: 1 for a seed, 0 for a pattern no group took.
+        :rtype: tuple of numpy.ndarray
+        :raise ValueError: if a parameter is out of range.
+        :raise ~pyemaps.errors.XDPImageError: if the scan can't be loaded, or without a valid
+            license.
+        """
+        if not 0 < threshold < 1:
+            raise ValueError(f'threshold must be between 0 and 1, not {threshold}')
+        if not 0 < fraction <= 1:
+            raise ValueError(f'fraction must be more than 0 and up to 1, not {fraction}')
+        npat, scan_shape, shape = self._scan_for('findSimilar', scan_shape)
+        if reach is None:
+            reach = 2 * scan_shape[1]
+        if int(reach) < 1:
+            raise ValueError(f'reach must be at least 1, not {reach}')
+        m = _mask_like(mask, shape)
+        ret, labels, corr = stem4d.stackSimilarSearch(m, float(threshold), int(seed),
+                                                      float(fraction), int(reach), npat, npat)
+        _check_scan_call(ret, 'Finding similar patterns')
+        return labels.reshape(scan_shape), corr.reshape(scan_shape)
+
+    def classifyPatterns(self, templates, mask=None, scan_shape=None):
+        """
+        Labels each pattern with the template it matches best: the highest correlation over the
+        mask's pixels, as in :py:meth:`correlationMap`. With templates of known phases or
+        orientations, the labels map them across the scan. This is a licensed feature,
+        computed in emaps.
+
+        :param templates: the templates, ``(n, rows, columns)``, or one ``(rows, columns)``.
+        :type templates: numpy.ndarray
+        :param mask: the pixels to compare, as in :py:meth:`correlationMap`.
+        :type mask: numpy.ndarray, optional
+        :param scan_shape: ``(rows, columns)`` of the scan; by default the shape the scan was
+            read with, or one row.
+        :type scan_shape: tuple of int, optional
+        :return: ``(labels, correlation)``, both in the scan's shape: the best template's index,
+            from 0, and its correlation. A pattern flat inside the mask gets -1 and 0.
+        :rtype: tuple of numpy.ndarray
+        :raise ValueError: if the templates or mask aren't the patterns' size.
+        :raise ~pyemaps.errors.XDPImageError: if the scan can't be loaded, or without a valid
+            license.
+        """
+        npat, scan_shape, shape = self._scan_for('classifyPatterns', scan_shape)
+        t = np.asarray(templates)
+        if t.ndim == 2:
+            t = t[np.newaxis]
+        if t.ndim != 3 or t.shape[1:] != shape or t.shape[0] < 1:
+            raise ValueError(f'templates must be (n, {shape[0]}, {shape[1]}), not {t.shape}')
+        t = np.ascontiguousarray(t, dtype=np.float32).ravel()
+        if not np.all(np.isfinite(t)):
+            raise ValueError('The templates must be finite')
+        m = _mask_like(mask, shape)
+        ret, labels, corr = stem4d.stackClassify(t, m, npat, npat)
+        _check_scan_call(ret, 'Classifying the patterns')
+        return labels.reshape(scan_shape), corr.reshape(scan_shape)
+
+    def polarTransform(self, center, dtheta=1.0, pattern=None):
+        """
+        The polar transform of the scan's patterns about *center*, as
+        :py:func:`~pyemaps.stackimg.polar_transform` makes it for one pattern: rows are radii
+        in pixels, from 0 to the pattern's nearest edge, and columns angles in steps of
+        *dtheta* degrees. This is a licensed feature, computed in emaps.
+
+        Every pattern's transform together can be large: patterns x radii x angles floats.
+        Pass *pattern* for one.
+
+        :param center: the patterns' center, ``(column, row)`` in pixels.
+        :type center: tuple of float
+        :param dtheta: the angle step, degrees.
+        :type dtheta: float, optional
+        :param pattern: one pattern's index, from 0, or ``None`` for all of them.
+        :type pattern: int, optional
+        :return: ``(patterns, radii, angles)``, or ``(radii, angles)`` for one pattern.
+        :rtype: numpy.ndarray
+        :raise ValueError: if *center*, *dtheta* or *pattern* is out of range.
+        :raise ~pyemaps.errors.XDPImageError: if the scan can't be loaded, or without a valid
+            license.
+        """
+        npat, _, shape = self._scan_for('polarTransform')
+        ccol, crow = _polar_center(center)
+        ret, nr, nt = stem4d.polarShape(shape[1], shape[0], ccol, crow, float(dtheta))
+        if ret != 0:
+            raise ValueError(f'center {center} must be inside the {shape[1]} x {shape[0]} '
+                             f'patterns and dtheta in (0, 360], not {dtheta}')
+        if pattern is not None and not 0 <= int(pattern) < npat:
+            raise ValueError(f'pattern must be 0 to {npat - 1}, not {pattern}')
+        page = -1 if pattern is None else int(pattern)
+        count = npat if pattern is None else 1
+        ret, out = stem4d.stackPolarTransform(ccol, crow, float(dtheta), page, count * nr * nt)
+        _check_scan_call(ret, 'The polar transform')
+        out = out.reshape(count, nr, nt)
+        return out if pattern is None else out[0]
+
 
     @staticmethod
     def convertImage(

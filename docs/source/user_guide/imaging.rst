@@ -123,3 +123,52 @@ path:
 
 The sample *adf.py* makes the annular dark field, dark field and masked images of this page, and
 *convert_image.py* converts a raw image file; see :doc:`../examples`.
+
+Averages, similar patterns and polar transforms
+-----------------------------------------------
+
+These methods look at the patterns themselves rather than at sums over a detector. They work
+on the whole scan, which they read into memory, and return NumPy arrays. A scan read with
+:py:meth:`StackImage.from_file <pyemaps.stackimg.StackImage.from_file>` knows its shape;
+otherwise pass *scan_shape*, ``(rows, columns)``, and the results come in that shape. Like the
+other 4D-STEM features, they require :ref:`License Activation`.
+
+- :py:meth:`~pyemaps.stackimg.StackImage.averagePattern`: the mean of all the patterns, the
+  position-averaged pattern of the scan.
+- :py:meth:`~pyemaps.stackimg.StackImage.correlationMap`: how closely each pattern matches a
+  template, such as one of the scan's patterns. The template is compared over a *mask*'s pixels,
+  those above 0.5 or ``True``. The comparison is the correlation coefficient, from -1 to 1, so
+  the patterns' brightness and background don't affect it.
+- :py:meth:`~pyemaps.stackimg.StackImage.findSimilar`: groups similar patterns, without a
+  database. Seed patterns, chosen at random, collect the patterns along the scan that correlate
+  with them above a *threshold*. Each pattern's label is its group's seed.
+- :py:meth:`~pyemaps.stackimg.StackImage.averageByLabel`: one mean pattern per label, such as
+  per group. Averaging brings out weak reflections that the noise hides in each pattern.
+- :py:meth:`~pyemaps.stackimg.StackImage.classifyPatterns`: labels every pattern with the
+  template it matches best, such as the groups' averages.
+- :py:meth:`~pyemaps.stackimg.StackImage.polarTransform`, and
+  :py:func:`~pyemaps.stackimg.polar_transform` for a single pattern: the pattern in polar
+  coordinates about a center. Rows are radii in pixels, out to the pattern's nearest edge, and
+  columns are angles. Rings about the center become straight rows.
+
+Leaving the direct beam out of the mask keeps it from dominating the correlations:
+
+.. code-block:: python
+
+   scan = StackImage.from_file('scan.tif', scan_shape=(64, 64))
+   center = (128.0, 128.0)                       # the direct beam, (column, row)
+
+   yy, xx = np.indices((256, 256))
+   mask = np.hypot(xx - center[0], yy - center[1]) > 10
+
+   labels, corr = scan.findSimilar(threshold=0.7, mask=mask)
+   averages, groups, counts = scan.averageByLabel(labels)
+   big = averages[counts >= 20]                  # the groups of 20 patterns or more
+   classes, match = scan.classifyPatterns(big, mask=mask)
+
+   polar = scan.polarTransform(center, dtheta=1.0, pattern=0)   # radii x 360 angles
+
+These are ports of functions from the DigitalMicrograph plug-in that pyEMAPS' 4D-STEM module
+grew from, computed in emaps. As
+ported, the correlations are true correlation coefficients over the mask's pixels, and the polar
+transforms reach the nearest edge in every direction.

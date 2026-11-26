@@ -452,6 +452,208 @@ def case_peaksnr():
               f'peaks; without it, {len(loose)} peaks')
 
 
+def scan_groups(rng, rows=12, cols=12, size=128):
+    """
+    A synthetic scan of three groups of patterns, in vertical bands of the scan: square
+    lattices at 0 and 30 degrees and a hexagonal one. Each pattern has its own brightness,
+    background and counting noise. Returns (patterns, truth labels 0-2, flat).
+    """
+    import numpy as np
+    yy, xx = np.mgrid[0:size, 0:size].astype(float)
+    c = (size - 1) / 2
+
+    def lattice(a, angle, gamma):
+        th, g = np.radians(angle), np.radians(gamma)
+        u = a * np.array([np.cos(th), np.sin(th)])
+        v = a * np.array([np.cos(th + g), np.sin(th + g)])
+        img = 6.0 * np.exp(-((xx - c) ** 2 + (yy - c) ** 2) / (2 * 3.0 ** 2))
+        for h in range(-6, 7):
+            for k in range(-6, 7):
+                if h == 0 and k == 0:
+                    continue
+                x, y = c + h * u[0] + k * v[0], c + h * u[1] + k * v[1]
+                if abs(x - c) < c - 4 and abs(y - c) < c - 4:
+                    img += np.exp(-((xx - x) ** 2 + (yy - y) ** 2) / (2 * 2.0 ** 2))
+        return img
+
+    kinds = [lattice(14, 0, 90), lattice(14, 30, 90), lattice(15, 10, 60)]
+    truth = np.repeat(np.arange(cols) * 3 // cols, 1)[np.newaxis].repeat(rows, 0)
+    pats = []
+    for g in truth.ravel():
+        img = kinds[g] * rng.uniform(150, 300) + rng.uniform(5, 50)
+        pats.append(rng.poisson(img).astype(np.float32))
+    return np.array(pats), truth, (rows, cols)
+
+
+def masked_pearson(a, b, m):
+    import numpy as np
+    x, y = a[m].astype(float), b[m].astype(float)
+    x, y = x - x.mean(), y - y.mean()
+    d = np.sqrt((x * x).sum() * (y * y).sum())
+    return 0.0 if d == 0 else float((x * y).sum() / d)
+
+
+def bilinear_polar(img, ccol, crow, dtheta):
+    """The polar transform in numpy, as the docs describe it."""
+    import numpy as np
+    rows, cols = img.shape
+    nr = int(np.floor(min(ccol, crow, cols - 1 - ccol, rows - 1 - crow))) + 1
+    nt = int(np.floor(360.0 / dtheta + 1e-6))
+    r = np.arange(nr)[:, None]
+    th = np.radians(np.arange(nt) * dtheta)[None, :]
+    x, y = ccol + r * np.cos(th), crow - r * np.sin(th)
+    i = np.clip(np.floor(x).astype(int), 0, cols - 2)
+    j = np.clip(np.floor(y).astype(int), 0, rows - 2)
+    du, dv = x - i, y - j
+    a = img.astype(float)
+    return ((1 - dv) * (1 - du) * a[j, i] + dv * (1 - du) * a[j + 1, i] + dv * du * a[j + 1, i + 1]
+            + (1 - dv) * du * a[j, i + 1])
+
+
+def case_scananalysis(tmp):
+    """
+    The scan-analysis routines (ports of the DigitalMicrograph plug-in's functions in
+    stem4d's StackDP.cpp) on a synthetic scan of three known groups, against numpy: averages,
+    averages by label, the correlation map, similar-pattern groups, classification and polar
+    transforms, for float and 16-bit scans.
+    """
+    import numpy as np
+    from io import StringIO
+    from contextlib import redirect_stdout
+    from pyemaps import StackImage, write_im3, polar_transform
+
+    rng = np.random.default_rng(7)
+    pats, truth, scan = scan_groups(rng)
+    npat, size = len(pats), pats.shape[1]
+    yy, xx = np.mgrid[0:size, 0:size]
+    c = (size - 1) / 2
+    mask = np.hypot(xx - c, yy - c) > 8                 # leave the direct beam out
+    bad = []
+    out = StringIO()
+    with redirect_stdout(out):
+        f32 = os.path.join(tmp, 'groups.im3')
+        write_im3(f32, pats)
+        si = StackImage(f32)
+
+        # the average, and averages by label
+        avg = si.averagePattern()
+        d = np.abs(avg - pats.astype(float).mean(0)).max() / pats.max()
+        if d > 1e-6:
+            bad.append(f'averagePattern differs from numpy by {d:.2g}')
+        lab = truth.copy()
+        lab[0, 0] = -1                                  # left out
+        lab[lab == 2] = 7                               # labels needn't be consecutive
+        means, values, counts = si.averageByLabel(lab)
+        flat = lab.ravel()
+        if list(values) != [0, 1, 7] or list(counts) != [np.sum(flat == v) for v in (0, 1, 7)]:
+            bad.append(f'averageByLabel labels {list(values)}, counts {list(counts)}')
+        else:
+            for m, v in zip(means, values):
+                d = np.abs(m - pats[flat == v].astype(float).mean(0)).max() / pats.max()
+                if d > 1e-6:
+                    bad.append(f'averageByLabel mean of {v} differs from numpy by {d:.2g}')
+
+        # the correlation map: a Pearson coefficient over the mask, so a constant added to the
+        # template changes nothing
+        k0 = 5
+        cmap = si.correlationMap(pats[k0] + 1000.0, mask=mask, scan_shape=scan)
+        ref = np.array([masked_pearson(p, pats[k0], mask) for p in pats]).reshape(scan)
+        d = np.abs(cmap - ref).max()
+        if cmap.shape != scan or d > 1e-5:
+            bad.append(f'correlationMap {cmap.shape} differs from numpy by {d:.2g}')
+        if abs(cmap.flat[k0] - 1) > 1e-5:
+            bad.append(f'a pattern correlates {cmap.flat[k0]:.6f} with itself plus a constant')
+
+        # similar-pattern groups: each group must hold one kind of pattern
+        g1, c1 = si.findSimilar(threshold=0.5, mask=mask, seed=3, scan_shape=scan)
+        g2, _ = si.findSimilar(threshold=0.5, mask=mask, seed=3, scan_shape=scan)
+        g3, _ = si.findSimilar(threshold=0.5, mask=mask, seed=11, scan_shape=scan)
+        if not np.array_equal(g1, g2):
+            bad.append('findSimilar gave different groups for the same seed')
+        for name, g in (('seed 3', g1), ('seed 11', g3)):
+            impure = [int(v) for v in np.unique(g) if len(np.unique(truth[g == v])) > 1]
+            grouped = np.mean([np.sum(g == v) > 1 for v in g.ravel()])
+            if impure:
+                bad.append(f'findSimilar {name}: groups {impure} mix kinds of pattern')
+            if grouped < 0.9:
+                bad.append(f'findSimilar {name}: only {grouped:.0%} of the patterns grouped')
+        seeds = g1.ravel() == np.arange(npat)
+        if not np.allclose(c1.ravel()[seeds & (np.bincount(g1.ravel(), minlength=npat) > 1)], 1):
+            bad.append('a seed does not correlate 1 with itself')
+
+        # classification by the averages of the true groups
+        means, _, _ = si.averageByLabel(truth)
+        cl, cc = si.classifyPatterns(means, mask=mask, scan_shape=scan)
+        if not np.array_equal(cl, truth):
+            bad.append(f'classifyPatterns got {np.sum(cl != truth)} patterns wrong')
+        ref = np.array([[masked_pearson(p, m, mask) for m in means] for p in pats])
+        d = np.abs(cc.ravel() - ref.max(1)).max()
+        if d > 1e-5:
+            bad.append(f'classifyPatterns correlations differ from numpy by {d:.2g}')
+
+        # polar transforms: numpy's bilinear interpolation, the shape to the nearest edge, the
+        # single-pattern call, and a ring pattern turning into constant rows
+        ccol, crow, dth = 60.3, 70.7, 2.0
+        pol = si.polarTransform((ccol, crow), dth)
+        one = si.polarTransform((ccol, crow), dth, pattern=9)
+        ref = bilinear_polar(pats[9], ccol, crow, dth)
+        nr = int(np.floor(min(ccol, crow, size - 1 - ccol, size - 1 - crow))) + 1
+        if pol.shape != (npat, nr, 180) or one.shape != ref.shape:
+            bad.append(f'polar shapes {pol.shape}, {one.shape}; expected ({npat}, {nr}, 180)')
+        else:
+            d = np.abs(one - ref).max() / ref.max()
+            if d > 1e-5 or not np.array_equal(pol[9], one):
+                bad.append(f'polarTransform differs from numpy by {d:.2g}')
+            single = polar_transform(pats[9], (ccol, crow), dth)
+            if not np.allclose(single, one, rtol=0, atol=1e-3):
+                bad.append('polar_transform differs from polarTransform')
+        ring = np.cos(np.hypot(xx - 63.5, yy - 63.5) / 3.0)
+        rp = polar_transform(ring, (63.5, 63.5), 1.0)
+        spread = rp[1:].std(axis=1).max()
+        if spread > 0.05:
+            bad.append(f'a ring pattern varies by {spread:.3f} along its rows')
+
+        # a 16-bit scan gives the same results
+        i16 = os.path.join(tmp, 'groups16.im3')
+        write_im3(i16, pats.astype(np.int16))
+        si16 = StackImage(i16)
+        d1 = np.abs(si16.averagePattern() - avg).max() / pats.max()
+        d2 = np.abs(si16.correlationMap(pats[k0], mask=mask, scan_shape=scan) - cmap).max()
+        if d1 > 1e-6 or d2 > 1e-5:
+            bad.append(f'the 16-bit scan differs: average {d1:.2g}, correlation {d2:.2g}')
+
+        # wrong sizes are refused
+        for what, call in (('template', lambda: si.correlationMap(pats[0][:-1])),
+                           ('centre', lambda: si.polarTransform((size + 5, 10))),
+                           ('labels', lambda: si.averageByLabel(truth.ravel()[:-1]))):
+            try:
+                call()
+                bad.append(f'a wrong {what} was accepted')
+            except ValueError:
+                pass
+    if bad:
+        print(f'RESULT FAIL {bad}')
+    else:
+        print(f'RESULT PASS {npat} patterns of 3 kinds: averages, correlations and polar '
+              f'transforms match numpy; findSimilar groups are pure ({len(np.unique(g1))} '
+              f'groups), classifyPatterns gets all {npat} right; 16-bit scans agree')
+
+
+def case_scanlicense(tmp):
+    """Without a license the scan-analysis routines refuse, with a license message."""
+    import numpy as np
+    from pyemaps import XDPImageError, polar_transform
+    try:
+        polar_transform(np.ones((64, 64)), (31.5, 31.5))
+        print('RESULT FAIL polar_transform ran without a license')
+    except XDPImageError as e:
+        if 'license' in str(e).lower():
+            print('RESULT PASS without a license, polar_transform raises XDPImageError: '
+                  f'{str(e)[:60]}...')
+        else:
+            print(f'RESULT FAIL the error does not mention the license: {e}')
+
+
 def run_child(*args):
     p = subprocess.run([sys.executable, str(Path(__file__).resolve()), '--case', *args],
                        capture_output=True, text=True, cwd=HERE)
@@ -872,6 +1074,28 @@ def check_peak_snr():
     return [('peak search min_snr', ok, line[7:] if line else child_failure(code, err))]
 
 
+def check_scananalysis():
+    import tempfile
+    results = []
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        code, out, err = run_child('scananalysis', tmp)
+    line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
+    ok = code == 0 and line is not None and line.startswith('RESULT PASS')
+    results.append(('scan analysis', ok, line[7:] if line else child_failure(code, err)))
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        empty = os.path.join(tmp, 'nolicense')
+        os.makedirs(empty)
+        env = dict(os.environ, LOCALAPPDATA=empty)
+        p = subprocess.run([sys.executable, str(Path(__file__).resolve()), '--case',
+                            'scanlicense', tmp], capture_output=True, text=True, cwd=HERE,
+                           env=env)
+    line = next((l for l in p.stdout.splitlines() if l.startswith('RESULT')), None)
+    ok = p.returncode == 0 and line is not None and line.startswith('RESULT PASS')
+    results.append(('scan analysis without a license', ok,
+                    line[7:] if line else child_failure(p.returncode, p.stderr)))
+    return results
+
+
 def summary_line(lines, key):
     return next((l.strip() for l in lines if key in l), '')
 
@@ -899,6 +1123,7 @@ def main():
         results += check_files()
         results += check_rowcol()
         results += check_peak_snr()
+        results += check_scananalysis()
     else:
         ref = None
 
@@ -961,5 +1186,9 @@ if __name__ == '__main__':
             case_peaksnr()
         elif kind == 'rmaxreach':
             case_rmaxreach(*rest)
+        elif kind == 'scananalysis':
+            case_scananalysis(*rest)
+        elif kind == 'scanlicense':
+            case_scanlicense(*rest)
         sys.exit(0)
     sys.exit(main())
