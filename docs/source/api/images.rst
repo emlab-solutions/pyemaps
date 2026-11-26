@@ -18,3 +18,9 @@ Orientation maps
 .. automodule:: pyemaps.orientmap
    :members: OrientationMap, euler_from_matrix, matrix_from_euler, OM_INDEXED, OM_FEW_PEAKS,
              OM_FAILED, OM_NOT_RUN
+
+Phase maps
+----------
+
+.. automodule:: pyemaps.phasemap
+   :members: PhaseMap, PM_NONE
