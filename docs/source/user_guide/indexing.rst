@@ -302,7 +302,10 @@ pattern of 200 x 200 to 256 x 256 pixels, so a 64 x 64 scan takes about 2 minute
 patterns and databases take longer. Read part of a large scan with *scan_roi*. Pressing Ctrl+C stops the run and returns the patterns done so far.
 
 The sample *al_orientmap.py* shows a whole run on a synthetic scan: four Aluminium grains of
-known orientation, with counting noise. It maps the scan and compares the map with the truth.
+known orientation, with counting noise. Its Aluminium is a refined crystal structure from the
+`Crystallography Open Database <https://www.crystallography.net>`_ (COD entry 4004108, public
+domain), in a CIF file that comes with the sample. It maps the scan and compares the map with
+the truth.
 Most patterns come out within 1 degree of their true orientation; the few the map can't index
 reliably are black. The notebook :doc:`../notebooks/al_orientmap` walks through the same run
 step by step, with the choice of settings and how to read the map. It's shown here with its

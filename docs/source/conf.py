@@ -40,7 +40,7 @@ import re
 _nb_src = os.path.join(os.path.dirname(__file__), '..', '..', 'notebooks')
 _nb_dst = os.path.join(os.path.dirname(__file__), 'notebooks')
 _nb_shown = ('adf.ipynb', 'al_cu_phasemap.ipynb', 'al_ediom.ipynb', 'al_orientmap.ipynb',
-             'probe.ipynb')
+             'probe.ipynb', 'si_multislice.ipynb')
 _nb_github = 'https://github.com/emlab-solutions/pyemaps/blob/main/notebooks/'
 
 
