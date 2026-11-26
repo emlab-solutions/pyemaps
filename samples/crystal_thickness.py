@@ -17,7 +17,9 @@ diffraction pattern change with the thickness. The multislice method follows the
 the crystal slice by slice.
 
 This sample uses pyEMAPS' Probe class (a licensed feature: it needs an active pyEMAPS license)
-for silicon along [110]:
+for silicon along [110]. The silicon is a refined crystal structure from the Crystallography
+Open Database (COD entry 2102763; Wu et al., Acta Cryst. B 63, 2007), with its thermal factor,
+read from the CIF file next to this sample:
 
 1. the HREM images of its exit waves at 20, 100 and 300 A, with a corrected 200 kV objective
    lens (Cs -13 um, defocus +7 nm), from one pass through the crystal (crystal_exit_wave);
@@ -31,12 +33,18 @@ Run it with:
 
     python crystal_thickness.py
 """
+import os
+
 import matplotlib.pyplot as plt
 import numpy as np
 
 from pyemaps import Crystal, Probe
 
-SILICON = Crystal.from_builtin('Silicon')
+# silicon from the Crystallography Open Database (https://www.crystallography.net, public
+# domain): COD 2102763, a = 5.42712 A, Uiso = 0.0072 A^2
+SILICON = Crystal.from_cif(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                        'Si_COD_2102763.cif'))
+SILICON.name = 'Silicon'            # a CIF names it after its COD entry
 ZONE = (1, 1, 0)
 
 

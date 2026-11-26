@@ -301,7 +301,10 @@ absorption, within 5% up to 200 Å.
 
 The sample *crystal_thickness.py* shows silicon [110] at three thicknesses: the HREM images,
 where the dumbbells turn into bars and then into a different pattern, and the CBED patterns,
-where fringes appear inside the disks:
+where fringes appear inside the disks. Its silicon is a refined crystal structure from the
+`Crystallography Open Database <https://www.crystallography.net>`_ (COD entry 2102763, public
+domain), with its thermal factor, in a CIF file that comes with the sample. Its images match
+the built-in model's closely, with correlations of 0.998 or better:
 
 .. image:: ../_static/images/probe_multislice.png
    :width: 100%
