@@ -182,6 +182,7 @@ setup(name                              ="pyemaps",
                                            'pyemaps.picreader',
                                            'pyemaps.cifreader',
                                            'pyemaps.orientmap',
+                                           'pyemaps.phasemap',
                                            'pyemaps.probe'],
 
       packages                         = ['pyemaps.diffract', 

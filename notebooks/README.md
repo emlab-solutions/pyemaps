@@ -16,13 +16,14 @@ or use them in class.
 | [powder.ipynb](powder.ipynb) | `powder.py` | Electron powder diffraction of Silicon and Diamond: indexing the peaks, peak shape, high voltage and absorption |
 | [al_ediom.ipynb](al_ediom.ipynb) | `al_dpgen.py`, `al_ediom.py` | Indexing an experimental Aluminium diffraction pattern against a simulated database, and checking the result. Licensed |
 | [al_orientmap.ipynb](al_orientmap.ipynb) | `al_orientmap.py` | Orientation mapping of a synthetic 4D-STEM scan of Aluminium grains: indexing settings for scans, reading the map, and comparing it with the true orientations. Licensed; experimental |
+| [al_cu_phasemap.ipynb](al_cu_phasemap.ipynb) | `al_cu_phasemap.py` | Phase mapping of a synthetic 4D-STEM scan of aluminium and copper grains: why indexing alone can't tell similar phases apart, the spacing score, confidence, and comparing the map with the true phases. Licensed; experimental |
 | [adf.ipynb](adf.ipynb) | `adf.py`, `convert_image.py` | 4D-STEM virtual detectors: bright field, dark field, annular dark field and masked images. Licensed; downloads a 472 MB test scan |
 | [probe.ipynb](probe.ipynb) | `ronchigram.py`, `stem_probe.py`, `ctf.py`, `hrem.py`, `crystal_imaging.py` | What a lens with aberrations does: Ronchigrams, STEM probes and their size, the contrast transfer function and its envelopes, HREM images with their Thon rings, and the projected potential of a crystal |
 | [si_multislice.ipynb](si_multislice.ipynb) | `crystal_thickness.py` | Thick crystals by the multislice method: the projection against the multislice, slice thickness and pixel size, thickness fringes checked against Bloch waves, and HREM and CBED thickness series of Silicon. Licensed |
 
 GitHub shows each notebook with its results, so you can read it without installing anything.
 
-The 4D-STEM notebooks, `al_ediom`, `al_orientmap` and `adf`, and the multislice notebook, `si_multislice`, need an activated pyEMAPS license. `pyemaps -l trial`
+The 4D-STEM notebooks, `al_ediom`, `al_orientmap`, `al_cu_phasemap` and `adf`, and the multislice notebook, `si_multislice`, need an activated pyEMAPS license. `pyemaps -l trial`
 activates a free 7-day trial; for a full license, contact support@emlabsoftware.com.
 
 ## Running them

@@ -16,8 +16,8 @@ pyEMAPS also ships with Jupyter notebooks that walk through the samples step by 
 copies both. Files already in those folders aren't overwritten, so copying again keeps your
 changes. To read them with their results, without running anything, see the
 `notebooks folder <https://github.com/emlab-solutions/pyemaps/tree/main/notebooks>`_ on GitHub.
-The two 4D-STEM indexing notebooks are also shown here with their results:
-:doc:`notebooks/al_ediom` and :doc:`notebooks/al_orientmap`.
+The 4D-STEM indexing notebooks are also shown here with their results:
+:doc:`notebooks/al_ediom`, :doc:`notebooks/al_orientmap` and :doc:`notebooks/al_cu_phasemap`.
 
 .. container:: pe-gallery
 
@@ -116,6 +116,15 @@ The two 4D-STEM indexing notebooks are also shown here with their results:
 
          Guide: :doc:`user_guide/indexing`.
          Notebook: :doc:`notebooks/al_orientmap`
+
+      .. grid-item-card:: al_cu_phasemap.py :bdg-info:`Licensed`
+         :img-top: _static/images/al_cu_phasemap.png
+
+         A phase map of a synthetic 4D-STEM scan of aluminium and copper grains, compared with
+         the true phases. Experimental.
+
+         Guide: :doc:`user_guide/indexing`.
+         Notebook: :doc:`notebooks/al_cu_phasemap`
 
 More samples
 ------------
