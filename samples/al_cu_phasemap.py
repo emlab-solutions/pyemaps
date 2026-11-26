@@ -12,9 +12,11 @@
 """Phase map of a synthetic 4D-STEM scan of aluminium and copper grains.
 
 This sample uses pyEMAPS' dpgen and stem4d modules. Aluminium and copper are both FCC, with
-lattice constants 4.05 and 3.61 A, so their spot patterns look alike: the same angles, 12%
-apart in scale. The sample makes a scan of grains of both, at known orientations, maps which
-phase each pattern belongs to with StackImage.mapPhases, and compares the map with the truth:
+lattice constants 4.049 and 3.614 A, so their spot patterns look alike: the same angles, 12%
+apart in scale. Their crystal structures are refined structures from the Crystallography Open
+Database (COD), read from the CIF files next to this sample. The sample makes a scan of grains
+of both, at known orientations, maps which phase each pattern belongs to with
+StackImage.mapPhases, and compares the map with the truth:
 
 1. the true phases and the mapped ones (grey: ambiguous);
 2. the confidence of each pattern's phase;
@@ -38,7 +40,11 @@ import numpy as np
 
 from pyemaps import EMC, Crystal, StackImage, XDPImageError, write_im3
 
-PHASES = {'Aluminium': ('Aluminium', 4.0493), 'Copper': ('Copper_FCC', 3.6149)}
+HERE = os.path.dirname(os.path.abspath(__file__))
+# The phases' crystal structures, with their thermal factors: refined structures from the
+# Crystallography Open Database (https://www.crystallography.net, public domain).
+PHASES = {'Aluminium': 'Al_COD_4004108.cif',   # COD 4004108: Didier et al. (2020)
+          'Copper': 'Cu_COD_7101269.cif'}      # COD 7101269: Clarke et al., Chem. Commun. (2006)
 SIZE = 200                  # pattern size, pixels
 CENTER = (99.5, 99.5)       # pattern center (column, row), pixels
 CC = 29.0                   # camera constant, pixels per 1/A
@@ -84,8 +90,19 @@ def spot_pattern(U, a, rng):
     return rng.poisson(img * 400 + 5).astype(np.float32)
 
 
-def make_scan(rng):
-    """The scan's patterns and the true phase of each, as an index into PHASES."""
+def load_phases():
+    """The phases' crystals, read from their CIF files and named after the phases:
+    {name: Crystal}."""
+    crystals = {}
+    for name, f in PHASES.items():
+        crystals[name] = Crystal.from_cif(os.path.join(HERE, f))
+        crystals[name].name = name          # a CIF names it after its COD entry
+    return crystals
+
+
+def make_scan(rng, crystals):
+    """The scan's patterns and the true phase of each, as an index into PHASES. The patterns
+    use each phase's lattice constant from *crystals* (load_phases)."""
     rows, cols = np.mgrid[0:SCAN[0], 0:SCAN[1]]
     seeds = np.array([g[3] for g in GRAINS])
     grain = np.argmin(np.hypot(rows[..., None] - seeds[:, 0], cols[..., None] - seeds[:, 1]),
@@ -96,7 +113,8 @@ def make_scan(rng):
     for r in range(SCAN[0]):
         for c in range(SCAN[1]):
             name, zone, angle, _ = GRAINS[grain[r, c]]
-            patterns.append(spot_pattern(zone_orientation(zone, angle), PHASES[name][1], rng))
+            a = float(crystals[name].cell.a)
+            patterns.append(spot_pattern(zone_orientation(zone, angle), a, rng))
     return np.array(patterns), truth
 
 
@@ -135,14 +153,15 @@ def map_scan(seed=1):
 
     :return: the phase map, or None on failure.
     """
+    crystals = load_phases()
     databases = {}
-    for name, (builtin, _) in PHASES.items():
-        ret, databases[name] = Crystal.from_builtin(builtin).generateDPDB(
+    for name, crystal in crystals.items():
+        ret, databases[name] = crystal.generateDPDB(
             emc=EMC(zone=(0, 0, 1)), xa=(2, 0, 0), res=200)
         if ret != 0:
             print(f'Failed to generate the {name} diffraction pattern database')
             return None
-    patterns, truth = make_scan(np.random.default_rng(seed))
+    patterns, truth = make_scan(np.random.default_rng(seed), crystals)
     with tempfile.TemporaryDirectory() as tmp:
         scan_file = os.path.join(tmp, 'al_cu_scan.im3')
         write_im3(scan_file, patterns)          # the scan, one pattern per stack
