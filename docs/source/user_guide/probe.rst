@@ -222,20 +222,33 @@ atomic potential, added up. Pass it wherever a potential goes: to
    lens.show(potential, 'potential')
 
 The unit cell is filled from the space group by
-:py:meth:`~pyemaps.crystals.Crystal.generateMxtal`. Each atom's potential comes from its
-electron scattering factor, as emaps' structure factors have it, with its Debye–Waller factor
-and occupancy. The beam is along the zone axis. *x_axis* sets the direction along the map's
-columns; by default, it's the shortest lattice direction perpendicular to the zone axis.
-*shift* moves the crystal on the map.
+:py:meth:`~pyemaps.crystals.Crystal.generateMxtal`, and emaps computes the potential. Each
+atom's potential comes from its electron scattering factor, as emaps' structure factors have
+it, with its Debye–Waller factor and occupancy. The beam is along the zone axis. *x_axis* sets
+the direction along the map's columns; by default, it's the shortest lattice direction
+perpendicular to the zone axis. *shift* moves the crystal on the map.
 
 Like the random potential, it's the whole slab projected onto one plane, so it suits thin
-crystals: the electrons don't propagate through the thickness, as they do in a multislice or
-Bloch-wave calculation.
+crystals: the electrons don't propagate through the thickness. For thicker crystals, see
+`Thick crystals`_ below.
 
-The map repeats itself at its edges, so choose *size* as a whole number of the crystal's
-repeats along x and y. Otherwise the crystal has a seam at the map's edges, away from the
-probe at its center. Along [110] in silicon, with [001] across, the repeats are *a* = 5.43 Å
-and *a*/√2 = 3.84 Å; 12 *a* is 17 of the second within 0.2%.
+**Maps without a seam.** The map repeats itself at its edges. Unless its *size* is a whole
+number of the crystal's repeats across and down, the crystal has a seam there, away from the
+probe at the map's center. :py:meth:`~pyemaps.probe.Probe.crystal_repeats` gives those
+repeats, centering included, and the map sizes that hold whole numbers of them.
+``fit=True`` then strains the crystal very slightly in the plane of the map, so that it
+repeats exactly at the map's edges:
+
+.. code-block:: python
+
+   lens.crystal_repeats(si, zone=(1, 1, 0), max_size=70)
+   # {'x_axis': (0, 0, 1), 'repeats': ((0.0, 3.8401), (-5.4307, 0.0)),
+   #  'period': 3.8401, 'sizes': [(65.168, 0.00173), (65.281, 0.00173)]}
+   potential = lens.crystal_potential(si, zone=(1, 1, 0), thickness=30, fit=True)
+
+Along [110] in silicon, with [001] across, the repeats are *a* = 5.43 Å and *a*/√2 = 3.84 Å;
+12 *a* = 65.17 Å is 17 of the second within 0.17%, which ``fit=True`` removes. A strain above
+1% gives a warning: choose a size from the list instead.
 
 The sample *crystal_imaging.py* shows silicon's [110] dumbbells, two columns 1.36 Å apart, in
 HREM and STEM images with an uncorrected and a corrected lens, and the corrected probe's
@@ -244,6 +257,53 @@ dumbbells. At the Scherzer defocus the columns are dark. With the corrected lens
 they're bright:
 
 .. image:: ../_static/images/probe_crystal.png
+   :width: 100%
+
+Thick crystals
+--------------
+
+As a crystal gets thicker, the electron wave is scattered again and again on its way through
+it, and the projected potential no longer tells the whole story. The multislice method follows
+the wave through the crystal slice by slice (J. M. Cowley and A. F. Moodie; E. J. Kirkland,
+*Advanced Computing in Electron Microscopy*). It's a licensed feature: it needs an active
+pyEMAPS license, and raises :py:class:`~pyemaps.errors.LicenseError` without one. Run
+``pyemaps -l trial`` for a 7-day trial license.
+
+- :py:meth:`~pyemaps.probe.Probe.crystal_exit_wave`: the exit wave under plane-wave
+  illumination; pass it to :py:meth:`~pyemaps.probe.Probe.hrem` for the HREM image.
+- :py:meth:`~pyemaps.probe.Probe.crystal_ronchigram`: the probe's Ronchigram through the
+  crystal; with a small aperture and the probe focused, a convergent-beam diffraction (CBED)
+  pattern.
+
+.. code-block:: python
+
+   tem = Probe(kv=200, cs=-0.013, defocus=7.0, aperture=40.0, cc=1.5, energy_spread=0.7,
+               semi_angle=0.2, size=12 * a, sampling=512)
+   waves = tem.crystal_exit_wave(si, zone=(1, 1, 0), thickness=[20, 100, 300], fit=True)
+   images = [tem.hrem(wave) for wave in waves]
+
+A list of thicknesses gives the waves at each from one pass through the crystal. The crystal
+repeats along the zone axis (``crystal_repeats()['period']``), so the slices of one repeat,
+about *slice_thickness* = 2 Å each, serve for every repeat, and each thickness is rounded to a
+whole number of slices. emaps computes everything: each slice's potential, from its atoms,
+its transmission function, and the propagation between slices.
+
+**Sampling.** The slices are band-limited to 2/3 of the map's largest spatial frequency,
+``sampling / (2 * size)``, so their products don't alias. What the crystal scatters beyond
+that is lost, and the wave's total intensity drops a little. Thick crystals need fine
+pixels: with 0.13 Å pixels (512 over 65 Å), 200 Å of silicon keeps 99% of the intensity;
+with 0.25 Å, 93%. A larger map makes finer angles in a CBED pattern or Ronchigram, since each
+pixel there is ``1 / size``.
+
+The beam is along the zone axis, and there is no absorption or thermal diffuse scattering. For
+silicon [001], the beam intensities agree with emaps' Bloch-wave calculation, which includes
+absorption, within 5% up to 200 Å.
+
+The sample *crystal_thickness.py* shows silicon [110] at three thicknesses: the HREM images,
+where the dumbbells turn into bars and then into a different pattern, and the CBED patterns,
+where fringes appear inside the disks:
+
+.. image:: ../_static/images/probe_multislice.png
    :width: 100%
 
 The calculations come from the probe program by J. M. Zuo, now part of emaps.
