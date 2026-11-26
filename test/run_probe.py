@@ -509,7 +509,18 @@ def c_multislice():
     # the total intensity is kept, but for what the crystal scatters beyond the band limit
     norm = float(np.mean(np.abs(both[1]) ** 2))
     assert 0.98 < norm <= 1.0 + 1e-6, f'mean intensity {norm:.4f} at 200 A'
-    lines.append(f'thickness lists = single runs; mean intensity {norm:.4f} at 200 A')
+    # and so do long lists, for both methods: emaps once passed the unused output array with
+    # one element per thickness declared but one allocated, so a long list overran the stack
+    # and returned zero waves
+    q = Probe(kv=200, aperture=3.0, size=4 * a, sampling=128)
+    many = np.arange(10, 510, 10)
+    for method in (q.crystal_exit_wave, q.crystal_ronchigram):
+        out = method(si, zone=(0, 0, 1), thickness=many, x_axis=(1, 0, 0))
+        for k in (0, 24, 49):
+            alone = method(si, zone=(0, 0, 1), thickness=many[k], x_axis=(1, 0, 0))
+            assert np.array_equal(out[k], alone), \
+                f'{method.__name__}: {many[k]} A of a list of 50 differs from a single run'
+    lines.append(f'thickness lists (2 and 50) = single runs; mean intensity {norm:.4f} at 200 A')
 
     # Bloch waves (emaps): beam intensities of Si [001] at the exact zone axis. Bloch includes
     # absorption and fewer beams, so they agree within about 10%

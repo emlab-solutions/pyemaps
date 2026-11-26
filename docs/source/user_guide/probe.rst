@@ -269,6 +269,17 @@ the wave through the crystal slice by slice (J. M. Cowley and A. F. Moodie; E. J
 pyEMAPS license, and raises :py:class:`~pyemaps.errors.LicenseError` without one. Run
 ``pyemaps -l trial`` for a 7-day trial license.
 
+.. seealso::
+
+   The notebook :doc:`../notebooks/si_multislice` follows silicon through the thickness step by
+   step: the projection against the multislice, the slice thickness and pixel size, thickness
+   fringes checked against Bloch waves, and HREM and CBED thickness series.
+
+.. toctree::
+   :hidden:
+
+   ../notebooks/si_multislice
+
 - :py:meth:`~pyemaps.probe.Probe.crystal_exit_wave`: the exit wave under plane-wave
   illumination; pass it to :py:meth:`~pyemaps.probe.Probe.hrem` for the HREM image.
 - :py:meth:`~pyemaps.probe.Probe.crystal_ronchigram`: the probe's Ronchigram through the
