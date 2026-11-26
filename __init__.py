@@ -225,6 +225,6 @@ if PKG_TYPE != TYPE_FREE:
         # python not allowing numeric starting letter for variables such as 4dstem  
         from emaps.stem4d import send, ediom
         try:
-            from .stackimg import StackImage
+            from .stackimg import StackImage, polar_transform
         except ImportError as e:
             print(f'Error importing image module: {e}. The 4D STEM module not available')

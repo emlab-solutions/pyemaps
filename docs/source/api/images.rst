@@ -2,7 +2,7 @@ Images (4D-STEM)
 ================
 
 .. automodule:: pyemaps.stackimg
-   :members: StackImage
+   :members: StackImage, polar_transform
    :undoc-members:
    :show-inheritance:
 

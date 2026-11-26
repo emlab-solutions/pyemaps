@@ -457,6 +457,335 @@ def case_peaksnr():
               f'peaks; without it, {len(loose)} peaks')
 
 
+def scan_groups(rng, rows=12, cols=12, size=128):
+    """
+    A synthetic scan of three groups of patterns, in vertical bands of the scan: square
+    lattices at 0 and 30 degrees and a hexagonal one. Each pattern has its own brightness,
+    background and counting noise. Returns (patterns, truth labels 0-2, flat).
+    """
+    import numpy as np
+    yy, xx = np.mgrid[0:size, 0:size].astype(float)
+    c = (size - 1) / 2
+
+    def lattice(a, angle, gamma):
+        th, g = np.radians(angle), np.radians(gamma)
+        u = a * np.array([np.cos(th), np.sin(th)])
+        v = a * np.array([np.cos(th + g), np.sin(th + g)])
+        img = 6.0 * np.exp(-((xx - c) ** 2 + (yy - c) ** 2) / (2 * 3.0 ** 2))
+        for h in range(-6, 7):
+            for k in range(-6, 7):
+                if h == 0 and k == 0:
+                    continue
+                x, y = c + h * u[0] + k * v[0], c + h * u[1] + k * v[1]
+                if abs(x - c) < c - 4 and abs(y - c) < c - 4:
+                    img += np.exp(-((xx - x) ** 2 + (yy - y) ** 2) / (2 * 2.0 ** 2))
+        return img
+
+    kinds = [lattice(14, 0, 90), lattice(14, 30, 90), lattice(15, 10, 60)]
+    truth = np.repeat(np.arange(cols) * 3 // cols, 1)[np.newaxis].repeat(rows, 0)
+    pats = []
+    for g in truth.ravel():
+        img = kinds[g] * rng.uniform(150, 300) + rng.uniform(5, 50)
+        pats.append(rng.poisson(img).astype(np.float32))
+    return np.array(pats), truth, (rows, cols)
+
+
+def masked_pearson(a, b, m):
+    import numpy as np
+    x, y = a[m].astype(float), b[m].astype(float)
+    x, y = x - x.mean(), y - y.mean()
+    d = np.sqrt((x * x).sum() * (y * y).sum())
+    return 0.0 if d == 0 else float((x * y).sum() / d)
+
+
+def bilinear_polar(img, ccol, crow, dtheta):
+    """The polar transform in numpy, as the docs describe it."""
+    import numpy as np
+    rows, cols = img.shape
+    nr = int(np.floor(min(ccol, crow, cols - 1 - ccol, rows - 1 - crow))) + 1
+    nt = int(np.floor(360.0 / dtheta + 1e-6))
+    r = np.arange(nr)[:, None]
+    th = np.radians(np.arange(nt) * dtheta)[None, :]
+    x, y = ccol + r * np.cos(th), crow - r * np.sin(th)
+    i = np.clip(np.floor(x).astype(int), 0, cols - 2)
+    j = np.clip(np.floor(y).astype(int), 0, rows - 2)
+    du, dv = x - i, y - j
+    a = img.astype(float)
+    return ((1 - dv) * (1 - du) * a[j, i] + dv * (1 - du) * a[j + 1, i] + dv * du * a[j + 1, i + 1]
+            + (1 - dv) * du * a[j, i + 1])
+
+
+def case_scananalysis(tmp):
+    """
+    The scan-analysis routines (ports of the DigitalMicrograph plug-in's functions in
+    stem4d's StackDP.cpp) on a synthetic scan of three known groups, against numpy: averages,
+    averages by label, the correlation map, similar-pattern groups, classification and polar
+    transforms, for float and 16-bit scans.
+    """
+    import numpy as np
+    from io import StringIO
+    from contextlib import redirect_stdout
+    from pyemaps import StackImage, write_im3, polar_transform
+
+    rng = np.random.default_rng(7)
+    pats, truth, scan = scan_groups(rng)
+    npat, size = len(pats), pats.shape[1]
+    yy, xx = np.mgrid[0:size, 0:size]
+    c = (size - 1) / 2
+    mask = np.hypot(xx - c, yy - c) > 8                 # leave the direct beam out
+    bad = []
+    out = StringIO()
+    with redirect_stdout(out):
+        f32 = os.path.join(tmp, 'groups.im3')
+        write_im3(f32, pats)
+        si = StackImage(f32)
+
+        # the average, and averages by label
+        avg = si.averagePattern()
+        d = np.abs(avg - pats.astype(float).mean(0)).max() / pats.max()
+        if d > 1e-6:
+            bad.append(f'averagePattern differs from numpy by {d:.2g}')
+        lab = truth.copy()
+        lab[0, 0] = -1                                  # left out
+        lab[lab == 2] = 7                               # labels needn't be consecutive
+        means, values, counts = si.averageByLabel(lab)
+        flat = lab.ravel()
+        if list(values) != [0, 1, 7] or list(counts) != [np.sum(flat == v) for v in (0, 1, 7)]:
+            bad.append(f'averageByLabel labels {list(values)}, counts {list(counts)}')
+        else:
+            for m, v in zip(means, values):
+                d = np.abs(m - pats[flat == v].astype(float).mean(0)).max() / pats.max()
+                if d > 1e-6:
+                    bad.append(f'averageByLabel mean of {v} differs from numpy by {d:.2g}')
+
+        # the correlation map: a Pearson coefficient over the mask, so a constant added to the
+        # template changes nothing
+        k0 = 5
+        cmap = si.correlationMap(pats[k0] + 1000.0, mask=mask, scan_shape=scan)
+        ref = np.array([masked_pearson(p, pats[k0], mask) for p in pats]).reshape(scan)
+        d = np.abs(cmap - ref).max()
+        if cmap.shape != scan or d > 1e-5:
+            bad.append(f'correlationMap {cmap.shape} differs from numpy by {d:.2g}')
+        if abs(cmap.flat[k0] - 1) > 1e-5:
+            bad.append(f'a pattern correlates {cmap.flat[k0]:.6f} with itself plus a constant')
+
+        # similar-pattern groups: each group must hold one kind of pattern
+        g1, c1 = si.findSimilar(threshold=0.5, mask=mask, seed=3, scan_shape=scan)
+        g2, _ = si.findSimilar(threshold=0.5, mask=mask, seed=3, scan_shape=scan)
+        g3, _ = si.findSimilar(threshold=0.5, mask=mask, seed=11, scan_shape=scan)
+        if not np.array_equal(g1, g2):
+            bad.append('findSimilar gave different groups for the same seed')
+        for name, g in (('seed 3', g1), ('seed 11', g3)):
+            impure = [int(v) for v in np.unique(g) if len(np.unique(truth[g == v])) > 1]
+            grouped = np.mean([np.sum(g == v) > 1 for v in g.ravel()])
+            if impure:
+                bad.append(f'findSimilar {name}: groups {impure} mix kinds of pattern')
+            if grouped < 0.9:
+                bad.append(f'findSimilar {name}: only {grouped:.0%} of the patterns grouped')
+        seeds = g1.ravel() == np.arange(npat)
+        if not np.allclose(c1.ravel()[seeds & (np.bincount(g1.ravel(), minlength=npat) > 1)], 1):
+            bad.append('a seed does not correlate 1 with itself')
+
+        # classification by the averages of the true groups
+        means, _, _ = si.averageByLabel(truth)
+        cl, cc = si.classifyPatterns(means, mask=mask, scan_shape=scan)
+        if not np.array_equal(cl, truth):
+            bad.append(f'classifyPatterns got {np.sum(cl != truth)} patterns wrong')
+        ref = np.array([[masked_pearson(p, m, mask) for m in means] for p in pats])
+        d = np.abs(cc.ravel() - ref.max(1)).max()
+        if d > 1e-5:
+            bad.append(f'classifyPatterns correlations differ from numpy by {d:.2g}')
+
+        # polar transforms: numpy's bilinear interpolation, the shape to the nearest edge, the
+        # single-pattern call, and a ring pattern turning into constant rows
+        ccol, crow, dth = 60.3, 70.7, 2.0
+        pol = si.polarTransform((ccol, crow), dth)
+        one = si.polarTransform((ccol, crow), dth, pattern=9)
+        ref = bilinear_polar(pats[9], ccol, crow, dth)
+        nr = int(np.floor(min(ccol, crow, size - 1 - ccol, size - 1 - crow))) + 1
+        if pol.shape != (npat, nr, 180) or one.shape != ref.shape:
+            bad.append(f'polar shapes {pol.shape}, {one.shape}; expected ({npat}, {nr}, 180)')
+        else:
+            d = np.abs(one - ref).max() / ref.max()
+            if d > 1e-5 or not np.array_equal(pol[9], one):
+                bad.append(f'polarTransform differs from numpy by {d:.2g}')
+            single = polar_transform(pats[9], (ccol, crow), dth)
+            if not np.allclose(single, one, rtol=0, atol=1e-3):
+                bad.append('polar_transform differs from polarTransform')
+        ring = np.cos(np.hypot(xx - 63.5, yy - 63.5) / 3.0)
+        rp = polar_transform(ring, (63.5, 63.5), 1.0)
+        spread = rp[1:].std(axis=1).max()
+        if spread > 0.05:
+            bad.append(f'a ring pattern varies by {spread:.3f} along its rows')
+
+        # a 16-bit scan gives the same results
+        i16 = os.path.join(tmp, 'groups16.im3')
+        write_im3(i16, pats.astype(np.int16))
+        si16 = StackImage(i16)
+        d1 = np.abs(si16.averagePattern() - avg).max() / pats.max()
+        d2 = np.abs(si16.correlationMap(pats[k0], mask=mask, scan_shape=scan) - cmap).max()
+        if d1 > 1e-6 or d2 > 1e-5:
+            bad.append(f'the 16-bit scan differs: average {d1:.2g}, correlation {d2:.2g}')
+
+        # wrong sizes are refused
+        for what, call in (('template', lambda: si.correlationMap(pats[0][:-1])),
+                           ('centre', lambda: si.polarTransform((size + 5, 10))),
+                           ('labels', lambda: si.averageByLabel(truth.ravel()[:-1]))):
+            try:
+                call()
+                bad.append(f'a wrong {what} was accepted')
+            except ValueError:
+                pass
+    if bad:
+        print(f'RESULT FAIL {bad}')
+    else:
+        print(f'RESULT PASS {npat} patterns of 3 kinds: averages, correlations and polar '
+              f'transforms match numpy; findSimilar groups are pure ({len(np.unique(g1))} '
+              f'groups), classifyPatterns gets all {npat} right; 16-bit scans agree')
+
+
+def write_im3_double(path, pats):
+    """A stack of doubles in pyEMAPS' small-header format (type 14), which write_im3 doesn't
+    write."""
+    import numpy as np
+    n, rows, cols = pats.shape
+    with open(path, 'wb') as f:
+        f.write(np.array([cols, rows, n, 14], dtype='<i2').tobytes())
+        f.write(np.ascontiguousarray(pats, dtype='<f8').tobytes())
+
+
+def scan_results(si, scan, mask, pats):
+    """Every scan-analysis result for the scan_groups scan, by name."""
+    import numpy as np
+    from pyemaps import polar_transform
+    truth = np.repeat(np.arange(scan[1]) * 3 // scan[1], 1)[np.newaxis].repeat(scan[0], 0)
+    r = {'average': si.averagePattern()}
+    means, _, _ = si.averageByLabel(truth)
+    r['by_label'] = means
+    r['correlation'] = si.correlationMap(pats[5], mask=mask, scan_shape=scan)
+    r['groups'], r['group_corr'] = si.findSimilar(threshold=0.5, mask=mask, seed=3,
+                                                  scan_shape=scan)
+    r['classes'], r['class_corr'] = si.classifyPatterns(means, mask=mask, scan_shape=scan)
+    r['polar'] = si.polarTransform((60.3, 70.7), 2.0)
+    r['polar_one'] = polar_transform(pats[9], (60.3, 70.7), 2.0)
+    return r
+
+
+def group_problems(name, g, truth, rows_only=False):
+    """What's wrong with findSimilar's groups g: mixed kinds of pattern, a label that isn't a
+    seed of its own group, or (rows_only) a group spanning scan rows."""
+    import numpy as np
+    bad = []
+    flat = g.ravel()
+    if not np.array_equal(flat[flat], flat):
+        bad.append(f'{name}: a group is named after a pattern outside it')
+    impure = [int(v) for v in np.unique(g) if len(np.unique(truth[g == v])) > 1]
+    if impure:
+        bad.append(f'{name}: groups {impure[:5]} mix kinds of pattern')
+    if rows_only:
+        spread = [int(v) for v in np.unique(g) if len(np.unique(np.nonzero(g == v)[0])) > 1]
+        if spread:
+            bad.append(f'{name}: groups {spread[:5]} span scan rows')
+    return bad
+
+
+def case_scanmore(tmp):
+    """
+    More scan-analysis checks: a scan of doubles gives exactly the results of the same scan in
+    floats, and findSimilar's reach and fraction behave as documented.
+    """
+    import numpy as np
+    from io import StringIO
+    from contextlib import redirect_stdout
+    from pyemaps import StackImage, write_im3
+
+    pats, truth, scan = scan_groups(np.random.default_rng(7))
+    size = pats.shape[1]
+    yy, xx = np.mgrid[0:size, 0:size]
+    mask = np.hypot(xx - (size - 1) / 2, yy - (size - 1) / 2) > 8
+    bad = []
+    with redirect_stdout(StringIO()):
+        f32, f64 = os.path.join(tmp, 'groups.im3'), os.path.join(tmp, 'groups64.im3')
+        write_im3(f32, pats)
+        write_im3_double(f64, pats)
+        si, si64 = StackImage(f32), StackImage(f64)
+        r32 = scan_results(si, scan, mask, pats)
+        r64 = scan_results(si64, scan, mask, pats)
+        from emaps.stem4d import stem4d
+        dtype = stem4d.cvar.ximg.h.type
+        differ = [k for k in r32 if not np.array_equal(r32[k], r64[k])]
+        if dtype != 14:
+            bad.append(f'the double scan loaded as type {dtype}, not 14')
+        if differ:
+            bad.append(f'the double scan differs from the float one in {differ}')
+
+        # reach 1: a search stops after two misses, so with the kinds in vertical bands of
+        # the scan, no group reaches past its band in its own scan row
+        default = r32['groups']
+        short, _ = si.findSimilar(threshold=0.5, mask=mask, seed=3, reach=1, scan_shape=scan)
+        bad += group_problems('reach 1', short, truth, rows_only=True)
+        if len(np.unique(short)) <= len(np.unique(default)):
+            bad.append(f'reach 1 gave {len(np.unique(short))} groups, the default '
+                       f'{len(np.unique(default))}: it should split them')
+        # fraction 1: every pattern a group hasn't taken is tried as a seed
+        every, _ = si.findSimilar(threshold=0.5, mask=mask, seed=3, fraction=1.0,
+                                  scan_shape=scan)
+        bad += group_problems('fraction 1', every, truth)
+        bad += group_problems('the default', default, truth)
+        # a threshold no pattern reaches leaves every pattern alone
+        alone, corr = si.findSimilar(threshold=0.9999, mask=mask, seed=3, scan_shape=scan)
+        if not np.array_equal(alone.ravel(), np.arange(alone.size)) or np.any(corr > 1):
+            bad.append('threshold 0.9999 still grouped patterns')
+        for what, kw in (('threshold 0', {'threshold': 0}), ('threshold 1', {'threshold': 1}),
+                         ('fraction 0', {'fraction': 0}), ('reach 0', {'reach': 0})):
+            try:
+                si.findSimilar(mask=mask, scan_shape=scan, **kw)
+                bad.append(f'{what} was accepted')
+            except ValueError:
+                pass
+    if bad:
+        print(f'RESULT FAIL {bad}')
+    else:
+        print(f'RESULT PASS a scan of doubles gives results identical to floats; findSimilar: '
+              f'reach 1 splits the {len(np.unique(default))} groups into '
+              f'{len(np.unique(short))} within scan rows, fraction 1 gives '
+              f'{len(np.unique(every))} pure groups, threshold 0.9999 none; bad settings refused')
+
+
+def case_scanresults(tmp, out):
+    """Every scan-analysis result, saved to *out* (.npz), for the thread-count comparison."""
+    import numpy as np
+    from io import StringIO
+    from contextlib import redirect_stdout
+    from pyemaps import StackImage, write_im3
+
+    pats, _, scan = scan_groups(np.random.default_rng(7))
+    size = pats.shape[1]
+    yy, xx = np.mgrid[0:size, 0:size]
+    mask = np.hypot(xx - (size - 1) / 2, yy - (size - 1) / 2) > 8
+    with redirect_stdout(StringIO()):
+        f = os.path.join(tmp, f'groups_{os.environ.get("OMP_NUM_THREADS", "all")}.im3')
+        write_im3(f, pats)
+        r = scan_results(StackImage(f), scan, mask, pats)
+    np.savez(out, **r)
+    print(f'RESULT PASS {len(r)} results saved')
+
+
+def case_scanlicense(tmp):
+    """Without a license the scan-analysis routines refuse, with a license message."""
+    import numpy as np
+    from pyemaps import XDPImageError, polar_transform
+    try:
+        polar_transform(np.ones((64, 64)), (31.5, 31.5))
+        print('RESULT FAIL polar_transform ran without a license')
+    except XDPImageError as e:
+        if 'license' in str(e).lower():
+            print('RESULT PASS without a license, polar_transform raises XDPImageError: '
+                  f'{str(e)[:60]}...')
+        else:
+            print(f'RESULT FAIL the error does not mention the license: {e}')
+
+
 def run_child(*args):
     p = subprocess.run([sys.executable, str(Path(__file__).resolve()), '--case', *args],
                        capture_output=True, text=True, cwd=HERE)
@@ -987,6 +1316,56 @@ def check_peak_snr():
     return [('peak search min_snr', ok, line[7:] if line else child_failure(code, err))]
 
 
+def check_scananalysis():
+    import tempfile
+    results = []
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        code, out, err = run_child('scananalysis', tmp)
+    line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
+    ok = code == 0 and line is not None and line.startswith('RESULT PASS')
+    results.append(('scan analysis', ok, line[7:] if line else child_failure(code, err)))
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        empty = os.path.join(tmp, 'nolicense')
+        os.makedirs(empty)
+        env = dict(os.environ, LOCALAPPDATA=empty)
+        p = subprocess.run([sys.executable, str(Path(__file__).resolve()), '--case',
+                            'scanlicense', tmp], capture_output=True, text=True, cwd=HERE,
+                           env=env)
+    line = next((l for l in p.stdout.splitlines() if l.startswith('RESULT')), None)
+    ok = p.returncode == 0 and line is not None and line.startswith('RESULT PASS')
+    results.append(('scan analysis without a license', ok,
+                    line[7:] if line else child_failure(p.returncode, p.stderr)))
+
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        code, out, err = run_child('scanmore', tmp)
+    line = next((l for l in out.splitlines() if l.startswith('RESULT')), None)
+    ok = code == 0 and line is not None and line.startswith('RESULT PASS')
+    results.append(('scan analysis: doubles and findSimilar settings', ok,
+                    line[7:] if line else child_failure(code, err)))
+
+    # the results mustn't depend on the number of threads
+    import numpy as np
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        saved, ok = {}, False
+        for n in ('1', '4'):
+            out_file = os.path.join(tmp, f'threads{n}.npz')
+            p = subprocess.run([sys.executable, str(Path(__file__).resolve()), '--case',
+                                'scanresults', tmp, out_file], capture_output=True, text=True,
+                               cwd=HERE, env=dict(os.environ, OMP_NUM_THREADS=n))
+            if p.returncode != 0 or not os.path.exists(out_file):
+                msg = f'{n} threads: {child_failure(p.returncode, p.stderr)}'
+                break
+            with np.load(out_file) as z:
+                saved[n] = {k: z[k] for k in z.files}
+        else:
+            differ = [k for k in saved['1'] if not np.array_equal(saved['1'][k], saved['4'][k])]
+            ok = not differ
+            msg = (f'{len(saved["1"])} results identical with OMP_NUM_THREADS 1 and 4' if ok
+                   else f'1 and 4 threads differ in {differ}')
+    results.append(('scan analysis: thread count', ok, msg))
+    return results
+
+
 def summary_line(lines, key):
     return next((l.strip() for l in lines if key in l), '')
 
@@ -1014,6 +1393,7 @@ def main():
         results += check_files()
         results += check_rowcol()
         results += check_peak_snr()
+        results += check_scananalysis()
     else:
         ref = None
 
@@ -1080,5 +1460,13 @@ if __name__ == '__main__':
             case_peaksnr()
         elif kind == 'rmaxreach':
             case_rmaxreach(*rest)
+        elif kind == 'scananalysis':
+            case_scananalysis(*rest)
+        elif kind == 'scanlicense':
+            case_scanlicense(*rest)
+        elif kind == 'scanmore':
+            case_scanmore(*rest)
+        elif kind == 'scanresults':
+            case_scanresults(*rest)
         sys.exit(0)
     sys.exit(main())
