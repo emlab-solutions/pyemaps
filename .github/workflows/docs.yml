@@ -19,6 +19,7 @@ on:
       - '*.py'
       - 'diffract/**'
       - 'notebooks/adf.ipynb'
+      - 'notebooks/al_cu_phasemap.ipynb'
       - 'notebooks/al_ediom.ipynb'
       - 'notebooks/al_orientmap.ipynb'
       - 'notebooks/probe.ipynb'

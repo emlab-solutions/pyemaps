@@ -8,15 +8,17 @@ and phase come from the database pattern that fits best. This feature requires
 
 .. seealso::
 
-   Two notebooks run these steps end to end, shown here with their plots and output:
-   :doc:`../notebooks/al_ediom` indexes the sample image *al.img*, and
-   :doc:`../notebooks/al_orientmap` maps the orientations of a synthetic scan.
+   Three notebooks run these steps end to end, shown here with their plots and output:
+   :doc:`../notebooks/al_ediom` indexes the sample image *al.img*,
+   :doc:`../notebooks/al_orientmap` maps the orientations of a synthetic scan, and
+   :doc:`../notebooks/al_cu_phasemap` maps the phases of a synthetic two-phase scan.
 
 .. toctree::
    :hidden:
 
    ../notebooks/al_ediom
    ../notebooks/al_orientmap
+   ../notebooks/al_cu_phasemap
 
 First, generate a DP database for the crystal, here Aluminium:
 
@@ -393,7 +395,9 @@ and check the map's ambiguous patterns.
 
 The sample *al_cu_phasemap.py* maps a synthetic scan of five aluminium and copper grains and
 compares the map with the truth: 195 of the 196 patterns are decided, all correctly; the one
-left has no peaks the search could find.
+left has no peaks the search could find. The notebook :doc:`../notebooks/al_cu_phasemap` walks
+through the same run step by step, including why the indexing alone can't tell the two phases
+apart; ``pyemaps -cp notebooks`` copies it to run yourself.
 
 .. image:: ../_static/images/al_cu_phasemap.png
    :width: 100%

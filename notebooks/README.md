@@ -16,6 +16,7 @@ or use them in class.
 | [powder.ipynb](powder.ipynb) | `powder.py` | Electron powder diffraction of Silicon and Diamond: indexing the peaks, peak shape, high voltage and absorption |
 | [al_ediom.ipynb](al_ediom.ipynb) | `al_dpgen.py`, `al_ediom.py` | Indexing an experimental Aluminium diffraction pattern against a simulated database, and checking the result. Licensed |
 | [al_orientmap.ipynb](al_orientmap.ipynb) | `al_orientmap.py` | Orientation mapping of a synthetic 4D-STEM scan of Aluminium grains: indexing settings for scans, reading the map, and comparing it with the true orientations. Licensed; experimental |
+| [al_cu_phasemap.ipynb](al_cu_phasemap.ipynb) | `al_cu_phasemap.py` | Phase mapping of a synthetic 4D-STEM scan of aluminium and copper grains: why indexing alone can't tell similar phases apart, the spacing score, confidence, and comparing the map with the true phases. Licensed; experimental |
 | [adf.ipynb](adf.ipynb) | `adf.py`, `convert_image.py` | 4D-STEM virtual detectors: bright field, dark field, annular dark field and masked images. Licensed; downloads a 472 MB test scan |
 | [probe.ipynb](probe.ipynb) | `ronchigram.py`, `stem_probe.py`, `ctf.py`, `hrem.py` | What a lens with aberrations does: Ronchigrams, STEM probes and their size, the contrast transfer function and its envelopes, and HREM images with their Thon rings |
 
