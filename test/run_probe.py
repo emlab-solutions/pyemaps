@@ -31,6 +31,8 @@ def check(name, fn):
     try:
         out = fn()
         RESULTS.append((name, True, out or ''))
+    except Skip as e:
+        RESULTS.append((name, None, str(e)))
     except AssertionError as e:
         RESULTS.append((name, False, str(e) or 'assertion failed'))
     except Exception as e:
@@ -50,7 +52,7 @@ def results():
     pot = p.random_potential(density=0.05, z=13, thickness=100, seed=1211)
     chromatic = titan_probe(cc=1.5, energy_spread=0.6, semi_angle=0.2)
     wave = p.exit_wave(pot)
-    return {'potential': pot, 'ronchigram': p.ronchigram(pot), 'probe': p.probe(),
+    out = {'potential': pot, 'ronchigram': p.ronchigram(pot), 'probe': p.probe(),
             'ctf': p.ctf(), 'probe_cc': chromatic.probe(), 'ctf_cc': chromatic.ctf(),
             'diameter': np.array([p.diameter(50), p.diameter(80)]),
             'exit_wave': wave, 'hrem': p.hrem(wave), 'hrem_cc': chromatic.hrem(wave),
@@ -58,8 +60,13 @@ def results():
             'phase': p.phase_map(), 'stem': chromatic.stem_image(pot), 'mtf': chromatic.mtf(),
             'psf': p.apply_psf(p.hrem(wave), 0.6, 40.0),
             'diameter_interpolated': np.array([p.diameter(50, interpolate=True),
-                                               p.diameter(80, interpolate=True)]),
-            'crystal': crystal_map()}
+                                               p.diameter(80, interpolate=True)])}
+    # the crystal potential and the multislice need emaps 2.6.0, and the multislice a license
+    if has_routine('crystalpotential'):
+        out['crystal'] = crystal_map()
+    if licensed():
+        out.update(multislice_maps())
+    return out
 
 
 def c_baseline():
@@ -73,7 +80,9 @@ def c_baseline():
         worst.append(f'{name} {rel:.1g}')
         # the same build gives the same numbers; allow rounding from another compiler version
         assert rel <= 1e-5, f'{name} differs from the baseline: largest relative difference {rel:.3g}'
-    return 'largest relative differences: ' + ', '.join(worst)
+    skipped = [name for name in base.files if name not in new]
+    note = f'; not computed here (emaps or license): {", ".join(skipped)}' if skipped else ''
+    return 'largest relative differences: ' + ', '.join(worst) + note
 
 
 def c_normalized():
@@ -381,6 +390,184 @@ def c_focal_series_optimize():
             f"{r['a1'][0]:.2f} nm, d50 {before:.2f} -> {r['diameter']:.2f} A")
 
 
+class Skip(Exception):
+    """A check that can't run here, such as a licensed one without a license."""
+
+
+def has_routine(name):
+    # whether this emaps has the backend routine (2.6.0 and later for the crystal ones)
+    from pyemaps import probe as probe_module
+    return probe_module.probesim is not None and hasattr(probe_module.probesim, name)
+
+
+_LICENSED = None
+
+
+def licensed():
+    # whether the multislice runs here: emaps 2.6.0 or later and an active license
+    global _LICENSED
+    if _LICENSED is None:
+        _LICENSED = False
+        if has_routine('msexitwave'):
+            from pyemaps import Crystal, LicenseError, Probe
+            try:
+                Probe(size=10.8614, sampling=32).crystal_exit_wave(
+                    Crystal.from_builtin('Silicon'), thickness=5.4307)
+                _LICENSED = True
+            except LicenseError:
+                pass
+    return _LICENSED
+
+
+def require(name):
+    if not has_routine(name):
+        raise Skip(f'this emaps has no {name} (emaps 2.6.0 and later)')
+
+
+def require_license():
+    require('msexitwave')
+    if not licensed():
+        raise Skip('no active pyEMAPS license: the multislice is a licensed feature')
+
+
+def multislice_maps():
+    # silicon [110], 12 a across, fitted: exit waves at 50 and 200 A, and a corrected probe's
+    # Ronchigram at 100 A
+    from pyemaps import Crystal, Probe
+    si = Crystal.from_builtin('Silicon')
+    a = float(si.cell.a)
+    p = Probe(kv=200, size=12 * a, sampling=256)
+    waves = p.crystal_exit_wave(si, zone=(1, 1, 0), thickness=[50, 200], fit=True)
+    c = Probe(kv=200, aperture=25, c5=3.829, size=12 * a, sampling=256)
+    c.haider(optimum_aperture=False)
+    return {'ms_exit_wave': waves,
+            'ms_ronchigram': c.crystal_ronchigram(si, zone=(1, 1, 0), thickness=100, fit=True)}
+
+
+def c_crystal_fit():
+    require('crystalpotential')
+    from pyemaps import Crystal, Probe
+    si = Crystal.from_builtin('Silicon')
+    a = float(si.cell.a)
+    # Si [110] repeats every a/sqrt(2) along [1-10] and a along [001]; along [110] the
+    # face-centering halves the cell vector
+    r = Probe().crystal_repeats(si, zone=(1, 1, 0), max_size=80)
+    lengths = sorted(np.hypot(*v) for v in r['repeats'])
+    assert np.allclose(lengths, [a / np.sqrt(2), a], atol=1e-4), r['repeats']
+    assert abs(r['period'] - a / np.sqrt(2)) < 1e-4, r['period']
+    assert r['x_axis'] == (0, 0, 1), r['x_axis']
+    fits = [(s, e) for s, e in r['sizes'] if abs(s - 12 * a) < 0.01]
+    assert fits and abs(fits[0][1] - 0.00173) < 5e-5, r['sizes']
+    r001 = Probe().crystal_repeats(si, zone=(0, 0, 1), max_size=12)
+    assert abs(r001['period'] - a) < 1e-4 and abs(r001['sizes'][0][0] - a) < 1e-3, r001
+    # fitted, the map has no seam: the map twice as large is the small one 2 x 2
+    small = Probe(size=12 * a, sampling=128).crystal_potential(si, zone=(1, 1, 0), thickness=30,
+                                                               fit=True)
+    large = Probe(size=24 * a, sampling=256).crystal_potential(si, zone=(1, 1, 0), thickness=30,
+                                                               fit=True)
+    tiled = np.tile(small, (2, 2))
+    rel = np.abs(large - tiled).max() / large.max()
+    assert rel < 1e-4, f'fitted maps differ from their tiling by {rel:.2g}'
+    plain = Probe(size=24 * a, sampling=256).crystal_potential(si, zone=(1, 1, 0), thickness=30)
+    plain_small = Probe(size=12 * a, sampling=128).crystal_potential(si, zone=(1, 1, 0),
+                                                                     thickness=30)
+    seam = np.abs(plain - np.tile(plain_small, (2, 2))).max() / plain.max()
+    return (f'Si [110]: repeats {lengths[0]:.4f} and {lengths[1]:.4f} A, period '
+            f'{r["period"]:.4f} A, 12a fits with {100 * fits[0][1]:.3f}% strain; fitted maps tile '
+            f'exactly ({rel:.1g}), unfitted ones differ by {seam:.2f} at the seam')
+
+
+def c_multislice():
+    require_license()
+    from pyemaps import Crystal, Probe
+    si = Crystal.from_builtin('Silicon')
+    a = float(si.cell.a)
+    period = a / np.sqrt(2)
+    # 0.13 A pixels: the band limit, 2.6 1/A, keeps nearly all that silicon scatters
+    p = Probe(kv=200, size=12 * a, sampling=512)
+    lines = []
+    # one slice without the band limit is the projection: exit_wave of crystal_potential, and
+    # the probe module's Ronchigram
+    one = p.crystal_exit_wave(si, zone=(1, 1, 0), thickness=period, slice_thickness=period,
+                              fit=True, bandlimit=False)
+    pot = p.crystal_potential(si, zone=(1, 1, 0), thickness=period, fit=True)
+    d = np.abs(one - p.exit_wave(pot)).max()
+    assert d < 1e-5, f'one slice differs from exit_wave by {d:.2g}'
+    c = Probe(kv=200, aperture=25, c5=3.829, size=12 * a, sampling=512)
+    c.haider(optimum_aperture=False)
+    r1 = c.crystal_ronchigram(si, zone=(1, 1, 0), thickness=period, slice_thickness=period,
+                              fit=True, bandlimit=False)
+    ref = c.ronchigram(pot)
+    dr = np.abs(r1 - ref).max() / ref.max()
+    assert dr < 1e-5, f'one slice differs from ronchigram by {dr:.2g}'
+    lines.append(f'one slice = exit_wave ({d:.1g}) and ronchigram ({dr:.1g})')
+    # a list of thicknesses gives the same waves as one at a time
+    both = p.crystal_exit_wave(si, zone=(1, 1, 0), thickness=[50, 200], fit=True)
+    for k, t in enumerate((50, 200)):
+        assert np.array_equal(both[k], p.crystal_exit_wave(si, zone=(1, 1, 0), thickness=t,
+                                                           fit=True)), f'{t} A differs'
+    # the total intensity is kept, but for what the crystal scatters beyond the band limit
+    norm = float(np.mean(np.abs(both[1]) ** 2))
+    assert 0.98 < norm <= 1.0 + 1e-6, f'mean intensity {norm:.4f} at 200 A'
+    lines.append(f'thickness lists = single runs; mean intensity {norm:.4f} at 200 A')
+
+    # Bloch waves (emaps): beam intensities of Si [001] at the exact zone axis. Bloch includes
+    # absorption and fewer beams, so they agree within about 10%
+    from pyemaps import EMC, SIMC
+    q = Probe(kv=200, size=8 * a, sampling=256)
+    waves = q.crystal_exit_wave(si, zone=(0, 0, 1), thickness=[100, 200], x_axis=(1, 0, 0))
+    si.beginBloch(sampling=2, em_controls=EMC(zone=(0, 0, 1), vt=200, simc=SIMC(gmax=2.0)))
+    worst = 0.0
+    try:
+        for k, t in enumerate((100, 200)):
+            n, scm, ev, beams = si.getSCMatrix(ib_coords=(0, 0), sample_thickness=t)
+            beams = np.asarray(beams)
+            beams = beams if beams.shape[-1] == 3 else beams.T
+            index = {tuple(int(v) for v in b): i for i, b in enumerate(beams)}
+            amp = np.asarray(scm)[:, index[(0, 0, 0)]]
+            f = np.fft.fft2(waves[k]) / waves[k].size
+            for h, kk in ((0, 0), (2, 2), (4, 0)):
+                ms = abs(f[(8 * kk) % 256, (8 * h) % 256]) ** 2
+                bl = abs(amp[index[(h, kk, 0)]]) ** 2
+                worst = max(worst, abs(ms - bl) / bl)
+                assert abs(ms - bl) <= 0.1 * bl + 0.002, \
+                    f'{h}{kk}0 at {t} A: multislice {ms:.4f}, Bloch {bl:.4f}'
+    finally:
+        si.endBloch()
+    lines.append(f'Si [001] 000, 220, 400 at 100 and 200 A within {100 * worst:.0f}% of Bloch')
+    return '; '.join(lines)
+
+
+def c_license():
+    # without a license: the multislice and the database generator refuse, with LicenseError,
+    # and the free crystal potential still works. LOCALAPPDATA points the license check at an
+    # empty folder, in a subprocess, so the real license isn't touched
+    require('msexitwave')
+    import subprocess
+    code = ('from pyemaps import Crystal, LicenseError, Probe\n'
+            'si = Crystal.from_builtin("Silicon")\n'
+            'p = Probe(size=10.8614, sampling=32)\n'
+            'for name, f in (("exit", lambda: p.crystal_exit_wave(si, thickness=5.4307)),\n'
+            '                ("ronchigram", lambda: p.crystal_ronchigram(si, thickness=5.4307)),\n'
+            '                ("dpgen", lambda: si.generateDPDB())):\n'
+            '    try:\n'
+            '        f()\n'
+            '        print("ran:", name)\n'
+            '    except LicenseError:\n'
+            '        print("refused:", name)\n'
+            'print("free potential:", float(p.crystal_potential(si).max()) > 0)\n')
+    with tempfile.TemporaryDirectory() as empty:
+        env = dict(os.environ, LOCALAPPDATA=empty)
+        res = subprocess.run([sys.executable, '-c', code], capture_output=True, text=True,
+                             env=env, cwd=empty)
+    out = res.stdout
+    for name in ('exit', 'ronchigram', 'dpgen'):
+        assert f'refused: {name}' in out, f'{name} without a license: {out[-300:]} {res.stderr[-300:]}'
+    assert 'free potential: True' in out, out[-300:]
+    return ('without a license, crystal_exit_wave, crystal_ronchigram and generateDPDB raise '
+            'LicenseError; crystal_potential still works')
+
+
 def crystal_map():
     # silicon along [110], with [001] across: 12 a is 17 repeats along y within 0.2%
     from pyemaps import Crystal, Probe
@@ -390,6 +577,7 @@ def crystal_map():
 
 
 def c_crystal_potential():
+    require('crystalpotential')
     from pyemaps import Crystal, Probe
     from pyemaps.probe import _slab_atoms
     lines = []
@@ -504,15 +692,20 @@ def main():
                      ('STEM image, MTF and PSF', c_stem_mtf_psf),
                      ('focal series and optimizer', c_focal_series_optimize),
                      ('crystal potential', c_crystal_potential),
+                     ('seam-free crystal maps', c_crystal_fit),
+                     ('multislice', c_multislice),
+                     ('licensed features without a license', c_license),
                      ('plots', c_show)):
         check(name, fn)
     for name, ok, msg in RESULTS:
-        print(f'{"PASS" if ok else "FAIL"}  {name}: {msg}')
-    failed = [r for r in RESULTS if not r[1]]
+        print(f'{"SKIP" if ok is None else "PASS" if ok else "FAIL"}  {name}: {msg}')
+    failed = [r for r in RESULTS if r[1] is False]
+    skipped = [r for r in RESULTS if r[1] is None]
     if failed:
         print(f'------ Probe checks FAILED: {len(failed)} of {len(RESULTS)} ------')
         return 1
-    print(f'++++++ Probe checks SUCCEEDED: {len(RESULTS)} checks ++++++')
+    note = f', {len(skipped)} skipped' if skipped else ''
+    print(f'++++++ Probe checks SUCCEEDED: {len(RESULTS) - len(skipped)} checks{note} ++++++')
     return 0
 
 
