@@ -168,6 +168,12 @@ Leaving the direct beam out of the mask keeps it from dominating the correlation
 
    polar = scan.polarTransform(center, dtheta=1.0, pattern=0)   # radii x 360 angles
 
+.. seealso::
+
+   Steps 7 to 12 of the notebook :doc:`../notebooks/adf` run these methods on the test scan:
+   they find its grains, average and label them, and measure each grain's rotation from the
+   polar transforms.
+
 These are ports of functions from the DigitalMicrograph plug-in that pyEMAPS' 4D-STEM module
 grew from, computed in emaps. As
 ported, the correlations are true correlation coefficients over the mask's pixels, and the polar
