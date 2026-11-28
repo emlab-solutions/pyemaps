@@ -1181,6 +1181,28 @@ class Crystal:
         :rtype: Crystal
         :raise ~pyemaps.errors.CrystalClassError: if the file isn't found, or its cell, atoms or space group don't
             validate.
+
+        pyEMAPS reads the unit cell, the space group (from the symmetry operators, the
+        Hermann-Mauguin symbol or the number) and the atom sites with their occupancies and
+        thermal factors. The crystal is named after the file's data block.
+
+        Example files: the samples include three CIF files of refined crystal structures from the
+        `Crystallography Open Database <https://www.crystallography.net>`_ (COD), as COD
+        distributes them:
+        `Al_COD_4004108.cif <https://github.com/emlab-solutions/pyemaps/blob/main/samples/Al_COD_4004108.cif>`_
+        (aluminium),
+        `Cu_COD_7101269.cif <https://github.com/emlab-solutions/pyemaps/blob/main/samples/Cu_COD_7101269.cif>`_
+        (copper) and
+        `Si_COD_2102763.cif <https://github.com/emlab-solutions/pyemaps/blob/main/samples/Si_COD_2102763.cif>`_
+        (silicon). ``pyemaps -cp samples`` copies them, with the sample scripts, into a
+        *pyemaps_samples* folder in the current directory:
+
+        .. code-block:: python
+
+            from pyemaps import Crystal
+
+            al = Crystal.from_cif('Al_COD_4004108.cif')   # run in pyemaps_samples
+            print(al.name)                                # 4004108, the file's data block
         """
 
         cfn = fn
