@@ -75,10 +75,12 @@ myst_enable_extensions = ['dollarmath']
 
 html_favicon = 'pyemaps.ico'
 
+# A class's constructor parameters are documented with the class, not as a separate __init__.
+autoclass_content = 'both'
+
 autodoc_default_options = {
     'members': 'var1, var2',
     'member-order': 'bysource',
-    'special-members': '__init__', 
     'undoc-members': True,
     'autosummary_generate': True,
     # 'exclude-members': '__weakref__'

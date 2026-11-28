@@ -6,3 +6,4 @@ Microscope and simulation controls
     :members: 
     :undoc-members:
     :show-inheritance:
+    :exclude-members: doc_dec, doc_dec_simc
