@@ -7,7 +7,7 @@ projected poles, each a dictionary with its center, radius and Miller indices.
 draws a list of stereodiagrams.
 
 This example makes Silicon stereodiagrams at six zone axes, in parallel processes, and shows
-them as a table:
+them as a table. The animation below shows the six, one after another:
 
 .. code-block:: python
 
@@ -47,6 +47,31 @@ them as a table:
         showStereo(generate_stereodiagrams(), name='Silicon',
                    cShow=True, iShow=True, zLimit=1, layout='table')
 
-.. image:: ../_static/images/stereo_table.png
-   :alt: Stereodiagrams of Silicon at six zone axes
-   :target: ../_static/images/stereo_table.png
+.. The animations on this page are made by docs/scripts/stereo_animations.py.
+
+.. image:: ../_static/images/stereo_zones.gif
+   :alt: Stereodiagrams of Silicon at six zone axes, one after another
+   :width: 500px
+
+Tilting the sample
+------------------
+
+*tilt* tilts the sample about the x and y axes, in degrees, and the poles move across the
+projection as the crystal turns:
+
+.. code-block:: python
+
+    from pyemaps import EMC, Crystal, showStereo
+
+    si = Crystal.from_builtin('Silicon')
+    tilts = [(-20.0, 0.0), (-10.0, 0.0), (0.0, 0.0), (10.0, 0.0), (20.0, 0.0)]
+    stereo_list = [(EMC(tilt=t), si.generateStereo(zone=(0, 0, 1), tilt=t))
+                   for t in tilts]
+    showStereo(stereo_list, name='Silicon', iShow=True, zLimit=1)
+
+The animation tilts Silicon at the [001] zone axis about x, from 0 to 20 degrees, to -20 and
+back, then the same about y:
+
+.. image:: ../_static/images/stereo_tilt.gif
+   :alt: The stereodiagram of Silicon at the [001] zone axis as the sample tilts about x, then y
+   :width: 500px

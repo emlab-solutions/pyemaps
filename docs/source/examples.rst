@@ -42,7 +42,7 @@ and :doc:`al_cu_phasemap.ipynb <notebooks/al_cu_phasemap>`.
          Guide: :doc:`user_guide/dynamic`
 
       .. grid-item-card:: si_stereo.py
-         :img-top: _static/images/stereo_table.png
+         :img-top: _static/images/stereo_zones.gif
 
          Indexed stereodiagrams for Silicon over a series of tilts and a series of zone
          axes.
