@@ -31,17 +31,12 @@ follow the links into the :doc:`../api/index`.
 
       Stereographic projections.
 
-   .. grid-item-card:: 4D-STEM indexing
-      :link: indexing
+   .. grid-item-card:: 4D-STEM
+      :link: stem4d/index
       :link-type: doc
 
-      Index experimental patterns. Licensed.
-
-   .. grid-item-card:: 4D-STEM imaging
-      :link: imaging
-      :link-type: doc
-
-      Bright field, dark field and masked images from a scan. Licensed.
+      Index patterns, map orientations and phases, image with virtual detectors and analyse
+      scans. Licensed.
 
    .. grid-item-card:: Probes, Ronchigrams, CTF and HREM
       :link: probe
@@ -69,8 +64,7 @@ follow the links into the :doc:`../api/index`.
    kinematic
    dynamic
    stereo
-   indexing
-   imaging
+   stem4d/index
    probe
    third_party
    configuration

@@ -33,6 +33,9 @@ extensions = [
 # docs build has no pyEMAPS license. They're copied from the repository's notebooks folder at
 # each build (into the gitignored notebooks/ here), so that folder keeps the only copy.
 # A link to a notebook the docs don't show goes to that notebook on GitHub instead.
+# In the docs each notebook's title starts with "Step-by-step guide: ", so that it differs from
+# the title of the User Guide page it sits under (the sidebar and the Previous/Next links show
+# both). The notebooks themselves keep their own titles.
 import json
 import os
 import re
@@ -53,10 +56,16 @@ os.makedirs(_nb_dst, exist_ok=True)
 for _nb in _nb_shown:
     with open(os.path.join(_nb_src, _nb), encoding='utf-8') as f:
         _data = json.load(f)
+    _titled = False
     for _cell in _data['cells']:
         if _cell['cell_type'] == 'markdown':
             _cell['source'] = [re.sub(r'\]\(([\w.-]+\.ipynb)\)', _nb_link, line)
                                for line in _cell['source']]
+            if not _titled and _cell['source'] and _cell['source'][0].startswith('# '):
+                _cell['source'][0] = '# Step-by-step guide: ' + _cell['source'][0][2:]
+                _titled = True
+    if not _titled:
+        raise ValueError(f'{_nb}: its first markdown cell must start with a "# " title')
     with open(os.path.join(_nb_dst, _nb), 'w', encoding='utf-8') as f:
         json.dump(_data, f, ensure_ascii=False, indent=1)
 
@@ -168,4 +177,7 @@ redirects = {
     'pyemaps.spg': 'api/index.html',
     'pyemaps.spg.spg': 'api/index.html',
     **{f'pyemaps.diffract.{d}': 'api/crystals.html' for d in _api_dec},
+    # The two 4D-STEM pages of pyemaps 2.9 and earlier became the 4D-STEM group, one page per feature.
+    'user_guide/indexing': 'stem4d/indexing.html',
+    'user_guide/imaging': 'stem4d/imaging.html',
 }

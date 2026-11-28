@@ -11,7 +11,7 @@
 
    Electron diffraction simulation and crystallography in Python: kinematic and
    dynamical (Bloch wave) diffraction, stereodiagrams, powder patterns, structure
-   factors, supercells and 4D-STEM pattern indexing.
+   factors, supercells and 4D-STEM analysis.
 
    .. container:: pe-install
 
@@ -97,12 +97,13 @@ What you can simulate
          What a lens with aberrations does: Ronchigrams, STEM probes, the contrast transfer
          function and HREM images, for corrected and uncorrected microscopes.
 
-      .. grid-item-card:: 4D-STEM indexing :bdg-info:`Licensed`
+      .. grid-item-card:: 4D-STEM :bdg-info:`Licensed`
          :img-top: _static/images/ediom_img1.png
-         :link: user_guide/indexing
+         :link: user_guide/stem4d/index
          :link-type: doc
 
-         Index experimental patterns against a simulated database to find orientation and phase.
+         Index patterns against simulated databases, map orientations and phases across a scan,
+         and make virtual detector images and grain maps.
 
 Your first diffraction pattern
 ------------------------------

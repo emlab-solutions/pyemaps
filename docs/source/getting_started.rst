@@ -39,7 +39,7 @@ To read EMD files (``.emd``) from Thermo Fisher Velox or in the Berkeley EMD for
 
    pip install "pyemaps[emd]"
 
-See :doc:`user_guide/indexing`.
+See :doc:`user_guide/stem4d/data`.
 
 Check the installation
 ----------------------

@@ -48,19 +48,20 @@ The extended 4D-STEM features, which need :ref:`License Activation`:
 
 * Building and searching diffraction pattern databases
 * Indexing experimental diffraction patterns
-* Annular bright and dark field images
-* Masked images
+* Orientation and phase maps of 4D-STEM scans (experimental)
+* Bright field, dark field and annular dark field images with virtual detectors, and masked images
+* Grain maps from similar patterns, average patterns and polar transforms
 
-See :doc:`user_guide/indexing` and :doc:`user_guide/imaging`.
+See :doc:`user_guide/stem4d/index`.
 
 Reading experimental patterns is free: TIFF, Gatan DigitalMicrograph (``.dm3``, ``.dm4``),
 MRC, Quantum Detectors Merlin (``.mib``), PNG, BMP, JPEG and NumPy files, single images, stacks
 and 4D-STEM scans, with no other package, and EMD files from
 Thermo Fisher Velox or in the Berkeley EMD format, including py4DSTEM's 4D-STEM datacubes. See
-:ref:`user_guide/indexing:Images from TIFF files`,
-:ref:`user_guide/indexing:Images from DigitalMicrograph files`,
-:ref:`user_guide/indexing:Images from MRC, Merlin and other files` and
-:ref:`user_guide/indexing:Images from EMD files`.
+:ref:`user_guide/stem4d/data:Images from TIFF files`,
+:ref:`user_guide/stem4d/data:Images from DigitalMicrograph files`,
+:ref:`user_guide/stem4d/data:Images from MRC, Merlin and other files` and
+:ref:`user_guide/stem4d/data:Images from EMD files`.
 
 In development
 --------------
