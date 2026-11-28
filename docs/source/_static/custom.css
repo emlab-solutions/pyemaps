@@ -39,3 +39,18 @@ html[data-theme="dark"] {
 .pe-badge { font-size: .75rem; font-weight: 600; padding: .1rem .45rem; border-radius: .6rem;
             background: var(--pst-color-secondary); color: #fff; margin-left: .35rem; vertical-align: middle; }
 
+/* API reference entries: the theme leaves 3rem under each one, even a one-line constant, and
+   sets signatures at full size. Tighter spacing, smaller signatures on a light band, bold names. */
+dl.py { margin-bottom: 1.75rem !important; }
+dl.py dl.py { margin-bottom: 1rem !important; }
+dl.py.data, dl.py.attribute, dl.py.property { margin-bottom: .5rem !important; }
+dt.sig {
+  font-size: .875rem; line-height: 1.55; padding: .3rem .6rem;
+  background: var(--pst-color-surface); border-left: 3px solid var(--pst-color-primary);
+  border-radius: .2rem;
+}
+dl.py dl.py > dt.sig { border-left-color: var(--pst-color-border); }
+dt.sig .sig-name { font-weight: 600; }
+dt.sig .sig-prename { color: var(--pst-color-text-muted); }
+dl.py > dd { margin-top: .4rem; }
+dl.py > dd > p:last-child { margin-bottom: .25rem; }
