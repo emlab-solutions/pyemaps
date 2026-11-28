@@ -8,13 +8,13 @@ and phase come from the database pattern that fits best. This feature requires
 
 .. seealso::
 
-   The notebook :doc:`../../notebooks/al_ediom` indexes the sample image *al.img* end to end,
-   shown here with its plots and output.
+   The notebook :doc:`al_ediom.ipynb <../../notebooks/al_ediom>` indexes the sample image *al.img*
+   end to end, shown here with its plots and output.
 
 .. toctree::
    :hidden:
 
-   Notebook: indexing al.img <../../notebooks/al_ediom>
+   ../../notebooks/al_ediom
 
 First, generate a DP database for the crystal, here Aluminium:
 

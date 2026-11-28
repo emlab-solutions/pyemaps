@@ -7,8 +7,8 @@ into memory and return NumPy arrays. This feature requires :ref:`License Activat
 
 .. seealso::
 
-   Steps 7 and 12 of the notebook :doc:`../../notebooks/adf` run these methods on a real scan:
-   they compare its average pattern with NumPy's, and measure each grain's rotation from the
+   Steps 7 and 12 of the notebook :doc:`adf.ipynb <../../notebooks/adf>` run these methods on a real
+   scan: they compare its average pattern with NumPy's, and measure each grain's rotation from the
    polar transforms.
 
 - :py:meth:`~pyemaps.stackimg.StackImage.averagePattern`: the mean of all the patterns, the

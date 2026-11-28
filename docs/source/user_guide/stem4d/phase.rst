@@ -7,13 +7,13 @@ and its orientation in that phase. It builds on :doc:`orientation`. This feature
 
 .. seealso::
 
-   The notebook :doc:`../../notebooks/al_cu_phasemap` maps the phases of a synthetic two-phase
-   scan step by step, shown here with its plots and output.
+   The notebook :doc:`al_cu_phasemap.ipynb <../../notebooks/al_cu_phasemap>` maps the phases of a
+   synthetic two-phase scan step by step, shown here with its plots and output.
 
 .. toctree::
    :hidden:
 
-   Notebook: mapping an aluminium and copper scan <../../notebooks/al_cu_phasemap>
+   ../../notebooks/al_cu_phasemap
 
 .. admonition:: Experimental
    :class: warning
@@ -61,12 +61,13 @@ within *spacing_tol* (1 pixel) of a reflection spacing. Calibrate them on a know
 and check the map's ambiguous patterns.
 
 The sample *al_cu_phasemap.py* maps a synthetic scan of five aluminium and copper grains and
-compares the map with the truth: 194 of the 196 patterns are decided, all correctly; the two
-left have no peaks the search could find. Its crystal structures are refined ones from the
-`Crystallography Open Database <https://www.crystallography.net>`_ (COD entries 4004108 and
-7101269, public domain), with their thermal factors, in CIF files that come with the sample. The notebook :doc:`../../notebooks/al_cu_phasemap` walks
-through the same run step by step, including why the indexing alone can't tell the two phases
-apart; ``pyemaps -cp notebooks`` copies it to run yourself.
+compares the map with the truth: 194 of the 196 patterns are decided, all correctly; the two left
+have no peaks the search could find. Its crystal structures are refined ones from the
+`Crystallography Open Database <https://www.crystallography.net>`_ (COD entries 4004108 and 7101269,
+public domain), with their thermal factors, in CIF files that come with the sample. The notebook
+:doc:`al_cu_phasemap.ipynb <../../notebooks/al_cu_phasemap>` walks through the same run step by
+step, including why the indexing alone can't tell the two phases apart; ``pyemaps -cp notebooks``
+copies it to run yourself.
 
 .. image:: ../../_static/images/al_cu_phasemap.png
    :width: 100%

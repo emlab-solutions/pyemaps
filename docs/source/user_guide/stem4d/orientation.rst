@@ -7,13 +7,13 @@ position. This feature requires :ref:`License Activation`.
 
 .. seealso::
 
-   The notebook :doc:`../../notebooks/al_orientmap` maps the orientations of a synthetic scan
-   step by step, shown here with its plots and output.
+   The notebook :doc:`al_orientmap.ipynb <../../notebooks/al_orientmap>` maps the orientations of a
+   synthetic scan step by step, shown here with its plots and output.
 
 .. toctree::
    :hidden:
 
-   Notebook: mapping a synthetic Aluminium scan <../../notebooks/al_orientmap>
+   ../../notebooks/al_orientmap
 
 .. admonition:: Experimental
    :class: warning
@@ -46,15 +46,14 @@ Indexing uses all the computer's cores. On a 6-core laptop it takes about 0.03 s
 pattern of 200 x 200 to 256 x 256 pixels, so a 64 x 64 scan takes about 2 minutes; larger
 patterns and databases take longer. Read part of a large scan with *scan_roi*. Pressing Ctrl+C stops the run and returns the patterns done so far.
 
-The sample *al_orientmap.py* shows a whole run on a synthetic scan: four Aluminium grains of
-known orientation, with counting noise. Its Aluminium is a refined crystal structure from the
+The sample *al_orientmap.py* shows a whole run on a synthetic scan: four Aluminium grains of known
+orientation, with counting noise. Its Aluminium is a refined crystal structure from the
 `Crystallography Open Database <https://www.crystallography.net>`_ (COD entry 4004108, public
-domain), in a CIF file that comes with the sample. It maps the scan and compares the map with
-the truth.
-Most patterns come out within 1 degree of their true orientation; the few the map can't index
-reliably are black. The notebook :doc:`../../notebooks/al_orientmap` walks through the same run
-step by step, with the choice of settings and how to read the map. It's shown here with its
-results; ``pyemaps -cp notebooks`` copies it to run yourself.
+domain), in a CIF file that comes with the sample. It maps the scan and compares the map with the
+truth. Most patterns come out within 1 degree of their true orientation; the few the map can't index
+reliably are black. The notebook :doc:`al_orientmap.ipynb <../../notebooks/al_orientmap>` walks
+through the same run step by step, with the choice of settings and how to read the map. It's shown
+here with its results; ``pyemaps -cp notebooks`` copies it to run yourself.
 
 *peak_threshold* tests how closely a peak's shape matches the search kernel, not how bright it
 is. The default (0.825) suits clean patterns such as selected area diffraction, but in a scan

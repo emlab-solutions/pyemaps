@@ -10,13 +10,13 @@ shape, from a mask. This feature requires :ref:`License Activation`.
 
 .. seealso::
 
-   Steps 1 to 6 of the notebook :doc:`../../notebooks/adf` run these steps end to end on a real
-   scan, shown here with its plots and output.
+   Steps 1 to 6 of the notebook :doc:`adf.ipynb <../../notebooks/adf>` run these steps end to end on
+   a real scan, shown here with its plots and output.
 
 .. toctree::
    :hidden:
 
-   Notebook: virtual detectors and grain maps <../../notebooks/adf>
+   ../../notebooks/adf
 
 The examples use *adftest900.im3*, a 4D-STEM test scan of 30 x 30 positions with 512 x 512
 pixel patterns, published by EMLab Solutions on

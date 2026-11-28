@@ -17,7 +17,8 @@ copies both. Files already in those folders aren't overwritten, so copying again
 changes. To read them with their results, without running anything, see the
 `notebooks folder <https://github.com/emlab-solutions/pyemaps/tree/main/notebooks>`_ on GitHub.
 The 4D-STEM indexing notebooks are also shown here with their results:
-:doc:`notebooks/al_ediom`, :doc:`notebooks/al_orientmap` and :doc:`notebooks/al_cu_phasemap`.
+:doc:`al_ediom.ipynb <notebooks/al_ediom>`, :doc:`al_orientmap.ipynb <notebooks/al_orientmap>`
+and :doc:`al_cu_phasemap.ipynb <notebooks/al_cu_phasemap>`.
 
 .. container:: pe-gallery
 
@@ -66,7 +67,7 @@ The 4D-STEM indexing notebooks are also shown here with their results:
          Ronchigrams of a corrected probe, with astigmatism, and of an uncorrected one.
 
          Guide: :doc:`user_guide/probe`.
-         Notebook: :doc:`notebooks/probe`
+         Notebook: :doc:`probe.ipynb <notebooks/probe>`
 
       .. grid-item-card:: stem_probe.py
          :img-top: _static/images/probe_stem_probe.png
@@ -98,7 +99,7 @@ The 4D-STEM indexing notebooks are also shown here with their results:
          patterns at several thicknesses.
 
          Guide: :doc:`user_guide/probe`.
-         Notebook: :doc:`notebooks/si_multislice`
+         Notebook: :doc:`si_multislice.ipynb <notebooks/si_multislice>`
 
       .. grid-item-card:: al_ediom.py :bdg-info:`Licensed`
          :img-top: _static/images/ediom_img1.png
@@ -106,7 +107,7 @@ The 4D-STEM indexing notebooks are also shown here with their results:
          Generates an Aluminium pattern database and indexes the sample image *al.img*.
 
          Guide: :doc:`user_guide/stem4d/indexing`.
-         Notebook: :doc:`notebooks/al_ediom`
+         Notebook: :doc:`al_ediom.ipynb <notebooks/al_ediom>`
 
       .. grid-item-card:: al_orientmap.py :bdg-info:`Licensed`
          :img-top: _static/images/orientmap.png
@@ -115,7 +116,7 @@ The 4D-STEM indexing notebooks are also shown here with their results:
          orientations. Experimental.
 
          Guide: :doc:`user_guide/stem4d/orientation`.
-         Notebook: :doc:`notebooks/al_orientmap`
+         Notebook: :doc:`al_orientmap.ipynb <notebooks/al_orientmap>`
 
       .. grid-item-card:: al_cu_phasemap.py :bdg-info:`Licensed`
          :img-top: _static/images/al_cu_phasemap.png
@@ -124,7 +125,7 @@ The 4D-STEM indexing notebooks are also shown here with their results:
          the true phases. Experimental.
 
          Guide: :doc:`user_guide/stem4d/phase`.
-         Notebook: :doc:`notebooks/al_cu_phasemap`
+         Notebook: :doc:`al_cu_phasemap.ipynb <notebooks/al_cu_phasemap>`
 
 More samples
 ------------

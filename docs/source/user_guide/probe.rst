@@ -16,13 +16,13 @@ This feature needs no license.
 
 .. seealso::
 
-   The notebook :doc:`../notebooks/probe` explains the physics and runs all four modes step by
-   step, shown here with its plots and output.
+   The notebook :doc:`probe.ipynb <../notebooks/probe>` explains the physics and runs all four modes
+   step by step, shown here with its plots and output.
 
 .. toctree::
    :hidden:
 
-   Notebook: probes, Ronchigrams, CTF and HREM images <../notebooks/probe>
+   ../notebooks/probe
 
 The lens
 --------
@@ -271,14 +271,14 @@ pyEMAPS license, and raises :py:class:`~pyemaps.errors.LicenseError` without one
 
 .. seealso::
 
-   The notebook :doc:`../notebooks/si_multislice` follows silicon through the thickness step by
-   step: the projection against the multislice, the slice thickness and pixel size, thickness
-   fringes checked against Bloch waves, and HREM and CBED thickness series.
+   The notebook :doc:`si_multislice.ipynb <../notebooks/si_multislice>` follows silicon through the
+   thickness step by step: the projection against the multislice, the slice thickness and pixel
+   size, thickness fringes checked against Bloch waves, and HREM and CBED thickness series.
 
 .. toctree::
    :hidden:
 
-   Notebook: thick crystals by multislice <../notebooks/si_multislice>
+   ../notebooks/si_multislice
 
 - :py:meth:`~pyemaps.probe.Probe.crystal_exit_wave`: the exit wave under plane-wave
   illumination; pass it to :py:meth:`~pyemaps.probe.Probe.hrem` for the HREM image.

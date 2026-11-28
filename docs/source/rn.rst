@@ -15,9 +15,9 @@ New
   - :py:meth:`~pyemaps.probe.Probe.crystal_exit_wave`: a crystal's exit wave under plane-wave illumination, to pass to :py:meth:`~pyemaps.probe.Probe.hrem` for HREM images of thick crystals;
   - :py:meth:`~pyemaps.probe.Probe.crystal_ronchigram`: the probe through the crystal, giving its Ronchigram, or a CBED pattern with a small focused probe.
 
-  A list of thicknesses gives every result from one pass. *slice_thickness* sets the slicing, and *bandlimit*, on by default, applies the 2/3 band limit. Without an active license, both raise :py:class:`~pyemaps.errors.LicenseError`. The sample *crystal_thickness.py* shows HREM and CBED thickness series of silicon [110], and the notebook :doc:`notebooks/si_multislice` checks the thickness fringes against Bloch waves. See "Thick crystals" in :doc:`user_guide/probe`.
+  A list of thicknesses gives every result from one pass. *slice_thickness* sets the slicing, and *bandlimit*, on by default, applies the 2/3 band limit. Without an active license, both raise :py:class:`~pyemaps.errors.LicenseError`. The sample *crystal_thickness.py* shows HREM and CBED thickness series of silicon [110], and the notebook :doc:`si_multislice.ipynb <notebooks/si_multislice>` checks the thickness fringes against Bloch waves. See "Thick crystals" in :doc:`user_guide/probe`.
 - Maps without a seam: *fit=True* on :py:meth:`~pyemaps.probe.Probe.crystal_potential` and the multislice methods strains the crystal slightly in the plane of the map, so it repeats exactly at the map's edges. A strain above 1% gives a warning. :py:meth:`~pyemaps.probe.Probe.crystal_repeats` gives a crystal's repeats along and across a zone axis, and the map sizes that fit with little strain.
-- Phase maps, experimental and licensed: :py:meth:`~pyemaps.stackimg.StackImage.mapPhases` finds which of several crystal phases each pattern of a 4D-STEM scan belongs to, with one diffraction pattern database per phase. It decides by the spacings of each pattern's peaks, which tells apart phases with the same structure that indexing alone can't, such as aluminium and copper. It returns a :py:class:`~pyemaps.phasemap.PhaseMap`: each pattern's phase, confidence and scores, each phase's orientation map, and the phase fractions, with plots, saving and loading. emaps 2.6.0 scores the phases and decides, in compiled code. The sample *al_cu_phasemap.py* and the notebook :doc:`notebooks/al_cu_phasemap` map a synthetic scan of aluminium and copper grains. See :doc:`user_guide/stem4d/phase`.
+- Phase maps, experimental and licensed: :py:meth:`~pyemaps.stackimg.StackImage.mapPhases` finds which of several crystal phases each pattern of a 4D-STEM scan belongs to, with one diffraction pattern database per phase. It decides by the spacings of each pattern's peaks, which tells apart phases with the same structure that indexing alone can't, such as aluminium and copper. It returns a :py:class:`~pyemaps.phasemap.PhaseMap`: each pattern's phase, confidence and scores, each phase's orientation map, and the phase fractions, with plots, saving and loading. emaps 2.6.0 scores the phases and decides, in compiled code. The sample *al_cu_phasemap.py* and the notebook :doc:`al_cu_phasemap.ipynb <notebooks/al_cu_phasemap>` map a synthetic scan of aluminium and copper grains. See :doc:`user_guide/stem4d/phase`.
 - 4D-STEM scan analysis, licensed and computed in emaps 2.6.0, on all the processor's cores:
 
   - :py:meth:`~pyemaps.stackimg.StackImage.averagePattern`: the mean of a scan's patterns;
@@ -27,7 +27,7 @@ New
   - :py:meth:`~pyemaps.stackimg.StackImage.classifyPatterns`: labels every pattern by the template it matches best;
   - :py:meth:`~pyemaps.stackimg.StackImage.polarTransform` and :py:func:`~pyemaps.stackimg.polar_transform`: patterns in polar coordinates about a centre.
 
-  Steps 7 to 12 of the notebook :doc:`notebooks/adf` run them on the 4D-STEM test scan: they find its grains, average and label them, and measure each grain's rotation. See :doc:`user_guide/stem4d/similar` and :doc:`user_guide/stem4d/averages`.
+  Steps 7 to 12 of the notebook :doc:`adf.ipynb <notebooks/adf>` run them on the 4D-STEM test scan: they find its grains, average and label them, and measure each grain's rotation. See :doc:`user_guide/stem4d/similar` and :doc:`user_guide/stem4d/averages`.
 - :py:class:`~pyemaps.errors.LicenseError`, raised by the licensed features of the probe module and of database generation when no license is active.
 - The samples' crystals for the multislice, the orientation map and the phase map are refined structures from the Crystallography Open Database, which is public domain, in CIF files that come with the samples: silicon (COD 2102763), aluminium (COD 4004108) and copper (COD 7101269).
 
@@ -37,7 +37,7 @@ Changes
 - :py:meth:`~pyemaps.probe.Probe.crystal_potential` is computed in emaps, 3 to 4 times faster than in 2.8.0, with the same results.
 - From emaps 2.6.0: :py:meth:`~pyemaps.crystals.Crystal.generateDPDB` checks the license before generating a database, and raises :py:class:`~pyemaps.errors.LicenseError` without an active one. Before, it ran without a license.
 - The *al_orientmap.py* sample reads aluminium from its CIF file, and its ``map_scan`` function takes the crystal: ``map_scan(crystal=ALUMINIUM, seed=1)``. Its results are the same within the synthetic scan's noise.
-- The probe notebook, :doc:`notebooks/probe`, no longer covers thick crystals, which moved to :doc:`notebooks/si_multislice`. It needs no license.
+- The probe notebook, :doc:`probe.ipynb <notebooks/probe>`, no longer covers thick crystals, which moved to :doc:`si_multislice.ipynb <notebooks/si_multislice>`. It needs no license.
 
 Improvements
 ~~~~~~~~~~~~
@@ -68,8 +68,8 @@ New
   - :py:meth:`~pyemaps.probe.Probe.from_file`: the probe program's parameter files;
   - :py:meth:`~pyemaps.probe.Probe.show`: any result with its axes.
 
-  Every setting has a default, the probe program's. The samples *ronchigram.py*, *stem_probe.py*, *ctf.py*, *hrem.py* and *crystal_imaging.py* show each mode, and the User Guide page :doc:`user_guide/probe` and the notebook :doc:`notebooks/probe` explain them. Needs emaps 2.5.0 or later.
-- :doc:`4D-STEM imaging <user_guide/stem4d/imaging>`, a User Guide page on 4D-STEM imaging with virtual detectors: bright field, annular dark field and dark field images with :py:meth:`~pyemaps.stackimg.StackImage.generateBDF`, and detector masks with :py:meth:`~pyemaps.stackimg.StackImage.generateMaskedImage`. The documentation now shows the *adf* notebook, :doc:`notebooks/adf`, with its results.
+  Every setting has a default, the probe program's. The samples *ronchigram.py*, *stem_probe.py*, *ctf.py*, *hrem.py* and *crystal_imaging.py* show each mode, and the User Guide page :doc:`user_guide/probe` and the notebook :doc:`probe.ipynb <notebooks/probe>` explain them. Needs emaps 2.5.0 or later.
+- :doc:`4D-STEM imaging <user_guide/stem4d/imaging>`, a User Guide page on 4D-STEM imaging with virtual detectors: bright field, annular dark field and dark field images with :py:meth:`~pyemaps.stackimg.StackImage.generateBDF`, and detector masks with :py:meth:`~pyemaps.stackimg.StackImage.generateMaskedImage`. The documentation now shows the *adf* notebook, :doc:`adf.ipynb <notebooks/adf>`, with its results.
 - :py:meth:`~pyemaps.stackimg.StackImage.generateBDF` and :py:meth:`~pyemaps.stackimg.StackImage.generateMaskedImage` take an optional *title* for the image they display.
 
 Changes

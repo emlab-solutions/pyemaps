@@ -11,8 +11,8 @@ feature requires :ref:`License Activation`.
 
 .. seealso::
 
-   Steps 8 to 11 of the notebook :doc:`../../notebooks/adf` run these methods on a real scan:
-   they find its grains, then average and label them.
+   Steps 8 to 11 of the notebook :doc:`adf.ipynb <../../notebooks/adf>` run these methods on a real
+   scan: they find its grains, then average and label them.
 
 - :py:meth:`~pyemaps.stackimg.StackImage.correlationMap`: how closely each pattern matches a
   template, such as one of the scan's patterns. The template is compared over a *mask*'s pixels,
