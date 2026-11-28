@@ -58,6 +58,7 @@ What you can simulate
          :img-top: _static/images/si_dif1.png
          :link: user_guide/kinematic
          :link-type: doc
+         :class-img-top: pe-cover
 
          Spot patterns, Kikuchi and HOLZ lines, and CBED disks for any zone axis.
 
@@ -65,6 +66,7 @@ What you can simulate
          :img-top: _static/images/bloch_table.png
          :link: user_guide/dynamic
          :link-type: doc
+         :class-img-top: pe-cover
 
          Bloch-wave CBED and large-angle CBED, with the scattering matrix and thickness series.
 
@@ -86,6 +88,7 @@ What you can simulate
          :img-top: _static/images/mxtal01.png
          :link: user_guide/crystals
          :link-type: doc
+         :class-img-top: pe-cover
 
          44 built-in crystals, CIF import, structure factors and supercells.
 
@@ -93,6 +96,7 @@ What you can simulate
          :img-top: _static/images/probe_card.png
          :link: user_guide/probe/index
          :link-type: doc
+         :class-img-top: pe-cover
 
          What a lens with aberrations does: Ronchigrams, STEM probes, the contrast transfer
          function and HREM images, for corrected and uncorrected microscopes.
@@ -101,6 +105,7 @@ What you can simulate
          :img-top: _static/images/ediom_img1.png
          :link: user_guide/stem4d/index
          :link-type: doc
+         :class-img-top: pe-cover
 
          Index patterns against simulated databases, map orientations and phases across a scan,
          and make virtual detector images and grain maps.

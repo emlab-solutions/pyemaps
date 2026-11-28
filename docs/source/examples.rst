@@ -56,6 +56,7 @@ and :doc:`al_cu_phasemap.ipynb <notebooks/al_cu_phasemap>`.
 
       .. grid-item-card:: si_constructor.py
          :img-top: _static/images/mxtal01.png
+         :class-img-top: pe-cover
 
          Builds a Silicon supercell and saves it as an *.xyz* file.
 
@@ -103,6 +104,7 @@ and :doc:`al_cu_phasemap.ipynb <notebooks/al_cu_phasemap>`.
 
       .. grid-item-card:: al_ediom.py :bdg-info:`Licensed`
          :img-top: _static/images/ediom_img1.png
+         :class-img-top: pe-cover
 
          Generates an Aluminium pattern database and indexes the sample image *al.img*.
 
