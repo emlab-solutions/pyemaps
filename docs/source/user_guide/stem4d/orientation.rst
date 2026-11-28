@@ -13,7 +13,7 @@ position. This feature requires :ref:`License Activation`.
 .. toctree::
    :hidden:
 
-   ../../notebooks/al_orientmap
+   Notebook: mapping a synthetic Aluminium scan <../../notebooks/al_orientmap>
 
 .. admonition:: Experimental
    :class: warning

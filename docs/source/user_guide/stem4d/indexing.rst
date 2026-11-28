@@ -14,7 +14,7 @@ and phase come from the database pattern that fits best. This feature requires
 .. toctree::
    :hidden:
 
-   ../../notebooks/al_ediom
+   Notebook: indexing al.img <../../notebooks/al_ediom>
 
 First, generate a DP database for the crystal, here Aluminium:
 

@@ -16,7 +16,7 @@ shape, from a mask. This feature requires :ref:`License Activation`.
 .. toctree::
    :hidden:
 
-   ../../notebooks/adf
+   Notebook: virtual detectors and grain maps <../../notebooks/adf>
 
 The examples use *adftest900.im3*, a 4D-STEM test scan of 30 x 30 positions with 512 x 512
 pixel patterns, published by EMLab Solutions on

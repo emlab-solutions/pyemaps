@@ -13,7 +13,7 @@ and its orientation in that phase. It builds on :doc:`orientation`. This feature
 .. toctree::
    :hidden:
 
-   ../../notebooks/al_cu_phasemap
+   Notebook: mapping an aluminium and copper scan <../../notebooks/al_cu_phasemap>
 
 .. admonition:: Experimental
    :class: warning

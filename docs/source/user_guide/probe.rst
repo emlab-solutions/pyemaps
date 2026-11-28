@@ -22,7 +22,7 @@ This feature needs no license.
 .. toctree::
    :hidden:
 
-   ../notebooks/probe
+   Notebook: probes, Ronchigrams, CTF and HREM images <../notebooks/probe>
 
 The lens
 --------
@@ -278,7 +278,7 @@ pyEMAPS license, and raises :py:class:`~pyemaps.errors.LicenseError` without one
 .. toctree::
    :hidden:
 
-   ../notebooks/si_multislice
+   Notebook: thick crystals by multislice <../notebooks/si_multislice>
 
 - :py:meth:`~pyemaps.probe.Probe.crystal_exit_wave`: the exit wave under plane-wave
   illumination; pass it to :py:meth:`~pyemaps.probe.Probe.hrem` for the HREM image.
