@@ -56,6 +56,7 @@ What you can simulate
 
       .. grid-item-card:: Kinematic diffraction
          :img-top: _static/images/si_dif1.png
+         :class-img-top: pe-cover
          :link: user_guide/kinematic
          :link-type: doc
 
@@ -63,6 +64,7 @@ What you can simulate
 
       .. grid-item-card:: Dynamic diffraction
          :img-top: _static/images/bloch_table.png
+         :class-img-top: pe-cover
          :link: user_guide/dynamic
          :link-type: doc
 
@@ -84,6 +86,7 @@ What you can simulate
 
       .. grid-item-card:: Crystal structures
          :img-top: _static/images/mxtal01.png
+         :class-img-top: pe-cover
          :link: user_guide/crystals
          :link-type: doc
 
@@ -91,6 +94,7 @@ What you can simulate
 
       .. grid-item-card:: Probes, Ronchigrams, CTF and HREM
          :img-top: _static/images/probe_card.png
+         :class-img-top: pe-cover
          :link: user_guide/probe
          :link-type: doc
 
@@ -99,6 +103,7 @@ What you can simulate
 
       .. grid-item-card:: 4D-STEM :bdg-info:`Licensed`
          :img-top: _static/images/ediom_img1.png
+         :class-img-top: pe-cover
          :link: user_guide/stem4d/index
          :link-type: doc
 
