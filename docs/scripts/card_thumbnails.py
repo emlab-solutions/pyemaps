@@ -20,7 +20,6 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import patches
-from matplotlib.colors import LinearSegmentedColormap
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT_DIR = os.path.normpath(os.path.join(HERE, '..', 'source', '_static', 'images', 'cards'))
@@ -102,14 +101,13 @@ def kinematic(sizes):
 
 
 def bloch(sizes):
-    """Silicon's Bloch-wave CBED pattern at [001], 1750 Å thick, in the Bloch display's colours."""
+    """Silicon's Bloch-wave CBED pattern at [001], 1750 Å thick, in grey scale (showBloch's default)."""
     from pyemaps import Crystal, EMC
     res = Crystal.from_builtin('Silicon').generateBloch(
         sampling=20, sample_thickness=(1750, 1750, 100), em_controls=EMC())
     image = np.asarray(res.blochList[0][1])
-    cmap = LinearSegmentedColormap.from_list('bloch', ['#2973A5', 'cyan', 'limegreen', 'yellow', 'red'])
     for size, name in sizes:
-        show_image(image, size, name, cmap=cmap, zoom=1.45, background='#2973A5')
+        show_image(image, size, name, cmap='gray', zoom=1.45, background='black')
 
 
 def stereo(sizes):
