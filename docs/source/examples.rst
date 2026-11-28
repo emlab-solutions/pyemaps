@@ -105,7 +105,7 @@ The 4D-STEM indexing notebooks are also shown here with their results:
 
          Generates an Aluminium pattern database and indexes the sample image *al.img*.
 
-         Guide: :doc:`user_guide/indexing`.
+         Guide: :doc:`user_guide/stem4d/indexing`.
          Notebook: :doc:`notebooks/al_ediom`
 
       .. grid-item-card:: al_orientmap.py :bdg-info:`Licensed`
@@ -114,7 +114,7 @@ The 4D-STEM indexing notebooks are also shown here with their results:
          An orientation map of a synthetic Aluminium 4D-STEM scan, compared with the true
          orientations. Experimental.
 
-         Guide: :doc:`user_guide/indexing`.
+         Guide: :doc:`user_guide/stem4d/orientation`.
          Notebook: :doc:`notebooks/al_orientmap`
 
       .. grid-item-card:: al_cu_phasemap.py :bdg-info:`Licensed`
@@ -123,7 +123,7 @@ The 4D-STEM indexing notebooks are also shown here with their results:
          A phase map of a synthetic 4D-STEM scan of aluminium and copper grains, compared with
          the true phases. Experimental.
 
-         Guide: :doc:`user_guide/indexing`.
+         Guide: :doc:`user_guide/stem4d/phase`.
          Notebook: :doc:`notebooks/al_cu_phasemap`
 
 More samples
@@ -139,6 +139,6 @@ More samples
 * *adf.py*: annular bright and dark field images and a masked image from an experimental
   image. It needs *adftest900.im3*, available from
   `Zenodo <https://zenodo.org/records/14028793/files/adftest900.im3?download=1>`_; save it
-  in the *pyemaps_samples* folder. See :doc:`user_guide/imaging`. :bdg-info:`Licensed`
+  in the *pyemaps_samples* folder. See :doc:`user_guide/stem4d/imaging`. :bdg-info:`Licensed`
 * *dm_diff.py*: draws kinematic diffraction patterns in DigitalMicrograph; run it inside DM.
   See :doc:`user_guide/third_party`.

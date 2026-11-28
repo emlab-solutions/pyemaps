@@ -194,8 +194,9 @@ fort.7
 
 # stem4d source dir
 stem4d/
-# but keep the stem4d test baseline
+# but keep the stem4d test baseline and the 4D-STEM User Guide pages
 !test/baseline/stem4d/
+!docs/source/user_guide/stem4d/
 emaps/
 extal/
 advisor/

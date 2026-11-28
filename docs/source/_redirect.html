@@ -14,8 +14,23 @@
                "#license-activation": "user_guide/configuration.html",
                "#kinematic-diffraction-simulation": "user_guide/kinematic.html",
                "#bloch-wave-dynamic-diffraction-simulation": "user_guide/dynamic.html",
-               "#experimental-diffraction-pattern-indexing": "user_guide/indexing.html",
+               "#experimental-diffraction-pattern-indexing": "user_guide/stem4d/indexing.html",
                "#samples-code": "examples.html"};
+  // The 4D-STEM pages up to pyemaps 2.9 (user_guide/indexing and user_guide/imaging): each
+  // section that became a page of its own. Sections kept on the data page keep their #anchor.
+  var stem4d = {"#images-from-tiff-files": "data.html#images-from-tiff-files",
+                "#images-from-digitalmicrograph-files": "data.html#images-from-digitalmicrograph-files",
+                "#images-from-mrc-merlin-and-other-files": "data.html#images-from-mrc-merlin-and-other-files",
+                "#images-from-emd-files": "data.html#images-from-emd-files",
+                "#does-a-file-hold-diffraction-patterns": "data.html#does-a-file-hold-diffraction-patterns",
+                "#diffraction-or-not": "data.html#diffraction-or-not",
+                "#orientation-maps": "orientation.html",
+                "#phase-maps": "phase.html",
+                "#averages-similar-patterns-and-polar-transforms": "similar.html"};
+  if (hash && /stem4d\/(indexing|imaging)\.html$$/.test(target) && stem4d[hash]) {
+    target = target.replace(/(indexing|imaging)\.html$$/, stem4d[hash]);
+    hash = "";
+  }
   if (hash && /api\/index\.html$$/.test(target)) {
     var mod = hash.slice(1).split(".").slice(0, 2).join(".");
     if (api[mod]) target = target.replace(/index\.html$$/, api[mod] + ".html");

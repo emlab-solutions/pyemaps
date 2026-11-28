@@ -17,7 +17,7 @@ New
 
   A list of thicknesses gives every result from one pass. *slice_thickness* sets the slicing, and *bandlimit*, on by default, applies the 2/3 band limit. Without an active license, both raise :py:class:`~pyemaps.errors.LicenseError`. The sample *crystal_thickness.py* shows HREM and CBED thickness series of silicon [110], and the notebook :doc:`notebooks/si_multislice` checks the thickness fringes against Bloch waves. See "Thick crystals" in :doc:`user_guide/probe`.
 - Maps without a seam: *fit=True* on :py:meth:`~pyemaps.probe.Probe.crystal_potential` and the multislice methods strains the crystal slightly in the plane of the map, so it repeats exactly at the map's edges. A strain above 1% gives a warning. :py:meth:`~pyemaps.probe.Probe.crystal_repeats` gives a crystal's repeats along and across a zone axis, and the map sizes that fit with little strain.
-- Phase maps, experimental and licensed: :py:meth:`~pyemaps.stackimg.StackImage.mapPhases` finds which of several crystal phases each pattern of a 4D-STEM scan belongs to, with one diffraction pattern database per phase. It decides by the spacings of each pattern's peaks, which tells apart phases with the same structure that indexing alone can't, such as aluminium and copper. It returns a :py:class:`~pyemaps.phasemap.PhaseMap`: each pattern's phase, confidence and scores, each phase's orientation map, and the phase fractions, with plots, saving and loading. emaps 2.6.0 scores the phases and decides, in compiled code. The sample *al_cu_phasemap.py* and the notebook :doc:`notebooks/al_cu_phasemap` map a synthetic scan of aluminium and copper grains. See "Phase maps" in :doc:`user_guide/indexing`.
+- Phase maps, experimental and licensed: :py:meth:`~pyemaps.stackimg.StackImage.mapPhases` finds which of several crystal phases each pattern of a 4D-STEM scan belongs to, with one diffraction pattern database per phase. It decides by the spacings of each pattern's peaks, which tells apart phases with the same structure that indexing alone can't, such as aluminium and copper. It returns a :py:class:`~pyemaps.phasemap.PhaseMap`: each pattern's phase, confidence and scores, each phase's orientation map, and the phase fractions, with plots, saving and loading. emaps 2.6.0 scores the phases and decides, in compiled code. The sample *al_cu_phasemap.py* and the notebook :doc:`notebooks/al_cu_phasemap` map a synthetic scan of aluminium and copper grains. See :doc:`user_guide/stem4d/phase`.
 - 4D-STEM scan analysis, licensed and computed in emaps 2.6.0, on all the processor's cores:
 
   - :py:meth:`~pyemaps.stackimg.StackImage.averagePattern`: the mean of a scan's patterns;
@@ -27,7 +27,7 @@ New
   - :py:meth:`~pyemaps.stackimg.StackImage.classifyPatterns`: labels every pattern by the template it matches best;
   - :py:meth:`~pyemaps.stackimg.StackImage.polarTransform` and :py:func:`~pyemaps.stackimg.polar_transform`: patterns in polar coordinates about a centre.
 
-  Steps 7 to 12 of the notebook :doc:`notebooks/adf` run them on the 4D-STEM test scan: they find its grains, average and label them, and measure each grain's rotation. See "Averages, similar patterns and polar transforms" in :doc:`user_guide/imaging`.
+  Steps 7 to 12 of the notebook :doc:`notebooks/adf` run them on the 4D-STEM test scan: they find its grains, average and label them, and measure each grain's rotation. See :doc:`user_guide/stem4d/similar` and :doc:`user_guide/stem4d/averages`.
 - :py:class:`~pyemaps.errors.LicenseError`, raised by the licensed features of the probe module and of database generation when no license is active.
 - The samples' crystals for the multislice, the orientation map and the phase map are refined structures from the Crystallography Open Database, which is public domain, in CIF files that come with the samples: silicon (COD 2102763), aluminium (COD 4004108) and copper (COD 7101269).
 
@@ -69,7 +69,7 @@ New
   - :py:meth:`~pyemaps.probe.Probe.show`: any result with its axes.
 
   Every setting has a default, the probe program's. The samples *ronchigram.py*, *stem_probe.py*, *ctf.py*, *hrem.py* and *crystal_imaging.py* show each mode, and the User Guide page :doc:`user_guide/probe` and the notebook :doc:`notebooks/probe` explain them. Needs emaps 2.5.0 or later.
-- :doc:`user_guide/imaging`, a User Guide page on 4D-STEM imaging with virtual detectors: bright field, annular dark field and dark field images with :py:meth:`~pyemaps.stackimg.StackImage.generateBDF`, and detector masks with :py:meth:`~pyemaps.stackimg.StackImage.generateMaskedImage`. The documentation now shows the *adf* notebook, :doc:`notebooks/adf`, with its results.
+- :doc:`4D-STEM imaging <user_guide/stem4d/imaging>`, a User Guide page on 4D-STEM imaging with virtual detectors: bright field, annular dark field and dark field images with :py:meth:`~pyemaps.stackimg.StackImage.generateBDF`, and detector masks with :py:meth:`~pyemaps.stackimg.StackImage.generateMaskedImage`. The documentation now shows the *adf* notebook, :doc:`notebooks/adf`, with its results.
 - :py:meth:`~pyemaps.stackimg.StackImage.generateBDF` and :py:meth:`~pyemaps.stackimg.StackImage.generateMaskedImage` take an optional *title* for the image they display.
 
 Changes
@@ -93,7 +93,7 @@ New
 ~~~
 
 - *rmax* in :py:meth:`~pyemaps.stackimg.StackImage.indexImage` and :py:meth:`~pyemaps.stackimg.StackImage.mapOrientation`: the outer radius, in pixels, of the peaks matched against the database. The default, None, keeps the automatic radius, two thirds of the distance from the pattern centre to the nearest edge, so results don't change unless you set it. Raise it when useful peaks lie further out. Needs emaps 2.4.0 or later.
-- :py:meth:`~pyemaps.stackimg.StackImage.indexImage` and :py:meth:`~pyemaps.stackimg.StackImage.mapOrientation` warn when the diffraction pattern database doesn't reach as far out as the peaks they match: when its longest reflection is shorter than the outer radius divided by the camera constant. The warning gives the *gmax* to generate the database with. A database that is too short leaves out the outer reflections, and patterns index on fewer peaks with lower reliability. See :doc:`user_guide/indexing`.
+- :py:meth:`~pyemaps.stackimg.StackImage.indexImage` and :py:meth:`~pyemaps.stackimg.StackImage.mapOrientation` warn when the diffraction pattern database doesn't reach as far out as the peaks they match: when its longest reflection is shorter than the outer radius divided by the camera constant. The warning gives the *gmax* to generate the database with. A database that is too short leaves out the outer reflections, and patterns index on fewer peaks with lower reliability. See :doc:`user_guide/stem4d/indexing`.
 - The image readers tell diffraction patterns from other images, such as STEM images and maps computed from spectra:
 
   - :py:attr:`ExperimentalImage.kind <pyemaps.expimage.ExperimentalImage.kind>` gives what the file says an image is: ``'diffraction'``, ``'real-space'``, ``'spectrum map'`` or ``'unknown'``. Only DigitalMicrograph and EMD files record enough to tell.
@@ -102,7 +102,7 @@ New
   - :py:meth:`StackImage.from_file <pyemaps.stackimg.StackImage.from_file>` warns when the image it reads is a real-space image or a spectrum map, and says which dataset holds the file's diffraction patterns, or that it has none.
   - Thermo Fisher Velox images get the titles Velox shows them under, such as ``DF-S`` or ``Ta``, and ``dataset=`` accepts a title. Velox EELS and EDS maps are marked as spectrum maps.
 
-  See "Does a file hold diffraction patterns?" in :doc:`user_guide/indexing`.
+  See "Does a file hold diffraction patterns?" in :doc:`user_guide/stem4d/data`.
 
 Changes
 ~~~~~~~
@@ -127,7 +127,7 @@ From emaps 2.4.0:
 
 Other improvements:
 
-- The documentation explains how far the database must reach (*gmax*) for the patterns being indexed, with a worked example, in :py:meth:`~pyemaps.stackimg.StackImage.indexImage`, :py:meth:`~pyemaps.stackimg.StackImage.mapOrientation`, :py:meth:`~pyemaps.crystals.Crystal.generateDPDB` and :doc:`user_guide/indexing`.
+- The documentation explains how far the database must reach (*gmax*) for the patterns being indexed, with a worked example, in :py:meth:`~pyemaps.stackimg.StackImage.indexImage`, :py:meth:`~pyemaps.stackimg.StackImage.mapOrientation`, :py:meth:`~pyemaps.crystals.Crystal.generateDPDB` and :doc:`user_guide/stem4d/indexing`.
 - Requires ``emaps >= 2.4.0``.
 
 Version 2.6.0 Stable
@@ -157,7 +157,7 @@ From emaps 2.3.0:
 
 Other improvements:
 
-- The 4D-STEM notebooks, *al_ediom.ipynb* and *al_orientmap.ipynb*, are shown with their results in the documentation: see :doc:`user_guide/indexing`.
+- The 4D-STEM notebooks, *al_ediom.ipynb* and *al_orientmap.ipynb*, are shown with their results in the documentation: see :doc:`user_guide/stem4d/index`.
 - Requires ``emaps >= 2.3.0``.
 
 Version 2.5.0 Stable
@@ -169,7 +169,7 @@ Version 2.5.0 Stable
 New
 ~~~
 
-- Orientation maps of 4D-STEM scans (experimental): :py:meth:`StackImage.mapOrientation <pyemaps.stackimg.StackImage.mapOrientation>` indexes every pattern of a scan against a diffraction pattern database, as :py:meth:`~pyemaps.stackimg.StackImage.indexImage` indexes one, and returns an :py:class:`~pyemaps.orientmap.OrientationMap`. The map holds each pattern's status, reliability index and orientation, gives the beam direction as a zone axis and the orientation as Bunge Euler angles, colours the map by beam direction (inverse pole figure colours, with their key), and saves and loads it. This is a licensed feature. It finds the right orientations on simulated scans, but it hasn't yet been validated against an independent orientation map of real data, and its parameters, defaults and results may change in later releases. See :doc:`user_guide/indexing`, the *al_orientmap.py* sample and the *al_orientmap.ipynb* notebook.
+- Orientation maps of 4D-STEM scans (experimental): :py:meth:`StackImage.mapOrientation <pyemaps.stackimg.StackImage.mapOrientation>` indexes every pattern of a scan against a diffraction pattern database, as :py:meth:`~pyemaps.stackimg.StackImage.indexImage` indexes one, and returns an :py:class:`~pyemaps.orientmap.OrientationMap`. The map holds each pattern's status, reliability index and orientation, gives the beam direction as a zone axis and the orientation as Bunge Euler angles, colours the map by beam direction (inverse pole figure colours, with their key), and saves and loads it. This is a licensed feature. It finds the right orientations on simulated scans, but it hasn't yet been validated against an independent orientation map of real data, and its parameters, defaults and results may change in later releases. See :doc:`user_guide/stem4d/orientation`, the *al_orientmap.py* sample and the *al_orientmap.ipynb* notebook.
 - *min_snr* in :py:meth:`~pyemaps.stackimg.StackImage.indexImage` and :py:meth:`~pyemaps.stackimg.StackImage.mapOrientation`: the peak search keeps only peaks at least *min_snr* times the noise above the background around them. The default, 0, keeps every peak, as before. 3 suits noisy patterns such as 4D-STEM scans.
 
 Changes
@@ -204,7 +204,7 @@ New
   - EMD (``.emd``): Thermo Fisher Velox, and Berkeley EMD including py4DSTEM datacubes. These need the h5py package: ``pip install "pyemaps[emd]"``. On Python 3.15, h5py has no Windows release yet.
   - MRC (``.mrc``, ``.mrcs``, ``.st``), Quantum Detectors Merlin (``.mib``), PNG, BMP and JPEG pictures, and NumPy ``.npy`` arrays.
 
-  *binning* and *scan_roi* read large patterns and scans within the 4D-STEM limits, and :py:meth:`convertImage <pyemaps.stackimg.StackImage.convertImage>` with ``nformat=E_FILE`` saves a converted copy in pyEMAPS' ``.im3`` format. See :doc:`user_guide/indexing`. We'd like to hear how these work with your files: contact us at support@emlabsoftware.com.
+  *binning* and *scan_roi* read large patterns and scans within the 4D-STEM limits, and :py:meth:`convertImage <pyemaps.stackimg.StackImage.convertImage>` with ``nformat=E_FILE`` saves a converted copy in pyEMAPS' ``.im3`` format. See :doc:`user_guide/stem4d/data`. We'd like to hear how these work with your files: contact us at support@emlabsoftware.com.
 - CIF files in the CIF 2.0 format can be loaded with :py:meth:`~pyemaps.crystals.Crystal.from_cif`, as well as CIF 1.1.
 
 Changes

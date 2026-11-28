@@ -168,4 +168,7 @@ redirects = {
     'pyemaps.spg': 'api/index.html',
     'pyemaps.spg.spg': 'api/index.html',
     **{f'pyemaps.diffract.{d}': 'api/crystals.html' for d in _api_dec},
+    # The two 4D-STEM pages of pyemaps 2.9 and earlier became the 4D-STEM group, one page per feature.
+    'user_guide/indexing': 'stem4d/indexing.html',
+    'user_guide/imaging': 'stem4d/imaging.html',
 }
