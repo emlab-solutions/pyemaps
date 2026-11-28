@@ -10,7 +10,7 @@ Make the animations of the User Guide pages, Silicon in each:
   tilts about x, then about y (camera length 1000 mm for both, for larger disks).
 
 The diffraction frames are drawn by pyemaps.display, as showDif and showBloch draw them in a
-notebook; the stereodiagram frames as showStereo draws them. Run it from anywhere, with emaps
+notebook (the Bloch images in grey scale, showBloch's default); the stereodiagram frames as showStereo draws them. Run it from anywhere, with emaps
 installed; the GIFs are written to docs/source/_static/images:
 
     python docs/scripts/guide_animations.py                  # all of them
@@ -63,7 +63,8 @@ def display_frames(kind, items):
     Draw each item with pyemaps.display's plotter, as showDif ('dif') or showBloch ('bloch')
     draws one plot with its caption, and return the frames as RGB arrays.
 
-    *items*: for 'dif', (emc, pattern, mode, kshow, ishow); for 'bloch', (emc, image, color).
+    *items*: for 'dif', (emc, pattern, mode, kshow, ishow); for 'bloch', (emc, image, color),
+    color False for grey scale.
     """
     from pyemaps import display
     ty = display.TY_DIF if kind == 'dif' else display.TY_BLOCH
@@ -104,7 +105,7 @@ def bloch_thickness(si):
     emc = EMC(zone=(1, 1, 1), vt=100, cl=1000, simc=SIMC(excitation=(0.3, 1.0), bmin=0.1))
     images = si.generateBloch(sampling=40, em_controls=emc, sample_thickness=(500, 1750, 50))
     images.sort()
-    items = [(e, img, True) for e, img in images.blochList]
+    items = [(e, img, False) for e, img in images.blochList]
     write_gif(display_frames('bloch', items), 'bloch_thickness.gif', 250)
 
 
@@ -115,7 +116,7 @@ def bloch_zones(si):
         res = si.generateBloch(sampling=20, sample_thickness=(1750, 1750, 100),
                                em_controls=EMC(zone=(0, i, 1), cl=1000))
         e, img = res.blochList[0]
-        items.append((e, img, True))
+        items.append((e, img, False))
     write_gif(display_frames('bloch', items), 'bloch_zones.gif', 1500)
 
 
@@ -126,7 +127,7 @@ def bloch_tilt(si, limit=1.5, step=0.15):
         res = si.generateBloch(sampling=20, sample_thickness=(1750, 1750, 100),
                                em_controls=EMC(zone=(0, 0, 1), cl=1000, tilt=t))
         e, img = res.blochList[0]
-        items.append((e, img, True))
+        items.append((e, img, False))
     write_gif(display_frames('bloch', items), 'bloch_tilt.gif', 120)
 
 
