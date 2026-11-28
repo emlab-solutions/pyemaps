@@ -39,7 +39,7 @@ follow the links into the :doc:`../api/index`.
       scans. Licensed.
 
    .. grid-item-card:: Probes, Ronchigrams, CTF and HREM
-      :link: probe
+      :link: probe/index
       :link-type: doc
 
       What a lens with aberrations does: Ronchigrams, STEM probes, the contrast transfer
@@ -65,6 +65,6 @@ follow the links into the :doc:`../api/index`.
    dynamic
    stereo
    stem4d/index
-   probe
+   probe/index
    third_party
    configuration

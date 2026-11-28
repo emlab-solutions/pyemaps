@@ -31,6 +31,14 @@
     target = target.replace(/(indexing|imaging)\.html$$/, stem4d[hash]);
     hash = "";
   }
+  // The probe page up to pyemaps 2.9 (user_guide/probe): each section is now a page of its own.
+  var probe = {"#the-lens": "lens.html", "#ronchigram": "ronchigram.html",
+               "#probe": "stem_probe.html", "#ctf": "ctf.html", "#hrem": "hrem.html",
+               "#crystals": "crystals.html", "#thick-crystals": "multislice.html"};
+  if (hash && /probe\/index\.html$$/.test(target) && probe[hash]) {
+    target = target.replace(/index\.html$$/, probe[hash]);
+    hash = "";
+  }
   if (hash && /api\/index\.html$$/.test(target)) {
     var mod = hash.slice(1).split(".").slice(0, 2).join(".");
     if (api[mod]) target = target.replace(/index\.html$$/, api[mod] + ".html");

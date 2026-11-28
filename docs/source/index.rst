@@ -91,7 +91,7 @@ What you can simulate
 
       .. grid-item-card:: Probes, Ronchigrams, CTF and HREM
          :img-top: _static/images/probe_card.png
-         :link: user_guide/probe
+         :link: user_guide/probe/index
          :link-type: doc
 
          What a lens with aberrations does: Ronchigrams, STEM probes, the contrast transfer

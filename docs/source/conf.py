@@ -180,4 +180,6 @@ redirects = {
     # The two 4D-STEM pages of pyemaps 2.9 and earlier became the 4D-STEM group, one page per feature.
     'user_guide/indexing': 'stem4d/indexing.html',
     'user_guide/imaging': 'stem4d/imaging.html',
+    # The probe page of pyemaps 2.9 and earlier became the probe group, one page per topic.
+    'user_guide/probe': 'probe/index.html',
 }
