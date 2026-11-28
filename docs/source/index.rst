@@ -55,57 +55,52 @@ What you can simulate
       :gutter: 3
 
       .. grid-item-card:: Kinematic diffraction
-         :img-top: _static/images/si_dif1.png
+         :img-top: _static/images/cards/kinematic.png
          :link: user_guide/kinematic
          :link-type: doc
-         :class-img-top: pe-cover
 
          Spot patterns, Kikuchi and HOLZ lines, and CBED disks for any zone axis.
 
       .. grid-item-card:: Dynamic diffraction
-         :img-top: _static/images/bloch_table.png
+         :img-top: _static/images/cards/bloch.png
          :link: user_guide/dynamic
          :link-type: doc
-         :class-img-top: pe-cover
 
          Bloch-wave CBED and large-angle CBED, with the scattering matrix and thickness series.
 
       .. grid-item-card:: Stereodiagrams
-         :img-top: _static/images/si_stereo.png
+         :img-top: _static/images/cards/stereo.png
          :link: user_guide/stereo
          :link-type: doc
 
          Indexed stereographic projections for any orientation.
 
       .. grid-item-card:: Powder diffraction
-         :img-top: _static/images/powder.png
+         :img-top: _static/images/cards/powder.png
          :link: examples
          :link-type: doc
 
          Electron powder profiles, with and without absorption.
 
       .. grid-item-card:: Crystal structures
-         :img-top: _static/images/mxtal01.png
+         :img-top: _static/images/cards/crystal.png
          :link: user_guide/crystals
          :link-type: doc
-         :class-img-top: pe-cover
 
          44 built-in crystals, CIF import, structure factors and supercells.
 
       .. grid-item-card:: Probes, Ronchigrams, CTF and HREM
-         :img-top: _static/images/probe_card.png
+         :img-top: _static/images/cards/ronchigram.png
          :link: user_guide/probe/index
          :link-type: doc
-         :class-img-top: pe-cover
 
          What a lens with aberrations does: Ronchigrams, STEM probes, the contrast transfer
          function and HREM images, for corrected and uncorrected microscopes.
 
       .. grid-item-card:: 4D-STEM :bdg-info:`Licensed`
-         :img-top: _static/images/ediom_img1.png
+         :img-top: _static/images/cards/orientmap.png
          :link: user_guide/stem4d/index
          :link-type: doc
-         :class-img-top: pe-cover
 
          Index patterns against simulated databases, map orientations and phases across a scan,
          and make virtual detector images and grain maps.
