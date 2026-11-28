@@ -47,7 +47,7 @@ them as a table. The animation below shows the six, one after another:
         showStereo(generate_stereodiagrams(), name='Silicon',
                    cShow=True, iShow=True, zLimit=1, layout='table')
 
-.. The animations on this page are made by docs/scripts/stereo_animations.py.
+.. The animations on this page are made by docs/scripts/guide_animations.py.
 
 .. image:: ../_static/images/stereo_zones.gif
    :alt: Stereodiagrams of Silicon at six zone axes, one after another

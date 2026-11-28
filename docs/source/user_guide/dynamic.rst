@@ -56,9 +56,13 @@ table:
 * sample thickness from 500 to 1750 Å, every 250 Å
 * 40 sampling points along the disk radius
 
-.. image:: ../_static/images/bloch_table.png
-   :alt: Bloch images of Silicon at six sample thicknesses
-   :target: ../_static/images/bloch_table.png
+The animation goes through the same thickness range in finer steps, every 50 Å:
+
+.. The animations on this page are made by docs/scripts/guide_animations.py.
+
+.. image:: ../_static/images/bloch_thickness.gif
+   :alt: Bloch images of Silicon at the [111] zone axis from 500 to 1750 Å thick
+   :width: 400px
 
 .. code-block:: python
 
@@ -87,3 +91,33 @@ table:
         images = generate_bloch_images()
         if images is not None:
             showBloch(images, cShow=True, layout='table', bSave=True)
+
+Zone axis and tilt
+------------------
+
+The zone axis (*zone*) and the sample tilt (*tilt*, about the x and y axes, in degrees) are
+microscope controls, set in :py:class:`EMC <pyemaps.emcontrols.EMControl>`:
+
+.. code-block:: python
+
+    from pyemaps import EMC, Crystal, showBloch
+
+    if __name__ == '__main__':
+        silicon = Crystal.from_builtin('Silicon')
+
+        emc = EMC(zone=(0, 1, 1), tilt=(0.5, 0.0), cl=1000)
+        images = silicon.generateBloch(sampling=20, em_controls=emc,
+                                       sample_thickness=(1750, 1750, 100))
+        showBloch(images, bColor=True)
+
+The sample *si_bloch.py* makes a series of each in parallel processes. The animations show
+Silicon 1750 Å thick at the zone axes (0, i, 1) for i from -3 to 2, and at the [001] zone axis
+tilting about x, from 0 to 1.5 degrees, to -1.5 and back, then the same about y:
+
+.. image:: ../_static/images/bloch_zones.gif
+   :alt: Bloch images of Silicon at six zone axes, one after another
+   :width: 400px
+
+.. image:: ../_static/images/bloch_tilt.gif
+   :alt: The Bloch image of Silicon at the [001] zone axis as the sample tilts about x, then y
+   :width: 400px

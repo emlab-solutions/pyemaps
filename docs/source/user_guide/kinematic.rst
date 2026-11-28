@@ -38,11 +38,14 @@ Displaying a series of patterns
 -------------------------------
 
 This example makes CBED patterns of Silicon at six zone axes, with a camera length of 2500 mm.
-It runs the simulations in parallel processes, then shows the patterns as a table:
+It runs the simulations in parallel processes, then shows the patterns as a table. The
+animation shows the six, one after another:
 
-.. image:: ../_static/images/dif_table.png
-   :alt: Kinematic CBED patterns of Silicon at six zone axes
-   :target: ../_static/images/dif_table.png
+.. The animations on this page are made by docs/scripts/guide_animations.py.
+
+.. image:: ../_static/images/dif_zones.gif
+   :alt: Kinematic CBED patterns of Silicon at six zone axes, one after another
+   :width: 400px
 
 .. code-block:: python
 
@@ -79,3 +82,30 @@ It runs the simulations in parallel processes, then shows the patterns as a tabl
     if __name__ == '__main__':
         patterns = generate_kinematic_patterns(mode=2)    # 2: CBED mode
         showDif(patterns, cShow=True, iShow=True, layout='table', bSave=True)
+
+Tilting the sample
+------------------
+
+*tilt*, in the microscope controls, tilts the sample about the x and y axes, in degrees. As the
+crystal turns, the Kikuchi lines move across the pattern and the set of diffracted beams
+changes:
+
+.. code-block:: python
+
+    from pyemaps import EMC, Crystal, DPList, showDif
+
+    if __name__ == '__main__':
+        silicon = Crystal.from_builtin('Silicon')
+
+        patterns = DPList('Silicon')
+        for tilt in [(-2.0, 0.0), (-1.0, 0.0), (0.0, 0.0), (1.0, 0.0), (2.0, 0.0)]:
+            emc, pattern = silicon.generateDP(em_controls=EMC(tilt=tilt))
+            patterns.add(emc, pattern)
+        showDif(patterns, iShow=False)
+
+The animation tilts Silicon at the [001] zone axis about x, from 0 to 2 degrees, to -2 and back,
+then the same about y:
+
+.. image:: ../_static/images/dif_tilt.gif
+   :alt: The kinematic pattern of Silicon at the [001] zone axis as the sample tilts about x, then y
+   :width: 400px
