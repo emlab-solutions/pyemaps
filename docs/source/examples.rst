@@ -66,7 +66,7 @@ and :doc:`al_cu_phasemap.ipynb <notebooks/al_cu_phasemap>`.
 
          Ronchigrams of a corrected probe, with astigmatism, and of an uncorrected one.
 
-         Guide: :doc:`user_guide/probe`.
+         Guide: :doc:`user_guide/probe/ronchigram`.
          Notebook: :doc:`probe.ipynb <notebooks/probe>`
 
       .. grid-item-card:: stem_probe.py
@@ -75,7 +75,7 @@ and :doc:`al_cu_phasemap.ipynb <notebooks/al_cu_phasemap>`.
          STEM probes and their sizes: uncorrected, corrected, and with a corrector's
          residual aberrations.
 
-         Guide: :doc:`user_guide/probe`
+         Guide: :doc:`user_guide/probe/stem_probe`
 
       .. grid-item-card:: ctf.py
          :img-top: _static/images/probe_ctf.png
@@ -83,14 +83,14 @@ and :doc:`al_cu_phasemap.ipynb <notebooks/al_cu_phasemap>`.
          The contrast transfer function at and around the Scherzer defocus, with its
          envelopes, and for a corrected lens.
 
-         Guide: :doc:`user_guide/probe`
+         Guide: :doc:`user_guide/probe/ctf`
 
       .. grid-item-card:: hrem.py
          :img-top: _static/images/probe_hrem.png
 
          HREM images of amorphous carbon and their Thon rings.
 
-         Guide: :doc:`user_guide/probe`
+         Guide: :doc:`user_guide/probe/hrem`
 
       .. grid-item-card:: crystal_thickness.py :bdg-info:`Licensed`
          :img-top: _static/images/probe_multislice.png
@@ -98,7 +98,7 @@ and :doc:`al_cu_phasemap.ipynb <notebooks/al_cu_phasemap>`.
          Silicon [110] through the thickness by the multislice method: HREM images and CBED
          patterns at several thicknesses.
 
-         Guide: :doc:`user_guide/probe`.
+         Guide: :doc:`user_guide/probe/multislice`.
          Notebook: :doc:`si_multislice.ipynb <notebooks/si_multislice>`
 
       .. grid-item-card:: al_ediom.py :bdg-info:`Licensed`
